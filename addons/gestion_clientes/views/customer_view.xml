@@ -13,16 +13,6 @@
                         <field name="client_code" string="Código de Cliente"/>
                         <field name="fiscal_certificate" string="Constancia de Situación Fiscal" filename="certificate_filename"/>
                     </group>
-                    <footer>
-                        <!-- Save button to create or update a customer -->
-                        <button name="save_customer" type="object" string="Guardar Cliente" class="btn-primary"/>
-
-                        <!-- Clear Fields button to reset fields -->
-                        <button name="clear_fields" type="object" string="Limpiar Campos" class="btn-secondary"/>
-
-                        <!-- Exit to Customer List button to go back to list view without saving -->
-                        <button name="action_go_to_customer_list" type="object" string="Salir a Lista de Clientes" class="btn-secondary"/>
-                    </footer>
                 </sheet>
             </form>
         </field>
