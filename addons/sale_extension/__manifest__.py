@@ -8,7 +8,9 @@
     'website': 'https://proteuslaboratorio.com',
     'category': 'Sales',
     'depends': ['sale'],  # Dependencia del módulo de ventas
-    'data': [],
+    'data': [
+        'views/sale_extension_views.xml',  # Archivo de vistas para mostrar el nuevo campo
+    ],
     'installable': True,
     'application': False,
     'license': 'LGPL-3',
