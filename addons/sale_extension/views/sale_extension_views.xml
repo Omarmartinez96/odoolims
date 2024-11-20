@@ -4,21 +4,8 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree" />
         <field name="arch" type="xml">
-            <xpath expr="//field[@name='name']" position="after">
+            <xpath expr="//tree" position="inside">
                 <field name="client_code" />
-            </xpath>
-        </field>
-    </record>
-
-    <record id="view_partner_form_inherited" model="ir.ui.view">
-        <field name="name">res.partner.form.inherited</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_form" />
-        <field name="arch" type="xml">
-            <xpath expr="//sheet" position="inside">
-                <group>
-                    <field name="client_code" placeholder="Ejemplo: LMP-001" />
-                </group>
             </xpath>
         </field>
     </record>
