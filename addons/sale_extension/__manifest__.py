@@ -14,4 +14,5 @@
     'installable': True,
     'application': False,
     'license': 'LGPL-3',
+    'test': False, #Desactiva las pruebas automáticas
 }
