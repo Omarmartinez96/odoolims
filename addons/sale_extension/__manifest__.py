@@ -1,17 +1,14 @@
 {
     'name': 'Sale Extension',
     'version': '1.0',
-    'summary': 'Extensión para agregar código de cliente basado en VAT',
-    'description': (
-        'Este módulo extiende el módulo de ventas para generar un código de cliente '
-        'automáticamente basado en los tres primeros caracteres del VAT (RFC en México).'
-    ),
+    'summary': 'Extensión básica del módulo de ventas',
+    'description': 'Este módulo permite agregar un código de cliente manual y mostrarlo en la vista de lista.',
     'author': 'Omar Martínez',
     'website': 'https://proteuslaboratorio.com',
     'category': 'Sales',
-    'depends': ['sale'],  # Mantén 'sale' si planeas agregar más funcionalidades a ventas
+    'depends': ['sale'],
     'data': [
-        'views/sale_extension_views.xml',  # Vista personalizada de res.partner
+        'views/sale_extension_views.xml',
     ],
     'installable': True,
     'application': False,
