@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <!-- Vista de lista -->
+    <record id="view_res_departamento_list" model="ir.ui.view">
+        <field name="name">res.departamento.list</field>
+        <field name="model">res.departamento</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="sucursal_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Vista de formulario -->
+    <record id="view_res_departamento_form" model="ir.ui.view">
+        <field name="name">res.departamento.form</field>
+        <field name="model">res.departamento</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <field name="name"/>
+                    <field name="sucursal_id"/>
+                    <field name="contactos_ids"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

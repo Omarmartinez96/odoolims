@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_partner_form_inherit" model="ir.ui.view">
+        <field name="name">res.partner.form.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+            <notebook position="inside">
+                <page string="Sucursales">
+                    <field name="sucursales_ids">
+                        <list>
+                            <field name="name"/>
+                            <field name="direccion"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Departamentos">
+                    <field name="sucursales_ids">
+                        <list>
+                            <field name="name"/>
+                        </list>
+                    </field>
+                </page>
+                <page string="Contactos">
+                    <field name="sucursales_ids">
+                        <list>
+                            <field name="name"/>
+                            <field name="telefono"/>
+                            <field name="correo_electronico"/>
+                        </list>
+                    </field>
+                </page>
+            </notebook>
+        </field>
+    </record>
+</odoo>

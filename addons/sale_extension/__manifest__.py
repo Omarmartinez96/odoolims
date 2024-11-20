@@ -9,6 +9,10 @@
     'depends': ['sale'],
     'data': [
         'views/sale_extension_views.xml',
+        'views/res_partner_view.xml',
+        'views/res_sucursal_view.xml',
+        'views/res_departamento_view.xml',
+        'views/res_contacto_view.xml',
     ],
     'installable': True,
     'application': False,
