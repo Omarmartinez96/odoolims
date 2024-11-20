@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <notebook position="inside">
-                <page string="Sucursales">
+                <page string="Sucursales" groups="sales_team.group_sale_salesman">
                     <field name="sucursales_ids" widget="one2many_list" editable="bottom">
                         <list>
                             <field name="name" string="Identificación"/>
