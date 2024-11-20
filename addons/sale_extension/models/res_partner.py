@@ -6,5 +6,5 @@ class ResPartner(models.Model):
     client_code = fields.Char(
         string='Código de Cliente',
         help='Código único para identificar al cliente',
-        index=True,
+        index=True,  # Hacerlo buscable en la base de datos
     )
