@@ -6,7 +6,7 @@
         <field name="arch" type="xml">
             <xpath expr="//sheet" position="inside">
                 <group>
-                    <field name="rfc" />
+                    <field name="vat" />
                     <field name="client_code" readonly="1" />
                 </group>
             </xpath>
