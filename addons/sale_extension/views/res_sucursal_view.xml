@@ -6,9 +6,9 @@
         <field name="model">res.sucursal</field>
         <field name="arch" type="xml">
             <list>
-                <field name="name"/>
-                <field name="direccion"/>
-                <field name="cliente_id"/>
+                <field name="name" string="Identificación"/>
+                <field name="direccion" string="Dirección"/>
+                <field name="observaciones" string="Observaciones"/>
             </list>
         </field>
     </record>
@@ -20,10 +20,10 @@
         <field name="arch" type="xml">
             <form>
                 <sheet>
-                    <field name="name"/>
-                    <field name="direccion"/>
-                    <field name="cliente_id"/>
-                    <field name="departamentos_ids"/>
+                    <field name="name" string="Identificación"/>
+                    <field name="direccion" string="Dirección"/>
+                    <field name="observaciones" string="Observaciones"/>
+                    <field name="cliente_id" string="Cliente"/>
                 </sheet>
             </form>
         </field>

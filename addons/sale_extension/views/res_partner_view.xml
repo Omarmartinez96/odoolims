@@ -7,24 +7,11 @@
         <field name="arch" type="xml">
             <notebook position="inside">
                 <page string="Sucursales">
-                    <field name="sucursales_ids">
+                    <field name="sucursales_ids" widget="one2many_list" editable="bottom">
                         <list>
-                            <field name="name"/>
-                            <field name="direccion"/>
-                        </list>
-                    </field>
-                </page>
-                <page string="Departamentos">
-                    <field name="sucursales_ids">
-                        <list>
-                            <field name="name"/>
-                        </list>
-                    </field>
-                </page>
-                <page string="Contactos">
-                    <field name="sucursales_ids">
-                        <list>
-                            <field name="name"/>
+                            <field name="name" string="Identificación"/>
+                            <field name="direccion" string="Dirección"/>
+                            <field name="observaciones" string="Observaciones"/>
                         </list>
                     </field>
                 </page>
