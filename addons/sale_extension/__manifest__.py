@@ -12,7 +12,8 @@
         'views/sale_extension_views.xml',  # Archivo de vistas para mostrar el nuevo campo
     ],
     'installable': True,
-    'application': False,
+    'application': True,
+    'auto_install': False,
     'license': 'LGPL-3',
     'test': False, #Desactiva las pruebas automáticas
 }
