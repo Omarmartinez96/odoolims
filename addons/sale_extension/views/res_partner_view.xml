@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+    <!-- Vista heredada para extender el formulario de res.partner -->
     <record id="view_partner_form_inherit" model="ir.ui.view">
         <field name="name">res.partner.form.inherit</field>
         <field name="model">res.partner</field>
@@ -7,15 +8,29 @@
         <field name="arch" type="xml">
             <!-- Extender la pestaña Contactos & Addresses -->
             <xpath expr="//page[@name='contact_addresses']" position="inside">
-                <field name="child_ids" mode="list" context="{'default_parent_id': id}">
-                    <list>
-                        <field name="name" string="Name"/>
-                        <field name="email" string="Email"/>
-                        <field name="phone" string="Phone"/>
-                        <field name="mobile" string="Mobile"/>
+                <field name="child_ids" widget="one2many" context="{'default_parent_id': id}">
+                    <!-- Vista de lista para contactos -->
+                    <list string="Listado de Contactos">
+                        <field name="name" string="Nombre del Contacto"/>
+                        <field name="email" string="Correo Electrónico"/>
+                        <field name="phone" string="Teléfono"/>
+                        <field name="mobile" string="Teléfono Móvil"/>
                         <field name="sucursal_id" string="Sucursal"/>
                         <field name="departamento_id" string="Departamento"/>
                     </list>
+                    <!-- Vista de formulario para agregar o editar contactos -->
+                    <form string="Formulario de Contacto">
+                        <sheet>
+                            <group>
+                                <field name="name" string="Nombre del Contacto"/>
+                                <field name="email" string="Correo Electrónico"/>
+                                <field name="phone" string="Teléfono"/>
+                                <field name="mobile" string="Teléfono Móvil"/>
+                                <field name="sucursal_id" string="Sucursal Asociada"/>
+                                <field name="departamento_id" string="Departamento Asociado"/>
+                            </group>
+                        </sheet>
+                    </form>
                 </field>
             </xpath>
         </field>
