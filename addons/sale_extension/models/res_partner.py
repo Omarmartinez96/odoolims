@@ -28,10 +28,24 @@ class ResPartner(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """
-        Sobreescribe el método create para asegurarse de que los contactos creados en
-        'child_ids' se asocien automáticamente al cliente principal como contactos.
+        Sobreescribe el método create para:
+        - Marcar como contacto (`is_contact = True`) si `parent_id` está definido.
+        - Evitar que los contactos aparezcan como clientes independientes.
         """
         for vals in vals_list:
             if vals.get('parent_id'):
-                vals['is_contact'] = True  # Marcar como contacto si tiene un cliente padre
+                vals['is_company'] = False  # No es una empresa
+                vals['is_contact'] = True   # Es un contacto
         return super(ResPartner, self).create(vals_list)
+
+    def write(self, vals):
+        """
+        Sobreescribe el método write para asegurar que los contactos no se marquen
+        como clientes independientemente.
+        """
+        if 'parent_id' in vals:
+            for record in self:
+                if vals.get('parent_id'):
+                    vals['is_company'] = False
+                    vals['is_contact'] = True
+        return super(ResPartner, self).write(vals)
