@@ -8,7 +8,7 @@
         <field name="arch" type="xml">
             <!-- Extender la pestaña Contactos & Addresses -->
             <xpath expr="//page[@name='contact_addresses']" position="inside">
-                <field name="child_ids" widget="one2many" context="{'default_parent_id': id}">
+                <field name="child_ids" mode="list" context="{'default_parent_id': id, 'default_is_contact': True}">
                     <!-- Vista de lista para contactos -->
                     <list string="Listado de Contactos">
                         <field name="name" string="Nombre del Contacto"/>
