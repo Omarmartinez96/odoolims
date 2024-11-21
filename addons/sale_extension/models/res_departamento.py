@@ -8,5 +8,5 @@ class ResDepartamento(models.Model):
     name = fields.Char(string='Nombre del Departamento', required=True)
     sucursal_id = fields.Many2one('res.sucursal', string='Sucursal', required=True)
     contactos_ids = fields.One2many(
-        'res.contacto', 'departamento_id', string='Contactos'
+        'res.partner', 'departamento_id', string='Contactos'
     )
