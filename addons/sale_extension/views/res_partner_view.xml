@@ -22,7 +22,7 @@
                     <form string="Formulario de Contacto">
                         <sheet>
                             <group>
-                                <field name="name" string="Nombre del Contacto"/>
+                                <field name="name" string="Nombre del Contacto" required="1"/>
                                 <field name="email" string="Correo Electrónico"/>
                                 <field name="phone" string="Teléfono"/>
                                 <field name="mobile" string="Teléfono Móvil"/>
