@@ -8,14 +8,14 @@
             <!-- Extender pestaña Contactos -->
             <xpath expr="//page[@name='contacts']" position="inside">
                 <field name="child_ids">
-                    <tree>
+                    <list>
                         <field name="name"/>
                         <field name="email"/>
                         <field name="phone"/>
                         <field name="mobile"/>
                         <field name="sucursal_id" string="Sucursal"/>
                         <field name="departamento_id" string="Departamento"/>
-                    </tree>
+                    </list>
                 </field>
             </xpath>
         </field>
