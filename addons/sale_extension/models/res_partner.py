@@ -7,7 +7,6 @@ class ResPartner(models.Model):
     client_code = fields.Char(
         string='Código de Cliente',
         help='Código único para identificar al cliente',
-        readonly=True,
     )
     sucursal_id = fields.Many2one('res.sucursal', string='Sucursal')
     departamento_id = fields.Many2one('res.departamento', string='Departamento')
