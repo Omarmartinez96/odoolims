@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_departamento_form" model="ir.ui.view">
+        <field name="name">res.departamento.form</field>
+        <field name="model">res.departamento</field>
+        <field name="arch" type="xml">
+            <form string="Crear Departamento">
+                <sheet>
+                    <group>
+                        <field name="name" string="Nombre del Departamento" required="1"/>
+                        <field name="sucursal_id" string="Sucursal"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

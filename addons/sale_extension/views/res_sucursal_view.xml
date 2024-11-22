@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="view_sucursal_form" model="ir.ui.view">
+        <field name="name">res.sucursal.form</field>
+        <field name="model">res.sucursal</field>
+        <field name="arch" type="xml">
+            <form string="Crear Sucursal">
+                <sheet>
+                    <group>
+                        <field name="name" string="Identificación de la Sucursal" required="1"/>
+                        <field name="direccion" string="Dirección de la Sucursal"/>
+                        <field name="observaciones" string="Observaciones"/>
+                        <field name="cliente_id" string="Cliente"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+</odoo>

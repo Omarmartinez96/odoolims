@@ -9,6 +9,3 @@ class ResSucursal(models.Model):
     direccion = fields.Char(string='Dirección de la Sucursal')
     observaciones = fields.Text(string='Observaciones')
     cliente_id = fields.Many2one('res.partner', string='Cliente', required=True)
-    contactos_ids = fields.One2many(
-        'res.partner', 'sucursal_id', string='Contactos'
-    )
