@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Inherit view for list -->
+    <!-- Vista heredada para la lista de clientes -->
     <record id="view_partner_tree_inherited" model="ir.ui.view">
         <field name="name">res.partner.tree.inherited</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree"/>
         <field name="arch" type="xml">
-            <xpath expr="//list" position="inside">
+            <xpath expr="//field[@name='name']" position="after">
                 <field name="client_code" string="Código de Cliente"/>
             </xpath>
         </field>
     </record>
 
-    <!-- Inherit view for form -->
+    <!-- Vista heredada para el formulario -->
     <record id="view_partner_form_inherited" model="ir.ui.view">
         <field name="name">res.partner.form.inherited</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='vat']" position="after">
-                <field name="client_code" string="Código de Cliente"/>
+                <field name="client_code" string="Código de Cliente" required="1"/>
             </xpath>
         </field>
     </record>

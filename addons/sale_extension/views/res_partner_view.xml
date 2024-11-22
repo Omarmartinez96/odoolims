@@ -6,18 +6,19 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <!-- Extender la pestaña Contactos & Addresses -->
+            <!-- Extender la pestaña Contactos & Direcciones -->
             <xpath expr="//page[@name='contact_addresses']" position="inside">
-                <field name="child_ids" mode="list" context="{'default_parent_id': id, 'default_is_contact': True}">
+                <field name="child_ids" context="{'default_is_contact': True}">
                     <!-- Vista de lista para contactos -->
-                    <list string="Listado de Contactos">
+                    <tree string="Listado de Contactos">
                         <field name="name" string="Nombre del Contacto"/>
                         <field name="email" string="Correo Electrónico"/>
                         <field name="phone" string="Teléfono"/>
                         <field name="mobile" string="Teléfono Móvil"/>
                         <field name="sucursal_id" string="Sucursal"/>
                         <field name="departamento_id" string="Departamento"/>
-                    </list>
+                        <field name="client_code" string="Código de Cliente"/>
+                    </tree>
                     <!-- Vista de formulario para agregar o editar contactos -->
                     <form string="Formulario de Contacto">
                         <sheet>
@@ -28,6 +29,7 @@
                                 <field name="mobile" string="Teléfono Móvil"/>
                                 <field name="sucursal_id" string="Sucursal Asociada"/>
                                 <field name="departamento_id" string="Departamento Asociado"/>
+                                <field name="client_code" string="Código de Cliente" readonly="1"/>
                             </group>
                         </sheet>
                     </form>
