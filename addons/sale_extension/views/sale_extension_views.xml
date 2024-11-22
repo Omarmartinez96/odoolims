@@ -6,7 +6,6 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree"/>
         <field name="arch" type="xml">
-            <!-- Ajustar el xpath para ubicar el campo correctamente -->
             <xpath expr="//field[@name='name']" position="after">
                 <field name="client_code" string="Código de Cliente"/>
             </xpath>
@@ -19,9 +18,9 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <!-- Agregar el campo "client_code" al formulario -->
             <xpath expr="//field[@name='vat']" position="after">
                 <field name="client_code" string="Código de Cliente"/>
+                <label string="Nota: Asegúrese de agregar un código de cliente para facilitar la gestión de contactos y sucursales."/>
             </xpath>
         </field>
     </record>

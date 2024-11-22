@@ -5,9 +5,9 @@ class ResPartner(models.Model):
 
     client_code = fields.Char(
         string='Código de Cliente',
-        help='Código único para identificar al cliente',
+        help='Código único para identificar al cliente. Es importante agregar este código para la correcta asociación de contactos y sucursales.',
         index=True,
-        default=lambda self: 'N/A',  # Evitar nulos en registros existentes
+        default=lambda self: 'N/A',  # Evitar nulos
     )
 
     sucursal_id = fields.Many2one(
