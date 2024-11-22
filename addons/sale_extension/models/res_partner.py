@@ -1,4 +1,3 @@
-# models/res_partner.py
 from odoo import models, fields, api
 
 class ResPartner(models.Model):
@@ -21,3 +20,32 @@ class ResPartner(models.Model):
             self.client_code = self.sucursal_id.client_code
         elif self.departamento_id:
             self.client_code = self.departamento_id.client_code
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Heredar client_code al crear contactos."""
+        for vals in vals_list:
+            if 'parent_id' in vals and vals['parent_id']:
+                parent = self.browse(vals['parent_id'])
+                vals['client_code'] = parent.client_code
+            elif 'sucursal_id' in vals and vals['sucursal_id']:
+                sucursal = self.env['res.sucursal'].browse(vals['sucursal_id'])
+                vals['client_code'] = sucursal.client_code
+            elif 'departamento_id' in vals and vals['departamento_id']:
+                departamento = self.env['res.departamento'].browse(vals['departamento_id'])
+                vals['client_code'] = departamento.client_code
+        return super(ResPartner, self).create(vals_list)
+
+    def write(self, vals):
+        """Actualizar client_code al modificar contactos."""
+        for record in self:
+            if 'parent_id' in vals and vals['parent_id']:
+                parent = self.browse(vals['parent_id'])
+                vals['client_code'] = parent.client_code
+            elif 'sucursal_id' in vals and vals['sucursal_id']:
+                sucursal = self.env['res.sucursal'].browse(vals['sucursal_id'])
+                vals['client_code'] = sucursal.client_code
+            elif 'departamento_id' in vals and vals['departamento_id']:
+                departamento = self.env['res.departamento'].browse(vals['departamento_id'])
+                vals['client_code'] = departamento.client_code
+        return super(ResPartner, self).write(vals)
