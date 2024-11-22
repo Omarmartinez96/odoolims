@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Vista heredada para la lista de clientes -->
+    <!-- Inherit view for list -->
     <record id="view_partner_tree_inherited" model="ir.ui.view">
         <field name="name">res.partner.tree.inherited</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree"/>
         <field name="arch" type="xml">
-            <!-- Cambiar el xpath para agregar el campo en una ubicación válida -->
-            <xpath expr="//tree" position="inside">
+            <!-- Ajustar el xpath para ubicar el campo correctamente -->
+            <xpath expr="//field[@name='name']" position="after">
                 <field name="client_code" string="Código de Cliente"/>
             </xpath>
         </field>
     </record>
 
-    <!-- Vista heredada para el formulario -->
+    <!-- Inherit view for form -->
     <record id="view_partner_form_inherited" model="ir.ui.view">
         <field name="name">res.partner.form.inherited</field>
         <field name="model">res.partner</field>
@@ -21,7 +21,7 @@
         <field name="arch" type="xml">
             <!-- Agregar el campo "client_code" al formulario -->
             <xpath expr="//field[@name='vat']" position="after">
-                <field name="client_code" string="Código de Cliente" required="1"/>
+                <field name="client_code" string="Código de Cliente"/>
             </xpath>
         </field>
     </record>

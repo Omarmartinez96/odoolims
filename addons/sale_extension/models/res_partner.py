@@ -5,9 +5,9 @@ class ResPartner(models.Model):
 
     client_code = fields.Char(
         string='Código de Cliente',
-        required=True,  # Hacer obligatorio
         help='Código único para identificar al cliente',
         index=True,
+        default=lambda self: 'N/A',  # Evitar nulos en registros existentes
     )
 
     sucursal_id = fields.Many2one(
@@ -28,13 +28,13 @@ class ResPartner(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """
-        Asignar automáticamente el `client_code` del cliente padre al crear un contacto.
+        Asignar automáticamente el `parent_id` y `client_code` si es un contacto.
         """
         for vals in vals_list:
-            if vals.get('parent_id'):
+            if 'parent_id' in vals and vals['parent_id']:
                 parent = self.browse(vals['parent_id'])
                 vals['is_contact'] = True
-                vals['client_code'] = parent.client_code  # Heredar código del cliente padre
+                vals['client_code'] = parent.client_code  # Heredar client_code
         return super(ResPartner, self).create(vals_list)
 
     def write(self, vals):
@@ -44,5 +44,5 @@ class ResPartner(models.Model):
         if 'parent_id' in vals and vals['parent_id']:
             parent = self.browse(vals['parent_id'])
             vals['is_contact'] = True
-            vals['client_code'] = parent.client_code  # Actualizar client_code
+            vals['client_code'] = parent.client_code  # Heredar client_code
         return super(ResPartner, self).write(vals)
