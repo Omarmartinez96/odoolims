@@ -1,28 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <!-- Inherit view for list -->
-    <record id="view_partner_tree_inherited" model="ir.ui.view">
-        <field name="name">res.partner.tree.inherited</field>
-        <field name="model">res.partner</field>
-        <field name="inherit_id" ref="base.view_partner_tree"/>
-        <field name="arch" type="xml">
-            <!-- Insertar el campo "client_code" en una posición confiable -->
-            <xpath expr="//field[@name='name']" position="after">
-                <field name="client_code" string="Código de Cliente"/>
-            </xpath>
-        </field>
-    </record>
-
-    <!-- Inherit view for form -->
+    <!-- Vista heredada para el formulario de clientes -->
     <record id="view_partner_form_inherited" model="ir.ui.view">
         <field name="name">res.partner.form.inherited</field>
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <!-- Insertar el campo "client_code" después del campo "vat" -->
+            <!-- Agregar el campo "client_code" después del campo "vat" -->
             <xpath expr="//field[@name='vat']" position="after">
                 <field name="client_code" string="Código de Cliente"/>
-                <label string="Nota: Este campo es importante para asociar contactos y departamentos al cliente."/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Vista heredada para la lista de clientes -->
+    <record id="view_partner_tree_inherited" model="ir.ui.view">
+        <field name="name">res.partner.tree.inherited</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_tree"/>
+        <field name="arch" type="xml">
+            <!-- Agregar el campo "client_code" al árbol -->
+            <xpath expr="//tree" position="inside">
+                <field name="client_code" string="Código de Cliente"/>
             </xpath>
         </field>
     </record>
