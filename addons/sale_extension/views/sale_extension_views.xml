@@ -6,9 +6,8 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_tree"/>
         <field name="arch" type="xml">
-            <!-- Cambiar el xpath para que apunte al contenedor <list> -->
-            <xpath expr="//field[@name='name']" position="after">
-                <field name="client_code" string="Código de Cliente"/>
+            <xpath expr="//list/field[@name='complete_name']" position="after">
+                <field name="client_code" string="Código de Cliente" optional="show"/>
             </xpath>
         </field>
     </record>
@@ -19,7 +18,6 @@
         <field name="model">res.partner</field>
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
-            <!-- Agregar el campo "client_code" después del campo "vat" -->
             <xpath expr="//field[@name='vat']" position="after">
                 <field name="client_code" string="Código de Cliente"/>
             </xpath>
