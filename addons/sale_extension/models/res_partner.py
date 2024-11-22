@@ -33,15 +33,15 @@ class ResPartner(models.Model):
             if 'parent_id' in vals and vals['parent_id']:
                 parent = self.browse(vals['parent_id'])
                 vals['is_contact'] = True
-                vals['client_code'] = parent.client_code  # Heredar client_code
+                vals['client_code'] = parent.client_code  # Heredar client_code del cliente padre
         return super(ResPartner, self).create(vals_list)
 
     def write(self, vals):
         """
-        Asegurar que los contactos mantengan el mismo client_code que el cliente principal.
+        Asegurar que los contactos mantengan el mismo `client_code` que el cliente principal.
         """
         if 'parent_id' in vals and vals['parent_id']:
             parent = self.browse(vals['parent_id'])
             vals['is_contact'] = True
-            vals['client_code'] = parent.client_code  # Heredar client_code
+            vals['client_code'] = parent.client_code  # Heredar client_code del cliente padre
         return super(ResPartner, self).write(vals)
