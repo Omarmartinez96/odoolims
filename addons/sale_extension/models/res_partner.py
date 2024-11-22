@@ -1,3 +1,4 @@
+# models/res_partner.py
 from odoo import models, fields, api
 
 class ResPartner(models.Model):
@@ -5,9 +6,9 @@ class ResPartner(models.Model):
 
     client_code = fields.Char(
         string='Código de Cliente',
-        help='Código único para identificar al cliente. Es importante agregar este código para la correcta asociación de contactos y sucursales.',
+        help='Código único para identificar al cliente',
         index=True,
-        default=lambda self: 'N/A',  # Evitar nulos
+        required=False,  # No será obligatorio en la base de datos
     )
 
     sucursal_id = fields.Many2one(
@@ -28,7 +29,7 @@ class ResPartner(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         """
-        Asignar automáticamente el `parent_id` y `client_code` si es un contacto.
+        Heredar automáticamente `client_code` si es un contacto.
         """
         for vals in vals_list:
             if 'parent_id' in vals and vals['parent_id']:
@@ -39,7 +40,7 @@ class ResPartner(models.Model):
 
     def write(self, vals):
         """
-        Asegurar que los contactos mantengan el mismo client_code que el cliente principal.
+        Mantener el `client_code` heredado para contactos asociados.
         """
         if 'parent_id' in vals and vals['parent_id']:
             parent = self.browse(vals['parent_id'])
