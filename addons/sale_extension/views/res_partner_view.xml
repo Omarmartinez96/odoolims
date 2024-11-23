@@ -6,8 +6,8 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='contact_addresses']" position="inside">
+                <!-- Vista de lista para contactos -->
                 <field name="child_ids" mode="list" context="{'default_parent_id': id, 'default_is_contact': True}" default_order="client_code_sequence asc">
-                    <!-- Vista de lista para contactos -->
                     <list string="Listado de Contactos">
                         <field name="name" string="Nombre del Contacto"/>
                         <field name="email" string="Correo Electrónico"/>
@@ -32,6 +32,10 @@
                         </sheet>
                     </form>
                 </field>
+            </xpath>
+            <!-- Ocultar pestañas redundantes si no son necesarias -->
+            <xpath expr="//page[@name='sales_purchases']" position="attributes">
+                <attribute name="invisible">True</attribute>
             </xpath>
         </field>
     </record>
