@@ -6,7 +6,7 @@
         <field name="inherit_id" ref="base.view_partner_form"/>
         <field name="arch" type="xml">
             <xpath expr="//page[@name='contact_addresses']" position="inside">
-                <field name="child_ids" mode="list" context="{'default_parent_id': id, 'default_is_contact': True}">
+                <field name="child_ids" mode="list" context="{'default_parent_id': id, 'default_is_contact': True}" default_order="client_code_sequence asc">
                     <!-- Vista de lista para contactos -->
                     <list string="Listado de Contactos">
                         <field name="name" string="Nombre del Contacto"/>
@@ -33,6 +33,22 @@
                     </form>
                 </field>
             </xpath>
+        </field>
+    </record>
+
+    <!-- Vista de lista principal con ordenación -->
+    <record id="view_partner_tree" model="ir.ui.view">
+        <field name="name">res.partner.tree</field>
+        <field name="model">res.partner</field>
+        <field name="arch" type="xml">
+            <tree string="Clientes" default_order="client_code_sequence asc">
+                <field name="name" string="Nombre del Cliente"/>
+                <field name="phone" string="Teléfono"/>
+                <field name="email" string="Correo Electrónico"/>
+                <field name="city" string="Ciudad"/>
+                <field name="country_id" string="País"/>
+                <field name="client_code" string="Código de Cliente"/>
+            </tree>
         </field>
     </record>
 </odoo>
