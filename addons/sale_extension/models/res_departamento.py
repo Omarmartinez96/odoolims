@@ -25,3 +25,12 @@ class ResDepartamento(models.Model):
         """Actualizar cliente automáticamente al seleccionar la sucursal."""
         if self.sucursal_id:
             self.cliente_id = self.sucursal_id.cliente_id
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Asignar automáticamente cliente si se proporciona sucursal."""
+        for vals in vals_list:
+            if 'sucursal_id' in vals and vals['sucursal_id']:
+                sucursal = self.env['res.sucursal'].browse(vals['sucursal_id'])
+                vals['cliente_id'] = sucursal.cliente_id.id
+        return super(ResDepartamento, self).create(vals_list)

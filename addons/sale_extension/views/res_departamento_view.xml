@@ -7,8 +7,8 @@
                 <sheet>
                     <group>
                         <field name="name" string="Nombre del Departamento" required="1"/>
-                        <field name="cliente_id" string="Cliente" readonly="1"/>
-                        <field name="sucursal_id" string="Sucursal" required="1" domain="[('cliente_id', '=', cliente_id)]"/>
+                        <field name="cliente_id" string="Cliente" required="1" context="{'default_cliente_id': cliente_id}"/>
+                        <field name="sucursal_id" string="Sucursal Asociada" required="1" domain="[('cliente_id', '=', cliente_id)]" context="{'default_cliente_id': cliente_id}"/>
                     </group>
                 </sheet>
             </form>
