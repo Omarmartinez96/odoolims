@@ -16,4 +16,10 @@ class ResSucursal(models.Model):
     contactos_ids = fields.One2many(
         'res.partner', 'sucursal_id', string='Contactos'
     )
-    client_code = fields.Char(string='Código de Cliente', related='cliente_id.client_code', store=True)
+    client_code = fields.Char(
+        string='Código de Cliente',
+        related='cliente_id.client_code',
+        store=True,
+        readonly=True,
+        help='Código único del cliente asociado.'
+    )

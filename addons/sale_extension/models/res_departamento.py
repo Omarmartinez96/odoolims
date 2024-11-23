@@ -18,7 +18,13 @@ class ResDepartamento(models.Model):
     contactos_ids = fields.One2many(
         'res.partner', 'departamento_id', string='Contactos'
     )
-    client_code = fields.Char(string='Código de Cliente', related='cliente_id.client_code', store=True)
+    client_code = fields.Char(
+        string='Código de Cliente',
+        related='cliente_id.client_code',
+        store=True,
+        readonly=True,
+        help='Código único del cliente asociado.'
+    )
 
     @api.onchange('sucursal_id')
     def _onchange_sucursal_id(self):
