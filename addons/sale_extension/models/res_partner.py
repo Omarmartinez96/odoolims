@@ -3,12 +3,17 @@ from odoo import models, fields, api
 class ResPartner(models.Model):
     _inherit = 'res.partner'
 
-    client_code = fields.Char(
-        string='Código de Cliente',
-        help='Código único para identificar al cliente',
+    client_code = fields.Char(string='Código de Cliente', help='Código único para identificar al cliente')
+    sucursal_id = fields.Many2one(
+        'res.sucursal', string='Sucursal',
+        domain="[('cliente_id', '=', parent_id)]",
+        help='Sucursal asociada al cliente principal.'
     )
-    sucursal_id = fields.Many2one('res.sucursal', string='Sucursal')
-    departamento_id = fields.Many2one('res.departamento', string='Departamento')
+    departamento_id = fields.Many2one(
+        'res.departamento', string='Departamento',
+        domain="[('sucursal_id', '=', sucursal_id)]",
+        help='Departamento asociado a la sucursal seleccionada.'
+    )
     is_contact = fields.Boolean(string='¿Es un contacto?', default=False)
 
     @api.onchange('parent_id', 'sucursal_id', 'departamento_id')

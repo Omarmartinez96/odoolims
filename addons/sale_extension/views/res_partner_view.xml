@@ -1,5 +1,5 @@
 <odoo>
-    <!-- Vista heredada para extender la pestaña Contactos & Addresses -->
+    <!-- Formulario de contacto -->
     <record id="view_partner_form_contact_inherited" model="ir.ui.view">
         <field name="name">res.partner.form.contact.inherited</field>
         <field name="model">res.partner</field>
@@ -17,7 +17,7 @@
                         <field name="departamento_id" string="Departamento"/>
                         <field name="client_code" string="Código de Cliente" readonly="1"/>
                     </list>
-                    <!-- Vista de formulario para agregar o editar contactos -->
+                    <!-- Formulario para agregar o editar contactos -->
                     <form string="Formulario de Contacto">
                         <sheet>
                             <group>
@@ -25,8 +25,8 @@
                                 <field name="email" string="Correo Electrónico"/>
                                 <field name="phone" string="Teléfono"/>
                                 <field name="mobile" string="Teléfono Móvil"/>
-                                <field name="sucursal_id" string="Sucursal Asociada"/>
-                                <field name="departamento_id" string="Departamento Asociado"/>
+                                <field name="sucursal_id" string="Sucursal Asociada" domain="[('cliente_id', '=', parent_id)]"/>
+                                <field name="departamento_id" string="Departamento Asociado" domain="[('sucursal_id', '=', sucursal_id)]"/>
                                 <field name="client_code" string="Código de Cliente" readonly="1"/>
                             </group>
                         </sheet>
