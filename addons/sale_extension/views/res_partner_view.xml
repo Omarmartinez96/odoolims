@@ -13,8 +13,8 @@
                         <field name="email" string="Correo Electrónico"/>
                         <field name="phone" string="Teléfono"/>
                         <field name="mobile" string="Teléfono Móvil"/>
-                        <field name="sucursal_id" string="Sucursal"/>
-                        <field name="departamento_id" string="Departamento"/>
+                        <field name="sucursal_id" string="Sucursal" domain="[('cliente_id', '=', parent_id)]"/>
+                        <field name="departamento_id" string="Departamento" domain="[('sucursal_id', '=', sucursal_id)]"/>
                         <field name="client_code" string="Código de Cliente" readonly="1"/>
                     </list>
                     <!-- Formulario para agregar o editar contactos -->
@@ -25,7 +25,7 @@
                                 <field name="email" string="Correo Electrónico"/>
                                 <field name="phone" string="Teléfono"/>
                                 <field name="mobile" string="Teléfono Móvil"/>
-                                <field name="sucursal_id" string="Sucursal Asociada" domain="[('cliente_id', '=', parent_id)]"/>
+                                <field name="sucursal_id" string="Sucursal Asociada" required="1" domain="[('cliente_id', '=', parent_id)]"/>
                                 <field name="departamento_id" string="Departamento Asociado" domain="[('sucursal_id', '=', sucursal_id)]"/>
                                 <field name="client_code" string="Código de Cliente" readonly="1"/>
                             </group>

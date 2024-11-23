@@ -1,14 +1,14 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <record id="view_departamento_form" model="ir.ui.view">
+    <record id="view_res_departamento_form" model="ir.ui.view">
         <field name="name">res.departamento.form</field>
         <field name="model">res.departamento</field>
         <field name="arch" type="xml">
-            <form string="Crear Departamento">
+            <form string="Crear Departamento Asociado">
                 <sheet>
                     <group>
                         <field name="name" string="Nombre del Departamento" required="1"/>
-                        <field name="sucursal_id" string="Sucursal"/>
+                        <field name="cliente_id" string="Cliente" readonly="1"/>
+                        <field name="sucursal_id" string="Sucursal" required="1" domain="[('cliente_id', '=', cliente_id)]"/>
                     </group>
                 </sheet>
             </form>
