@@ -6,7 +6,7 @@
     'author': 'Omar Martínez',
     'website': 'https://proteuslaboratorio.com',
     'category': 'Sales',
-    'depends': ['sale'],
+    'depends': ['sale', 'base', 'contacts'],
     'data': [
         'security/ir.model.access.csv',
         'views/sale_extension_views.xml',
