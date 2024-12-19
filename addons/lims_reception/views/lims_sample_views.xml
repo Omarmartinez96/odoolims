@@ -44,12 +44,13 @@
             <field name="view_mode">list,form</field>
         </record>
 
-        <!-- Menú -->
+        <!-- Menú Principal -->
         <menuitem id="lims_menu" 
                   name="Recepción de Muestras" 
                   sequence="10" 
-                  app="True"/>
+                  app="True"/> <!-- Hacerlo visible como aplicación -->
 
+        <!-- Submenú -->
         <menuitem id="lims_sample_menu" 
                   name="Muestras" 
                   parent="lims_menu" 
