@@ -19,4 +19,12 @@ class LimsSample(models.Model):
         'res.departamento', string="Departamento",
         domain="[('sucursal_id', '=', sucursal_id)]"
     )
+    state = fields.Selection(
+        [('draft', 'Borrador'),
+         ('in_analysis', 'En Análisis'),
+         ('done', 'Finalizado')],
+        string="Estado",
+        default='draft',
+        required=True
+    )
     date_received = fields.Datetime(string="Fecha de Recepción", default=fields.Datetime.now)
