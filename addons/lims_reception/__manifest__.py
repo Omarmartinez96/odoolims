@@ -4,7 +4,7 @@
     'author': 'Omar Martinez',
     'category': 'Laboratory',
     'summary': 'Gestión de Recepción de Muestras para LIMS',
-    'depends': ['base', 'portal'],  # Agrega otros módulos si es necesario
+    'depends': ['base', 'sale_extension'],  # Agrega otros módulos si es necesario
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
