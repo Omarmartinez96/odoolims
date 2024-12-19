@@ -8,6 +8,7 @@
                 <list string="Muestras">
                     <field name="sample_code"/>
                     <field name="cliente_id"/>
+                    <field name="id"/>
                     <field name="sample_type"/>
                     <field name="state"/>
                     <field name="date_received"/>
@@ -39,7 +40,8 @@
             <field name="name">Muestras</field>
             <field name="res_model">lims.sample</field>
             <field name="view_mode">list,form</field>
-            <field name="context">{'create': True}</field> <!-- Botón Crear -->
+            <field name="view_id" ref="view_lims_sample_form"/>
+            <field name="context">{'create': True}</field> <!-- Configuración para el botón -->
         </record>
 
         <!-- Menú Principal -->
