@@ -1,0 +1,50 @@
+<odoo>
+    <data>
+        <!-- Vista Lista -->
+        <record id="lims_sample_tree" model="ir.ui.view">
+            <field name="name">lims.sample.tree</field>
+            <field name="model">lims.sample</field>
+            <field name="arch" type="xml">
+                <tree string="Muestras">
+                    <field name="sample_code"/>
+                    <field name="cliente_id"/>
+                    <field name="sucursal_id"/>
+                    <field name="state"/>
+                    <field name="date_received"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista Formulario -->
+        <record id="lims_sample_form" model="ir.ui.view">
+            <field name="name">lims.sample.form</field>
+            <field name="model">lims.sample</field>
+            <field name="arch" type="xml">
+                <form string="Recepción de Muestra">
+                    <sheet>
+                        <group>
+                            <field name="sample_code" readonly="1"/>
+                            <field name="cliente_id"/>
+                            <field name="sucursal_id"/>
+                            <field name="departamento_id"/>
+                            <field name="date_received"/>
+                            <field name="state"/>
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Menú -->
+        <menuitem id="lims_menu" name="Recepción de Muestras" sequence="10"/>
+        <menuitem id="lims_sample_menu" name="Muestras" parent="lims_menu" action="action_lims_samples"/>
+
+        <!-- Acción -->
+        <record id="action_lims_samples" model="ir.actions.act_window">
+            <field name="name">Muestras</field>
+            <field name="res_model">lims.sample</field>
+            <field name="view_mode">tree,form</field>
+        </record>
+    </data>
+</odoo>
