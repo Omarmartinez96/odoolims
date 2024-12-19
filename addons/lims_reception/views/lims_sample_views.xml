@@ -45,7 +45,14 @@
         </record>
 
         <!-- Menú -->
-        <menuitem id="lims_menu" name="Recepción de Muestras" sequence="10"/>
-        <menuitem id="lims_sample_menu" name="Muestras" parent="lims_menu" action="action_lims_samples"/>
+        <menuitem id="lims_menu" 
+                  name="Recepción de Muestras" 
+                  sequence="10" 
+                  app="True"/> <!-- Aquí se agrega app="True" -->
+
+        <menuitem id="lims_sample_menu" 
+                  name="Muestras" 
+                  parent="lims_menu" 
+                  action="action_lims_samples"/>
     </data>
 </odoo>
