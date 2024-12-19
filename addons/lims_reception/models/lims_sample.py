@@ -19,6 +19,7 @@ class LimsSample(models.Model):
         'res.departamento', string="Departamento",
         domain="[('sucursal_id', '=', sucursal_id)]"
     )
+    sample_type = fields.Char(string="Tipo de Muestra", required=False)  # Campo agregado
     state = fields.Selection(
         [('draft', 'Borrador'),
          ('in_analysis', 'En Análisis'),
