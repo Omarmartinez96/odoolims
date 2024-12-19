@@ -45,8 +45,7 @@
         <!-- Menú Principal -->
         <menuitem id="lims_menu" 
                   name="Recepción de Muestras" 
-                  sequence="10" 
-                  app="True"/>
+                  sequence="10"/>
 
         <!-- Submenú -->
         <menuitem id="lims_sample_menu" 
