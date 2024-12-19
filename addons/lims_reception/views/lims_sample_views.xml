@@ -40,21 +40,17 @@
             <field name="name">Muestras</field>
             <field name="res_model">lims.sample</field>
             <field name="view_mode">list,form</field>
-            <field name="view_id" ref="view_lims_sample_list"/> <!-- Configuración inicial -->
         </record>
 
-        <!-- Botón para Agregar Muestra -->
+        <!-- Botón para Crear Nueva Muestra -->
         <record id="view_lims_sample_list_inherit" model="ir.ui.view">
             <field name="name">lims.sample.list.inherit</field>
             <field name="model">lims.sample</field>
             <field name="inherit_id" ref="view_lims_sample_list"/>
             <field name="arch" type="xml">
-                <xpath expr="//list" position="attributes">
-                    <attribute name="create">true</attribute>
-                </xpath>
                 <xpath expr="//list" position="before">
                     <header>
-                        <button name="%(action_create_lims_sample)d" type="action" string="Agregar Nueva Muestra" class="btn-primary"/>
+                        <button name="create" type="object" string="Agregar Nueva Muestra" class="btn-primary"/>
                     </header>
                 </xpath>
             </field>
