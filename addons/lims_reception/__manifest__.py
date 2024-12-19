@@ -1,10 +1,10 @@
 {
     'name': 'LIMS Reception Module',
     'version': '1.0',
-    'author': 'Omar Martinez',
+    'author': 'Your Name',
     'category': 'Laboratory',
     'summary': 'Gestión de Recepción de Muestras para LIMS',
-    'depends': ['base', 'sale_extension'],  # Agrega otros módulos si es necesario
+    'depends': ['base', 'sale_extension'],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
@@ -12,4 +12,5 @@
     ],
     'installable': True,
     'application': True,
+    'license': 'LGPL-3',  # Especificar la licencia
 }
