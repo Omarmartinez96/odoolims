@@ -28,3 +28,7 @@ class LimsSample(models.Model):
         required=True
     )
     date_received = fields.Datetime(string="Fecha de Recepción", default=fields.Datetime.now)
+    attachment_ids = fields.Many2many(
+        'ir.attachment', string="Adjuntos",
+        help="Archivos relacionados con esta muestra."
+    )
