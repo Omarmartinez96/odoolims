@@ -1,18 +1,18 @@
 <odoo>
     <data>
         <!-- Vista Lista -->
-        <record id="view_lims_sample_list" model="ir.ui.view">
-            <field name="name">lims.sample.list</field>
+        <record id="view_lims_sample_tree" model="ir.ui.view">
+            <field name="name">lims.sample.tree</field>
             <field name="model">lims.sample</field>
             <field name="arch" type="xml">
-                <list string="Muestras">
+                <tree string="Muestras">
                     <field name="sample_code"/>
                     <field name="cliente_id"/>
                     <field name="sucursal_id"/>
                     <field name="departamento_id"/>
                     <field name="state"/>
                     <field name="date_received"/>
-                </list>
+                </tree>
             </field>
         </record>
 
@@ -41,14 +41,14 @@
         <record id="action_lims_samples" model="ir.actions.act_window">
             <field name="name">Muestras</field>
             <field name="res_model">lims.sample</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode">tree,form</field>
         </record>
 
         <!-- Menú -->
         <menuitem id="lims_menu" 
                   name="Recepción de Muestras" 
                   sequence="10" 
-                  app="True"/> <!-- Aquí se agrega app="True" -->
+                  app="True"/>
 
         <menuitem id="lims_sample_menu" 
                   name="Muestras" 
