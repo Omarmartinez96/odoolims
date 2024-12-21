@@ -5,9 +5,9 @@
             <field name="name">lims.sample.list</field>
             <field name="model">lims.sample</field>
             <field name="arch" type="xml">
-                <list string="Muestras" create="true">
-                    <field name="cliente_id"/>
+                <list string="Muestras">
                     <field name="sample_code"/>
+                    <field name="cliente_id"/>
                     <field name="id"/>
                     <field name="sample_type"/>
                     <field name="state"/>
@@ -24,9 +24,11 @@
                 <form string="Recepción de Muestra">
                     <sheet>
                         <group>
-                            <field name="cliente_id" required="1"/>
-                            <field name="sample_code" required="1"/>
-                            <field name="sample_type"/>
+                            <field name="cliente_id" required="1" placeholder="Seleccione un cliente..."/>
+                            <field name="sucursal_id" required="1" placeholder="Seleccione una sucursal..."/>
+                            <field name="departamento_id" placeholder="Seleccione un departamento..."/>
+                            <field name="sample_code" required="1" placeholder="Ingrese el código de muestra..."/>
+                            <field name="sample_type" placeholder="Ingrese el tipo de muestra..."/>
                             <field name="date_received" required="1"/>
                             <field name="state"/>
                         </group>
