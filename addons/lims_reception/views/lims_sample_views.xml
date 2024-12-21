@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <list string="Muestras" create="true">
                     <field name="cliente_id"/>
-                    <field name="sample_code" widget="char" style="width: 300px;"/>
+                    <field name="sample_code"/>
                     <field name="id"/>
                     <field name="sample_type"/>
                     <field name="state"/>
