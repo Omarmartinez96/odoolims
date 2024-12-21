@@ -1,70 +1,62 @@
-from odoo import models, fields, api
+<odoo>
+    <data>
+        <!-- Vista Lista -->
+        <record id="view_lims_sample_list" model="ir.ui.view">
+            <field name="name">lims.sample.list</field>
+            <field name="model">lims.sample</field>
+            <field name="arch" type="xml">
+                <list string="Muestras">
+                    <field name="sample_code" />
+                    <field name="cliente_id" />
+                    <field name="sucursal_id" />
+                    <field name="departamento_id" />
+                    <field name="sample_type" />
+                    <field name="state" />
+                    <field name="date_received" />
+                </list>
+            </field>
+        </record>
 
-class LimsSample(models.Model):
-    _name = 'lims.sample'
-    _description = 'Recepción de Muestras'
+        <!-- Vista Formulario -->
+        <record id="view_lims_sample_form" model="ir.ui.view">
+            <field name="name">lims.sample.form</field>
+            <field name="model">lims.sample</field>
+            <field name="arch" type="xml">
+                <form string="Recepción de Muestra">
+                    <sheet>
+                        <group>
+                            <field name="sample_code" required="1" placeholder="Código de la muestra..." />
+                            <field name="cliente_id" required="1" placeholder="Selecciona un cliente..." />
+                            <field name="sucursal_id" required="1" placeholder="Selecciona una sucursal..." />
+                            <field name="departamento_id" placeholder="Selecciona un departamento..." />
+                            <field name="sample_type" placeholder="Tipo o descripción de la muestra..." />
+                            <field name="date_received" required="1" />
+                            <field name="state" />
+                        </group>
+                        <group>
+                            <field name="attachment_ids" widget="many2many_binary" />
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
 
-    # Código de muestra con opción de ser manual
-    sample_code = fields.Char(
-        string="Código de Muestra",
-        required=True,
-        copy=False,
-        default=lambda self: self._get_default_sample_code(),
-        help="Identificación única para la muestra. Puede ser manual."
-    )
-    
-    cliente_id = fields.Many2one(
-        'res.partner',
-        string="Cliente",
-        required=True,
-        help="Cliente asociado con la muestra."
-    )
-    
-    sucursal_id = fields.Many2one(
-        'res.sucursal',
-        string="Sucursal",
-        required=True,
-        domain="[('cliente_id', '=', cliente_id)]",
-        help="Sucursal asociada al cliente seleccionado."
-    )
-    
-    departamento_id = fields.Many2one(
-        'res.departamento',
-        string="Departamento",
-        domain="[('sucursal_id', '=', sucursal_id)]",
-        help="Departamento asociado a la sucursal seleccionada."
-    )
-    
-    sample_type = fields.Char(
-        string="Tipo de Muestra",
-        help="Tipo o descripción de la muestra."
-    )
-    
-    state = fields.Selection(
-        [('draft', 'Borrador'),
-         ('in_analysis', 'En Análisis'),
-         ('done', 'Finalizado')],
-        string="Estado",
-        default='draft',
-        required=True,
-        help="Estado actual de la muestra."
-    )
-    
-    date_received = fields.Datetime(
-        string="Fecha de Recepción",
-        default=fields.Datetime.now,
-        help="Fecha en la que se recibió la muestra."
-    )
-    
-    attachment_ids = fields.Many2many(
-        'ir.attachment',
-        string="Adjuntos",
-        help="Archivos relacionados con esta muestra."
-    )
+        <!-- Acción -->
+        <record id="action_lims_samples" model="ir.actions.act_window">
+            <field name="name">Muestras</field>
+            <field name="res_model">lims.sample</field>
+            <field name="view_mode">list,form</field>
+        </record>
 
-    @api.model
-    def _get_default_sample_code(self):
-        """
-        Genera un valor predeterminado para 'sample_code' si no se proporciona manualmente.
-        """
-        return self.env['ir.sequence'].next_by_code('lims.sample') or "Nuevo"
+        <!-- Menú Principal -->
+        <menuitem id="lims_menu" 
+                  name="Recepción de Muestras" 
+                  sequence="10"/>
+
+        <!-- Submenú -->
+        <menuitem id="lims_sample_menu" 
+                  name="Muestras" 
+                  parent="lims_menu" 
+                  action="action_lims_samples"/>
+    </data>
+</odoo>
