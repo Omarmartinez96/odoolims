@@ -5,7 +5,7 @@
             <field name="name">lims.sample.list</field>
             <field name="model">lims.sample</field>
             <field name="arch" type="xml">
-                <list string="Muestras">
+                <list string="Muestras" create="true">
                     <field name="sample_code"/>
                     <field name="cliente_id"/>
                     <field name="id"/>
@@ -40,20 +40,6 @@
             <field name="name">Muestras</field>
             <field name="res_model">lims.sample</field>
             <field name="view_mode">list,form</field>
-        </record>
-
-        <!-- Botón para Crear Nueva Muestra -->
-        <record id="view_lims_sample_list_inherit" model="ir.ui.view">
-            <field name="name">lims.sample.list.inherit</field>
-            <field name="model">lims.sample</field>
-            <field name="inherit_id" ref="view_lims_sample_list"/>
-            <field name="arch" type="xml">
-                <xpath expr="//list" position="before">
-                    <header>
-                        <button name="create" type="object" string="Agregar Nueva Muestra" class="btn-primary"/>
-                    </header>
-                </xpath>
-            </field>
         </record>
 
         <!-- Menú Principal -->
