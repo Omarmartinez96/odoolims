@@ -6,8 +6,8 @@
             <field name="model">lims.sample</field>
             <field name="arch" type="xml">
                 <list string="Muestras" create="true">
-                    <field name="sample_code"/>
                     <field name="cliente_id"/>
+                    <field name="sample_code" widget="char" style="width: 300px;"/>
                     <field name="id"/>
                     <field name="sample_type"/>
                     <field name="state"/>
@@ -24,8 +24,8 @@
                 <form string="Recepción de Muestra">
                     <sheet>
                         <group>
-                            <field name="sample_code" readonly="1"/>
                             <field name="cliente_id" required="1"/>
+                            <field name="sample_code" required="1"/>
                             <field name="sample_type"/>
                             <field name="date_received" required="1"/>
                             <field name="state"/>

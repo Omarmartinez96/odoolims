@@ -8,7 +8,7 @@ class LimsSample(models.Model):
         string="Código de Muestra",
         required=True,
         copy=False,
-        default=lambda self: self.env['ir.sequence'].next_by_code('lims.sample')
+        help="Identificación única para la muestra. Puede ser manual."
     )
     cliente_id = fields.Many2one('res.partner', string="Cliente", required=True)
     sucursal_id = fields.Many2one(
@@ -19,7 +19,7 @@ class LimsSample(models.Model):
         'res.departamento', string="Departamento",
         domain="[('sucursal_id', '=', sucursal_id)]"
     )
-    sample_type = fields.Char(string="Tipo de Muestra", required=False)  # Campo agregado
+    sample_type = fields.Char(string="Tipo de Muestra", required=False)
     state = fields.Selection(
         [('draft', 'Borrador'),
          ('in_analysis', 'En Análisis'),
