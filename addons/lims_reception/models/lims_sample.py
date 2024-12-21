@@ -4,7 +4,7 @@ class LimsSample(models.Model):
     _name = 'lims.sample'
     _description = 'Recepción de Muestras'
 
-    # Código de muestra con opción de ser manual
+    # Código único de muestra, editable
     sample_code = fields.Char(
         string="Código de Muestra",
         required=True,
@@ -12,7 +12,14 @@ class LimsSample(models.Model):
         default=lambda self: self._get_default_sample_code(),
         help="Identificación única para la muestra. Puede ser manual."
     )
-    
+
+    # Identificación descriptiva de la muestra (editable, ingresada por el usuario)
+    sample_identifier = fields.Char(
+        string="Identificación de Muestra",
+        required=True,
+        help="Descripción que identifica la muestra para el cliente. Ejemplo: 'Salsa habanero lote: 232498237487234'."
+    )
+
     cliente_id = fields.Many2one(
         'res.partner',
         string="Cliente",
