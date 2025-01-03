@@ -1,0 +1,95 @@
+[33m372e577[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mnew-main-dev[m[33m, [m[1;31morigin/new-main-dev[m[33m, [m[1;31morigin/new-branch[m[33m)[m Draft Sample Reception 4
+[33m2175f09[m Draft Sample Reception 3
+[33me9faae0[m Draft Sample Reception 3
+[33m462909f[m Draft Sample Reception 2
+[33meaf43b4[m Draft Sample Reception 1
+[33m0711e35[m Draft Sample Reception 1
+[33m659a01a[m Draft Sample Reception 1
+[33m134ba7d[m Revert: Removed app=True for debugging
+[33mb069e86[m Revert: Removed app=True for debugging
+[33md8fd09c[m Revert: Removed app=True for debugging
+[33m6191128[m Revert: Removed app=True for debugging
+[33m553a234[m Revert: Removed app=True for debugging
+[33m335983b[m Revert: Removed app=True for debugging
+[33m7d0c466[m Revert: Removed app=True for debugging
+[33m24010bd[m Revert: Removed app=True for debugging
+[33m57c8cb1[m Revert: Removed app=True for debugging
+[33m21840f3[m Revert: Removed app=True for debugging
+[33mf22b9b9[m Revert: Removed app=True for debugging
+[33m7170966[m Make LIMS Reception visible as an app
+[33mf146d80[m Fix: Make module visible as an app
+[33m7eff9f8[m Fix: Make module visible as an app
+[33mf15e382[m Fix: Add app=True to lims_menu for dashboard visibility
+[33m79fcc90[m Fix: Add app=True to lims_menu for dashboard visibility
+[33m9385c2b[m Fix: Add app=True to lims_menu for dashboard visibility
+[33m06dae17[m Fix: Add app=True to lims_menu for dashboard visibility
+[33mf0965e3[m License added to manifest
+[33mb1c710e[m Fix: Change tree to list in lims_sample_views.xml
+[33m2d320cd[m Fix: Change tree to list in lims_sample_views.xml
+[33mbeb0acd[m Fix: Change tree to list in lims_sample_views.xml
+[33m4af7ebf[m Fix: Change tree to list in lims_sample_views.xml
+[33m660dc37[m Add LIMS Sample Portal module
+[33m452d0a1[m[33m ([m[1;31morigin/stage-main-dev[m[33m, [m[1;31morigin/main[m[33m)[m Cambios a manifiesto
+[33m2d6ab11[m Cambios mayores donde se corrige el orden de lista de clientes
+[33m25b8a59[m Cambios mayores donde se corrige el orden de lista de clientes
+[33ma6f6beb[m Cambios mayores donde se corrige el orden de lista de clientes
+[33mbb3dcc4[m Cambios mayores donde se corrige el orden de lista de clientes
+[33md759a44[m Correccion de bugs asociada a problemas con departamentos de clientes
+[33m693e3f6[m Correccion de bugs asociada a problemas con departamentos de clientes
+[33m5076e66[m Departamento y sucursal heredan client_code
+[33m28cfb59[m Departamento y sucursal heredan client_code
+[33m3f218fd[m Departamento y sucursal heredan client_code
+[33m328e6ca[m Departamento y sucursal heredan client_code
+[33m6459ae4[m Se agrego client code como obligatorio
+[33m727052c[m Se agrego client code como obligatorio
+[33m7c44e33[m Se agrego client code como obligatorio
+[33m25dfe31[m Se agrego client code como obligatorio
+[33m9ea9378[m Se agrego client code como obligatorio
+[33m30da7c0[m Se agrego client code como obligatorio
+[33mb2c62c1[m Se agrego client code como obligatorio
+[33m1a0c381[m Se agrego client code como obligatorio
+[33ma087984[m Se agrego client code como obligatorio
+[33m301ad3a[m Se agrego client code como obligatorio
+[33mceebee4[m Se agrego client code como obligatorio
+[33m4dbeac7[m Se agrego client code como obligatorio
+[33mcd8d214[m Se modifico res_partner un api para separar los clientes
+[33mefc2df3[m Se modifico res_partner un api para separar los clientes
+[33m1d251c1[m Se modifico res_partner un api para separar los clientes
+[33m5ca679d[m Correccion del res_partner_view.xml
+[33m88ac38b[m Correccion del Manifest
+[33m25be5c9[m Prueba de correccion de bugs
+[33m55eb562[m Prueba de correccion de bugs
+[33maa54b73[m Adición de Código de cliente ren res_partner.py
+[33m490a8d6[m Restructuracion de la relacion cliente-contacto
+[33m48125e7[m Added basic access rules for res.sucursal, res.departamento, and res.contacto
+[33m57b525a[m Permisos asignados a res_partner_view para sales
+[33mc14586c[m Correccion Sintaxis ren res_partner_view, sucursal_view y sucursal.py
+[33m105a21e[m Correccion Sintaxis res_partner_view.xml
+[33m4eb12ac[m Correccion Sintaxis res_partner_view.xml
+[33mc99ea6c[m Correccion, res_departamento.py
+[33mec55b2c[m Correccion, añadido al __init__.py de models
+[33mf3b9889[m Añadir campos de Sucursal, departamento, codigo de cliente y modificacion al manifest
+[33m47a2f04[m Añadir campo 'Código de Cliente' al modelo res.partner con visibilidad en vistas de formulario y lista
+[33m9492693[m Añadir campo 'Código de Cliente' al modelo res.partner con visibilidad en vistas de formulario y lista
+[33me688b14[m Añadir campo 'Código de Cliente' al modelo res.partner con visibilidad en vistas de formulario y lista
+[33m2b9f9f6[m Prueba inicial con xPath, verificar que no hay errores
+[33mbc5d692[m Agregar client_code debajo de Tax ID sin usar XPath
+[33maad2877[m Extender base.view_partner_tree para mostrar client_code
+[33m451d6b5[m Agregar Código de Cliente debajo de Tax ID y en la vista de lista
+[33mb57d316[m Corrección de las vistas y res_partner.py
+[33m5d68611[m Corrección del xpath para la vista de lista
+[33m87bfab9[m Se retira generación automatica de prefijo de código de cliente y se agrega busqueda por Codigo de cliente
+[33m47bfc16[m Actualización de tomar como base funcion VAT de Odoo para RFC
+[33ma4a0c61[m Prueba inicial de agregar campos referentes al codigo de cliente
+[33m98111e2[m Se modificó el manifiesto en donde se quita como APP
+[33ma69831d[m Se modificó el manifiesto en donde se establece como APP sin instalarse automaticamente
+[33me786aca[m Deshabilitadas pruebas automaticas en manifest
+[33m4ead4a4[m Añadido la carpeta views - sale_extension_views.xml con manifiesto actualizado
+[33m4ad35c9[m Añadido la carpeta views - sale_extension_views.xml
+[33mf01df00[m Añadido módulo sale_extension básico
+[33m9720250[m Añadir módulo gestion_clientes
+[33mc322000[m Añadir módulo gestion_clientes
+[33m9b9164a[m Añadir módulo gestion_clientes
+[33m1f10f97[m Añadir módulo gestion_clientes
+[33m7ea9cc1[m Añadir módulo gestion_clientes
+[33m0909518[m Initial commit
