@@ -25,12 +25,12 @@
                 <form string="Recepción de Muestra">
                     <sheet>
                         <group>
+                            <field name="sample_code" required="1" placeholder="Código de la muestra..." />
                             <field name="sample_identifier" required="1" placeholder="Identificación de la muestra..." />
-                            <field name="cliente_id" required="1" placeholder="Selecciona un cliente..." 
-                                   context="{'form_view_ref': 'base.view_partner_form'}"/>
+                            <!-- Habilitamos la opción de abrir el formulario completo para un cliente nuevo -->
+                            <field name="cliente_id" required="1" placeholder="Selecciona un cliente..." options="{'no_create': False}" />
                             <field name="sucursal_id" required="1" placeholder="Selecciona una sucursal..." />
                             <field name="departamento_id" placeholder="Selecciona un departamento..." />
-                            <field name="sample_code" required="1" placeholder="Código de la muestra..." />
                             <field name="sample_type" placeholder="Tipo o descripción de la muestra..." />
                             <field name="date_received" required="1" />
                             <field name="state" />
