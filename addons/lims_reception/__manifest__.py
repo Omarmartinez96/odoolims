@@ -8,7 +8,7 @@
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
-        'data/sequences.xml',  # 👉 Se agrega la referencia a la secuencia
+        'data/sequences.xml',  # Verifica que esté aquí
         'views/lims_sample_views.xml',
     ],
     'installable': True,

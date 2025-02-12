@@ -1,16 +1,12 @@
-{
-    'name': 'LIMS Reception Module',
-    'version': '1.0',
-    'author': 'Your Name',
-    'category': 'Laboratory',
-    'summary': 'Gestión de Recepción de Muestras para LIMS',
-    'depends': ['base', 'sale_extension'],
-    'data': [
-        'security/security.xml',
-        'security/ir.model.access.csv',
-        'views/lims_sample_views.xml',
-    ],
-    'installable': True,
-    'application': True,
-    'license': 'LGPL-3',  # Especificar la licencia
-}
+<odoo>
+    <data noupdate="1">
+        <!-- Secuencia para Cadenas de Custodia -->
+        <record id="seq_custody_chain" model="ir.sequence">
+            <field name="name">Cadena de Custodia</field>
+            <field name="code">lims.custody_chain</field>
+            <field name="prefix">CC-</field>
+            <field name="padding">5</field>
+            <field name="number_increment">1</field>
+        </record>
+    </data>
+</odoo>
