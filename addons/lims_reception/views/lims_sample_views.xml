@@ -56,8 +56,11 @@
 
                         <!-- Botón de Registro -->
                         <group>
-                            <button name="action_register_sample" type="object" string="Registrar Muestra"
-                                    class="btn-primary" icon="fa-flask"/>
+                            <button name="action_register_sample" 
+                                    type="object" 
+                                    string="Registrar Muestra"
+                                    class="btn-primary" 
+                                    icon="fa-flask"/>
                         </group>
                     </sheet>
                 </form>

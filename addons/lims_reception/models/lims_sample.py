@@ -69,15 +69,18 @@ class LimsSample(models.Model):
 
     def action_register_sample(self):
         """
-        Método actualizado para el botón "Registrar Muestra".
-        Se cambia el efecto visual por uno más formal.
+        Método corregido para evitar el error de 'notification'.
+        Se utiliza 'display_notification', compatible con Odoo 18.
         """
         self.ensure_one()
         self.state = 'in_analysis'
         return {
-            'effect': {
-                'fadeout': 'slow',
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Muestra Registrada',
                 'message': 'La muestra ha sido registrada y está en proceso de análisis.',
-                'type': 'notification',  # Cambio de 'rainbow_man' a 'notification' para mayor formalidad
+                'type': 'success',  # Puede ser 'success', 'warning', 'danger'
+                'sticky': False
             }
         }
