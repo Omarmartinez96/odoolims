@@ -1,23 +1,5 @@
 <odoo>
     <data>
-        <!-- Vista Lista -->
-        <record id="view_lims_sample_list" model="ir.ui.view">
-            <field name="name">lims.sample.list</field>
-            <field name="model">lims.sample</field>
-            <field name="arch" type="xml">
-                <list string="Muestras">
-                    <field name="sample_identifier" />
-                    <field name="cliente_id" />
-                    <field name="client_code" />
-                    <field name="sucursal_id" />
-                    <field name="departamento_id" />
-                    <field name="sample_type" />
-                    <field name="state" />
-                    <field name="date_received" />
-                </list>
-            </field>
-        </record>
-
         <!-- Vista Formulario -->
         <record id="view_lims_sample_form" model="ir.ui.view">
             <field name="name">lims.sample.form</field>
@@ -25,40 +7,34 @@
             <field name="arch" type="xml">
                 <form string="Recepción de Muestra">
                     <sheet>
-                        <!-- Sección de Datos del Cliente -->
                         <group>
                             <separator string="DATOS DEL CLIENTE" colspan="4"/>
-                            <field name="cliente_id" 
-                                   required="1" 
-                                   placeholder="Selecciona un cliente..." 
-                                   options="{'no_create': True}">
-                                <help>Si el cliente no aparece en la lista, debe registrarlo en la plataforma de clientes.</help>
+                            <field name="cliente_id" required="1" options="{'no_create': True}">
+                                <help>Si el cliente no aparece, debe registrarlo en la plataforma de clientes.</help>
                             </field>
-                            <field name="client_code" readonly="1" placeholder="Código del Cliente..." />
-                            <field name="sucursal_id" required="1" 
-                                   placeholder="Selecciona una sucursal..." 
-                                   options="{'no_create': True}"/>
-                            <field name="departamento_id" 
-                                   placeholder="Selecciona un departamento..." 
-                                   options="{'no_create': True}"/>
+                            <field name="client_code" readonly="1"/>
+                            <field name="sucursal_id" required="1" options="{'no_create': True}"/>
+                            <field name="departamento_id" options="{'no_create': True}"/>
                         </group>
 
-                        <!-- Sección de Datos de la Muestra -->
                         <group>
                             <separator string="DATOS DE LA MUESTRA" colspan="4"/>
-                            <field name="sample_identifier" required="1" placeholder="Identificación de la muestra..." />
-                            <field name="sample_type" placeholder="Tipo o descripción de la muestra..." />
-                            <field name="date_received" required="1" />
-                            <field name="state" />
+                            <field name="sample_identifier" required="1"/>
+                            <field name="sample_type"/>
+                            <field name="date_received" required="1"/>
+                            <field name="state"/>
                         </group>
 
-                        <!-- Sección de Adjuntos -->
+                        <group>
+                            <separator string="CADENA DE CUSTODIA" colspan="4"/>
+                            <field name="custody_chain_id" required="0"/>
+                        </group>
+
                         <group>
                             <separator string="ADJUNTOS" colspan="4"/>
-                            <field name="attachment_ids" widget="many2many_binary" />
+                            <field name="attachment_ids" widget="many2many_binary"/>
                         </group>
 
-                        <!-- Botón de Registro -->
                         <group>
                             <button name="action_register_sample" type="object" string="Registrar Muestra"
                                     class="btn-primary" icon="fa-flask"/>
@@ -67,23 +43,5 @@
                 </form>
             </field>
         </record>
-
-        <!-- Acción -->
-        <record id="action_lims_samples" model="ir.actions.act_window">
-            <field name="name">Muestras</field>
-            <field name="res_model">lims.sample</field>
-            <field name="view_mode">list,form</field>
-        </record>
-
-        <!-- Menú Principal -->
-        <menuitem id="lims_menu" 
-                  name="Recepción de Muestras" 
-                  sequence="10"/>
-
-        <!-- Submenú -->
-        <menuitem id="lims_sample_menu" 
-                  name="Muestras" 
-                  parent="lims_menu" 
-                  action="action_lims_samples"/>
     </data>
 </odoo>

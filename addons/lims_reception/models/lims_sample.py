@@ -37,7 +37,7 @@ class LimsSample(models.Model):
     sample_identifier = fields.Char(
         string="Identificación de Muestra",
         required=True,
-        help="Descripción con la que el cliente identifica la muestra (Ejemplo: 'Salsa habanero lote 232498237487234')."
+        help="Descripción con la que el cliente identifica la muestra."
     )
 
     sample_type = fields.Char(
@@ -67,19 +67,9 @@ class LimsSample(models.Model):
         help="Archivos relacionados con esta muestra."
     )
 
-    def action_register_sample(self):
-        """
-        Método actualizado con una notificación formal sin efectos adicionales.
-        """
-        self.ensure_one()
-        self.state = 'in_analysis'
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Muestra Registrada',
-                'message': 'La muestra ha sido registrada y está en proceso de análisis.',
-                'type': 'success',  # Opciones: 'success', 'warning', 'danger'
-                'sticky': False  # False hace que la notificación desaparezca después de unos segundos
-            }
-        }
+    custody_chain_id = fields.Many2one(
+        'lims.custody_chain',
+        string="Cadena de Custodia",
+        required=False,
+        help="Cadena de custodia a la que pertenece esta muestra."
+    )
