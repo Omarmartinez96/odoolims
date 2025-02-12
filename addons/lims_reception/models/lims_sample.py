@@ -34,6 +34,13 @@ class LimsSample(models.Model):
         help="Departamento asociado a la sucursal seleccionada."
     )
 
+    custody_chain_id = fields.Many2one(
+        'lims.custody_chain',
+        string="Cadena de Custodia",
+        required=False,
+        help="Número de Cadena de Custodia asociada."
+    )
+
     sample_identifier = fields.Char(
         string="Identificación de Muestra",
         required=True,

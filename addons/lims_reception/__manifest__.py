@@ -8,8 +8,9 @@
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
-        'data/sequences.xml',  # Verifica que esté aquí
+        'data/sequences.xml',
         'views/lims_sample_views.xml',
+        'views/lims_custody_chain_views.xml',  # Agregar si necesitas vistas para cadenas de custodia
     ],
     'installable': True,
     'application': True,
