@@ -77,7 +77,7 @@ class LimsSample(models.Model):
             'effect': {
                 'fadeout': 'slow',  # Hace que la pantalla parpadee suavemente
                 'message': 'La muestra ha sido registrada y está en proceso de análisis.',
-                'type': 'message',  # Se usa 'message' en lugar de 'rainbow_man'
+                'type': 'notification',  # Se usa 'notification' para un efecto más formal
                 'sticky': False  # El mensaje desaparecerá automáticamente
             }
         }
