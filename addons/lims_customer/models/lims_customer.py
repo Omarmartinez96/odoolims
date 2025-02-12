@@ -2,18 +2,7 @@ from odoo import models, fields
 
 class LimsCustomer(models.Model):
     _name = 'lims.customer'
-    _description = 'Clientes en LIMS'
-    _rec_name = 'name'
+    _description = 'Gestión de Clientes en LIMS'
 
-    name = fields.Char(string="Razón Social", required=True)
-    rfc = fields.Char(string="RFC", required=True)
-    billing_partner_id = fields.Many2one(
-        'res.partner',
-        string="Facturar a",
-        help="Razón social a la que se facturará en Odoo nativo."
-    )
-    branch_ids = fields.One2many(
-        'lims.branch',
-        'customer_id',
-        string="Sucursales"
-    )
+    name = fields.Char(string="Nombre", required=True)
+    branch_ids = fields.One2many('lims.branch', 'customer_id', string="Sucursales")

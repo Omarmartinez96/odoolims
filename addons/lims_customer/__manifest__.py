@@ -6,11 +6,11 @@
     'summary': 'Gestión personalizada de clientes para LIMS',
     'depends': ['base'],
     'data': [
-        'data/ir.model.csv',
         'security/ir.model.access.csv',
+        'views/lims_branch_views.xml',  # Agregado aquí
         'views/lims_customer_views.xml',
     ],
     'installable': True,
-    'application': True,  # ✅ Debe ser True si se usa como módulo independiente
+    'application': True,
     'license': 'LGPL-3',
 }
