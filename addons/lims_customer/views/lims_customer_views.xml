@@ -7,7 +7,7 @@
             <field name="arch" type="xml">
                 <list string="Clientes">
                     <field name="name"/>
-                    <field name="rfc"/>
+                    <!-- <field name="rfc"/>  ⚠️ Eliminar o agregar si existe -->
                     <field name="billing_partner_id"/>
                 </list>
             </field>
@@ -22,10 +22,9 @@
                     <sheet>
                         <group>
                             <field name="name"/>
-                            <field name="rfc"/>
+                            <!-- <field name="rfc"/> ⚠️ Eliminar si no está en el modelo -->
                             <field name="billing_partner_id"/>
                         </group>
-                        <!-- 🔥 Agregar pestaña de Sucursales -->
                         <notebook>
                             <page string="Sucursales">
                                 <field name="branch_ids">
@@ -50,6 +49,4 @@
 
         <!-- Menú -->
         <menuitem id="lims_menu" name="LIMS" sequence="1"/>
-        <menuitem id="lims_customers_menu" name="Clientes" parent="lims_menu" action="action_lims_customers"/>
-    </data>
-</odoo>
+        <menuitem id="lims_customers_menu" name="Clientes"
