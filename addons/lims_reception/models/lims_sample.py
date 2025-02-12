@@ -68,19 +68,16 @@ class LimsSample(models.Model):
     )
 
     def action_register_sample(self):
-        """
-        Método corregido para evitar el error de 'notification'.
-        Se utiliza 'display_notification', compatible con Odoo 18.
-        """
-        self.ensure_one()
-        self.state = 'in_analysis'
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Muestra Registrada',
-                'message': 'La muestra ha sido registrada y está en proceso de análisis.',
-                'type': 'success',  # Puede ser 'success', 'warning', 'danger'
-                'sticky': False
-            }
+    """
+    Método actualizado con animación de 'fadeout' para mayor formalidad.
+    """
+    self.ensure_one()
+    self.state = 'in_analysis'
+    return {
+        'effect': {
+            'fadeout': 'slow',  # Hace que la pantalla parpadee suavemente
+            'message': 'La muestra ha sido registrada y está en proceso de análisis.',
+            'type': 'message',  # Se usa 'message' en lugar de 'rainbow_man'
+            'sticky': False  # El mensaje desaparecerá automáticamente
         }
+    }
