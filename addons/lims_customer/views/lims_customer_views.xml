@@ -7,7 +7,6 @@
             <field name="arch" type="xml">
                 <list string="Clientes">
                     <field name="name"/>
-                    <!-- <field name="rfc"/>  ⚠️ Eliminar o agregar si existe -->
                     <field name="billing_partner_id"/>
                 </list>
             </field>
@@ -22,7 +21,6 @@
                     <sheet>
                         <group>
                             <field name="name"/>
-                            <!-- <field name="rfc"/> ⚠️ Eliminar si no está en el modelo -->
                             <field name="billing_partner_id"/>
                         </group>
                         <notebook>
@@ -40,13 +38,15 @@
             </field>
         </record>
 
-        <!-- Acción -->
+        <!-- Acción para Clientes -->
         <record id="action_lims_customers" model="ir.actions.act_window">
             <field name="name">Clientes</field>
             <field name="res_model">lims.customer</field>
             <field name="view_mode">list,form</field>
         </record>
 
-        <!-- Menú -->
+        <!-- Menú para LIMS -->
         <menuitem id="lims_menu" name="LIMS" sequence="1"/>
-        <menuitem id="lims_customers_menu" name="Clientes"
+        <menuitem id="lims_customers_menu" name="Clientes" parent="lims_menu" action="action_lims_customers"/>
+    </data>
+</odoo>
