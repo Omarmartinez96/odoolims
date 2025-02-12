@@ -5,32 +5,32 @@ class LimsSample(models.Model):
     _description = 'Recepción de Muestras'
 
     cliente_id = fields.Many2one(
-        'res.partner',
+        'lims.customer',
         string="Cliente",
         required=True,
         help="Cliente asociado con la muestra."
     )
 
-    client_code = fields.Char(
-        string="Código de Cliente",
-        related='cliente_id.client_code',
-        readonly=True,
+    billing_partner_id = fields.Many2one(
+        'res.partner',
+        string="Facturar a",
+        related='cliente_id.billing_partner_id',
         store=True,
-        help="Código único del cliente asociado a la muestra."
+        help="Cliente al que se le emitirá la factura."
     )
 
     sucursal_id = fields.Many2one(
-        'res.sucursal',
+        'lims.branch',
         string="Sucursal",
         required=True,
-        domain="[('cliente_id', '=', cliente_id)]",
+        domain="[('customer_id', '=', cliente_id)]",
         help="Sucursal asociada al cliente seleccionado."
     )
 
     departamento_id = fields.Many2one(
-        'res.departamento',
+        'lims.department',
         string="Departamento",
-        domain="[('sucursal_id', '=', sucursal_id)]",
+        domain="[('branch_id', '=', sucursal_id)]",
         help="Departamento asociado a la sucursal seleccionada."
     )
 
@@ -44,7 +44,7 @@ class LimsSample(models.Model):
     sample_identifier = fields.Char(
         string="Identificación de Muestra",
         required=True,
-        help="Descripción con la que el cliente identifica la muestra (Ejemplo: 'Salsa habanero lote 232498237487234')."
+        help="Descripción con la que el cliente identifica la muestra."
     )
 
     sample_type = fields.Char(
@@ -73,17 +73,3 @@ class LimsSample(models.Model):
         string="Adjuntos",
         help="Archivos relacionados con esta muestra."
     )
-
-    def action_register_sample(self):
-        """
-        Método para cambiar el estado de la muestra a 'En Análisis'.
-        """
-        for record in self:
-            record.state = 'in_analysis'
-        return {
-            'effect': {
-                'fadeout': 'slow',
-                'message': 'La muestra ha sido registrada y está en proceso de análisis.',
-                'type': 'rainbow_man',
-            }
-        }
