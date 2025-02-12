@@ -35,8 +35,12 @@
                                 <help>Si el cliente no aparece en la lista, debe registrarlo en la plataforma de clientes.</help>
                             </field>
                             <field name="client_code" readonly="1" placeholder="Código del Cliente..." />
-                            <field name="sucursal_id" required="1" placeholder="Selecciona una sucursal..." />
-                            <field name="departamento_id" placeholder="Selecciona un departamento..." />
+                            <field name="sucursal_id" required="1" 
+                                   placeholder="Selecciona una sucursal..." 
+                                   options="{'no_create': True}"/>
+                            <field name="departamento_id" 
+                                   placeholder="Selecciona un departamento..." 
+                                   options="{'no_create': True}"/>
                         </group>
 
                         <!-- Sección de Datos de la Muestra -->
@@ -56,11 +60,8 @@
 
                         <!-- Botón de Registro -->
                         <group>
-                            <button name="action_register_sample" 
-                                    type="object" 
-                                    string="Registrar Muestra"
-                                    class="btn-primary" 
-                                    icon="fa-flask"/>
+                            <button name="action_register_sample" type="object" string="Registrar Muestra"
+                                    class="btn-primary" icon="fa-flask"/>
                         </group>
                     </sheet>
                 </form>
