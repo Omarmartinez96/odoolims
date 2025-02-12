@@ -69,15 +69,15 @@ class LimsSample(models.Model):
 
     def action_register_sample(self):
         """
-        Método de ejemplo para manejar la acción del botón "Registrar Muestra".
-        Aquí puedes definir lógica adicional si es necesario.
+        Método actualizado para el botón "Registrar Muestra".
+        Se cambia el efecto visual por uno más formal.
         """
         self.ensure_one()
         self.state = 'in_analysis'
         return {
             'effect': {
                 'fadeout': 'slow',
-                'message': 'Muestra registrada correctamente y enviada a análisis.',
-                'type': 'rainbow_man',
+                'message': 'La muestra ha sido registrada y está en proceso de análisis.',
+                'type': 'notification',  # Cambio de 'rainbow_man' a 'notification' para mayor formalidad
             }
         }
