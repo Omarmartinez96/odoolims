@@ -10,7 +10,6 @@
                     <field name="cliente_id" />
                     <field name="sucursal_id" />
                     <field name="departamento_id" />
-                    <field name="sample_code" />
                     <field name="sample_type" />
                     <field name="state" />
                     <field name="date_received" />
@@ -26,19 +25,22 @@
                 <form string="Recepción de Muestra">
                     <sheet>
                         <group>
-                            <field name="sample_identifier" required="1" placeholder="Identificación de la muestra..." />
-                            <!-- Forzamos la creación completa con "Crear y Editar" -->
                             <field name="cliente_id" 
                                    required="1" 
                                    placeholder="Selecciona un cliente..." 
-                                   context="{'default_is_company': True}" 
-                                   options="{'no_create_edit': False}" />
+                                   options="{'no_create': True}">
+                                <help>Si el cliente no aparece en la lista, debe registrarlo en la plataforma de clientes.</help>
+                            </field>
                             <field name="sucursal_id" required="1" placeholder="Selecciona una sucursal..." />
                             <field name="departamento_id" placeholder="Selecciona un departamento..." />
-                            <field name="sample_code" required="1" placeholder="Código de la muestra..." />
+                            <field name="sample_identifier" required="1" placeholder="Identificación de la muestra..." />
                             <field name="sample_type" placeholder="Tipo o descripción de la muestra..." />
                             <field name="date_received" required="1" />
                             <field name="state" />
+                        </group>
+                        <group>
+                            <button name="action_open_customer_portal" type="object" string="Registrar Cliente"
+                                    class="btn-primary" icon="fa-user-plus"/>
                         </group>
                         <group>
                             <field name="attachment_ids" widget="many2many_binary" />
