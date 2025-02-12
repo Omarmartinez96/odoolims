@@ -6,8 +6,8 @@
     'summary': 'Gestión personalizada de clientes para LIMS',
     'depends': ['base'],
     'data': [
-        'security/ir.model.access.csv',
         'data/ir.model.csv',
+        'security/ir.model.access.csv',
         'views/lims_customer_views.xml',
     ],
     'installable': True,
