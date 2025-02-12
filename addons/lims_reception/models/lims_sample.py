@@ -68,16 +68,16 @@ class LimsSample(models.Model):
     )
 
     def action_register_sample(self):
-    """
-    Método actualizado con animación de 'fadeout' para mayor formalidad.
-    """
-    self.ensure_one()
-    self.state = 'in_analysis'
-    return {
-        'effect': {
-            'fadeout': 'slow',  # Hace que la pantalla parpadee suavemente
-            'message': 'La muestra ha sido registrada y está en proceso de análisis.',
-            'type': 'message',  # Se usa 'message' en lugar de 'rainbow_man'
-            'sticky': False  # El mensaje desaparecerá automáticamente
+        """
+        Método actualizado con animación de 'fadeout' para mayor formalidad.
+        """
+        self.ensure_one()
+        self.state = 'in_analysis'
+        return {
+            'effect': {
+                'fadeout': 'slow',  # Hace que la pantalla parpadee suavemente
+                'message': 'La muestra ha sido registrada y está en proceso de análisis.',
+                'type': 'message',  # Se usa 'message' en lugar de 'rainbow_man'
+                'sticky': False  # El mensaje desaparecerá automáticamente
+            }
         }
-    }
