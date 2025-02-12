@@ -6,9 +6,9 @@
     'summary': 'Gestión personalizada de clientes para LIMS',
     'depends': ['base'],
     'data': [
-        'security/ir.model.access.csv',
-        'views/lims_branch_views.xml',  # Agregado aquí
+        'views/lims_branch_views.xml',  # Cargar modelos antes de permisos
         'views/lims_customer_views.xml',
+        'security/ir.model.access.csv',  # ⚠️ Esto debe ir al final
     ],
     'installable': True,
     'application': True,
