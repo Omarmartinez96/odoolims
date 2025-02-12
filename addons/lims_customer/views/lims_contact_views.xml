@@ -1,0 +1,16 @@
+<odoo>
+    <data>
+        <!-- Vista de Lista para Contactos -->
+        <record id="view_lims_contact_list" model="ir.ui.view">
+            <field name="name">lims.contact.list</field>
+            <field name="model">lims.contact</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="email"/>
+                    <field name="phone"/>
+                </list>
+            </field>
+        </record>
+    </data>
+</odoo>

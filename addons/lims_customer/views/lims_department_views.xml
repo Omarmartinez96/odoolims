@@ -1,0 +1,15 @@
+<odoo>
+    <data>
+        <!-- Vista de Lista para Departamentos -->
+        <record id="view_lims_department_list" model="ir.ui.view">
+            <field name="name">lims.department.list</field>
+            <field name="model">lims.department</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="branch_id"/>
+                </list>
+            </field>
+        </record>
+    </data>
+</odoo>

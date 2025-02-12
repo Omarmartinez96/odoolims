@@ -3,12 +3,14 @@
     'version': '1.0',
     'author': 'Your Name',
     'category': 'Laboratory',
-    'summary': 'Gestión personalizada de clientes para LIMS',
+    'summary': 'Gestión de Clientes en LIMS con Sucursales, Departamentos y Contactos',
     'depends': ['base'],
     'data': [
-        'views/lims_branch_views.xml',  # Cargar modelos antes de permisos
+        'security/ir.model.access.csv',
         'views/lims_customer_views.xml',
-        'security/ir.model.access.csv',  # ⚠️ Esto debe ir al final
+        'views/lims_branch_views.xml',
+        'views/lims_department_views.xml',
+        'views/lims_contact_views.xml',
     ],
     'installable': True,
     'application': True,
