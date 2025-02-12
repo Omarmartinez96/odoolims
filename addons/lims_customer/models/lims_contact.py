@@ -1,7 +1,7 @@
 from odoo import models, fields
 
 class LimsContact(models.Model):
-    _name = 'lims.contact'
+    _name = 'lims.contact'  # ✅ ESTE NOMBRE SE USA EN ir.model.access.csv
     _description = 'Contactos en LIMS'
 
     name = fields.Char(string="Nombre del Contacto", required=True)
