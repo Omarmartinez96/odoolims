@@ -7,34 +7,34 @@
             <field name="arch" type="xml">
                 <form string="Recepción de Muestra">
                     <sheet>
+                        <!-- Sección de Datos del Cliente -->
                         <group>
                             <separator string="DATOS DEL CLIENTE" colspan="4"/>
-                            <field name="cliente_id" required="1" options="{'no_create': True}">
-                                <help>Si el cliente no aparece, debe registrarlo en la plataforma de clientes.</help>
-                            </field>
-                            <field name="client_code" readonly="1"/>
-                            <field name="sucursal_id" required="1" options="{'no_create': True}"/>
-                            <field name="departamento_id" options="{'no_create': True}"/>
+                            <field name="cliente_id" 
+                                   required="1" 
+                                   placeholder="Selecciona un cliente..." 
+                                   options="{'no_create': True}"/>
+                            <field name="client_code" readonly="1" placeholder="Código del Cliente..." />
+                            <field name="sucursal_id" required="1" placeholder="Selecciona una sucursal..." />
+                            <field name="departamento_id" placeholder="Selecciona un departamento..." />
                         </group>
 
+                        <!-- Sección de Datos de la Muestra -->
                         <group>
                             <separator string="DATOS DE LA MUESTRA" colspan="4"/>
-                            <field name="sample_identifier" required="1"/>
-                            <field name="sample_type"/>
-                            <field name="date_received" required="1"/>
-                            <field name="state"/>
+                            <field name="sample_identifier" required="1" placeholder="Identificación de la muestra..." />
+                            <field name="sample_type" placeholder="Tipo o descripción de la muestra..." />
+                            <field name="date_received" required="1" />
+                            <field name="state" />
                         </group>
 
-                        <group>
-                            <separator string="CADENA DE CUSTODIA" colspan="4"/>
-                            <field name="custody_chain_id" required="0"/>
-                        </group>
-
+                        <!-- Sección de Adjuntos -->
                         <group>
                             <separator string="ADJUNTOS" colspan="4"/>
-                            <field name="attachment_ids" widget="many2many_binary"/>
+                            <field name="attachment_ids" widget="many2many_binary" />
                         </group>
 
+                        <!-- Botón de Registro -->
                         <group>
                             <button name="action_register_sample" type="object" string="Registrar Muestra"
                                     class="btn-primary" icon="fa-flask"/>

@@ -37,7 +37,7 @@ class LimsSample(models.Model):
     sample_identifier = fields.Char(
         string="Identificación de Muestra",
         required=True,
-        help="Descripción con la que el cliente identifica la muestra."
+        help="Descripción con la que el cliente identifica la muestra (Ejemplo: 'Salsa habanero lote 232498237487234')."
     )
 
     sample_type = fields.Char(
@@ -67,9 +67,16 @@ class LimsSample(models.Model):
         help="Archivos relacionados con esta muestra."
     )
 
-    custody_chain_id = fields.Many2one(
-        'lims.custody_chain',
-        string="Cadena de Custodia",
-        required=False,
-        help="Cadena de custodia a la que pertenece esta muestra."
-    )
+    def action_register_sample(self):
+        """
+        Método para cambiar el estado de la muestra a 'En Análisis'.
+        """
+        for record in self:
+            record.state = 'in_analysis'
+        return {
+            'effect': {
+                'fadeout': 'slow',
+                'message': 'La muestra ha sido registrada y está en proceso de análisis.',
+                'type': 'rainbow_man',
+            }
+        }
