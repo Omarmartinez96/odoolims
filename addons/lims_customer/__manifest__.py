@@ -7,9 +7,10 @@
     'depends': ['base'],
     'data': [
         'security/ir.model.access.csv',
+        'data/ir.model.csv',
         'views/lims_customer_views.xml',
     ],
     'installable': True,
-    'application': False,
+    'application': True,  # ✅ Debe ser True si se usa como módulo independiente
     'license': 'LGPL-3',
 }
