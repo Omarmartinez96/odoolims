@@ -8,10 +8,9 @@
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
-        'data/sequences.xml',  # 👉 Se agrega la referencia a la secuencia
         'views/lims_sample_views.xml',
     ],
     'installable': True,
     'application': True,
-    'license': 'LGPL-3',
+    'license': 'LGPL-3',  # Especificar la licencia
 }
