@@ -1,2 +1,2 @@
 id,name,model_id,group_id,perm_read,perm_write,perm_create,perm_unlink
-access_lims_branch,access.lims.branch,model_lims_branch,base.group_system,1,1,1,1
+access_lims_branch,access.lims.branch,lims.branch,,1,1,1,1
