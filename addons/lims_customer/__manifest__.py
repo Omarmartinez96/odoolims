@@ -10,6 +10,6 @@
         'views/lims_customer_views.xml',
     ],
     'installable': True,
-    'application': True,
+    'application': False,
     'license': 'LGPL-3',
 }
