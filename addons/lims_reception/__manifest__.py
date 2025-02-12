@@ -4,13 +4,13 @@
     'author': 'Your Name',
     'category': 'Laboratory',
     'summary': 'Gestión de Recepción de Muestras para LIMS',
-    'depends': ['base', 'sale_extension'],
+    'depends': ['base'],  # 🔴 ELIMINAR 'sale_extension'
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
         'data/sequences.xml',
         'views/lims_sample_views.xml',
-        'views/lims_custody_chain_views.xml',  # Agregar si necesitas vistas para cadenas de custodia
+        'views/lims_custody_chain_views.xml',
     ],
     'installable': True,
     'application': True,
