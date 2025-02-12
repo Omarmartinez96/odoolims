@@ -8,6 +8,7 @@
                 <list string="Muestras">
                     <field name="sample_identifier" />
                     <field name="cliente_id" />
+                    <field name="client_code" />
                     <field name="sucursal_id" />
                     <field name="departamento_id" />
                     <field name="sample_type" />
@@ -31,6 +32,7 @@
                                    options="{'no_create': True}">
                                 <help>Si el cliente no aparece en la lista, debe registrarlo en la plataforma de clientes.</help>
                             </field>
+                            <field name="client_code" readonly="1" placeholder="Código del Cliente..." />
                             <field name="sucursal_id" required="1" placeholder="Selecciona una sucursal..." />
                             <field name="departamento_id" placeholder="Selecciona un departamento..." />
                             <field name="sample_identifier" required="1" placeholder="Identificación de la muestra..." />
@@ -39,11 +41,11 @@
                             <field name="state" />
                         </group>
                         <group>
-                            <button name="action_open_customer_portal" type="object" string="Registrar Cliente"
-                                    class="btn-primary" icon="fa-user-plus"/>
+                            <field name="attachment_ids" widget="many2many_binary" />
                         </group>
                         <group>
-                            <field name="attachment_ids" widget="many2many_binary" />
+                            <button name="action_register_sample" type="object" string="Registrar Muestra"
+                                    class="btn-primary" icon="fa-flask"/>
                         </group>
                     </sheet>
                 </form>

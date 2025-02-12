@@ -11,6 +11,14 @@ class LimsSample(models.Model):
         help="Cliente asociado con la muestra."
     )
 
+    client_code = fields.Char(
+        string="Código de Cliente",
+        related='cliente_id.client_code',
+        readonly=True,
+        store=True,
+        help="Código único del cliente asociado a la muestra."
+    )
+
     sucursal_id = fields.Many2one(
         'res.sucursal',
         string="Sucursal",
@@ -59,12 +67,17 @@ class LimsSample(models.Model):
         help="Archivos relacionados con esta muestra."
     )
 
-    def action_open_customer_portal(self):
+    def action_register_sample(self):
         """
-        Abre el portal de clientes para registrar un nuevo cliente.
+        Método de ejemplo para manejar la acción del botón "Registrar Muestra".
+        Aquí puedes definir lógica adicional si es necesario.
         """
+        self.ensure_one()
+        self.state = 'in_analysis'
         return {
-            'type': 'ir.actions.act_url',
-            'url': '/web#action=base.action_partner_form',  # Ajusta esto si tienes un portal de clientes específico
-            'target': 'new',
+            'effect': {
+                'fadeout': 'slow',
+                'message': 'Muestra registrada correctamente y enviada a análisis.',
+                'type': 'rainbow_man',
+            }
         }
