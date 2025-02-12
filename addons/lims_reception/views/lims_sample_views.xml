@@ -35,5 +35,24 @@
                 </form>
             </field>
         </record>
+
+        <!-- 🟢 Acción de Ventana para Muestras -->
+        <record id="action_lims_samples" model="ir.actions.act_window">
+            <field name="name">Muestras</field>
+            <field name="res_model">lims.sample</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="view_lims_sample_form"/>
+        </record>
+
+        <!-- 🟢 Menú Principal -->
+        <menuitem id="lims_menu"
+                  name="Recepción de Muestras"
+                  sequence="10"/>
+
+        <!-- 🟢 Submenú para Muestras -->
+        <menuitem id="lims_sample_menu"
+                  name="Muestras"
+                  parent="lims_menu"
+                  action="action_lims_samples"/>
     </data>
 </odoo>
