@@ -1,4 +1,4 @@
-id,name,model_id,group_id,perm_read,perm_write,perm_create,perm_unlink
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_lims_customer,access.lims.customer,model_lims_customer,base.group_user,1,1,1,1
 access_lims_branch,access.lims.branch,model_lims_branch,base.group_user,1,1,1,1
 access_lims_department,access.lims.department,model_lims_department,base.group_user,1,1,1,1
