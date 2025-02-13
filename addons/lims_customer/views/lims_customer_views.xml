@@ -5,32 +5,27 @@
             <field name="name">Sucursales</field>
             <field name="res_model">lims.branch</field>
             <field name="view_mode">list,form</field>
+            <!-- Filtra sucursales por el cliente pasado en el contexto -->
             <field name="domain">[('customer_id','=', context.get('default_customer_id'))]</field>
         </record>
 
-        <!-- MENÚ PRINCIPAL DE CLIENTES -->
+        <!-- MENÚ PRINCIPAL Y ACCIONES -->
         <menuitem id="lims_customer_menu" name="Gestión de Clientes" sequence="1"/>
-
-        <!-- ACCIÓN DE VENTANA PARA CLIENTES -->
         <record id="action_lims_customers" model="ir.actions.act_window">
             <field name="name">Clientes</field>
             <field name="res_model">lims.customer</field>
             <field name="view_mode">list,form</field>
         </record>
-
-        <!-- MENÚ PARA CLIENTES -->
         <menuitem id="lims_customers_menu" name="Clientes"
                   parent="lims_customer_menu"
                   action="action_lims_customers"
                   sequence="1"/>
-
-        <!-- MENÚ PARA SUCURSALES (OPCIONAL) -->
         <menuitem id="lims_branches_menu" name="Sucursales"
                   parent="lims_customer_menu"
                   action="action_lims_branches"
                   sequence="2"/>
 
-        <!-- VISTA DE FORMULARIO PARA CLIENTES -->
+        <!-- VISTA FORMULARIO DE CLIENTES -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form</field>
             <field name="model">lims.customer</field>
@@ -42,18 +37,20 @@
                             <field name="client_code"/>
                             <field name="fiscal_address"/>
                         </group>
-                        <!-- SUSTITUIR attrs -> modifiers -->
+                        <!-- Botón "Ver Sucursales": solo se muestra si el cliente ya está guardado (id existe) -->
                         <group>
                             <button name="%(action_lims_branches)d"
                                     string="Ver Sucursales"
                                     type="action"
                                     class="oe_stat_button"
                                     context="{'default_customer_id': id}"
-                                    modifiers="{'invisible': [['id','=',False]]}" />
+                                    modifiers="{'invisible': [['id', '=', False]]}"/>
                         </group>
-                        <notebook>
+                        <!-- Notebook de Sucursales: se muestra solo si el cliente tiene id (ya guardado) -->
+                        <notebook modifiers="{'invisible': [['id', '=', False]]}">
                             <page string="Sucursales">
-                                <field name="branch_ids">
+                                <!-- Al crear en línea, se asigna automáticamente el customer_id -->
+                                <field name="branch_ids" context="{'default_customer_id': id}">
                                     <list create="true">
                                         <field name="name"/>
                                         <field name="address"/>

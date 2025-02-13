@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        <!-- ACCIÓN DE VENTANA PARA CONTACTOS (FILTRADA POR DEPARTAMENTO) -->
+        <!-- ACCIÓN DE VENTANA PARA CONTACTOS (FILTRADA POR EL DEPARTAMENTO) -->
         <record id="action_lims_contacts" model="ir.actions.act_window">
             <field name="name">Contactos</field>
             <field name="res_model">lims.contact</field>
@@ -28,21 +28,23 @@
                 <form string="Departamento">
                     <sheet>
                         <group>
+                            <!-- Campo 'branch_id' en solo lectura -->
                             <field name="branch_id" readonly="1" required="1"/>
                             <field name="name" required="1"/>
                         </group>
-                        <!-- SUSTITUIR attrs -> modifiers -->
+                        <!-- Botón "Ver Contactos": solo se muestra si el departamento ya está guardado -->
                         <group>
                             <button name="%(action_lims_contacts)d"
                                     string="Ver Contactos"
                                     type="action"
                                     class="oe_stat_button"
                                     context="{'default_department_id': id}"
-                                    modifiers="{'invisible': [['id','=',False]]}" />
+                                    modifiers="{'invisible': [['id', '=', False]]}"/>
                         </group>
-                        <notebook>
+                        <!-- Notebook de Contactos: visible solo si el departamento está guardado -->
+                        <notebook modifiers="{'invisible': [['id', '=', False]]}">
                             <page string="Contactos">
-                                <field name="contact_ids">
+                                <field name="contact_ids" context="{'default_department_id': id}">
                                     <list create="true">
                                         <field name="name"/>
                                         <field name="email"/>

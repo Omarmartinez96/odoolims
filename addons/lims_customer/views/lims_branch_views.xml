@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        <!-- ACCIÓN DE VENTANA PARA DEPARTAMENTOS (FILTRADA POR SUCURSAL) -->
+        <!-- ACCIÓN DE VENTANA PARA DEPARTAMENTOS (FILTRADA POR LA SUCURSAL) -->
         <record id="action_lims_departments" model="ir.actions.act_window">
             <field name="name">Departamentos</field>
             <field name="res_model">lims.department</field>
@@ -29,22 +29,24 @@
                 <form string="Sucursal">
                     <sheet>
                         <group>
+                            <!-- Campo 'customer_id' en solo lectura para mantener la relación -->
                             <field name="customer_id" readonly="1" required="1"/>
                             <field name="name" required="1"/>
                             <field name="address"/>
                         </group>
-                        <!-- SUSTITUIR attrs -> modifiers -->
+                        <!-- Botón "Ver Departamentos": solo se muestra si la sucursal ya está guardada -->
                         <group>
                             <button name="%(action_lims_departments)d"
                                     string="Ver Departamentos"
                                     type="action"
                                     class="oe_stat_button"
                                     context="{'default_branch_id': id}"
-                                    modifiers="{'invisible': [['id','=',False]]}" />
+                                    modifiers="{'invisible': [['id', '=', False]]}"/>
                         </group>
-                        <notebook>
+                        <!-- Notebook de Departamentos: visible solo si la sucursal está guardada -->
+                        <notebook modifiers="{'invisible': [['id', '=', False]]}">
                             <page string="Departamentos">
-                                <field name="department_ids">
+                                <field name="department_ids" context="{'default_branch_id': id}">
                                     <list create="true">
                                         <field name="name"/>
                                     </list>
