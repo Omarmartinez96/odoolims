@@ -1,11 +1,11 @@
 <odoo>
     <data>
-
         <!-- ACCIÓN DE VENTANA PARA DEPARTAMENTOS (FILTRADA POR SUCURSAL) -->
         <record id="action_lims_departments" model="ir.actions.act_window">
             <field name="name">Departamentos</field>
             <field name="res_model">lims.department</field>
             <field name="view_mode">list,form</field>
+            <!-- Filtra departamentos por la sucursal en contexto -->
             <field name="domain">[('branch_id','=', context.get('default_branch_id'))]</field>
         </record>
 
@@ -45,8 +45,9 @@
                         </group>
                         <notebook>
                             <page string="Departamentos">
-                                <field name="department_ids">
-                                    <list>
+                                <!-- One2many a lims.department -->
+                                <field name="department_ids" context="{'default_branch_id': id}">
+                                    <list create="true">
                                         <field name="name"/>
                                     </list>
                                 </field>
@@ -56,6 +57,5 @@
                 </form>
             </field>
         </record>
-
     </data>
 </odoo>

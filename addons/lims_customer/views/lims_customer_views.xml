@@ -1,7 +1,6 @@
 <odoo>
     <data>
-
-        <!-- ACCIÓN DE VENTANA PARA SUCURSALES -->
+        <!-- ACCIÓN DE VENTANA PARA SUCURSALES (FILTRADA POR EL CLIENTE) -->
         <record id="action_lims_branches" model="ir.actions.act_window">
             <field name="name">Sucursales</field>
             <field name="res_model">lims.branch</field>
@@ -54,8 +53,11 @@
                         </group>
                         <notebook>
                             <page string="Sucursales">
+                                <!-- One2many a lims.branch -->
                                 <field name="branch_ids">
-                                    <list>
+                                    <!-- Agrega un context para que, si creas una sucursal desde aquí, 
+                                         se asigne automáticamente el customer_id -->
+                                    <list create="true" context="{'default_customer_id': id}">
                                         <field name="name"/>
                                         <field name="address"/>
                                     </list>
@@ -66,6 +68,5 @@
                 </form>
             </field>
         </record>
-
     </data>
 </odoo>
