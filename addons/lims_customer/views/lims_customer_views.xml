@@ -5,7 +5,6 @@
             <field name="name">Sucursales</field>
             <field name="res_model">lims.branch</field>
             <field name="view_mode">list,form</field>
-            <!-- Filtra sucursales por el cliente en contexto -->
             <field name="domain">[('customer_id','=', context.get('default_customer_id'))]</field>
         </record>
 
@@ -43,20 +42,18 @@
                             <field name="client_code"/>
                             <field name="fiscal_address"/>
                         </group>
-                        <!-- BOTÓN para ver sucursales, usando 'id' y oculto si el registro no está guardado -->
+                        <!-- SUSTITUIR attrs -> modifiers -->
                         <group>
                             <button name="%(action_lims_branches)d"
                                     string="Ver Sucursales"
                                     type="action"
                                     class="oe_stat_button"
                                     context="{'default_customer_id': id}"
-                                    attrs="{'invisible': [('id','=',False)]}"/>
+                                    modifiers="{'invisible': [['id','=',False]]}" />
                         </group>
                         <notebook>
                             <page string="Sucursales">
-                                <!-- One2many a lims.branch -->
                                 <field name="branch_ids">
-                                    <!-- Al crear inline, Odoo setea automáticamente customer_id -->
                                     <list create="true">
                                         <field name="name"/>
                                         <field name="address"/>
@@ -68,6 +65,5 @@
                 </form>
             </field>
         </record>
-
     </data>
 </odoo>
