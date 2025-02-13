@@ -1,26 +1,19 @@
 <odoo>
     <data>
-        <!-- Acción de Ventana para Clientes -->
+        <!-- Menú principal para Gestión de Clientes -->
+        <menuitem id="lims_customer_menu" name="Gestión de Clientes" sequence="1"/>
+
+        <!-- Acción de ventana para Clientes -->
         <record id="action_lims_customers" model="ir.actions.act_window">
             <field name="name">Clientes</field>
             <field name="res_model">lims.customer</field>
             <field name="view_mode">list,form</field>
         </record>
 
-        <!-- Vista de Lista de Clientes -->
-        <record id="view_lims_customer_list" model="ir.ui.view">
-            <field name="name">lims.customer.list</field>
-            <field name="model">lims.customer</field>
-            <field name="arch" type="xml">
-                <list>
-                    <field name="name"/>
-                    <field name="client_code"/>
-                    <field name="fiscal_address"/>
-                </list>
-            </field>
-        </record>
+        <!-- Menú para Clientes -->
+        <menuitem id="lims_customers_menu" name="Clientes" parent="lims_customer_menu" action="action_lims_customers" sequence="1"/>
 
-        <!-- Vista de Formulario para Clientes -->
+        <!-- Vista de formulario de Clientes -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form</field>
             <field name="model">lims.customer</field>
@@ -32,11 +25,10 @@
                             <field name="client_code"/>
                             <field name="fiscal_address"/>
                         </group>
-
+                        <!-- Botón para ver Sucursales -->
                         <group>
                             <button name="%(action_lims_branches)d" string="Ver Sucursales" type="action" class="oe_stat_button"/>
                         </group>
-
                         <notebook>
                             <page string="Sucursales">
                                 <field name="branch_ids">
@@ -51,5 +43,15 @@
                 </form>
             </field>
         </record>
+
+        <!-- Acción de ventana para Sucursales (movida desde lims_branch_views.xml) -->
+        <record id="action_lims_branches" model="ir.actions.act_window">
+            <field name="name">Sucursales</field>
+            <field name="res_model">lims.branch</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- Menú para Sucursales (movido desde lims_branch_views.xml) -->
+        <menuitem id="lims_branches_menu" name="Sucursales" parent="lims_customer_menu" action="action_lims_branches" sequence="2"/>
     </data>
 </odoo>

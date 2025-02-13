@@ -1,18 +1,11 @@
 <odoo>
     <data>
-        <!-- Acción de Ventana para Sucursales -->
-        <record id="action_lims_branches" model="ir.actions.act_window">
-            <field name="name">Sucursales</field>
-            <field name="res_model">lims.branch</field>
-            <field name="view_mode">list,form</field>
-        </record>
-
-        <!-- Vista de Lista de Sucursales -->
+        <!-- Vista lista de Sucursales -->
         <record id="view_lims_branch_list" model="ir.ui.view">
             <field name="name">lims.branch.list</field>
             <field name="model">lims.branch</field>
             <field name="arch" type="xml">
-                <list>
+                <list string="Sucursales">
                     <field name="name"/>
                     <field name="address"/>
                     <field name="customer_id"/>
@@ -20,7 +13,7 @@
             </field>
         </record>
 
-        <!-- Vista de Formulario para Sucursales -->
+        <!-- Vista formulario de Sucursales -->
         <record id="view_lims_branch_form" model="ir.ui.view">
             <field name="name">lims.branch.form</field>
             <field name="model">lims.branch</field>
@@ -32,11 +25,6 @@
                             <field name="address"/>
                             <field name="customer_id"/>
                         </group>
-
-                        <group>
-                            <button name="%(action_lims_departments)d" string="Ver Departamentos" type="action" class="oe_stat_button"/>
-                        </group>
-
                         <notebook>
                             <page string="Departamentos">
                                 <field name="department_ids">
