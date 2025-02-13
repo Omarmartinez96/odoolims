@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        <!-- VISTA LISTA DE CONTACTOS -->
+        <!-- VISTA LISTA de Contactos -->
         <record id="view_lims_contact_list" model="ir.ui.view">
             <field name="name">lims.contact.list</field>
             <field name="model">lims.contact</field>
@@ -9,12 +9,12 @@
                     <field name="name"/>
                     <field name="email"/>
                     <field name="phone"/>
-                    <field name="department_id"/>
+                    <field name="department_id" string="Departamento"/>
                 </list>
             </field>
         </record>
 
-        <!-- VISTA FORMULARIO DE CONTACTOS -->
+        <!-- VISTA FORMULARIO de Contactos -->
         <record id="view_lims_contact_form" model="ir.ui.view">
             <field name="name">lims.contact.form</field>
             <field name="model">lims.contact</field>
