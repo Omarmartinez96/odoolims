@@ -1,30 +1,23 @@
 <odoo>
     <data>
-        <!-- Acción para abrir Sucursales -->
-        <record id="action_lims_branches" model="ir.actions.act_window">
-            <field name="name">Sucursales</field>
-            <field name="res_model">lims.branch</field>
-            <field name="view_mode">list,form</field>
-        </record>
-
-        <menuitem id="lims_branches_menu" name="Sucursales" parent="lims_menu" action="action_lims_branches"/>
-
-        <!-- Formulario de Sucursales -->
         <record id="view_lims_branch_form" model="ir.ui.view">
             <field name="name">lims.branch.form</field>
             <field name="model">lims.branch</field>
             <field name="arch" type="xml">
-                <form string="Gestión de Sucursales">
+                <form string="Sucursal">
                     <sheet>
                         <group>
-                            <field name="name"/>
+                            <field name="name" required="1"/>
                             <field name="address"/>
                             <field name="customer_id"/>
+                        </group>
+                        <group>
+                            <button name="%(action_lims_departments)d" string="Ver Departamentos" type="action" class="oe_stat_button"/>
                         </group>
                         <notebook>
                             <page string="Departamentos">
                                 <field name="department_ids">
-                                    <list editable="bottom">
+                                    <list>
                                         <field name="name"/>
                                     </list>
                                 </field>
@@ -33,6 +26,13 @@
                     </sheet>
                 </form>
             </field>
+        </record>
+
+        <record id="action_lims_departments" model="ir.actions.act_window">
+            <field name="name">Departamentos</field>
+            <field name="res_model">lims.department</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('branch_id', '=', active_id)]</field>
         </record>
     </data>
 </odoo>
