@@ -1,5 +1,5 @@
 {
-    'name': 'LIMS Customer Management',
+    'name': 'Gestión de Clientes',
     'version': '1.0',
     'author': 'Your Name',
     'category': 'Laboratory',

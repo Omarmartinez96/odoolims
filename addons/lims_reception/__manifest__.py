@@ -1,5 +1,5 @@
 {
-    'name': "LIMS Reception Module",
+    'name': "Recepción de Muestras",
     'version': '1.0',
     'summary': "Gestión de Recepción de Muestras para LIMS",
     'category': 'Laboratory',
