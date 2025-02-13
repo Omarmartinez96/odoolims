@@ -1,6 +1,32 @@
 <odoo>
     <data>
-        <!-- Formulario de Clientes -->
+        <!-- Acción de Ventana para Clientes -->
+        <record id="action_lims_customers" model="ir.actions.act_window">
+            <field name="name">Clientes</field>
+            <field name="res_model">lims.customer</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="view_lims_customer_form"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crea un nuevo cliente LIMS.
+                </p>
+            </field>
+        </record>
+
+        <!-- Vista de Lista para Clientes -->
+        <record id="view_lims_customer_list" model="ir.ui.view">
+            <field name="name">lims.customer.list</field>
+            <field name="model">lims.customer</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="client_code"/>
+                    <field name="fiscal_address"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista de Formulario para Clientes -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form</field>
             <field name="model">lims.customer</field>
@@ -20,48 +46,24 @@
                                         <field name="name"/>
                                         <field name="address"/>
                                     </list>
-                                    <form string="Sucursal">
-                                        <group>
-                                            <field name="name"/>
-                                            <field name="address"/>
-                                        </group>
-
-                                        <!-- Departamentos dentro de la Sucursal -->
-                                        <notebook>
-                                            <page string="Departamentos">
-                                                <field name="department_ids">
-                                                    <list editable="bottom">
-                                                        <field name="name"/>
-                                                    </list>
-                                                    <form string="Departamento">
-                                                        <group>
-                                                            <field name="name"/>
-                                                        </group>
-
-                                                        <!-- Contactos dentro del Departamento -->
-                                                        <notebook>
-                                                            <page string="Contactos">
-                                                                <field name="contact_ids">
-                                                                    <list editable="bottom">
-                                                                        <field name="name"/>
-                                                                        <field name="email"/>
-                                                                        <field name="phone"/>
-                                                                    </list>
-                                                                    <form string="Contacto">
-                                                                        <group>
-                                                                            <field name="name"/>
-                                                                            <field name="email"/>
-                                                                            <field name="phone"/>
-                                                                        </group>
-                                                                    </form>
-                                                                </field>
-                                                            </page>
-                                                        </notebook>
-                                                    </form>
-                                                </field>
-                                            </page>
-                                        </notebook>
-                                    </form>
+                                </field>
+                            </page>
+                            <!-- Pestaña de Departamentos -->
+                            <page string="Departamentos">
+                                <field name="department_ids">
+                                    <list editable="bottom">
+                                        <field name="name"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <!-- Pestaña de Contactos -->
+                            <page string="Contactos">
+                                <field name="contact_ids">
+                                    <list editable="bottom">
+                                        <field name="name"/>
+                                        <field name="email"/>
+                                        <field name="phone"/>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>
@@ -69,5 +71,11 @@
                 </form>
             </field>
         </record>
+
+        <!-- Menú Principal -->
+        <menuitem id="lims_menu" name="Gestión de Clientes" sequence="1"/>
+
+        <!-- Menú de Clientes dentro de Gestión de Clientes -->
+        <menuitem id="lims_customers_menu" name="Clientes" parent="lims_menu" action="action_lims_customers" sequence="2"/>
     </data>
 </odoo>
