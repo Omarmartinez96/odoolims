@@ -22,8 +22,7 @@
                 <form string="Contacto">
                     <sheet>
                         <group>
-                            <!-- Campo 'department_id' en solo lectura para no reescribir el departamento -->
-                            <field name="department_id" readonly="1"/>
+                            <field name="department_id" readonly="1" required="1"/>
                             <field name="name" required="1"/>
                             <field name="email"/>
                             <field name="phone"/>

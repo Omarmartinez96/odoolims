@@ -43,21 +43,21 @@
                             <field name="client_code"/>
                             <field name="fiscal_address"/>
                         </group>
-                        <!-- BOTÓN para ver sucursales, usando 'id' en lugar de 'active_id' -->
+                        <!-- BOTÓN para ver sucursales, usando 'id' y oculto si el registro no está guardado -->
                         <group>
                             <button name="%(action_lims_branches)d"
                                     string="Ver Sucursales"
                                     type="action"
                                     class="oe_stat_button"
-                                    context="{'default_customer_id': id}"/>
+                                    context="{'default_customer_id': id}"
+                                    attrs="{'invisible': [('id','=',False)]}"/>
                         </group>
                         <notebook>
                             <page string="Sucursales">
                                 <!-- One2many a lims.branch -->
                                 <field name="branch_ids">
-                                    <!-- Agrega un context para que, si creas una sucursal desde aquí, 
-                                         se asigne automáticamente el customer_id -->
-                                    <list create="true" context="{'default_customer_id': id}">
+                                    <!-- Al crear inline, Odoo setea automáticamente customer_id -->
+                                    <list create="true">
                                         <field name="name"/>
                                         <field name="address"/>
                                     </list>
@@ -68,5 +68,6 @@
                 </form>
             </field>
         </record>
+
     </data>
 </odoo>

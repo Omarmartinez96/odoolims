@@ -30,23 +30,24 @@
                 <form string="Sucursal">
                     <sheet>
                         <group>
-                            <!-- Campo 'customer_id' en solo lectura para no reescribir el cliente -->
-                            <field name="customer_id" readonly="1"/>
+                            <!-- Campo 'customer_id' en solo lectura -->
+                            <field name="customer_id" readonly="1" required="1"/>
                             <field name="name" required="1"/>
                             <field name="address"/>
                         </group>
-                        <!-- BOTÓN para ver departamentos, usando 'id' en lugar de 'active_id' -->
+                        <!-- BOTÓN para ver departamentos, oculto si no hay ID de sucursal -->
                         <group>
                             <button name="%(action_lims_departments)d"
                                     string="Ver Departamentos"
                                     type="action"
                                     class="oe_stat_button"
-                                    context="{'default_branch_id': id}"/>
+                                    context="{'default_branch_id': id}"
+                                    attrs="{'invisible': [('id','=',False)]}"/>
                         </group>
                         <notebook>
                             <page string="Departamentos">
                                 <!-- One2many a lims.department -->
-                                <field name="department_ids" context="{'default_branch_id': id}">
+                                <field name="department_ids">
                                     <list create="true">
                                         <field name="name"/>
                                     </list>

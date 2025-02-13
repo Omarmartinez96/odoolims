@@ -29,22 +29,23 @@
                 <form string="Departamento">
                     <sheet>
                         <group>
-                            <!-- Campo 'branch_id' en solo lectura para no reescribir la sucursal -->
-                            <field name="branch_id" readonly="1"/>
+                            <!-- Campo 'branch_id' en solo lectura -->
+                            <field name="branch_id" readonly="1" required="1"/>
                             <field name="name" required="1"/>
                         </group>
-                        <!-- BOTÓN para ver contactos, usando 'id' en lugar de 'active_id' -->
+                        <!-- BOTÓN para ver contactos, oculto si no hay ID de departamento -->
                         <group>
                             <button name="%(action_lims_contacts)d"
                                     string="Ver Contactos"
                                     type="action"
                                     class="oe_stat_button"
-                                    context="{'default_department_id': id}"/>
+                                    context="{'default_department_id': id}"
+                                    attrs="{'invisible': [('id','=',False)]}"/>
                         </group>
                         <notebook>
                             <page string="Contactos">
                                 <!-- One2many a lims.contact -->
-                                <field name="contact_ids" context="{'default_department_id': id}">
+                                <field name="contact_ids">
                                     <list create="true">
                                         <field name="name"/>
                                         <field name="email"/>
