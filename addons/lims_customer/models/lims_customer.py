@@ -18,7 +18,7 @@ class LimsBranch(models.Model):
     _description = 'Sucursales del Cliente'
 
     name = fields.Char(string="Nombre de la Sucursal", required=True)
-    customer_id = fields.Many2one('lims.customer', string="Cliente", required=True)
+    customer_id = fields.Many2one('lims.customer', string="Cliente", required=True, ondelete="cascade")
     address = fields.Text(string="Dirección")
     department_ids = fields.One2many('lims.department', 'branch_id', string="Departamentos")
 
@@ -28,8 +28,8 @@ class LimsDepartment(models.Model):
     _description = 'Departamentos de la Sucursal'
 
     name = fields.Char(string="Nombre del Departamento", required=True)
-    branch_id = fields.Many2one('lims.branch', string="Sucursal", required=True)
-    customer_id = fields.Many2one('lims.customer', string="Cliente", required=True)
+    branch_id = fields.Many2one('lims.branch', string="Sucursal", required=True, ondelete="cascade")
+    customer_id = fields.Many2one('lims.customer', string="Cliente", required=True, ondelete="cascade")
     contact_ids = fields.One2many('lims.contact', 'department_id', string="Contactos")
 
 
@@ -40,5 +40,5 @@ class LimsContact(models.Model):
     name = fields.Char(string="Nombre del Contacto", required=True)
     email = fields.Char(string="Correo Electrónico")
     phone = fields.Char(string="Teléfono")
-    department_id = fields.Many2one('lims.department', string="Departamento", required=True)
-    customer_id = fields.Many2one('lims.customer', string="Cliente", required=True)
+    department_id = fields.Many2one('lims.department', string="Departamento", required=True, ondelete="cascade")
+    customer_id = fields.Many2one('lims.customer', string="Cliente", required=True, ondelete="cascade")
