@@ -1,5 +1,6 @@
 <odoo>
     <data>
+
         <!-- VISTA LISTA DE CONTACTOS -->
         <record id="view_lims_contact_list" model="ir.ui.view">
             <field name="name">lims.contact.list</field>
@@ -22,7 +23,6 @@
                 <form string="Contacto">
                     <sheet>
                         <group>
-                            <!-- Campo 'department_id' en solo lectura para no reescribir el departamento -->
                             <field name="department_id" readonly="1"/>
                             <field name="name" required="1"/>
                             <field name="email"/>
@@ -32,5 +32,6 @@
                 </form>
             </field>
         </record>
+
     </data>
 </odoo>

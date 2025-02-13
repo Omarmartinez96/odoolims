@@ -1,6 +1,7 @@
 <odoo>
     <data>
-        <!-- ACCIÓN: Listar contactos filtrados por el departamento actual -->
+
+        <!-- ACCIÓN DE VENTANA PARA CONTACTOS (FILTRADA POR DEPARTAMENTO) -->
         <record id="action_lims_contacts" model="ir.actions.act_window">
             <field name="name">Contactos</field>
             <field name="res_model">lims.contact</field>
@@ -32,13 +33,13 @@
                             <field name="branch_id" readonly="1"/>
                             <field name="name" required="1"/>
                         </group>
-                        <!-- BOTÓN para ver Contactos filtrados y autocompletar el departamento -->
+                        <!-- BOTÓN para ver contactos, usando 'id' en lugar de 'active_id' -->
                         <group>
                             <button name="%(action_lims_contacts)d"
                                     string="Ver Contactos"
                                     type="action"
                                     class="oe_stat_button"
-                                    context="{'default_department_id': active_id}"/>
+                                    context="{'default_department_id': id}"/>
                         </group>
                         <notebook>
                             <page string="Contactos">
@@ -55,5 +56,6 @@
                 </form>
             </field>
         </record>
+
     </data>
 </odoo>

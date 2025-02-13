@@ -1,6 +1,7 @@
 <odoo>
     <data>
-        <!-- ACCIÓN: Listar departamentos filtrados por la sucursal actual -->
+
+        <!-- ACCIÓN DE VENTANA PARA DEPARTAMENTOS (FILTRADA POR SUCURSAL) -->
         <record id="action_lims_departments" model="ir.actions.act_window">
             <field name="name">Departamentos</field>
             <field name="res_model">lims.department</field>
@@ -34,13 +35,13 @@
                             <field name="name" required="1"/>
                             <field name="address"/>
                         </group>
-                        <!-- BOTÓN para ver Departamentos filtrados y autocompletar la sucursal -->
+                        <!-- BOTÓN para ver departamentos, usando 'id' en lugar de 'active_id' -->
                         <group>
                             <button name="%(action_lims_departments)d"
                                     string="Ver Departamentos"
                                     type="action"
                                     class="oe_stat_button"
-                                    context="{'default_branch_id': active_id}"/>
+                                    context="{'default_branch_id': id}"/>
                         </group>
                         <notebook>
                             <page string="Departamentos">
@@ -55,5 +56,6 @@
                 </form>
             </field>
         </record>
+
     </data>
 </odoo>
