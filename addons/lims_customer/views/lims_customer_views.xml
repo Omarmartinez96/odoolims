@@ -45,7 +45,7 @@
         </record>
 
         <!-- Menú Principal del LIMS -->
-        <menuitem id="lims_menu" name="LIMS" sequence="1"/>
+        <menuitem id="lims_menu" name="Gestión de Clientes" sequence="1"/>
 
         <!-- Menú de Clientes dentro del LIMS -->
         <menuitem id="lims_customers_menu" name="Clientes" parent="lims_menu" action="action_lims_customers"/>
