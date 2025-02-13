@@ -1,16 +1,22 @@
 <odoo>
     <data>
-        <!-- Vista de Lista para Contactos -->
-        <record id="view_lims_contact_list" model="ir.ui.view">
-            <field name="name">lims.contact.list</field>
+        <record id="view_lims_contact_form" model="ir.ui.view">
+            <field name="name">lims.contact.form</field>
             <field name="model">lims.contact</field>
             <field name="arch" type="xml">
-                <list>
-                    <field name="name"/>
-                    <field name="email"/>
-                    <field name="phone"/>
-                </list>
+                <form>
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="email"/>
+                            <field name="phone"/>
+                            <field name="department_id"/>
+                        </group>
+                    </sheet>
+                </form>
             </field>
         </record>
+
+        <menuitem id="lims_contacts_menu" name="Contactos" parent="lims_menu" action="action_lims_contacts"/>
     </data>
 </odoo>

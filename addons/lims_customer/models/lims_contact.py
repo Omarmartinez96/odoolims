@@ -9,5 +9,3 @@ class LimsContact(models.Model):
     phone = fields.Char(string="Teléfono")
 
     department_id = fields.Many2one('lims.department', string="Departamento", required=True)
-    branch_id = fields.Many2one('lims.branch', string="Sucursal", related="department_id.branch_id", store=True)
-    customer_id = fields.Many2one('lims.customer', string="Cliente", related="department_id.customer_id", store=True)
