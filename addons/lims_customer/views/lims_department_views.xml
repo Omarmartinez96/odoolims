@@ -1,6 +1,14 @@
 <odoo>
     <data>
-        <!-- Vista lista de Departamentos -->
+        <!-- ACCIÓN: Listar contactos filtrados por el departamento actual -->
+        <record id="action_lims_contacts" model="ir.actions.act_window">
+            <field name="name">Contactos</field>
+            <field name="res_model">lims.contact</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('department_id','=', context.get('default_department_id'))]</field>
+        </record>
+
+        <!-- VISTA LISTA DE DEPARTAMENTOS -->
         <record id="view_lims_department_list" model="ir.ui.view">
             <field name="name">lims.department.list</field>
             <field name="model">lims.department</field>
@@ -12,7 +20,7 @@
             </field>
         </record>
 
-        <!-- Vista formulario de Departamentos -->
+        <!-- VISTA FORMULARIO DE DEPARTAMENTOS -->
         <record id="view_lims_department_form" model="ir.ui.view">
             <field name="name">lims.department.form</field>
             <field name="model">lims.department</field>
@@ -20,8 +28,17 @@
                 <form string="Departamento">
                     <sheet>
                         <group>
+                            <!-- Campo 'branch_id' en solo lectura para no reescribir la sucursal -->
+                            <field name="branch_id" readonly="1"/>
                             <field name="name" required="1"/>
-                            <field name="branch_id"/>
+                        </group>
+                        <!-- BOTÓN para ver Contactos filtrados y autocompletar el departamento -->
+                        <group>
+                            <button name="%(action_lims_contacts)d"
+                                    string="Ver Contactos"
+                                    type="action"
+                                    class="oe_stat_button"
+                                    context="{'default_department_id': active_id}"/>
                         </group>
                         <notebook>
                             <page string="Contactos">

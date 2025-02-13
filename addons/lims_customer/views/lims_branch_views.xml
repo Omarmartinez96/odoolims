@@ -1,6 +1,14 @@
 <odoo>
     <data>
-        <!-- Vista lista de Sucursales -->
+        <!-- ACCIÓN: Listar departamentos filtrados por la sucursal actual -->
+        <record id="action_lims_departments" model="ir.actions.act_window">
+            <field name="name">Departamentos</field>
+            <field name="res_model">lims.department</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('branch_id','=', context.get('default_branch_id'))]</field>
+        </record>
+
+        <!-- VISTA LISTA DE SUCURSALES -->
         <record id="view_lims_branch_list" model="ir.ui.view">
             <field name="name">lims.branch.list</field>
             <field name="model">lims.branch</field>
@@ -13,7 +21,7 @@
             </field>
         </record>
 
-        <!-- Vista formulario de Sucursales -->
+        <!-- VISTA FORMULARIO DE SUCURSALES -->
         <record id="view_lims_branch_form" model="ir.ui.view">
             <field name="name">lims.branch.form</field>
             <field name="model">lims.branch</field>
@@ -21,9 +29,18 @@
                 <form string="Sucursal">
                     <sheet>
                         <group>
+                            <!-- Campo 'customer_id' en solo lectura para no reescribir el cliente -->
+                            <field name="customer_id" readonly="1"/>
                             <field name="name" required="1"/>
                             <field name="address"/>
-                            <field name="customer_id"/>
+                        </group>
+                        <!-- BOTÓN para ver Departamentos filtrados y autocompletar la sucursal -->
+                        <group>
+                            <button name="%(action_lims_departments)d"
+                                    string="Ver Departamentos"
+                                    type="action"
+                                    class="oe_stat_button"
+                                    context="{'default_branch_id': active_id}"/>
                         </group>
                         <notebook>
                             <page string="Departamentos">

@@ -1,13 +1,16 @@
 <odoo>
     <data>
-        <!-- ACCIÓN DE VENTANA PARA SUCURSALES (definida primero para ser referenciada) -->
+
+        <!-- ACCIÓN: Listar sucursales filtradas por el cliente actual -->
         <record id="action_lims_branches" model="ir.actions.act_window">
             <field name="name">Sucursales</field>
             <field name="res_model">lims.branch</field>
             <field name="view_mode">list,form</field>
+            <!-- Sólo muestra sucursales cuyo customer_id coincida con el pasado en el contexto -->
+            <field name="domain">[('customer_id','=', context.get('default_customer_id'))]</field>
         </record>
 
-        <!-- MENÚ PRINCIPAL PARA GESTIÓN DE CLIENTES -->
+        <!-- MENÚ PRINCIPAL DE CLIENTES -->
         <menuitem id="lims_customer_menu" name="Gestión de Clientes" sequence="1"/>
 
         <!-- ACCIÓN DE VENTANA PARA CLIENTES -->
@@ -18,10 +21,16 @@
         </record>
 
         <!-- MENÚ PARA CLIENTES -->
-        <menuitem id="lims_customers_menu" name="Clientes" parent="lims_customer_menu" action="action_lims_customers" sequence="1"/>
+        <menuitem id="lims_customers_menu" name="Clientes"
+                  parent="lims_customer_menu"
+                  action="action_lims_customers"
+                  sequence="1"/>
 
-        <!-- MENÚ PARA SUCURSALES -->
-        <menuitem id="lims_branches_menu" name="Sucursales" parent="lims_customer_menu" action="action_lims_branches" sequence="2"/>
+        <!-- MENÚ PARA SUCURSALES (usa la acción que filtra por cliente si viene con contexto) -->
+        <menuitem id="lims_branches_menu" name="Sucursales"
+                  parent="lims_customer_menu"
+                  action="action_lims_branches"
+                  sequence="2"/>
 
         <!-- VISTA DE FORMULARIO PARA CLIENTES -->
         <record id="view_lims_customer_form" model="ir.ui.view">
@@ -35,12 +44,13 @@
                             <field name="client_code"/>
                             <field name="fiscal_address"/>
                         </group>
-                        <!-- BOTÓN PARA VER SUCURSALES -->
+                        <!-- BOTÓN para abrir sucursales filtradas y autocompletar el cliente -->
                         <group>
-                            <button name="%(action_lims_branches)d" 
-                                    string="Ver Sucursales" 
-                                    type="action" 
-                                    class="oe_stat_button"/>
+                            <button name="%(action_lims_branches)d"
+                                    string="Ver Sucursales"
+                                    type="action"
+                                    class="oe_stat_button"
+                                    context="{'default_customer_id': active_id}"/>
                         </group>
                         <notebook>
                             <page string="Sucursales">
@@ -56,5 +66,6 @@
                 </form>
             </field>
         </record>
+
     </data>
 </odoo>
