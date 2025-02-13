@@ -8,6 +8,9 @@ class LimsCustomer(models.Model):
     client_code = fields.Char(string="Código de Cliente", required=True)
     fiscal_address = fields.Text(string="Dirección Fiscal")
 
+    branch_ids = fields.One2many('lims.branch', 'customer_id', string="Sucursales")
+
+
 class LimsBranch(models.Model):
     _name = "lims.branch"
     _description = "Sucursales del Cliente"
@@ -16,12 +19,18 @@ class LimsBranch(models.Model):
     address = fields.Text(string="Dirección")
     customer_id = fields.Many2one("lims.customer", string="Cliente", required=True)
 
+    department_ids = fields.One2many('lims.department', 'branch_id', string="Departamentos")
+
+
 class LimsDepartment(models.Model):
     _name = "lims.department"
     _description = "Departamentos de la Sucursal"
 
     name = fields.Char(string="Nombre del Departamento", required=True)
     branch_id = fields.Many2one("lims.branch", string="Sucursal", required=True)
+
+    contact_ids = fields.One2many('lims.contact', 'department_id', string="Contactos")
+
 
 class LimsContact(models.Model):
     _name = "lims.contact"
