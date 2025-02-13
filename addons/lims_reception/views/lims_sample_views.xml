@@ -56,7 +56,7 @@
         </record>
 
         <!-- Menú para Recepción de Muestras -->
-        <menuitem id="lims_menu" name="LIMS" sequence="1" groups="base.group_user"/>
+        <menuitem id="lims_menu" name="Recepción de Muestras" sequence="1" groups="base.group_user"/>
         <menuitem id="lims_reception_menu" name="Recepción de Muestras" parent="lims_menu" action="action_lims_samples" sequence="2"/>
     </data>
 </odoo>
