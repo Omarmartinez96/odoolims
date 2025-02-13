@@ -1,32 +1,6 @@
 <odoo>
     <data>
-        <!-- Acción de Ventana para Clientes -->
-        <record id="action_lims_customers" model="ir.actions.act_window">
-            <field name="name">Clientes</field>
-            <field name="res_model">lims.customer</field>
-            <field name="view_mode">list,form</field>
-            <field name="view_id" ref="view_lims_customer_form"/>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Crea un nuevo cliente LIMS.
-                </p>
-            </field>
-        </record>
-
-        <!-- Vista de Lista para Clientes -->
-        <record id="view_lims_customer_list" model="ir.ui.view">
-            <field name="name">lims.customer.list</field>
-            <field name="model">lims.customer</field>
-            <field name="arch" type="xml">
-                <list>
-                    <field name="name"/>
-                    <field name="client_code"/>
-                    <field name="fiscal_address"/>
-                </list>
-            </field>
-        </record>
-
-        <!-- Vista de Formulario para Clientes -->
+        <!-- Vista de Formulario para Clientes (Se define antes de la acción) -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form</field>
             <field name="model">lims.customer</field>
@@ -69,6 +43,32 @@
                         </notebook>
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <!-- Acción de Ventana para Clientes (Se coloca después de la vista) -->
+        <record id="action_lims_customers" model="ir.actions.act_window">
+            <field name="name">Clientes</field>
+            <field name="res_model">lims.customer</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="view_lims_customer_form"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crea un nuevo cliente LIMS.
+                </p>
+            </field>
+        </record>
+
+        <!-- Vista de Lista para Clientes -->
+        <record id="view_lims_customer_list" model="ir.ui.view">
+            <field name="name">lims.customer.list</field>
+            <field name="model">lims.customer</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="name"/>
+                    <field name="client_code"/>
+                    <field name="fiscal_address"/>
+                </list>
             </field>
         </record>
 
