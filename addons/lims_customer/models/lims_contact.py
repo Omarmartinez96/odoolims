@@ -7,5 +7,4 @@ class LimsContact(models.Model):
     name = fields.Char(string="Nombre del Contacto", required=True)
     email = fields.Char(string="Correo Electrónico")
     phone = fields.Char(string="Teléfono")
-    
     department_id = fields.Many2one('lims.department', string="Departamento", required=True)
