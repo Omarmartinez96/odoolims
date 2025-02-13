@@ -1,14 +1,29 @@
 <odoo>
     <data>
-        <!-- Vista de Lista para Sucursales -->
-        <record id="view_lims_branch_list" model="ir.ui.view">
-            <field name="name">lims.branch.list</field>
+        <!-- Formulario de Sucursales -->
+        <record id="view_lims_branch_form" model="ir.ui.view">
+            <field name="name">lims.branch.form</field>
             <field name="model">lims.branch</field>
             <field name="arch" type="xml">
-                <list>
-                    <field name="name"/>
-                    <field name="customer_id"/>
-                </list>
+                <form string="Sucursal">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="address"/>
+                            <field name="customer_id" readonly="1"/>
+                        </group>
+                        <notebook>
+                            <!-- Departamentos de la Sucursal -->
+                            <page string="Departamentos">
+                                <field name="department_ids">
+                                    <list editable="bottom">
+                                        <field name="name"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
             </field>
         </record>
     </data>
