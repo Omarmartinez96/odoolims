@@ -14,24 +14,24 @@ class LimsCustodyChain(models.Model):
     )
 
     cliente_id = fields.Many2one(
-        'res.partner',
+        'lims.customer',  # Corregido: antes era 'res.partner'
         string="Cliente",
         required=True,
         help="Cliente asociado con la cadena de custodia."
     )
 
     sucursal_id = fields.Many2one(
-        'res.sucursal',
+        'lims.branch',  # Corregido: antes era 'res.sucursal'
         string="Sucursal",
         required=True,
-        domain="[('cliente_id', '=', cliente_id)]",
+        domain="[('customer_id', '=', cliente_id)]",
         help="Sucursal asociada al cliente seleccionado."
     )
 
     departamento_id = fields.Many2one(
-        'res.departamento',
+        'lims.department',  # Corregido: antes era 'res.departamento'
         string="Departamento",
-        domain="[('sucursal_id', '=', sucursal_id)]",
+        domain="[('branch_id', '=', sucursal_id)]",
         help="Departamento asociado a la sucursal seleccionada."
     )
 

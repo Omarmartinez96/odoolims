@@ -20,7 +20,7 @@ class LimsSample(models.Model):
     )
 
     sucursal_id = fields.Many2one(
-        'lims.branch',
+        'lims.branch',  # Corregido: antes era 'res.sucursal'
         string="Sucursal",
         required=True,
         domain="[('customer_id', '=', cliente_id)]",
@@ -28,7 +28,7 @@ class LimsSample(models.Model):
     )
 
     departamento_id = fields.Many2one(
-        'lims.department',
+        'lims.department',  # Corregido: antes era 'res.departamento'
         string="Departamento",
         domain="[('branch_id', '=', sucursal_id)]",
         help="Departamento asociado a la sucursal seleccionada."
