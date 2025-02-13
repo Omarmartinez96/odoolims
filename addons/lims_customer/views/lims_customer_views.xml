@@ -28,6 +28,7 @@
                                 <field name="department_ids">
                                     <list editable="bottom">
                                         <field name="name"/>
+                                        <field name="branch_id"/>
                                     </list>
                                 </field>
                             </page>
@@ -39,6 +40,7 @@
                                         <field name="name"/>
                                         <field name="email"/>
                                         <field name="phone"/>
+                                        <field name="department_id"/>
                                     </list>
                                 </field>
                             </page>

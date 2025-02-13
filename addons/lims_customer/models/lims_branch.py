@@ -6,6 +6,6 @@ class LimsBranch(models.Model):
 
     name = fields.Char(string="Nombre de la Sucursal", required=True)
     address = fields.Text(string="Dirección")
-    
-    customer_id = fields.Many2one('lims.customer', string="Cliente", required=True, ondelete="cascade")
+
+    customer_id = fields.Many2one('lims.customer', string="Cliente", required=True)
     department_ids = fields.One2many('lims.department', 'branch_id', string="Departamentos")
