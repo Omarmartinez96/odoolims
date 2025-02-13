@@ -11,16 +11,8 @@ class LimsSample(models.Model):
         help="Cliente asociado con la muestra."
     )
 
-    billing_partner_id = fields.Many2one(
-        'res.partner',
-        string="Facturar a",
-        related='cliente_id.billing_partner_id',
-        store=True,
-        help="Cliente al que se le emitirá la factura."
-    )
-
     sucursal_id = fields.Many2one(
-        'lims.branch',  # Corregido: antes era 'res.sucursal'
+        'lims.branch',
         string="Sucursal",
         required=True,
         domain="[('customer_id', '=', cliente_id)]",
@@ -28,7 +20,7 @@ class LimsSample(models.Model):
     )
 
     departamento_id = fields.Many2one(
-        'lims.department',  # Corregido: antes era 'res.departamento'
+        'lims.department',
         string="Departamento",
         domain="[('branch_id', '=', sucursal_id)]",
         help="Departamento asociado a la sucursal seleccionada."
@@ -37,7 +29,6 @@ class LimsSample(models.Model):
     custody_chain_id = fields.Many2one(
         'lims.custody_chain',
         string="Cadena de Custodia",
-        required=False,
         help="Número de Cadena de Custodia asociada."
     )
 
