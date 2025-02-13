@@ -19,35 +19,67 @@
             <field name="arch" type="xml">
                 <list>
                     <field name="name"/>
-                    <field name="rfc"/>
-                    <field name="billing_partner_id"/>
+                    <field name="client_code"/>
+                    <field name="fiscal_address"/>
                 </list>
             </field>
         </record>
 
-        <!-- Vista de Formulario para Clientes -->
+        <!-- Vista de Formulario para Clientes con Pestañas -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form</field>
             <field name="model">lims.customer</field>
             <field name="arch" type="xml">
-                <form>
+                <form string="Gestión de Clientes">
                     <sheet>
                         <group>
-                            <field name="name"/>
-                            <field name="rfc"/>
-                            <field name="billing_partner_id"/>
-                            <field name="branch_ids" widget="one2many_list"/>
-                            <field name="contact_ids" widget="one2many_list"/>
+                            <field name="name" required="1"/>
+                            <field name="client_code" required="1"/>
+                            <field name="fiscal_address"/>
                         </group>
+
+                        <notebook>
+                            <page string="Sucursales">
+                                <field name="branch_ids" widget="one2many_list"/>
+                            </page>
+                            <page string="Departamentos">
+                                <field name="department_ids" widget="one2many_list"/>
+                            </page>
+                            <page string="Contactos">
+                                <field name="contact_ids" widget="one2many_list"/>
+                            </page>
+                        </notebook>
                     </sheet>
                 </form>
             </field>
         </record>
 
+        <!-- Acción de Ventana para Sucursales -->
+        <record id="action_lims_branches" model="ir.actions.act_window">
+            <field name="name">Sucursales</field>
+            <field name="res_model">lims.branch</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- Acción de Ventana para Departamentos -->
+        <record id="action_lims_departments" model="ir.actions.act_window">
+            <field name="name">Departamentos</field>
+            <field name="res_model">lims.department</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- Acción de Ventana para Contactos -->
+        <record id="action_lims_contacts" model="ir.actions.act_window">
+            <field name="name">Contactos</field>
+            <field name="res_model">lims.contact</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
         <!-- Menú Principal del LIMS -->
         <menuitem id="lims_menu" name="Gestión de Clientes" sequence="1"/>
-
-        <!-- Menú de Clientes dentro del LIMS -->
         <menuitem id="lims_customers_menu" name="Clientes" parent="lims_menu" action="action_lims_customers"/>
+        <menuitem id="lims_branches_menu" name="Sucursales" parent="lims_menu" action="action_lims_branches"/>
+        <menuitem id="lims_departments_menu" name="Departamentos" parent="lims_menu" action="action_lims_departments"/>
+        <menuitem id="lims_contacts_menu" name="Contactos" parent="lims_menu" action="action_lims_contacts"/>
     </data>
 </odoo>

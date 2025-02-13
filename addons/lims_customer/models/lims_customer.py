@@ -5,8 +5,29 @@ class LimsCustomer(models.Model):
     _description = "Cliente del LIMS"
 
     name = fields.Char(string="Nombre del Cliente", required=True)
-    rfc = fields.Char(string="RFC")
-    billing_partner_id = fields.Many2one('res.partner', string="Empresa Facturadora")
+    client_code = fields.Char(string="Código de Cliente", required=True)
+    fiscal_address = fields.Text(string="Dirección Fiscal")
 
-    branch_ids = fields.One2many('lims.branch', 'customer_id', string="Sucursales")
-    contact_ids = fields.One2many('lims.contact', 'customer_id', string="Contactos")
+class LimsBranch(models.Model):
+    _name = "lims.branch"
+    _description = "Sucursales del Cliente"
+
+    name = fields.Char(string="Nombre de la Sucursal", required=True)
+    address = fields.Text(string="Dirección")
+    customer_id = fields.Many2one("lims.customer", string="Cliente", required=True)
+
+class LimsDepartment(models.Model):
+    _name = "lims.department"
+    _description = "Departamentos de la Sucursal"
+
+    name = fields.Char(string="Nombre del Departamento", required=True)
+    branch_id = fields.Many2one("lims.branch", string="Sucursal", required=True)
+
+class LimsContact(models.Model):
+    _name = "lims.contact"
+    _description = "Contactos del Departamento"
+
+    name = fields.Char(string="Nombre del Contacto", required=True)
+    email = fields.Char(string="Correo Electrónico")
+    phone = fields.Char(string="Teléfono")
+    department_id = fields.Many2one("lims.department", string="Departamento", required=True)
