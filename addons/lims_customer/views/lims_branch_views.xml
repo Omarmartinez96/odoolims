@@ -1,24 +1,6 @@
 <odoo>
     <data>
-        <record id="view_lims_branch_form" model="ir.ui.view">
-            <field name="name">lims.branch.form</field>
-            <field name="model">lims.branch</field>
-            <field name="arch" type="xml">
-                <form string="Sucursal">
-                    <sheet>
-                        <group>
-                            <field name="name"/>
-                            <field name="address"/>
-                            <field name="customer_id"/>
-                        </group>
-                        <group>
-                            <button name="%(action_lims_departments)d" string="Ver Departamentos" type="action" class="oe_stat_button"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
+        <!-- Acción para abrir Sucursales -->
         <record id="action_lims_branches" model="ir.actions.act_window">
             <field name="name">Sucursales</field>
             <field name="res_model">lims.branch</field>
@@ -26,5 +8,31 @@
         </record>
 
         <menuitem id="lims_branches_menu" name="Sucursales" parent="lims_menu" action="action_lims_branches"/>
+
+        <!-- Formulario de Sucursales -->
+        <record id="view_lims_branch_form" model="ir.ui.view">
+            <field name="name">lims.branch.form</field>
+            <field name="model">lims.branch</field>
+            <field name="arch" type="xml">
+                <form string="Gestión de Sucursales">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="address"/>
+                            <field name="customer_id"/>
+                        </group>
+                        <notebook>
+                            <page string="Departamentos">
+                                <field name="department_ids">
+                                    <list editable="bottom">
+                                        <field name="name"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
     </data>
 </odoo>

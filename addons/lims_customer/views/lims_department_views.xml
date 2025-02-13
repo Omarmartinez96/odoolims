@@ -1,23 +1,6 @@
 <odoo>
     <data>
-        <record id="view_lims_department_form" model="ir.ui.view">
-            <field name="name">lims.department.form</field>
-            <field name="model">lims.department</field>
-            <field name="arch" type="xml">
-                <form string="Departamento">
-                    <sheet>
-                        <group>
-                            <field name="name"/>
-                            <field name="branch_id"/>
-                        </group>
-                        <group>
-                            <button name="%(action_lims_contacts)d" string="Ver Contactos" type="action" class="oe_stat_button"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
+        <!-- Acción para abrir Departamentos -->
         <record id="action_lims_departments" model="ir.actions.act_window">
             <field name="name">Departamentos</field>
             <field name="res_model">lims.department</field>
@@ -25,5 +8,32 @@
         </record>
 
         <menuitem id="lims_departments_menu" name="Departamentos" parent="lims_menu" action="action_lims_departments"/>
+
+        <!-- Formulario de Departamentos -->
+        <record id="view_lims_department_form" model="ir.ui.view">
+            <field name="name">lims.department.form</field>
+            <field name="model">lims.department</field>
+            <field name="arch" type="xml">
+                <form string="Gestión de Departamentos">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="branch_id"/>
+                        </group>
+                        <notebook>
+                            <page string="Contactos">
+                                <field name="contact_ids">
+                                    <list editable="bottom">
+                                        <field name="name"/>
+                                        <field name="email"/>
+                                        <field name="phone"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
     </data>
 </odoo>
