@@ -10,17 +10,9 @@
                             <field name="name"/>
                             <field name="branch_id"/>
                         </group>
-                        <notebook>
-                            <page string="Contactos">
-                                <field name="contact_ids">
-                                    <list editable="bottom">
-                                        <field name="name"/>
-                                        <field name="email"/>
-                                        <field name="phone"/>
-                                    </list>
-                                </field>
-                            </page>
-                        </notebook>
+                        <group>
+                            <button name="%(action_lims_contacts)d" string="Ver Contactos" type="action" class="oe_stat_button"/>
+                        </group>
                     </sheet>
                 </form>
             </field>

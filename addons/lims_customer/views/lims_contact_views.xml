@@ -17,19 +17,6 @@
             </field>
         </record>
 
-        <record id="view_lims_contact_list" model="ir.ui.view">
-            <field name="name">lims.contact.list</field>
-            <field name="model">lims.contact</field>
-            <field name="arch" type="xml">
-                <list>
-                    <field name="name"/>
-                    <field name="email"/>
-                    <field name="phone"/>
-                    <field name="department_id"/>
-                </list>
-            </field>
-        </record>
-
         <record id="action_lims_contacts" model="ir.actions.act_window">
             <field name="name">Contactos</field>
             <field name="res_model">lims.contact</field>

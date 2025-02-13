@@ -1,6 +1,5 @@
 <odoo>
     <data>
-        <!-- Vista de Formulario para Clientes -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form</field>
             <field name="model">lims.customer</field>
@@ -12,29 +11,20 @@
                             <field name="client_code"/>
                             <field name="fiscal_address"/>
                         </group>
-                        <notebook>
-                            <page string="Sucursales">
-                                <field name="branch_ids">
-                                    <list editable="bottom">
-                                        <field name="name"/>
-                                        <field name="address"/>
-                                    </list>
-                                </field>
-                            </page>
-                        </notebook>
+                        <group>
+                            <button name="%(action_lims_branches)d" string="Ver Sucursales" type="action" class="oe_stat_button"/>
+                        </group>
                     </sheet>
                 </form>
             </field>
         </record>
 
-        <!-- Acción y menú -->
         <record id="action_lims_customers" model="ir.actions.act_window">
             <field name="name">Clientes</field>
             <field name="res_model">lims.customer</field>
             <field name="view_mode">list,form</field>
         </record>
 
-        <menuitem id="lims_menu" name="LIMS" sequence="1"/>
         <menuitem id="lims_customers_menu" name="Clientes" parent="lims_menu" action="action_lims_customers"/>
     </data>
 </odoo>
