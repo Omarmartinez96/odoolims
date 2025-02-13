@@ -1,10 +1,10 @@
 {
-    'name': 'LIMS Reception Module',
+    'name': "LIMS Reception Module",
     'version': '1.0',
-    'author': 'Your Name',
+    'summary': "Gestión de Recepción de Muestras para LIMS",
     'category': 'Laboratory',
-    'summary': 'Gestión de Recepción de Muestras para LIMS',
-    'depends': ['base'],  # 🔴 ELIMINAR 'sale_extension'
+    'author': "Tu Nombre",
+    'depends': ['base', 'lims_customer'],
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
@@ -13,6 +13,6 @@
         'views/lims_custody_chain_views.xml',
     ],
     'installable': True,
-    'application': True,
+    'application': True,  # <--- ESTO DEBE ESTAR PRESENTE
     'license': 'LGPL-3',
 }

@@ -1,5 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
+        <!-- Vista de Formulario para Recepción de Muestras -->
         <record id="view_lims_sample_form" model="ir.ui.view">
             <field name="name">lims.sample.form</field>
             <field name="model">lims.sample</field>
@@ -13,9 +15,58 @@
                             <field name="sucursal_id" required="1"/>
                             <field name="departamento_id"/>
                         </group>
+                        <group>
+                            <separator string="DATOS DE LA MUESTRA" colspan="4"/>
+                            <field name="sample_identifier" required="1"/>
+                            <field name="sample_type"/>
+                            <field name="date_received" readonly="1"/>
+                            <field name="state" readonly="1"/>
+                        </group>
+                        <group>
+                            <separator string="CADENA DE CUSTODIA" colspan="4"/>
+                            <field name="custody_chain_id"/>
+                        </group>
+                        <group>
+                            <separator string="ADJUNTOS" colspan="4"/>
+                            <field name="attachment_ids" widget="many2many_binary"/>
+                        </group>
                     </sheet>
                 </form>
             </field>
         </record>
+
+        <!-- Vista de Lista para Recepción de Muestras -->
+        <record id="view_lims_sample_list" model="ir.ui.view">
+            <field name="name">lims.sample.list</field>
+            <field name="model">lims.sample</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="cliente_id"/>
+                    <field name="sucursal_id"/>
+                    <field name="departamento_id"/>
+                    <field name="sample_identifier"/>
+                    <field name="sample_type"/>
+                    <field name="date_received"/>
+                    <field name="state"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Acción para abrir la vista de Recepción de Muestras -->
+        <record id="action_lims_samples" model="ir.actions.act_window">
+            <field name="name">Recepción de Muestras</field>
+            <field name="res_model">lims.sample</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="view_lims_sample_list"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crea una nueva muestra en recepción.
+                </p>
+            </field>
+        </record>
+
+        <!-- Menú para Recepción de Muestras -->
+        <menuitem id="lims_menu" name="LIMS" sequence="1"/>
+        <menuitem id="lims_reception_menu" name="Recepción de Muestras" parent="lims_menu" action="action_lims_samples"/>
     </data>
 </odoo>
