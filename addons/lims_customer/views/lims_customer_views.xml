@@ -16,50 +16,30 @@
                             <!-- Pestaña de Sucursales -->
                             <page string="Sucursales">
                                 <field name="branch_ids">
-                                    <tree editable="bottom">
+                                    <list editable="bottom">
                                         <field name="name"/>
                                         <field name="address"/>
-                                    </tree>
-                                    <form string="Sucursal">
-                                        <group>
-                                            <field name="name"/>
-                                            <field name="address"/>
-                                        </group>
-                                        <notebook>
-                                            <!-- Pestaña de Departamentos dentro de la Sucursal -->
-                                            <page string="Departamentos">
-                                                <field name="department_ids">
-                                                    <tree editable="bottom">
-                                                        <field name="name"/>
-                                                    </tree>
-                                                    <form string="Departamento">
-                                                        <group>
-                                                            <field name="name"/>
-                                                        </group>
-                                                        <notebook>
-                                                            <!-- Pestaña de Contactos dentro del Departamento -->
-                                                            <page string="Contactos">
-                                                                <field name="contact_ids">
-                                                                    <tree editable="bottom">
-                                                                        <field name="name"/>
-                                                                        <field name="email"/>
-                                                                        <field name="phone"/>
-                                                                    </tree>
-                                                                    <form string="Contacto">
-                                                                        <group>
-                                                                            <field name="name"/>
-                                                                            <field name="email"/>
-                                                                            <field name="phone"/>
-                                                                        </group>
-                                                                    </form>
-                                                                </field>
-                                                            </page>
-                                                        </notebook>
-                                                    </form>
-                                                </field>
-                                            </page>
-                                        </notebook>
-                                    </form>
+                                    </list>
+                                </field>
+                            </page>
+
+                            <!-- Pestaña de Departamentos -->
+                            <page string="Departamentos">
+                                <field name="department_ids">
+                                    <list editable="bottom">
+                                        <field name="name"/>
+                                    </list>
+                                </field>
+                            </page>
+
+                            <!-- Pestaña de Contactos -->
+                            <page string="Contactos">
+                                <field name="contact_ids">
+                                    <list editable="bottom">
+                                        <field name="name"/>
+                                        <field name="email"/>
+                                        <field name="phone"/>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>
