@@ -22,21 +22,21 @@
                   action="action_lims_customers"
                   sequence="1"/>
 
-        <!-- VISTA DE LISTA DE CLIENTES -->
-        <record id="view_lims_customer_tree" model="ir.ui.view">
-            <field name="name">lims.customer.tree</field>
+        <!-- ✅ VISTA DE LISTA DE CLIENTES (USANDO <list> EN LUGAR DE <tree>) -->
+        <record id="view_lims_customer_list" model="ir.ui.view">
+            <field name="name">lims.customer.list</field>
             <field name="model">lims.customer</field>
             <field name="arch" type="xml">
-                <tree string="Clientes">
+                <list string="Clientes">
                     <field name="name" string="Nombre del Cliente"/>
                     <field name="client_code" string="Código del Cliente"/>
                     <field name="rfc" string="RFC"/>
                     <field name="fiscal_address" string="Dirección Fiscal"/>
-                </tree>
+                </list>
             </field>
         </record>
 
-        <!-- VISTA FORMULARIO DE CLIENTES -->
+        <!-- ✅ VISTA FORMULARIO DE CLIENTES -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form</field>
             <field name="model">lims.customer</field>
@@ -61,13 +61,13 @@
                         </group>
 
                         <!-- Notebook para visualizar las Sucursales -->
-                        <notebook modifiers="{'invisible': [['id', '=', False]]}">
+                        <notebook modifiers="{'id': [['!=', False]]}">
                             <page string="Sucursales">
                                 <field name="branch_ids" context="{'default_customer_id': id}">
-                                    <tree editable="bottom">
+                                    <list editable="bottom">
                                         <field name="name" string="Nombre de la Sucursal"/>
                                         <field name="address" string="Dirección"/>
-                                    </tree>
+                                    </list>
                                 </field>
                             </page>
                         </notebook>
