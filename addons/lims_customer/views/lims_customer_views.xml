@@ -12,7 +12,7 @@
             </field>
         </record>
 
-        <!-- Menús -->
+        <!-- Menú Principal -->
         <menuitem id="lims_customer_menu_root" name="Gestión de Clientes" sequence="10"/>
         <menuitem id="lims_customer_menu" name="Clientes" parent="lims_customer_menu_root" action="action_lims_customers" sequence="1"/>
 
@@ -44,11 +44,12 @@
                         <notebook>
                             <!-- Pestaña de Sucursales -->
                             <page string="Sucursales">
-                                <field name="branch_ids" context="{'form_view_ref': 'lims_branch_form'}">
+                                <field name="branch_ids" context="{'form_view_ref': 'view_lims_branch_form'}">
                                     <list editable="bottom">
                                         <field name="name"/>
                                         <field name="address"/>
                                     </list>
+                                    <!-- Formulario Emergente para Añadir Sucursales -->
                                     <form string="Agregar Sucursal">
                                         <sheet>
                                             <group>
@@ -61,6 +62,23 @@
                                 </field>
                             </page>
                         </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista de Formulario para Sucursales -->
+        <record id="view_lims_branch_form" model="ir.ui.view">
+            <field name="name">lims.branch.form</field>
+            <field name="model">lims.branch</field>
+            <field name="arch" type="xml">
+                <form string="Sucursal">
+                    <sheet>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="address"/>
+                            <field name="customer_id" invisible="1"/>
+                        </group>
                     </sheet>
                 </form>
             </field>
