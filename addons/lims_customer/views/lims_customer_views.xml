@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        <!-- Acción principal para Gestión de Clientes -->
+        <!-- Acción para abrir la vista de Clientes -->
         <record id="action_lims_customers" model="ir.actions.act_window">
             <field name="name">Clientes</field>
             <field name="res_model">lims.customer</field>
@@ -12,15 +12,14 @@
             </field>
         </record>
 
-        <!-- Menú para Gestión de Clientes -->
+        <!-- Menús -->
         <menuitem id="lims_customer_menu_root" name="Gestión de Clientes" sequence="10"/>
         <menuitem id="lims_customer_menu" name="Clientes" parent="lims_customer_menu_root" action="action_lims_customers" sequence="1"/>
 
-        <!-- Vista de Lista para Clientes -->
+        <!-- Vista Listada de Clientes -->
         <record id="view_lims_customer_list" model="ir.ui.view">
             <field name="name">lims.customer.list</field>
             <field name="model">lims.customer</field>
-            <field name="type">list</field> <!-- CORREGIDO: Antes estaba como tree -->
             <field name="arch" type="xml">
                 <list string="Clientes">
                     <field name="name"/>
@@ -30,7 +29,7 @@
             </field>
         </record>
 
-        <!-- Vista de Formulario para Clientes -->
+        <!-- Vista de Formulario de Clientes -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form</field>
             <field name="model">lims.customer</field>
@@ -42,7 +41,6 @@
                             <field name="client_code"/>
                             <field name="fiscal_address"/>
                         </group>
-
                         <notebook>
                             <!-- Pestaña de Sucursales -->
                             <page string="Sucursales">
