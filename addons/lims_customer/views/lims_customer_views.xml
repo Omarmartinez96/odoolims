@@ -22,6 +22,20 @@
                   action="action_lims_customers"
                   sequence="1"/>
 
+        <!-- VISTA DE LISTA DE CLIENTES -->
+        <record id="view_lims_customer_tree" model="ir.ui.view">
+            <field name="name">lims.customer.tree</field>
+            <field name="model">lims.customer</field>
+            <field name="arch" type="xml">
+                <tree string="Clientes">
+                    <field name="name" string="Nombre del Cliente"/>
+                    <field name="client_code" string="Código del Cliente"/>
+                    <field name="rfc" string="RFC"/>
+                    <field name="fiscal_address" string="Dirección Fiscal"/>
+                </tree>
+            </field>
+        </record>
+
         <!-- VISTA FORMULARIO DE CLIENTES -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form</field>
@@ -30,9 +44,10 @@
                 <form string="Gestión de Clientes">
                     <sheet>
                         <group>
-                            <field name="name" required="1"/>
-                            <field name="client_code"/>
-                            <field name="fiscal_address"/>
+                            <field name="name" string="Nombre del Cliente" required="1"/>
+                            <field name="rfc" string="RFC"/>
+                            <field name="client_code" string="Código del Cliente"/>
+                            <field name="fiscal_address" string="Dirección Fiscal"/>
                         </group>
 
                         <!-- Botón para ver sucursales asociadas -->
@@ -49,10 +64,10 @@
                         <notebook modifiers="{'invisible': [['id', '=', False]]}">
                             <page string="Sucursales">
                                 <field name="branch_ids" context="{'default_customer_id': id}">
-                                    <list create="true">
-                                        <field name="name"/>
-                                        <field name="address"/>
-                                    </list>
+                                    <tree editable="bottom">
+                                        <field name="name" string="Nombre de la Sucursal"/>
+                                        <field name="address" string="Dirección"/>
+                                    </tree>
                                 </field>
                             </page>
                         </notebook>
@@ -61,5 +76,6 @@
                 </form>
             </field>
         </record>
+
     </data>
 </odoo>
