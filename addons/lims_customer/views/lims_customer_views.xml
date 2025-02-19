@@ -4,7 +4,7 @@
         <record id="action_lims_customers" model="ir.actions.act_window">
             <field name="name">Clientes</field>
             <field name="res_model">lims.customer</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Crea un nuevo cliente LIMS.
@@ -17,15 +17,16 @@
         <menuitem id="lims_customer_menu" name="Clientes" parent="lims_customer_menu_root" action="action_lims_customers" sequence="1"/>
 
         <!-- Vista de Lista para Clientes -->
-        <record id="view_lims_customer_tree" model="ir.ui.view">
-            <field name="name">lims.customer.tree</field>
+        <record id="view_lims_customer_list" model="ir.ui.view">
+            <field name="name">lims.customer.list</field>
             <field name="model">lims.customer</field>
+            <field name="type">list</field> <!-- CORREGIDO: Antes estaba como tree -->
             <field name="arch" type="xml">
-                <tree string="Clientes">
+                <list string="Clientes">
                     <field name="name"/>
                     <field name="client_code"/>
                     <field name="fiscal_address"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -46,10 +47,10 @@
                             <!-- Pestaña de Sucursales -->
                             <page string="Sucursales">
                                 <field name="branch_ids" context="{'form_view_ref': 'lims_branch_form'}">
-                                    <tree editable="bottom">
+                                    <list editable="bottom">
                                         <field name="name"/>
                                         <field name="address"/>
-                                    </tree>
+                                    </list>
                                     <form string="Agregar Sucursal">
                                         <sheet>
                                             <group>
