@@ -43,7 +43,7 @@
                         <notebook>
                             <!-- Pestaña Sucursales -->
                             <page string="Sucursales">
-                                <field name="branch_ids" context="{'default_customer_id': active_id}">
+                                <field name="branch_ids" context="{'default_customer_id': id}">
                                     <list editable="bottom">
                                         <field name="name"/>
                                         <field name="address"/>
