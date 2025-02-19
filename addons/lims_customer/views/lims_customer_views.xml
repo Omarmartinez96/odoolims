@@ -4,15 +4,15 @@
         <!-- Menú Principal de Gestión de Clientes -->
         <menuitem id="lims_customer_menu" name="Gestión de Clientes" sequence="1"/>
 
-        <!-- Submenú Clientes -->
-        <menuitem id="lims_customers_menu" name="Clientes" parent="lims_customer_menu" action="action_lims_customers" sequence="2"/>
-
         <!-- Acción para Clientes -->
         <record id="action_lims_customers" model="ir.actions.act_window">
             <field name="name">Clientes</field>
             <field name="res_model">lims.customer</field>
             <field name="view_mode">list,form</field>
         </record>
+
+        <!-- Submenú Clientes -->
+        <menuitem id="lims_customers_menu" name="Clientes" parent="lims_customer_menu" action="action_lims_customers" sequence="2"/>
 
         <!-- Vista de Lista para Clientes -->
         <record id="view_lims_customer_list" model="ir.ui.view">
