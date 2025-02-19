@@ -1,22 +1,17 @@
 <odoo>
     <data>
-        <!-- Acción para abrir la vista de Clientes -->
+        <!-- Acción para Clientes -->
         <record id="action_lims_customers" model="ir.actions.act_window">
             <field name="name">Clientes</field>
             <field name="res_model">lims.customer</field>
             <field name="view_mode">list,form</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Crea un nuevo cliente LIMS.
-                </p>
-            </field>
         </record>
 
-        <!-- Menú Principal -->
-        <menuitem id="lims_customer_menu_root" name="Gestión de Clientes" sequence="10"/>
-        <menuitem id="lims_customer_menu" name="Clientes" parent="lims_customer_menu_root" action="action_lims_customers" sequence="1"/>
+        <!-- Menú para Clientes (Sin Sucursales en el menú) -->
+        <menuitem id="menu_lims_root" name="Gestión de Clientes"/>
+        <menuitem id="menu_lims_customers" name="Clientes" parent="menu_lims_root" action="action_lims_customers"/>
 
-        <!-- Vista Listada de Clientes -->
+        <!-- Vista de Lista para Clientes -->
         <record id="view_lims_customer_list" model="ir.ui.view">
             <field name="name">lims.customer.list</field>
             <field name="model">lims.customer</field>
@@ -29,7 +24,7 @@
             </field>
         </record>
 
-        <!-- Vista de Formulario de Clientes -->
+        <!-- Vista de Formulario para Clientes -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form</field>
             <field name="model">lims.customer</field>
@@ -42,23 +37,13 @@
                             <field name="fiscal_address"/>
                         </group>
                         <notebook>
-                            <!-- Pestaña de Sucursales -->
+                            <!-- Sucursales dentro del Cliente -->
                             <page string="Sucursales">
                                 <field name="branch_ids" context="{'form_view_ref': 'view_lims_branch_form'}">
                                     <list editable="bottom">
                                         <field name="name"/>
                                         <field name="address"/>
                                     </list>
-                                    <!-- Formulario Emergente para Añadir Sucursales -->
-                                    <form string="Agregar Sucursal">
-                                        <sheet>
-                                            <group>
-                                                <field name="name" required="1"/>
-                                                <field name="address"/>
-                                                <field name="customer_id" invisible="1"/>
-                                            </group>
-                                        </sheet>
-                                    </form>
                                 </field>
                             </page>
                         </notebook>
@@ -83,5 +68,6 @@
                 </form>
             </field>
         </record>
+
     </data>
 </odoo>
