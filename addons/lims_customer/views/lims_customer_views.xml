@@ -1,19 +1,35 @@
 <odoo>
     <data>
-        <!-- Menú principal sin submenús -->
-        <menuitem id="lims_menu" name="Gestión de Clientes" sequence="10"/>
-
-        <!-- Acción principal para abrir clientes directamente -->
+        <!-- Acción principal para Gestión de Clientes -->
         <record id="action_lims_customers" model="ir.actions.act_window">
             <field name="name">Clientes</field>
             <field name="res_model">lims.customer</field>
-            <field name="view_mode">list,form</field>
+            <field name="view_mode">tree,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crea un nuevo cliente LIMS.
+                </p>
+            </field>
         </record>
 
-        <!-- Enlaza la acción al menú principal -->
-        <menuitem id="lims_customer_menu" name="Clientes" parent="lims_menu" action="action_lims_customers"/>
+        <!-- Menú para Gestión de Clientes -->
+        <menuitem id="lims_customer_menu_root" name="Gestión de Clientes" sequence="10"/>
+        <menuitem id="lims_customer_menu" name="Clientes" parent="lims_customer_menu_root" action="action_lims_customers" sequence="1"/>
 
-        <!-- Vista de formulario para Clientes -->
+        <!-- Vista de Lista para Clientes -->
+        <record id="view_lims_customer_tree" model="ir.ui.view">
+            <field name="name">lims.customer.tree</field>
+            <field name="model">lims.customer</field>
+            <field name="arch" type="xml">
+                <tree string="Clientes">
+                    <field name="name"/>
+                    <field name="client_code"/>
+                    <field name="fiscal_address"/>
+                </tree>
+            </field>
+        </record>
+
+        <!-- Vista de Formulario para Clientes -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form</field>
             <field name="model">lims.customer</field>
@@ -25,31 +41,29 @@
                             <field name="client_code"/>
                             <field name="fiscal_address"/>
                         </group>
+
                         <notebook>
+                            <!-- Pestaña de Sucursales -->
                             <page string="Sucursales">
-                                <field name="branch_ids">
-                                    <list editable="bottom">
+                                <field name="branch_ids" context="{'form_view_ref': 'lims_branch_form'}">
+                                    <tree editable="bottom">
                                         <field name="name"/>
                                         <field name="address"/>
-                                    </list>
+                                    </tree>
+                                    <form string="Agregar Sucursal">
+                                        <sheet>
+                                            <group>
+                                                <field name="name" required="1"/>
+                                                <field name="address"/>
+                                                <field name="customer_id" invisible="1"/>
+                                            </group>
+                                        </sheet>
+                                    </form>
                                 </field>
                             </page>
                         </notebook>
                     </sheet>
                 </form>
-            </field>
-        </record>
-
-        <!-- Vista de lista para Clientes -->
-        <record id="view_lims_customer_tree" model="ir.ui.view">
-            <field name="name">lims.customer.tree</field>
-            <field name="model">lims.customer</field>
-            <field name="arch" type="xml">
-                <list>
-                    <field name="name"/>
-                    <field name="client_code"/>
-                    <field name="fiscal_address"/>
-                </list>
             </field>
         </record>
     </data>
