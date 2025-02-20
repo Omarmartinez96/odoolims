@@ -8,12 +8,12 @@ class LimsBranch(models.Model):
     name = fields.Char(string="Nombre de la Sucursal", required=True)
     address = fields.Char(string="Dirección")
 
-    # Campo Many2one apuntando a 'lims.customer'
-    # (cada sucursal pertenece a un cliente)
+    # Campo Many2one apuntando a 'lims.customer' con ondelete
     customer_id = fields.Many2one(
         'lims.customer',
         string="Cliente",
-        required=True
+        required=True,
+        ondelete='cascade'  # ✅ Elimina la sucursal si se borra el cliente
     )
 
     # Relación con Departamentos (lista de departamentos para cada sucursal)
