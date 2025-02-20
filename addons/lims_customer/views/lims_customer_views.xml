@@ -111,7 +111,6 @@
                                 <field name="department_ids">
                                     <list editable="bottom">
                                         <field name="name" string="Nombre del Departamento"/>
-                                        <field name="responsible" string="Responsable"/>
                                     </list>
                                 </field>
                             </page>
