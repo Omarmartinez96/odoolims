@@ -11,10 +11,14 @@
         <!-- MENÚ PRINCIPAL Y ACCIONES -->
         <menuitem id="lims_customer_menu" name="Gestión de Clientes" sequence="1"/>
 
+        <!-- ✅ ACCIÓN DE VENTANA PARA CLIENTES ORDENADA POR CÓDIGO -->
         <record id="action_lims_customers" model="ir.actions.act_window">
             <field name="name">Clientes</field>
             <field name="res_model">lims.customer</field>
             <field name="view_mode">list,form</field>
+            <field name="context">{}</field>
+            <field name="domain">[]</field>
+            <field name="order">client_code asc</field> <!-- ✅ Ordenado por Código -->
         </record>
 
         <menuitem id="lims_customers_menu" name="Clientes"
@@ -22,12 +26,12 @@
                   action="action_lims_customers"
                   sequence="1"/>
 
-        <!-- ✅ VISTA DE LISTA DE CLIENTES (USANDO <list> EN LUGAR DE <tree>) -->
+        <!-- ✅ VISTA DE LISTA DE CLIENTES ORDENADA -->
         <record id="view_lims_customer_list" model="ir.ui.view">
             <field name="name">lims.customer.list</field>
             <field name="model">lims.customer</field>
             <field name="arch" type="xml">
-                <list string="Clientes">
+                <list string="Clientes" default_order="client_code asc">
                     <field name="name" string="Nombre del Cliente"/>
                     <field name="client_code" string="Código del Cliente"/>
                     <field name="rfc" string="RFC"/>
