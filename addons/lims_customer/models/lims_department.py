@@ -6,6 +6,7 @@ class LimsDepartment(models.Model):
     _description = 'Departamentos'
 
     name = fields.Char(string="Nombre del Departamento", required=True)
+    address = fields.Char(string="Dirección")
 
     # Campo Many2one apuntando a 'lims.branch'
     # (cada departamento pertenece a una sucursal)
