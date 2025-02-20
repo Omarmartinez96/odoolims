@@ -65,7 +65,7 @@
                         <notebook>
                             <page string="Sucursales">
                                 <field name="branch_ids" context="{'default_customer_id': id}">
-                                    <list editable="bottom" create="true">
+                                    <list create="true" edit="false">
                                         <field name="name"/>
                                         <field name="address"/>
                                     </list>
