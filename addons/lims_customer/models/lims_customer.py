@@ -10,10 +10,10 @@ class LimsCustomer(models.Model):
     client_code = fields.Char(string="Código del Cliente")
     fiscal_address = fields.Char(string="Dirección Fiscal")
 
-    # Relación con Sucursales
+    # ✅ Relación con Sucursales (One2many) para ventana emergente
     branch_ids = fields.One2many(
-        'lims.branch',
-        'customer_id',
+        'lims.branch',       # Modelo hijo
+        'customer_id',       # Campo Many2one en el modelo hijo
         string="Sucursales"
     )
 

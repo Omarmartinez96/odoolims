@@ -11,7 +11,7 @@
         <!-- MENÚ PRINCIPAL Y ACCIONES -->
         <menuitem id="lims_customer_menu" name="Gestión de Clientes" sequence="1"/>
 
-        <!-- ✅ ACCIÓN DE VENTANA PARA CLIENTES (SIN CAMPO 'order') -->
+        <!-- ✅ ACCIÓN DE VENTANA PARA CLIENTES -->
         <record id="action_lims_customers" model="ir.actions.act_window">
             <field name="name">Clientes</field>
             <field name="res_model">lims.customer</field>
@@ -25,7 +25,7 @@
                   action="action_lims_customers"
                   sequence="1"/>
 
-        <!-- ✅ VISTA DE LISTA DE CLIENTES CON ORDENACIÓN CORRECTA -->
+        <!-- ✅ VISTA DE LISTA DE CLIENTES -->
         <record id="view_lims_customer_list" model="ir.ui.view">
             <field name="name">lims.customer.list</field>
             <field name="model">lims.customer</field>
@@ -63,20 +63,54 @@
                                     modifiers="{'invisible': [['id', '=', False]]}"/>
                         </group>
 
-                        <!-- Notebook para visualizar las Sucursales -->
-                        <notebook modifiers="{'id': [['!=', False]]}">
+                        <!-- ✅ Notebook para visualizar y agregar sucursales -->
+                        <notebook>
                             <page string="Sucursales">
                                 <field name="branch_ids" context="{'default_customer_id': id}">
                                     <list editable="bottom">
                                         <field name="name" string="Nombre de la Sucursal"/>
                                         <field name="address" string="Dirección"/>
                                     </list>
+                                    <form>
+                                        <group>
+                                            <field name="name" string="Nombre de la Sucursal"/>
+                                            <field name="address" string="Dirección"/>
+                                        </group>
+                                    </form>
                                 </field>
                             </page>
                         </notebook>
 
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <!-- ✅ VISTA FORMULARIO DE SUCURSALES -->
+        <record id="view_lims_branch_form" model="ir.ui.view">
+            <field name="name">lims.branch.form</field>
+            <field name="model">lims.branch</field>
+            <field name="arch" type="xml">
+                <form string="Sucursal">
+                    <group>
+                        <field name="name" string="Nombre de la Sucursal" required="1"/>
+                        <field name="address" string="Dirección"/>
+                        <field name="customer_id" string="Cliente"/>
+                    </group>
+                </form>
+            </field>
+        </record>
+
+        <!-- ✅ VISTA LISTA DE SUCURSALES -->
+        <record id="view_lims_branch_list" model="ir.ui.view">
+            <field name="name">lims.branch.list</field>
+            <field name="model">lims.branch</field>
+            <field name="arch" type="xml">
+                <list string="Sucursales">
+                    <field name="name" string="Nombre de la Sucursal"/>
+                    <field name="address" string="Dirección"/>
+                    <field name="customer_id" string="Cliente"/>
+                </list>
             </field>
         </record>
 
