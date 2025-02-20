@@ -64,20 +64,11 @@
                         <!-- ✅ Notebook para visualizar y agregar sucursales -->
                         <notebook>
                             <page string="Sucursales">
-                                <field name="branch_ids" context="{'default_customer_id': id}">
+                                <field name="branch_ids" context="{'default_customer_id': id}" options="{'form_view_ref': 'view_lims_branch_form'}">
                                     <list create="true" edit="false">
                                         <field name="name"/>
                                         <field name="address"/>
                                     </list>
-                                    <form>
-                                        <sheet>
-                                            <group>
-                                                <field name="name"/>
-                                                <field name="address"/>
-                                                <field name="customer_id" invisible="1"/>
-                                            </group>
-                                        </sheet>
-                                    </form>
                                 </field>
                             </page>
                         </notebook>
@@ -97,7 +88,9 @@
                         <group>
                             <field name="name" required="1"/>
                             <field name="address"/>
-                            <field name="customer_id"/>
+                            <field name="customer_id" readonly="1"/>
+                            <field name="customer_name" string="Nombre del Cliente" readonly="1"/>
+                            <field name="client_code" string="Código del Cliente" readonly="1"/>
                             <button name="%(action_lims_branches)d"
                                     string="Ver Sucursales"
                                     type="action"
