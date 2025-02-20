@@ -15,7 +15,6 @@ class LimsCustomer(models.Model):
         'lims.branch',       # Modelo hijo
         'customer_id',       # Campo Many2one en el modelo hijo
         string="Sucursales",
-        ondelete='cascade'    # Si eliminas el cliente, elimina sucursales
     )
 
     @api.model_create_multi

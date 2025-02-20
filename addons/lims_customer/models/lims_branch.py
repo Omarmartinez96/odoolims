@@ -8,17 +8,17 @@ class LimsBranch(models.Model):
     name = fields.Char(string="Nombre de la Sucursal", required=True)
     address = fields.Char(string="Dirección")
 
-    # Campo Many2one apuntando a 'lims.customer' con ondelete
+    # ✅ Campo Many2one (AQUÍ es donde se usa ondelete)
     customer_id = fields.Many2one(
         'lims.customer',
         string="Cliente",
         required=True,
-        ondelete='cascade'  # ✅ Elimina la sucursal si se borra el cliente
+        ondelete='cascade'  # ✅ Correcto uso aquí
     )
 
-    # Relación con Departamentos (lista de departamentos para cada sucursal)
+    # Relación con Departamentos (One2many sin ondelete)
     department_ids = fields.One2many(
-        'lims.department',  # modelo hijo
-        'branch_id',        # campo Many2one en el modelo hijo
+        'lims.department',
+        'branch_id',
         string="Departamentos"
     )
