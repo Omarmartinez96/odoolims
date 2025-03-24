@@ -1,4 +1,3 @@
-# __manifest__.py
 {
     'name': "LIMS Customer Extension",
     'version': '1.0',
@@ -13,6 +12,7 @@
         'views/res_departamento_views.xml',
         'views/menu_views.xml',
     ],
+    'license': 'LGPL-3',  # <-- agrega esta línea claramente
     'installable': True,
     'application': False,
 }
