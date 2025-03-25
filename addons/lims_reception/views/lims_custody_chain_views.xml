@@ -28,7 +28,7 @@
                             <field name="cliente_id" required="1"/>
                             <field name="sucursal_id" required="1"/>
                             <field name="departamento_id"/>
-                            <field name="date_created" readonly="1"/>
+                            <field name="date_created"/>
                             <field name="state"/>
                         </group>
 

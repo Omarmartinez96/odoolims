@@ -37,7 +37,6 @@ class LimsCustodyChain(models.Model):
     date_created = fields.Datetime(
         string="Fecha de Creación",
         default=fields.Datetime.now,
-        readonly=True
     )
 
     state = fields.Selection(
