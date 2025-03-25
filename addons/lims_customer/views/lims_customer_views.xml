@@ -11,12 +11,12 @@
         <!-- MENÚ PRINCIPAL DE GESTIÓN DE CLIENTES -->
         <menuitem id="lims_customer_menu" name="Gestión de Clientes" sequence="1"/>
 
-        <!-- ✅ AJUSTADO: ACCIÓN PARA CLIENTES AHORA APUNTANDO A res.partner CON FILTRO -->
+        <!-- ACCIÓN PARA CLIENTES AHORA APUNTANDO A res.partner -->
         <record id="action_lims_customers" model="ir.actions.act_window">
             <field name="name">Clientes</field>
-            <field name="res_model">res.partner</field> <!-- cambiado aquí -->
+            <field name="res_model">res.partner</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('is_lims_customer', '=', True)]</field> <!-- añadido filtro -->
+            <field name="domain">[('is_lims_customer', '=', True)]</field>
             <field name="context">{'default_is_lims_customer': True}</field>
         </record>
 
@@ -26,10 +26,10 @@
                   action="action_lims_customers"
                   sequence="2"/>
 
-        <!-- ✅ AJUSTADO: VISTA DE LISTA PARA CLIENTES (res.partner) -->
+        <!-- VISTA DE LISTA PARA CLIENTES (res.partner) -->
         <record id="view_lims_customer_list" model="ir.ui.view">
             <field name="name">lims.customer.list</field>
-            <field name="model">res.partner</field> <!-- cambiado aquí -->
+            <field name="model">res.partner</field>
             <field name="arch" type="xml">
                 <list string="Clientes">
                     <field name="name"/>
@@ -39,23 +39,25 @@
             </field>
         </record>
 
-        <!-- ✅ AJUSTADO: VISTA FORMULARIO DE CLIENTES HEREDADA DE res.partner -->
+        <!-- VISTA FORMULARIO DE CLIENTES HEREDADA DE res.partner -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form.inherit</field>
-            <field name="model">res.partner</field> <!-- cambiado aquí -->
-            <field name="inherit_id" ref="base.view_partner_form"/> <!-- HEREDADO DE res.partner -->
+            <field name="model">res.partner</field>
+            <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
                 <xpath expr="//sheet" position="after">
-                    <sheet string="Información LIMS" attrs="{'invisible':[('is_lims_customer','=',False)]}">
+                    <sheet string="Información LIMS">
                         <group>
                             <field name="is_lims_customer" invisible="1"/>
+                        </group>
+                        <group attrs="{'invisible':[('is_lims_customer','=',False)]}">
                             <field name="rfc"/>
                             <field name="client_code"/>
                             <field name="fiscal_address"/>
                         </group>
 
                         <!-- Botón para ver sucursales asociadas -->
-                        <group>
+                        <group attrs="{'invisible':[('is_lims_customer','=',False)]}">
                             <button name="%(action_lims_branches)d"
                                     string="Ver Sucursales"
                                     type="action"
@@ -65,7 +67,7 @@
                         </group>
 
                         <!-- Notebook para sucursales -->
-                        <notebook>
+                        <notebook attrs="{'invisible':[('is_lims_customer','=',False)]}">
                             <page string="Sucursales">
                                 <field name="branch_ids" context="{'default_customer_id': id}" options="{'form_view_ref': 'view_lims_branch_form'}">
                                     <list create="true" edit="false">
@@ -80,8 +82,7 @@
             </field>
         </record>
 
-        <!-- LAS VISTAS DE SUCURSALES SE MANTIENEN IGUALES (lims.branch) -->
-        <!-- FORMULARIO SUCURSALES -->
+        <!-- VISTA FORMULARIO DE SUCURSALES -->
         <record id="view_lims_branch_form" model="ir.ui.view">
             <field name="name">lims.branch.form</field>
             <field name="model">lims.branch</field>
@@ -94,12 +95,12 @@
                             <field name="customer_id" readonly="1"/>
                             <field name="customer_name" readonly="1"/>
                             <field name="client_code" readonly="1"/>
-                            <button name="%(action_lims_branches)d"
-                                    string="Ver Sucursales"
+                            <button name="%(action_lims_departments)d"
+                                    string="Ver Departamentos"
                                     type="action"
                                     class="oe_stat_button"
-                                    context="{'default_customer_id': id}"
-                                    modifiers="{'invisible': [['id', '=', False]]}"/>
+                                    context="{'default_branch_id': id}"
+                                    modifiers="{'invisible': [['id','=',False]]}"/>
                         </group>
 
                         <!-- Departamentos -->
@@ -117,7 +118,7 @@
             </field>
         </record>
 
-        <!-- LISTA SUCURSALES -->
+        <!-- VISTA LISTA DE SUCURSALES -->
         <record id="view_lims_branch_list" model="ir.ui.view">
             <field name="name">lims.branch.list</field>
             <field name="model">lims.branch</field>
