@@ -5,10 +5,10 @@ class LimsSample(models.Model):
     _description = 'Recepción de Muestras'
 
     cliente_id = fields.Many2one(
-        'lims.customer',
-        string="Cliente",
+        'res.partner', 
+        string="Cliente", 
         required=True,
-        help="Cliente asociado con la muestra."
+        domain=[('is_lims_customer', '=', True)]
     )
 
     sucursal_id = fields.Many2one(

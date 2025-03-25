@@ -14,11 +14,12 @@ class LimsCustodyChain(models.Model):
     )
 
     cliente_id = fields.Many2one(
-        'lims.customer',  # Corregido: antes era 'res.partner'
-        string="Cliente",
+        'res.partner', 
+        string="Cliente", 
         required=True,
-        help="Cliente asociado con la cadena de custodia."
+        domain=[('is_lims_customer', '=', True)]
     )
+
 
     sucursal_id = fields.Many2one(
         'lims.branch',  # Corregido: antes era 'res.sucursal'
