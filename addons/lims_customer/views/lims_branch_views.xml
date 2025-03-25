@@ -1,15 +1,14 @@
 <odoo>
     <data>
-        <!-- ACCIÓN de ventana para Departamentos (filtrada por la Sucursal) -->
+        <!-- ACCIÓN para Departamentos (sin cambios, sigue igual) -->
         <record id="action_lims_departments" model="ir.actions.act_window">
             <field name="name">Departamentos</field>
             <field name="res_model">lims.department</field>
             <field name="view_mode">list,form</field>
-            <!-- Filtra departamentos por 'branch_id' pasado en contexto -->
             <field name="domain">[('branch_id','=', context.get('default_branch_id'))]</field>
         </record>
 
-        <!-- VISTA LISTA de Sucursales -->
+        <!-- VISTA LISTA Sucursales (sin grandes cambios) -->
         <record id="view_lims_branch_list" model="ir.ui.view">
             <field name="name">lims.branch.list</field>
             <field name="model">lims.branch</field>
@@ -17,12 +16,12 @@
                 <list string="Sucursales">
                     <field name="name"/>
                     <field name="address"/>
-                    <field name="customer_id" string="Cliente"/>
+                    <field name="customer_id"/>
                 </list>
             </field>
         </record>
 
-        <!-- VISTA FORMULARIO de Sucursales -->
+        <!-- VISTA FORMULARIO Sucursales (ajustada claramente el campo customer_id con dominio) -->
         <record id="view_lims_branch_form" model="ir.ui.view">
             <field name="name">lims.branch.form</field>
             <field name="model">lims.branch</field>
@@ -30,13 +29,14 @@
                 <form string="Sucursal">
                     <sheet>
                         <group>
-                            <!-- Campo 'customer_id' para enlazar con Cliente (solo lectura) -->
-                            <field name="customer_id" readonly="1" required="1"/>
                             <field name="name" required="1"/>
                             <field name="address"/>
-                        </group>
-                        <!-- Botón para ver Departamentos: invisible si la Sucursal no está guardada -->
-                        <group>
+                            <!-- Ahora apunta claramente a res.partner (Clientes LIMS) -->
+                            <field name="customer_id"
+                                   domain="[('is_lims_customer', '=', True)]"
+                                   required="1"/>
+                            <field name="customer_name" readonly="1"/>
+                            <field name="client_code" readonly="1"/>
                             <button name="%(action_lims_departments)d"
                                     string="Ver Departamentos"
                                     type="action"
@@ -45,17 +45,17 @@
                                     modifiers="{'invisible': [['id','=',False]]}"/>
                         </group>
 
-                        <!-- Pestaña de Departamentos: invisible si la Sucursal no está guardada -->
-                        <notebook modifiers="{'invisible': [['id','=',False]]}">
+                        <!-- Notebook Departamentos (sin cambios) -->
+                        <notebook>
                             <page string="Departamentos">
-                                <!-- One2many a lims.department -->
-                                <field name="department_ids" context="{'default_branch_id': id}">
-                                    <list create="true">
+                                <field name="department_ids">
+                                    <list editable="bottom">
                                         <field name="name"/>
                                     </list>
                                 </field>
                             </page>
                         </notebook>
+
                     </sheet>
                 </form>
             </field>

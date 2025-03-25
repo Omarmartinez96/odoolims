@@ -8,18 +8,29 @@ class LimsBranch(models.Model):
     name = fields.Char(string="Nombre de la Sucursal", required=True)
     address = fields.Char(string="Dirección")
 
-    # Campo Many2one apuntando a 'lims.customer'
+    # ✅ CAMBIO CLAVE: Ahora apunta claramente a res.partner
     customer_id = fields.Many2one(
-        'lims.customer',
+        'res.partner',
         string="Cliente",
-        required=True
+        required=True,
+        domain=[('is_lims_customer', '=', True)]
     )
 
-    # Campos Computados para Mostrar Información del Cliente
-    customer_name = fields.Char(string="Nombre del Cliente", compute='_compute_customer_info', store=True, readonly=True)
-    client_code = fields.Char(string="Código del Cliente", compute='_compute_customer_info', store=True, readonly=True)
+    # Campos Computados para Mostrar Información del Cliente (sin cambios)
+    customer_name = fields.Char(
+        string="Nombre del Cliente", 
+        compute='_compute_customer_info', 
+        store=True, 
+        readonly=True
+    )
+    client_code = fields.Char(
+        string="Código del Cliente", 
+        compute='_compute_customer_info', 
+        store=True, 
+        readonly=True
+    )
 
-    # Relación con Departamentos
+    # Relación con Departamentos (sin cambios)
     department_ids = fields.One2many(
         'lims.department',
         'branch_id',

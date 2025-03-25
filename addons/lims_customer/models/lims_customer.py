@@ -2,39 +2,26 @@
 from odoo import models, fields, api
 
 class LimsCustomer(models.Model):
-    _name = 'lims.customer'
-    _description = 'Clientes'
+    _inherit = 'res.partner'  # ✅ Herencia directa del modelo estándar de Odoo
 
-    name = fields.Char(string="Nombre del Cliente", required=True)
+    is_lims_customer = fields.Boolean(string='Cliente LIMS', default=True)
     rfc = fields.Char(string="RFC")
     client_code = fields.Char(string="Código del Cliente")
     fiscal_address = fields.Char(string="Dirección Fiscal")
 
-    partner_id = fields.Many2one(
-        'res.partner',
-        string='Contacto en Odoo',
-        help='Enlace con el contacto de Odoo (res.partner)',
-        ondelete='restrict'
-    )
-
-    # ✅ Relación con Sucursales (One2many) para ventana emergente
     branch_ids = fields.One2many(
-        'lims.branch',       # Modelo hijo
-        'customer_id',       # Campo Many2one en el modelo hijo
-        string="Sucursales",
+        'lims.branch',
+        'customer_id',
+        string="Sucursales"
     )
 
     @api.model_create_multi
     def create(self, vals_list):
-        """Genera el Código del Cliente basado en el RFC y número consecutivo"""
         for vals in vals_list:
-            if 'rfc' in vals and not vals.get('client_code'):
-                prefix = vals['rfc'][:3].upper() if vals['rfc'] else 'XXX'
-                existing_clients = self.search([('client_code', 'ilike', f'{prefix}-%')], order='client_code desc', limit=1)
-                if existing_clients:
-                    last_number = int(existing_clients.client_code.split('-')[1])
-                else:
-                    last_number = 0
-                new_code = f"{prefix}-{str(last_number + 1).zfill(3)}"
-                vals['client_code'] = new_code
+            if vals.get('is_lims_customer'):
+                if 'rfc' in vals and not vals.get('client_code'):
+                    prefix = vals['rfc'][:3].upper() if vals['rfc'] else 'XXX'
+                    existing_clients = self.search([('client_code', 'ilike', f'{prefix}-%')], order='client_code desc', limit=1)
+                    last_number = int(existing_clients.client_code.split('-')[1]) if existing_clients else 0
+                    vals['client_code'] = f"{prefix}-{str(last_number + 1).zfill(3)}"
         return super(LimsCustomer, self).create(vals_list)
