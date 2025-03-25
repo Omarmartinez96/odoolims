@@ -1,12 +1,28 @@
 # -*- coding: utf-8 -*-
-from odoo import models, fields, api
+from odoo import models, fields
 
 class LimsCustomer(models.Model):
-    _inherit = 'res.partner'  # ✅ Herencia directa del modelo estándar de Odoo
+    _inherit = 'res.partner'
 
     is_lims_customer = fields.Boolean(string='Cliente LIMS', default=True)
-    rfc = fields.Char(string="RFC")
-    client_code = fields.Char(string="Código del Cliente")
+    client_code = fields.Char(string="Código del Cliente", required=True)
+
+    # Campos adicionales directos de res.partner (para claridad)
+    vat = fields.Char(string="RFC / TAX ID")
+    street = fields.Char(string="Calle")
+    street2 = fields.Char(string="Calle 2")
+    city = fields.Char(string="Ciudad")
+    state_id = fields.Many2one('res.country.state', string="Estado")
+    zip = fields.Char(string="Código Postal")
+    country_id = fields.Many2one('res.country', string="País")
+    phone = fields.Char(string="Teléfono")
+    email = fields.Char(string="Email")
+    company_type = fields.Selection(
+        [('person', 'Individual'), ('company', 'Compañía')],
+        string="Tipo de Compañía",
+        default='company'
+    )
+
     fiscal_address = fields.Char(string="Dirección Fiscal")
 
     branch_ids = fields.One2many(
@@ -14,14 +30,3 @@ class LimsCustomer(models.Model):
         'customer_id',
         string="Sucursales"
     )
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        for vals in vals_list:
-            if vals.get('is_lims_customer'):
-                if 'rfc' in vals and not vals.get('client_code'):
-                    prefix = vals['rfc'][:3].upper() if vals['rfc'] else 'XXX'
-                    existing_clients = self.search([('client_code', 'ilike', f'{prefix}-%')], order='client_code desc', limit=1)
-                    last_number = int(existing_clients.client_code.split('-')[1]) if existing_clients else 0
-                    vals['client_code'] = f"{prefix}-{str(last_number + 1).zfill(3)}"
-        return super(LimsCustomer, self).create(vals_list)

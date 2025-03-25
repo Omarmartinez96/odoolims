@@ -1,22 +1,6 @@
 <odoo>
     <data>
-        <!-- Acción ventana para sucursales (filtrado por cliente) -->
-        <record id="action_lims_branches" model="ir.actions.act_window">
-            <field name="name">Sucursales</field>
-            <field name="res_model">lims.branch</field>
-            <field name="view_mode">list,form</field>
-            <field name="domain">[("customer_id", "=", context.get("default_customer_id"))]</field>
-        </record>
-
-        <!-- Acción ventana para departamentos (filtrado por sucursal) -->
-        <record id="action_lims_departments" model="ir.actions.act_window">
-            <field name="name">Departamentos</field>
-            <field name="res_model">lims.department</field>
-            <field name="view_mode">list,form</field>
-            <field name="domain">[('branch_id', '=', context.get('default_branch_id'))]</field>
-        </record>
-
-        <!-- Vista lista para clientes (DEBE IR ANTES DE LA ACCIÓN) -->
+        <!-- Vista lista clientes -->
         <record id="view_lims_customer_list" model="ir.ui.view">
             <field name="name">lims.customer.list</field>
             <field name="model">res.partner</field>
@@ -24,12 +8,14 @@
                 <list string="Clientes">
                     <field name="name"/>
                     <field name="client_code"/>
-                    <field name="fiscal_address"/>
+                    <field name="vat"/>
+                    <field name="email"/>
+                    <field name="phone"/>
                 </list>
             </field>
         </record>
 
-        <!-- Vista formulario INDEPENDIENTE para clientes (DEBE IR ANTES DE LA ACCIÓN) -->
+        <!-- Vista formulario clientes -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form</field>
             <field name="model">res.partner</field>
@@ -37,13 +23,23 @@
                 <form string="Cliente">
                     <sheet>
                         <group>
-                            <field name="name" required="1"/>
                             <field name="is_lims_customer" invisible="1"/>
-                            <field name="rfc"/>
-                            <field name="client_code"/>
+                            <field name="company_type"/>
+                            <field name="name" required="1"/>
+                            <field name="client_code" required="1"/>
+                            <field name="vat"/>
+                            <field name="email"/>
+                            <field name="phone"/>
                             <field name="fiscal_address"/>
                         </group>
-
+                        <group string="Dirección">
+                            <field name="street"/>
+                            <field name="street2"/>
+                            <field name="city"/>
+                            <field name="state_id"/>
+                            <field name="zip"/>
+                            <field name="country_id"/>
+                        </group>
                         <group>
                             <button name="%(action_lims_branches)d"
                                     string="Ver Sucursales"
@@ -52,7 +48,6 @@
                                     context="{'default_customer_id': id}"
                                     invisible="id==False"/>
                         </group>
-
                         <notebook>
                             <page string="Sucursales">
                                 <field name="branch_ids"
@@ -70,7 +65,7 @@
             </field>
         </record>
 
-        <!-- Ahora sí, Acción para clientes (DEBE IR DESPUÉS DE LAS VISTAS) -->
+        <!-- Acción para clientes -->
         <record id="action_lims_customers" model="ir.actions.act_window">
             <field name="name">Clientes</field>
             <field name="res_model">res.partner</field>
@@ -84,61 +79,11 @@
             ]"/>
         </record>
 
-        <!-- Menú principal de gestión de clientes -->
+        <!-- Menú principal y submenú -->
         <menuitem id="lims_customer_menu" name="Gestión de Clientes" sequence="1"/>
-
-        <!-- Submenú Clientes -->
         <menuitem id="lims_customers_menu" name="Clientes"
                   parent="lims_customer_menu"
                   action="action_lims_customers"
                   sequence="2"/>
-
-        <!-- Vista formulario sucursales -->
-        <record id="view_lims_branch_form" model="ir.ui.view">
-            <field name="name">lims.branch.form</field>
-            <field name="model">lims.branch</field>
-            <field name="arch" type="xml">
-                <form string="Sucursal">
-                    <sheet>
-                        <group>
-                            <field name="name" required="1"/>
-                            <field name="address"/>
-                            <field name="customer_id" invisible="1"/> <!-- Prueba para ocultar customer ID -->
-                            <field name="customer_name" readonly="1"/>
-                            <field name="client_code" readonly="1"/>
-                            <button name="%(action_lims_departments)d"
-                                    string="Ver Departamentos"
-                                    type="action"
-                                    class="oe_stat_button"
-                                    context="{'default_branch_id': id}"
-                                    invisible="id==False"/>
-                        </group>
-                        <notebook>
-                            <page string="Departamentos">
-                                <field name="department_ids">
-                                    <list editable="bottom">
-                                        <field name="name"/>
-                                    </list>
-                                </field>
-                            </page>
-                        </notebook>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
-        <!-- Vista lista sucursales -->
-        <record id="view_lims_branch_list" model="ir.ui.view">
-            <field name="name">lims.branch.list</field>
-            <field name="model">lims.branch</field>
-            <field name="arch" type="xml">
-                <list string="Sucursales">
-                    <field name="name"/>
-                    <field name="address"/>
-                    <field name="customer_id"/>
-                </list>
-            </field>
-        </record>
-
     </data>
 </odoo>
