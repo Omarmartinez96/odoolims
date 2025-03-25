@@ -5,7 +5,7 @@ class LimsCustomer(models.Model):
     _inherit = 'res.partner'
 
     is_lims_customer = fields.Boolean(string='Cliente LIMS', default=True)
-    client_code = fields.Char(string="Código del Cliente", required=True)
+    client_code = fields.Char(string="Código del Cliente")  # <- 🔴 SIN required=True 🔴
 
     # Campos adicionales directos de res.partner (para claridad)
     vat = fields.Char(string="RFC / TAX ID")
