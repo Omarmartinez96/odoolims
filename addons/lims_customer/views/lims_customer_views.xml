@@ -13,11 +13,16 @@
 
         <!-- Acción para clientes -->
         <record id="action_lims_customers" model="ir.actions.act_window">
-            <field name="name">Clientes</field>
+           <field name="name">Clientes</field>
             <field name="res_model">res.partner</field>
             <field name="view_mode">list,form</field>
             <field name="domain">[('is_lims_customer', '=', True)]</field>
             <field name="context">{'default_is_lims_customer': True}</field>
+            <field name="view_ids" eval="[
+                (5, 0, 0),
+             (0, 0, {'view_mode': 'list', 'view_id': ref('view_lims_customer_list')}),
+            (0, 0, {'view_mode': 'form', 'view_id': ref('view_lims_customer_form')})
+             ]"/>
         </record>
 
         <!-- Submenú Clientes -->
