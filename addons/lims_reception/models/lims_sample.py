@@ -7,23 +7,25 @@ class LimsSample(models.Model):
     cliente_id = fields.Many2one(
         'res.partner', 
         string="Cliente", 
-        required=True,
-        domain=[('is_lims_customer', '=', True)]
+        related='custody_chain_id.cliente_id',
+        readonly=True,
+        store=True
     )
 
     sucursal_id = fields.Many2one(
         'lims.branch',
         string="Sucursal",
-        required=True,
-        domain="[('customer_id', '=', cliente_id)]",
-        help="Sucursal asociada al cliente seleccionado."
+        related='custody_chain_id.sucursal_id',
+        readonly=True,
+        store=True
     )
 
     departamento_id = fields.Many2one(
         'lims.department',
         string="Departamento",
-        domain="[('branch_id', '=', sucursal_id)]",
-        help="Departamento asociado a la sucursal seleccionada."
+        related='custody_chain_id.departamento_id',
+        readonly=True,
+        store=True
     )
 
     custody_chain_id = fields.Many2one(

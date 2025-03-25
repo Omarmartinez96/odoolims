@@ -9,8 +9,8 @@
                     <sheet>
                         <group>
                             <separator string="DATOS DEL CLIENTE" colspan="4"/>
-                            <field name="cliente_id" required="1"/>
-                            <field name="sucursal_id" required="1"/>
+                            <field name="cliente_id"/>
+                            <field name="sucursal_id"/>
                             <field name="departamento_id"/>
                         </group>
                         <group>

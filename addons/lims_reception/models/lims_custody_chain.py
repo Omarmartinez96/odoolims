@@ -18,7 +18,6 @@ class LimsCustodyChain(models.Model):
         domain=[('is_lims_customer', '=', True)]
     )
 
-
     sucursal_id = fields.Many2one(
         'lims.branch',  # Corregido: antes era 'res.sucursal'
         string="Sucursal",
@@ -37,6 +36,12 @@ class LimsCustodyChain(models.Model):
     date_created = fields.Datetime(
         string="Fecha de Creación",
         default=fields.Datetime.now,
+    )
+
+    sample_ids = fields.One2many(  
+        'lims.sample',
+        'custody_chain_id',
+        string='Muestras Recibidas'
     )
 
     state = fields.Selection(
