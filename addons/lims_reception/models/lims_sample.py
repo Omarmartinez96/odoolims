@@ -35,7 +35,12 @@ class LimsSample(models.Model):
     sample_identifier = fields.Char(
         string="Identificación de Muestra",
         required=True,
-        help="Descripción con la que el cliente identifica la muestra."
+        help="Identificación con la que el cliente identifica la muestra."
+    )
+
+    sample_description = fields.Char(  
+        string="Descripción de la muestra"
+        help="Descripción específica de la muestra si aplica"
     )
 
     sample_type = fields.Char(
