@@ -45,7 +45,6 @@
                             <field name="is_lims_customer" invisible="1"/>
                             <field name="vat" string="RFC / TAX ID"/>
                             <field name="client_code"/>
-                            <field name="fiscal_address"/>
                         </group>
 
                         <group string="Información de contacto">
@@ -54,7 +53,7 @@
                             <field name="company_type"/>
                         </group>
 
-                        <group string="Dirección Completa">
+                        <group string="Dirección Fiscal Completa">
                             <field name="street" string="Calle"/>
                             <field name="street2" string="Calle 2"/>
                             <field name="city" string="Ciudad"/>
@@ -122,7 +121,6 @@
                         <group>
                             <field name="name" required="1"/>
                             <field name="address"/>
-                            <field name="customer_name" readonly="1"/>
                             <field name="client_code" readonly="1"/>
                             <button name="%(action_lims_departments)d"
                                     string="Ver Departamentos"
