@@ -10,7 +10,7 @@ class LimsCustomer(models.Model):
     # Campos adicionales directos de res.partner (para claridad)
     vat = fields.Char(string="RFC / TAX ID")
     street = fields.Char(string="Calle y número ")
-    street2 = fields.Char(string="Calle 2 (Interior si aplica) 2")
+    street2 = fields.Char(string="Calle 2")
     city = fields.Char(string="Ciudad")
     state_id = fields.Many2one('res.country.state', string="Estado")
     zip = fields.Char(string="Código Postal")

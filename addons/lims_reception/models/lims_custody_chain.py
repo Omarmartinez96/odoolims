@@ -9,8 +9,6 @@ class LimsCustodyChain(models.Model):
         string="Código de Cadena de Custodia",
         required=True,
         copy=False,
-        readonly=True,
-        default=lambda self: self._generate_custody_code()
     )
 
     cliente_id = fields.Many2one(
@@ -58,8 +56,3 @@ class LimsCustodyChain(models.Model):
         string="Muestras Asociadas",
         help="Lista de muestras asociadas a esta cadena de custodia."
     )
-
-    @api.model
-    def _generate_custody_code(self):
-        """Genera un código único para la cadena de custodia."""
-        return self.env['ir.sequence'].next_by_code('lims.custody_chain') or 'CC-00000'
