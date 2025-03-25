@@ -71,3 +71,9 @@ class LimsSample(models.Model):
         string="Adjuntos",
         help="Archivos relacionados con esta muestra."
     )
+
+    custody_chain_id = fields.Many2one(
+        'lims.custody_chain',
+        string="Cadena de Custodia",
+        help="Número de Cadena de Custodia asociada."
+    )
