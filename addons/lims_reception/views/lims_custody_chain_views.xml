@@ -20,7 +20,7 @@
                         <!-- Lista de muestras -->
                         <notebook>
                             <page string="Muestras Recibidas">
-                                <field name="sample_ids" context="{'default_custody_chain_id': active_id}" mode="tree,form"/>
+                                <field name="sample_ids">
                                     <list editable="bottom">
                                         <field name="sample_identifier"/>
                                         <field name="sample_description"/>
@@ -28,6 +28,7 @@
                                         <field name="date_received"/>
                                         <field name="state"/>
                                     </list>
+                                </field>
                             </page>
                         </notebook>
                     </sheet>
