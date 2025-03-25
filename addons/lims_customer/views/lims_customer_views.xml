@@ -49,6 +49,7 @@
                             <field name="rfc" string="RFC"/>
                             <field name="client_code" string="Código del Cliente"/>
                             <field name="fiscal_address" string="Dirección Fiscal"/>
+                            <field name="partner_id"/>
                         </group>
 
                         <!-- ✅ Botón para ver sucursales asociadas -->

@@ -10,6 +10,13 @@ class LimsCustomer(models.Model):
     client_code = fields.Char(string="Código del Cliente")
     fiscal_address = fields.Char(string="Dirección Fiscal")
 
+    partner_id = fields.Many2one(
+        'res.partner',
+        string='Contacto en Odoo',
+        help='Enlace con el contacto de Odoo (res.partner)',
+        ondelete='restrict'
+    )
+
     # ✅ Relación con Sucursales (One2many) para ventana emergente
     branch_ids = fields.One2many(
         'lims.branch',       # Modelo hijo
