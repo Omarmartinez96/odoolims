@@ -20,7 +20,7 @@
                         <!-- Lista de muestras -->
                         <notebook>
                             <page string="Muestras Recibidas">
-                                <field name="sample_ids">
+                                <field name="sample_ids" context="{'default_custody_chain_id': active_id}" mode="tree,form"/>
                                     <list editable="bottom">
                                         <field name="sample_identifier"/>
                                         <field name="sample_description"/>
@@ -61,7 +61,10 @@
         </record>
 
         <!-- Menú -->
-        <menuitem id="lims_custody_menu" name="Cadenas de Custodia" parent="lims_menu" action="action_lims_custody_chains"/>
+        <menuitem id="lims_custody_menu_root" name="Cadenas de Custodia" sequence="10"/>
+        <menuitem id="lims_custody_menu" name="Cadenas de Custodia" 
+                parent="lims_custody_menu_root" 
+                action="action_lims_custody_chains" sequence="1"/>
 
     </data>
 </odoo>

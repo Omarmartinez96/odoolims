@@ -61,8 +61,6 @@
         </record>
 
         <!-- Menú -->
-        <menuitem id="lims_menu" name="Recepción de Muestras" sequence="1"/>
-        <menuitem id="lims_reception_menu" name="Muestras" parent="lims_menu" action="action_lims_samples"/>
 
     </data>
 </odoo>
