@@ -16,30 +16,7 @@
             <field name="domain">[('branch_id', '=', context.get('default_branch_id'))]</field>
         </record>
 
-        <!-- Menú principal de gestión de clientes -->
-        <menuitem id="lims_customer_menu" name="Gestión de Clientes" sequence="1"/>
-
-        <!-- Acción para clientes -->
-        <record id="action_lims_customers" model="ir.actions.act_window">
-            <field name="name">Clientes</field>
-            <field name="res_model">res.partner</field>
-            <field name="view_mode">list,form</field>
-            <field name="domain">[('is_lims_customer', '=', True)]</field>
-            <field name="context">{'default_is_lims_customer': True}</field>
-            <field name="view_ids" eval="[
-                (5, 0, 0),
-                (0, 0, {'view_mode': 'list', 'view_id': ref('view_lims_customer_list')}),
-                (0, 0, {'view_mode': 'form', 'view_id': ref('view_lims_customer_form')})
-            ]"/>
-        </record>
-
-        <!-- Submenú Clientes -->
-        <menuitem id="lims_customers_menu" name="Clientes"
-                  parent="lims_customer_menu"
-                  action="action_lims_customers"
-                  sequence="2"/>
-
-        <!-- Vista lista para clientes -->
+        <!-- Vista lista para clientes (DEBE IR ANTES DE LA ACCIÓN) -->
         <record id="view_lims_customer_list" model="ir.ui.view">
             <field name="name">lims.customer.list</field>
             <field name="model">res.partner</field>
@@ -52,7 +29,7 @@
             </field>
         </record>
 
-        <!-- Vista formulario INDEPENDIENTE para clientes -->
+        <!-- Vista formulario INDEPENDIENTE para clientes (DEBE IR ANTES DE LA ACCIÓN) -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form</field>
             <field name="model">res.partner</field>
@@ -92,6 +69,29 @@
                 </form>
             </field>
         </record>
+
+        <!-- Ahora sí, Acción para clientes (DEBE IR DESPUÉS DE LAS VISTAS) -->
+        <record id="action_lims_customers" model="ir.actions.act_window">
+            <field name="name">Clientes</field>
+            <field name="res_model">res.partner</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('is_lims_customer', '=', True)]</field>
+            <field name="context">{'default_is_lims_customer': True}</field>
+            <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_lims_customer_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_lims_customer_form')})
+            ]"/>
+        </record>
+
+        <!-- Menú principal de gestión de clientes -->
+        <menuitem id="lims_customer_menu" name="Gestión de Clientes" sequence="1"/>
+
+        <!-- Submenú Clientes -->
+        <menuitem id="lims_customers_menu" name="Clientes"
+                  parent="lims_customer_menu"
+                  action="action_lims_customers"
+                  sequence="2"/>
 
         <!-- Vista formulario sucursales -->
         <record id="view_lims_branch_form" model="ir.ui.view">
