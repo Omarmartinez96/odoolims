@@ -39,7 +39,7 @@ class LimsSample(models.Model):
     )
 
     sample_description = fields.Char(  
-        string="Descripción de la muestra"
+        string="Descripción de la muestra",
         help="Descripción específica de la muestra si aplica"
     )
 

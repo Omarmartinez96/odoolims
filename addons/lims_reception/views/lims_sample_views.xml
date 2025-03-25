@@ -16,9 +16,10 @@
                         <group>
                             <separator string="DATOS DE LA MUESTRA" colspan="4"/>
                             <field name="sample_identifier" required="1"/>
+                            <field name="sample_description"/>
                             <field name="sample_type"/>
-                            <field name="date_received" readonly="1"/>
-                            <field name="state" readonly="1"/>
+                            <field name="date_received"/>
+                            <field name="state"/>
                         </group>
                         <group>
                             <separator string="CADENA DE CUSTODIA" colspan="4"/>
