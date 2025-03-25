@@ -28,7 +28,6 @@
                                         <field name="date_received"/>
                                         <field name="state"/>
                                     </list>
-                                </field>
                             </page>
                         </notebook>
                     </sheet>
