@@ -2,8 +2,11 @@
     'name': "Recepción de Muestras",
     'version': '1.0',
     'summary': "Gestión de Recepción de Muestras para LIMS",
-    'category': 'Laboratory',
-    'author': "Tu Nombre",
+    'description': """
+        Módulo para registrar Cadenas de Custodia y Muestras dentro de un LIMS básico.
+    """,
+    'category': 'Tools',  # <-- Cambiado para que aparezca en el listado de Apps
+    'author': "Laboratorio Proteus",
     'depends': ['base', 'lims_customer'],
     'data': [
         'security/security.xml',
@@ -13,6 +16,6 @@
         'views/lims_custody_chain_views.xml',
     ],
     'installable': True,
-    'application': True,  # <--- ESTO DEBE ESTAR PRESENTE
+    'application': True,
     'license': 'LGPL-3',
 }

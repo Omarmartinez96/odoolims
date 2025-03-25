@@ -60,5 +60,8 @@
             <field name="view_id" ref="view_lims_custody_chain_list"/>
         </record>
 
+        <!-- Menú -->
+        <menuitem id="lims_custody_menu" name="Cadenas de Custodia" parent="lims_menu" action="action_lims_custody_chains"/>
+
     </data>
 </odoo>
