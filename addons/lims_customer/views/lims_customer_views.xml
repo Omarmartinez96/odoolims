@@ -103,6 +103,7 @@
                         <group>
                             <field name="name" required="1"/>
                             <field name="address"/>
+                            <field name="customer_id" invisible="1"/> <!-- Prueba para ocultar customer ID -->
                             <field name="customer_name" readonly="1"/>
                             <field name="client_code" readonly="1"/>
                             <button name="%(action_lims_departments)d"
