@@ -48,10 +48,3 @@ class LimsCustodyChain(models.Model):
         required=True,
         help="Estado de la cadena de custodia."
     )
-
-    sample_ids = fields.One2many(
-        'lims.sample',
-        'custody_chain_id',
-        string="Muestras Asociadas",
-        help="Lista de muestras asociadas a esta cadena de custodia."
-    )

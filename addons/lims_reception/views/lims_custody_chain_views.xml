@@ -23,17 +23,13 @@
             <field name="arch" type="xml">
                 <form string="Cadena de Custodia">
                     <sheet>
-                        <group>
+                        <group string="Crear Cadenas de Custodia">
                             <field name="custody_chain_code" required="1"/>
                             <field name="cliente_id" required="1"/>
                             <field name="sucursal_id" required="1"/>
                             <field name="departamento_id"/>
                             <field name="date_created"/>
                             <field name="state"/>
-                        </group>
-
-                        <group>
-                            <field name="sample_ids" widget="many2many_tags"/>
                         </group>
                     </sheet>
                 </form>
