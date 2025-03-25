@@ -16,19 +16,18 @@
                             <field name="date_created"/>
                             <field name="state"/>
                         </group>
+
+                        <!-- Cambio temporal: solo campo 'id' para test -->
                         <notebook>
                             <page string="Muestras Recibidas">
                                 <field name="sample_ids">
                                     <tree editable="bottom">
-                                        <field name="sample_identifier"/>
-                                        <field name="sample_description"/>
-                                        <field name="sample_type"/>
-                                        <field name="date_received"/>
-                                        <field name="state"/>
+                                        <field name="id"/>
                                     </tree>
                                 </field>
                             </page>
                         </notebook>
+
                     </sheet>
                 </form>
             </field>
