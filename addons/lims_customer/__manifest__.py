@@ -1,7 +1,7 @@
 {
     'name': 'Gestión de Clientes',
     'version': '1.0',
-    'author': 'Your Name',
+    'author': 'Omar Martinez',
     'category': 'Laboratory',
     'summary': 'Gestión personalizada de clientes para LIMS',
     'depends': ['base'],
