@@ -8,21 +8,29 @@
             <field name="domain">[("customer_id", "=", context.get("default_customer_id"))]</field>
         </record>
 
+        <!-- Acción ventana para departamentos (filtrado por sucursal) -->
+        <record id="action_lims_departments" model="ir.actions.act_window">
+            <field name="name">Departamentos</field>
+            <field name="res_model">lims.department</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('branch_id', '=', context.get('default_branch_id'))]</field>
+        </record>
+
         <!-- Menú principal de gestión de clientes -->
         <menuitem id="lims_customer_menu" name="Gestión de Clientes" sequence="1"/>
 
         <!-- Acción para clientes -->
         <record id="action_lims_customers" model="ir.actions.act_window">
-           <field name="name">Clientes</field>
+            <field name="name">Clientes</field>
             <field name="res_model">res.partner</field>
             <field name="view_mode">list,form</field>
             <field name="domain">[('is_lims_customer', '=', True)]</field>
             <field name="context">{'default_is_lims_customer': True}</field>
             <field name="view_ids" eval="[
                 (5, 0, 0),
-             (0, 0, {'view_mode': 'list', 'view_id': ref('view_lims_customer_list')}),
-            (0, 0, {'view_mode': 'form', 'view_id': ref('view_lims_customer_form')})
-             ]"/>
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_lims_customer_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_lims_customer_form')})
+            ]"/>
         </record>
 
         <!-- Submenú Clientes -->
@@ -44,42 +52,35 @@
             </field>
         </record>
 
-        <!-- Vista formulario heredada desde res.partner -->
+        <!-- Vista formulario INDEPENDIENTE para clientes -->
         <record id="view_lims_customer_form" model="ir.ui.view">
-            <field name="name">lims.customer.form.inherit</field>
+            <field name="name">lims.customer.form</field>
             <field name="model">res.partner</field>
-            <field name="inherit_id" ref="base.view_partner_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//sheet" position="after">
-                    <sheet string="Información LIMS">
+                <form string="Cliente">
+                    <sheet>
                         <group>
+                            <field name="name" required="1"/>
                             <field name="is_lims_customer" invisible="1"/>
+                            <field name="rfc"/>
+                            <field name="client_code"/>
+                            <field name="fiscal_address"/>
                         </group>
 
-                        <!-- Campos específicos (sin attrs) -->
-                        <group>
-                            <field name="rfc" invisible="not is_lims_customer"/>
-                            <field name="client_code" invisible="not is_lims_customer"/>
-                            <field name="fiscal_address" invisible="not is_lims_customer"/>
-                        </group>
-
-                        <!-- Botón para sucursales (sin attrs) -->
                         <group>
                             <button name="%(action_lims_branches)d"
                                     string="Ver Sucursales"
                                     type="action"
                                     class="oe_stat_button"
                                     context="{'default_customer_id': id}"
-                                    invisible="not is_lims_customer or id==False"/>
+                                    invisible="id==False"/>
                         </group>
 
-                        <!-- Notebook sucursales -->
                         <notebook>
                             <page string="Sucursales">
                                 <field name="branch_ids"
                                        context="{'default_customer_id': id}"
-                                       options="{'form_view_ref': 'view_lims_branch_form'}"
-                                       invisible="not is_lims_customer">
+                                       options="{'form_view_ref': 'view_lims_branch_form'}">
                                     <list create="true" edit="false">
                                         <field name="name"/>
                                         <field name="address"/>
@@ -88,17 +89,9 @@
                             </page>
                         </notebook>
                     </sheet>
-                </xpath>
+                </form>
             </field>
         </record>
-
-        <!-- ACCIÓN PARA DEPARTAMENTOS (filtrado por sucursal) -->
-<record id="action_lims_departments" model="ir.actions.act_window">
-    <field name="name">Departamentos</field>
-    <field name="res_model">lims.department</field>
-    <field name="view_mode">list,form</field>
-    <field name="domain">[('branch_id', '=', context.get('default_branch_id'))]</field>
-</record> 
 
         <!-- Vista formulario sucursales -->
         <record id="view_lims_branch_form" model="ir.ui.view">
@@ -120,7 +113,6 @@
                                     context="{'default_branch_id': id}"
                                     invisible="id==False"/>
                         </group>
-                        <!-- Departamentos -->
                         <notebook>
                             <page string="Departamentos">
                                 <field name="department_ids">
