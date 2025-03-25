@@ -1,6 +1,6 @@
 <odoo>
     <data>
-        <!-- ACCIÓN DE VENTANA PARA SUCURSALES (FILTRADA POR CLIENTE) -->
+        <!-- Acción ventana para sucursales (filtrado por cliente) -->
         <record id="action_lims_branches" model="ir.actions.act_window">
             <field name="name">Sucursales</field>
             <field name="res_model">lims.branch</field>
@@ -8,10 +8,10 @@
             <field name="domain">[("customer_id", "=", context.get("default_customer_id"))]</field>
         </record>
 
-        <!-- MENÚ PRINCIPAL DE GESTIÓN DE CLIENTES -->
+        <!-- Menú principal de gestión de clientes -->
         <menuitem id="lims_customer_menu" name="Gestión de Clientes" sequence="1"/>
 
-        <!-- ACCIÓN PARA CLIENTES APUNTANDO A res.partner -->
+        <!-- Acción para clientes -->
         <record id="action_lims_customers" model="ir.actions.act_window">
             <field name="name">Clientes</field>
             <field name="res_model">res.partner</field>
@@ -20,13 +20,13 @@
             <field name="context">{'default_is_lims_customer': True}</field>
         </record>
 
-        <!-- SUBMENÚ CLIENTES -->
+        <!-- Submenú Clientes -->
         <menuitem id="lims_customers_menu" name="Clientes"
                   parent="lims_customer_menu"
                   action="action_lims_customers"
                   sequence="2"/>
 
-        <!-- VISTA DE LISTA PARA CLIENTES -->
+        <!-- Vista lista para clientes -->
         <record id="view_lims_customer_list" model="ir.ui.view">
             <field name="name">lims.customer.list</field>
             <field name="model">res.partner</field>
@@ -39,7 +39,7 @@
             </field>
         </record>
 
-        <!-- VISTA FORMULARIO HEREDADA DE res.partner -->
+        <!-- Vista formulario heredada desde res.partner -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form.inherit</field>
             <field name="model">res.partner</field>
@@ -47,34 +47,34 @@
             <field name="arch" type="xml">
                 <xpath expr="//sheet" position="after">
                     <sheet string="Información LIMS">
-                        <!-- Campo oculto para filtrar clientes -->
                         <group>
                             <field name="is_lims_customer" invisible="1"/>
                         </group>
-                        <!-- Campos individuales con attrs -->
+
+                        <!-- Campos específicos (sin attrs) -->
                         <group>
-                            <field name="rfc" attrs="{'invisible':[('is_lims_customer','=',False)]}"/>
-                            <field name="client_code" attrs="{'invisible':[('is_lims_customer','=',False)]}"/>
-                            <field name="fiscal_address" attrs="{'invisible':[('is_lims_customer','=',False)]}"/>
+                            <field name="rfc" invisible="not is_lims_customer"/>
+                            <field name="client_code" invisible="not is_lims_customer"/>
+                            <field name="fiscal_address" invisible="not is_lims_customer"/>
                         </group>
 
-                        <!-- Botón para ver sucursales asociadas -->
+                        <!-- Botón para sucursales (sin attrs) -->
                         <group>
                             <button name="%(action_lims_branches)d"
                                     string="Ver Sucursales"
                                     type="action"
                                     class="oe_stat_button"
                                     context="{'default_customer_id': id}"
-                                    attrs="{'invisible': [('id', '=', False), ('is_lims_customer','=',False)]}"/>
+                                    invisible="not is_lims_customer or id==False"/>
                         </group>
 
-                        <!-- Notebook para sucursales -->
+                        <!-- Notebook sucursales -->
                         <notebook>
                             <page string="Sucursales">
                                 <field name="branch_ids"
                                        context="{'default_customer_id': id}"
                                        options="{'form_view_ref': 'view_lims_branch_form'}"
-                                       attrs="{'invisible':[('is_lims_customer','=',False)]}">
+                                       invisible="not is_lims_customer">
                                     <list create="true" edit="false">
                                         <field name="name"/>
                                         <field name="address"/>
@@ -87,7 +87,7 @@
             </field>
         </record>
 
-        <!-- VISTA FORMULARIO DE SUCURSALES -->
+        <!-- Vista formulario sucursales -->
         <record id="view_lims_branch_form" model="ir.ui.view">
             <field name="name">lims.branch.form</field>
             <field name="model">lims.branch</field>
@@ -105,9 +105,8 @@
                                     type="action"
                                     class="oe_stat_button"
                                     context="{'default_branch_id': id}"
-                                    modifiers="{'invisible': [['id','=',False]]}"/>
+                                    invisible="id==False"/>
                         </group>
-
                         <!-- Departamentos -->
                         <notebook>
                             <page string="Departamentos">
@@ -123,7 +122,7 @@
             </field>
         </record>
 
-        <!-- VISTA LISTA DE SUCURSALES -->
+        <!-- Vista lista sucursales -->
         <record id="view_lims_branch_list" model="ir.ui.view">
             <field name="name">lims.branch.list</field>
             <field name="model">lims.branch</field>
