@@ -1,5 +1,6 @@
 <odoo>
     <data>
+
         <!-- Vista Lista -->
         <record id="view_lims_custody_chain_list" model="ir.ui.view">
             <field name="name">lims.custody_chain.list</field>
@@ -58,14 +59,14 @@
         </record>
 
         <!-- Menú Principal -->
-        <menuitem id="lims_custody_menu" 
-                  name="Cadenas de Custodia" 
-                  sequence="10"/>
+        <menuitem id="lims_custody_menu"
+                  name="Cadenas de Custodia"
+                  sequence="10" />
 
         <!-- Submenú -->
-        <menuitem id="lims_custody_chain_menu" 
-                  name="Cadenas de Custodia" 
-                  parent="lims_custody_menu" 
-                  action="action_lims_custody_chains"/>
+        <menuitem id="lims_custody_chain_menu"
+                  name="Cadenas de Custodia"
+                  parent="lims_custody_menu"
+                  action="action_lims_custody_chains" />
     </data>
 </odoo>
