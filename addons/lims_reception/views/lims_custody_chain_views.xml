@@ -19,7 +19,7 @@
 
                         <!-- Lista de muestras -->
                         <notebook>
-                            <page string="Muestras Recibidas">
+                            <page string="Muestras">
                                 <field name="sample_ids">
                                     <list editable="bottom">
                                         <field name="sample_identifier"/>
