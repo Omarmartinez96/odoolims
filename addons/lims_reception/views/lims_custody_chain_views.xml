@@ -20,17 +20,29 @@
                         <!-- Lista de muestras -->
                         <notebook>
                             <page string="Muestras">
-                                <field name="sample_ids">
-                                    <list editable="bottom">
+                                <field name="sample_ids" context="{'default_custody_chain_id': active_id}" mode="tree,form">
+                                    <tree>
                                         <field name="sample_identifier"/>
                                         <field name="sample_description"/>
                                         <field name="sample_type"/>
                                         <field name="date_received"/>
                                         <field name="state"/>
-                                    </list>
+                                    </tree>
+                                    <form>
+                                        <sheet>
+                                            <group>
+                                                <field name="sample_identifier" required="1"/>
+                                                <field name="sample_description"/>
+                                                <field name="sample_type"/>
+                                                <field name="date_received"/>
+                                                <field name="state"/>
+                                            </group>
+                                        </sheet>
+                                    </form>
                                 </field>
-                            </page>
-                        </notebook>
+                            </field>
+                        </page>
+                    </notebook>
                     </sheet>
                 </form>
             </field>
