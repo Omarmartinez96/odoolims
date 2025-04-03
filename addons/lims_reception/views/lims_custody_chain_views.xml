@@ -21,7 +21,7 @@
                         <!-- Lista de muestras -->
                         <notebook>
                             <page string="Muestras">
-                                <field name="sample_ids" context="{'default_custody_chain_id': active_id}" mode="tree,form">
+                                <field name="sample_ids" context="{'default_custody_chain_id': active_id}">
                                     <tree>
                                         <field name="sample_identifier"/>
                                         <field name="sample_description"/>
