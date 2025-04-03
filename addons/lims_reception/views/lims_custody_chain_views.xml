@@ -22,13 +22,13 @@
                         <notebook>
                             <page string="Muestras">
                                 <field name="sample_ids" context="{'default_custody_chain_id': active_id}">
-                                    <tree>
+                                    <list>
                                         <field name="sample_identifier"/>
                                         <field name="sample_description"/>
                                         <field name="sample_type"/>
                                         <field name="date_received"/>
                                         <field name="state"/>
-                                    </tree>
+                                    </list>
                                     <form>
                                         <sheet>
                                             <group>
