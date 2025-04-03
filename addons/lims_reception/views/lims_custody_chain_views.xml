@@ -36,11 +36,12 @@
                                                 <field name="sample_type"/>
                                                 <field name="date_received"/>
                                                 <field name="state"/>
+                                                <field name="attachment_ids" widget="many2many_binary"/>
                                             </group>
                                         </sheet>
                                     </form>
                                 </field>
-                          </page>
+                            </page>
                         </notebook>
                     </sheet>
                 </form>
