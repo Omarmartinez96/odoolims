@@ -7,7 +7,12 @@
     """,
     'category': 'Tools',  
     'author': "Laboratorio Proteus",
-    'depends': ['base', 'lims_customer'],
+    'depends': [
+        'base', 
+        'lims_customer', 
+        'sale'
+    ],
+    
     'data': [
         'security/security.xml',
         'security/ir.model.access.csv',
