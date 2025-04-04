@@ -35,7 +35,7 @@ class LimsCustodyChain(models.Model):
     sample_ids = fields.One2many(
         'lims.sample', 
         'custody_chain_id', 
-        string='Muestras Recibidas'
+        string='Muestra'
     )
     chain_of_custody_state = fields.Selection(
         [('draft', 'Borrador'), ('in_progress', 'En Proceso'), ('done', 'Finalizado')], 
