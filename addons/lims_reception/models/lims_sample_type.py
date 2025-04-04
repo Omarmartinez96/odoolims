@@ -8,7 +8,7 @@ class LimsSampleType(models.Model):
     _order = 'name'
 
     name = fields.Char(
-        string='Tipo de muestra'
+        string='Tipo de muestra',
         #required=True,
         translate=True
     )
