@@ -37,7 +37,7 @@ class LimsCustodyChain(models.Model):
         'custody_chain_id', 
         string='Muestras Recibidas'
     )
-    state = fields.Selection(
+    chain_of_custody_state = fields.Selection(
         [('draft', 'Borrador'), ('in_progress', 'En Proceso'), ('done', 'Finalizado')], 
         default='draft', 
         #required=True
@@ -60,25 +60,4 @@ class LimsCustodyChain(models.Model):
     )
     internal_notes = fields.Text(
         string="Observaciones internas"
-    )
-    sample_quantity = fields.Char(
-        string="Cantidad de muestra"
-    )
-    container_type = fields.Char( 
-        string="Tipo de recipiente"
-    )
-    instrument_used = fields.Char(
-        string="Instrumento utilizado"
-    )
-    field_results = fields.Char(
-        string="Resultados en campo"
-    )
-    sampling_date = fields.Char(
-        string="Fecha de Muestreo"
-    )
-    sampling_temperature = fields.Char(
-        string="Temperatura de muestreo"
-    )
-    sampling_technician = fields.Char(
-        string="Técnico de muestreo"
     )

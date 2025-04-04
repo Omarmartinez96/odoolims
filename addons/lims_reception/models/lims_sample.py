@@ -52,3 +52,24 @@ class LimsSample(models.Model):
         'ir.attachment', 
         string="Adjuntos"
     )
+    sample_quantity = fields.Char(
+        string="Cantidad de muestra"
+    )
+    container_type = fields.Char( 
+        string="Tipo de recipiente"
+    )
+    instrument_used = fields.Char(
+        string="Instrumento utilizado"
+    )
+    field_results = fields.Char(
+        string="Resultados en campo"
+    )
+    sampling_date = fields.Char(
+        string="Fecha de Muestreo"
+    )
+    sampling_temperature = fields.Char(
+        string="Temperatura de muestreo"
+    )
+    sampling_technician = fields.Char(
+        string="Técnico de muestreo"
+    )

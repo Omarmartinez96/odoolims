@@ -16,7 +16,7 @@
                             <field name="departamento_id"/>
                             <field name="quotation_id"/>
                             <field name="date_created" widget="datetime"/>
-                            <field name="state"/>
+                            <field name="chain_of_custody_state"/>
                         </group>
 
                         <group string="Plan de Muestreo (si aplica)">
