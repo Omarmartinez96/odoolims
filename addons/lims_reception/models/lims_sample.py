@@ -1,5 +1,6 @@
 # lims_sample.py
 from odoo import models, fields
+from .constants.containers import reception_containers
 
 class LimsSample(models.Model):
     _name = 'lims.sample'
@@ -57,7 +58,9 @@ class LimsSample(models.Model):
         string="Cantidad de muestra"
     )
     container_type = fields.Char( 
+        selection=reception_containers
         string="Tipo de recipiente"
+        help="Selecciona el tipo de recipientes utilizados para la muestra"
     )
     instrument_used = fields.Char(
         string="Instrumento utilizado"
