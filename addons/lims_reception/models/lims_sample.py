@@ -58,8 +58,8 @@ class LimsSample(models.Model):
         string="Cantidad de muestra"
     )
     container_type = fields.Char( 
-        selection=reception_containers
-        string="Tipo de recipiente"
+        selection=reception_containers,
+        string="Tipo de recipiente",
         help="Selecciona el tipo de recipientes utilizados para la muestra"
     )
     instrument_used = fields.Char(
