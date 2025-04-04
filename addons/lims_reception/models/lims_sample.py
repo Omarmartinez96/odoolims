@@ -39,7 +39,7 @@ class LimsSample(models.Model):
     )
     sample_type_id = fields.Many2one(
         'lims.sample.type',
-        string="Tipo de Muestra",
+        string='Tipo de Muestra',
         help='Selecciona o crea el tipo de muestra'
     )
     date_received = fields.Datetime(
