@@ -9,13 +9,18 @@
             <field name="arch" type="xml">
                 <form string="Cadena de Custodia">
                     <sheet>
-                        <group>
+                        <group string="Datos de la Cadena de Custodia">
                             <field name="custody_chain_code"/>
                             <field name="cliente_id"/>
                             <field name="sucursal_id"/>
                             <field name="departamento_id"/>
-                            <field name="date_created"/>
+                            <field name="quotation_id"/>
+                            <field name="date_created" widget="datetime" options="{'format': 'dd/MMM/yyyy'"/>
                             <field name="state"/>
+                        </group>
+
+                        <group>
+                            <field name="sampling_plan" nolabel="1" placeholder="Describe el plan de muestreo si aplica" colspan="4"/>
                         </group>
 
                         <!-- Lista de muestras -->
@@ -44,6 +49,20 @@
                                 </field>
                             </page>
                         </notebook>
+
+                        <group string="Datos de Muestreo y Recolección" col="2">
+                            <field name="collection_datetime"/>
+                            <field name="collected_by"/>
+                        </group>                        
+
+                        <group>
+                            <field name="sampling_observations" nolabel="1" placeholder="Observaciones generales del muestreo..." colspan="4"/>
+                        </group>
+
+                        <group>
+                            <field name="internal_notes" nolabel="1" placeholder="Notas internas del laboratorio..." colspan="4"/>
+                        </group>
+
                     </sheet>
                 </form>
             </field>

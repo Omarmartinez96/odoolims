@@ -13,3 +13,10 @@ class LimsCustodyChain(models.Model):
     date_created = fields.Datetime(string="Fecha de Creación", default=fields.Datetime.now)
     sample_ids = fields.One2many('lims.sample', 'custody_chain_id', string='Muestras Recibidas')
     state = fields.Selection([('draft', 'Borrador'), ('in_progress', 'En Proceso'), ('done', 'Finalizado')], default='draft', required=True)
+    quotation_id = fields.Many2one('sale.order', string ="Referencia de cotización")
+    sampling_plan = fields.Text(string="Plan de muestreo")
+    collected_by = fields.Char(string="Recolectado por")
+    collection_datetime = fields.Datetime(string="Fecha y Hora de Recolección")
+    sampling_observations = fields.Text(string="Observaciones de Muestreo")
+    internal_notes = fields.Text(string="Observaciones internas")
+    
