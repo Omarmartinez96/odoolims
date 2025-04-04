@@ -23,14 +23,14 @@
                             <field name="sampling_plan" nolabel="1" placeholder="Describe el plan de muestreo si aplica" colspan="4"/>
                         </group>
 
-                        <group string="Datos de Muestreo y Recolección">
+                        <group string="Datos de Recolección">
                             <field name="collection_datetime"/>
                             <field name="collected_by"/>
                         </group>                        
 
                         <group string="Observaciones">
-                             <field name="sampling_observations" nolabel="1" placeholder="Observaciones generales del muestreo..." colspan="4"/>
-                             <field name="internal_notes" nolabel="1" placeholder="Notas internas del laboratorio..." colspan="4"/>
+                             <field name="sampling_observations" placeholder="Observaciones generales del muestreo..." colspan="4"/>
+                             <field name="internal_notes" placeholder="Notas internas del laboratorio..." colspan="4"/>
                         </group>     
 
                         <!-- Lista de muestras -->
@@ -41,7 +41,6 @@
                                         <field name="sample_identifier"/>
                                         <field name="sample_description"/>
                                         <field name="sample_type"/>
-                                        <field name="date_received"/>
                                         <field name="state"/>
                                     </list>
                                     <form>
@@ -50,8 +49,13 @@
                                                 <field name="sample_identifier"/>
                                                 <field name="sample_description"/>
                                                 <field name="sample_type"/>
-                                                <field name="date_received"/>
-                                                <field name="state"/>
+                                                <field name="sample_quantity"/>
+                                                <field name="container_type"/>
+                                                <field name="sampling_temperature"/>
+                                                <field name="sampling_date"/>
+                                                <field name="field_results"/>
+                                                <field name="instrument_used"/>    
+                                                <field name="sampling_technician"/>
                                                 <field name="attachment_ids" widget="many2many_binary"/>
                                             </group>
                                         </sheet>
