@@ -39,7 +39,7 @@ class LimsCustodyChain(models.Model):
     )
     chain_of_custody_state = fields.Selection(
         [('draft', 'Borrador'), ('in_progress', 'En Proceso'), ('done', 'Finalizado')], 
-        string="Estado de CdC"
+        string="Estado de CdC",
         default='draft', 
         #required=True
     )

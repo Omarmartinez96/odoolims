@@ -46,7 +46,7 @@ class LimsSample(models.Model):
     )
     sample_state = fields.Selection(
         [('draft', 'Borrador'), ('in_analysis', 'En Análisis'), ('done', 'Finalizado')],
-        string="Estado de la muestra"
+        string="Estado de la muestra",
         default='draft'
     )
     attachment_ids = fields.Many2many(
