@@ -41,7 +41,7 @@
                                         <field name="sample_identifier"/>
                                         <field name="sample_description"/>
                                         <field name="sample_type"/>
-                                        <field name="chain_of_custody_state"/>
+                                        <field name="sample_state"/>
                                     </list>
                                     <form>
                                         <sheet>
