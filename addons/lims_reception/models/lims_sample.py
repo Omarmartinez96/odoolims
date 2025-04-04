@@ -57,10 +57,10 @@ class LimsSample(models.Model):
     sample_quantity = fields.Char(
         string="Cantidad de muestra"
     )
-    container_type = fields.Selection( 
-        selection=reception_containers,
-        string="Tipo de recipiente",
-        help="Selecciona el tipo de recipientes utilizados para la muestra"
+    container_type_id = fields.Many2one( 
+        'lims.container.type',
+        string='Tipo de recipiente',
+        help='Selecciona o crea el tipo de recipiente utilizado'
     )
     instrument_used = fields.Char(
         string="Instrumento utilizado"
