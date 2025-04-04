@@ -44,7 +44,7 @@ class LimsSample(models.Model):
         string="Fecha de Recepción", 
         default=fields.Datetime.now
     )
-    state = fields.Selection(
+    sample_state = fields.Selection(
         [('draft', 'Borrador'), ('in_analysis', 'En Análisis'), ('done', 'Finalizado')],
         default='draft'
     )

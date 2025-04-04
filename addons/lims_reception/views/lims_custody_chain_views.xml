@@ -41,7 +41,7 @@
                                         <field name="sample_identifier"/>
                                         <field name="sample_description"/>
                                         <field name="sample_type"/>
-                                        <field name="state"/>
+                                        <field name="chain_of_custody_state"/>
                                     </list>
                                     <form>
                                         <sheet>
@@ -78,7 +78,7 @@
                     <field name="cliente_id"/>
                     <field name="sucursal_id"/>
                     <field name="departamento_id"/>
-                    <field name="state"/>
+                    <field name="chain_of_custody_state"/>
                     <field name="date_created"/>
                 </list>
             </field>
