@@ -37,7 +37,7 @@
                                     <form>
                                         <sheet>
                                             <group>
-                                                <field name="sample_identifier" required="1"/>
+                                                <field name="sample_identifier"/>
                                                 <field name="sample_description"/>
                                                 <field name="sample_type"/>
                                                 <field name="date_received"/>

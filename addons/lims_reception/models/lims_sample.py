@@ -26,12 +26,10 @@ class LimsSample(models.Model):
         readonly=True, 
         store=True
     )
-
     custody_chain_id = fields.Many2one(
         'lims.custody_chain', 
         string="Cadena de Custodia"
     )
-
     sample_identifier = fields.Char(
         string="Identificación de Muestra", 
         required=True
