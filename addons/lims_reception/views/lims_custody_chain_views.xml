@@ -29,8 +29,8 @@
                         </group>                        
 
                         <group string="Observaciones">
-                             <field name="sampling_observations" placeholder="Observaciones generales del muestreo..." colspan="4"/>
-                             <field name="internal_notes" placeholder="Notas internas del laboratorio..." colspan="4"/>
+                             <field name="sampling_observations"/>
+                             <field name="internal_notes"/>
                         </group>     
 
                         <!-- Lista de muestras -->
