@@ -40,7 +40,7 @@
                                     <list>
                                         <field name="sample_identifier"/>
                                         <field name="sample_description"/>
-                                        <field name="sample_type"/>
+                                        <field name="sample_type_id"/>
                                         <field name="sample_state"/>
                                     </list>
                                     <form>
@@ -48,7 +48,7 @@
                                             <group>
                                                 <field name="sample_identifier"/>
                                                 <field name="sample_description"/>
-                                                <field name="sample_type"/>
+                                                <field name="sample_type_id"/>
                                                 <field name="sample_quantity"/>
                                                 <field name="container_type_id"/>
                                                 <field name="sampling_temperature"/>
