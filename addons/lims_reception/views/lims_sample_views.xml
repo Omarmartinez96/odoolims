@@ -20,7 +20,7 @@
                             <field name="sample_description"/>
                             <field name="sample_type"/>
                             <field name="date_received"/>
-                            <field name="state"/>
+                            <field name="sample_state"/>
                         </group>
                         <group>
                             <separator string="CADENA DE CUSTODIA" colspan="4"/>
@@ -47,7 +47,7 @@
                     <field name="sample_identifier"/>
                     <field name="sample_type"/>
                     <field name="date_received"/>
-                    <field name="state"/>
+                    <field name="sample_state"/>
                 </list>
             </field>
         </record>
