@@ -50,7 +50,7 @@
                                                 <field name="sample_description"/>
                                                 <field name="sample_type"/>
                                                 <field name="sample_quantity"/>
-                                                <field name="container_type"/>
+                                                <field name="container_type_id"/>
                                                 <field name="sampling_temperature"/>
                                                 <field name="sampling_date"/>
                                                 <field name="field_results"/>
