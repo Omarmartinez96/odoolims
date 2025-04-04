@@ -15,7 +15,7 @@
                             <field name="sucursal_id"/>
                             <field name="departamento_id"/>
                             <field name="quotation_id"/>
-                            <field name="date_created" widget="datetime" options="{'format': 'dd/MMM/yyyy'}"/>
+                            <field name="date_created" widget="datetime"/>
                             <field name="state"/>
                         </group>
 
