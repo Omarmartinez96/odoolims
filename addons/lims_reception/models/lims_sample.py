@@ -1,6 +1,5 @@
 # lims_sample.py
 from odoo import models, fields
-from .constants.containers import reception_containers
 
 class LimsSample(models.Model):
     _name = 'lims.sample'
