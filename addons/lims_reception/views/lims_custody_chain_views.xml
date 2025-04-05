@@ -2,7 +2,7 @@
 <odoo>
     <data>
 
-        <!-- Vista de Formulario -->
+        <!-- Vista de Formulario: Detalles de la Cadena de custodia -->
         <record id="view_lims_custody_chain_form" model="ir.ui.view">
             <field name="name">lims.custody_chain.form</field>
             <field name="model">lims.custody_chain</field>
@@ -68,7 +68,7 @@
             </field>
         </record>
 
-        <!-- Vista de Lista -->
+        <!-- Vista de Lista: Tabla principal de cadenas de custodia -->
         <record id="view_lims_custody_chain_list" model="ir.ui.view">
             <field name="name">lims.custody_chain.list</field>
             <field name="model">lims.custody_chain</field>
@@ -84,7 +84,24 @@
             </field>
         </record>
 
-        <!-- Acción -->
+         <!-- Vista de Búsqueda: Controla qué busca la barra superior -->
+        <record id="view_lims_custody_chain_search" model="ir.ui.view">
+            <field name="name">lims.custody_chain.search</field>
+            <field name="model">lims.custody_chain</field>
+            <field name="arch" type="xml">
+                <search string="Buscar cadenas de custodia">
+                    <field name="custody_chain_code"/>
+                    <field name="sampling_plan"/>
+                    <field name="collected_by"/>
+                    <field name="sample_ids.sample_identifier" string="Identificación de muestra"/>
+                    <field name="sample_ids.sample_description" string="Descripción de muestra"/>
+                    <field name="sample_ids.sample_type_id" string="Tipo de muestra"/>
+                    <field name="sample_ids.sampling_technician" string="Técnico de muestreo"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Acción: Enlace a menú y carga de vistas -->
         <record id="action_lims_custody_chains" model="ir.actions.act_window">
             <field name="name">Cadenas de Custodia</field>
             <field name="res_model">lims.custody_chain</field>
@@ -92,7 +109,7 @@
             <field name="view_id" ref="view_lims_custody_chain_list"/>
         </record>
 
-        <!-- Menú -->
+        <!-- Menú Principal de Cadenas de Custodia-->
         <menuitem id="lims_custody_menu_root" name="Cadenas de Custodia" sequence="10"/>
         <menuitem id="lims_custody_menu" name="Cadenas de Custodia" 
                 parent="lims_custody_menu_root" 
