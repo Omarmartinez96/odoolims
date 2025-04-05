@@ -67,7 +67,6 @@ class LimsCustodyChain(models.Model):
         string="Observaciones internas"
     )
 
-    @api.multi
     def send_email_comprobante(self):
         for record in self:
             if record.chain_of_custody_state != 'done':
