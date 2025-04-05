@@ -14,7 +14,10 @@
                             <field name="cliente_id"/>
                             <field name="sucursal_id"/>
                             <field name="departamento_id"/>
-                            <field name="contact_id" domain="[('department_id', '=', departamento_id)]"/>
+                            <field name="contact_id" 
+                                widget="many2many_tags"    
+                                domain="[('department_id', '=', departamento_id)]"
+                                modifiers="{'invisible': [['departamento_id', '=', False]]}"/>
                             <field name="quotation_id"/>
                             <field name="date_created" widget="datetime"/>
                             <field name="chain_of_custody_state"/>
