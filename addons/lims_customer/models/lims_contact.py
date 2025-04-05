@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# lims_contact.py
 from odoo import models, fields
 
 class LimsContact(models.Model):

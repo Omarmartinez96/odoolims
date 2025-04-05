@@ -1,4 +1,4 @@
-# -*- coding: utf-8 -*-
+# lims_branch.py
 from odoo import models, fields, api
 
 class LimsBranch(models.Model):
