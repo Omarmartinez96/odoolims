@@ -39,7 +39,7 @@
                                     type="object" 
                                     string="Enviar Comprobante a Correo Electrónico" 
                                     class="btn-primary"
-                                    attrs="{'invisible': [('chain_of_custody_state', '!=', 'finalizado')]}"/>
+                                    modifiers="{'invisible': [['chain_of_custody_state', '!=', 'done']]}"/>
                         </group>
 
                         <!-- Lista de muestras -->
