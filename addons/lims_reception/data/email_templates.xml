@@ -1,6 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
 <!--email_temapltes.xml-->
 
-<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <record id="email_template_comprobante" model="mail.template">
         <field name="name">Comprobante de Cadena de Custodia</field>
