@@ -14,6 +14,7 @@
                             <field name="cliente_id"/>
                             <field name="sucursal_id"/>
                             <field name="departamento_id"/>
+                            <field name="contact_id"/>
                             <field name="quotation_id"/>
                             <field name="date_created" widget="datetime"/>
                             <field name="chain_of_custody_state"/>
@@ -32,6 +33,14 @@
                              <field name="sampling_observations"/>
                              <field name="internal_notes"/>
                         </group>     
+
+                        <group>
+                            <button name="send_email_comprobante" 
+                                    type="object" 
+                                    string="Enviar Comprobante a Correo Electrónico" 
+                                    class="btn-primary"
+                                    attrs="{'invisible': [('chain_of_custody_state', '!=', 'finalizado')]}"/>
+                        </group>
 
                         <!-- Lista de muestras -->
                         <notebook>
