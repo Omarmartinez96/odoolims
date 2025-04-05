@@ -6,30 +6,6 @@ class LimsCustodyChain(models.Model):
     _description = 'Cadena de Custodia'
     _rec_name = 'custody_chain_code'
 
-    def name_search(self, name, args=None, operator='ilike', limit=100):
-        args = args or []
-        domain = args
-
-        if name:
-            # Buscar por código de cadena y plan de muestreo directamente
-            domain = ['|', ('custody_chain_code', operator, name), ('sampling_plan', operator, name)]
-
-            # Buscar muestras relacionadas con varios criterios
-            sample_domain = [
-                '|', '|', '|', '|', '|',
-                ('sample_identifier', operator, name),
-                ('sample_description', operator, name),
-                ('sample_type_id.name', operator, name),
-                ('instrument_used', operator, name),
-                ('sampling_technician', operator, name),
-            ]
-
-            sample_matches = self.env['lims.sample'].search(sample_domain)
-            if sample_matches:
-                domain = ['|'] + domain + [('sample_ids', 'in', sample_matches.ids)]
-
-        return self.search(domain, limit=limit).name_get()
-
     custody_chain_code = fields.Char(
         string="Código de Cadena de Custodia", 
         #required=True, 
