@@ -17,12 +17,9 @@
         'security/security.xml',
         'security/ir.model.access.csv',
         'data/sequences.xml',
+        'data/email_templates.xml',
         'views/lims_sample_views.xml',
         'views/lims_custody_chain_views.xml',
-    ],
-
-    'views': [
-        'data/email_templates.xml',
     ],
 
     'installable': True,
