@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
     <data>
-
-        <record id="model_lims_custody_chain" model="ir.model">
-            <field name="name">lims.custody_chain</field>
-            <field name="model">lims.custody_chain</field>
-        </record>
-
         <record id="email_template_comprobante" model="mail.template">
             <field name="name">Comprobante de Cadena de Custodia</field>
             <field name="model_id" ref="model_lims_custody_chain"/>
