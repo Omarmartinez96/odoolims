@@ -2,11 +2,11 @@
 from odoo import api, SUPERUSER_ID
 
 def create_mail_template(env):
-    # 'env' es ya un odoo.api.Environment
-    # (usualmente en modo superusuario durante el post-init)
+    # ¿ya existe el registro XML? (para no duplicar)
     if not env.ref('lims_reception.email_template_comprobante', raise_if_not_found=False):
+        # 1) Creamos la plantilla
         model = env['ir.model']._get('lims.custody_chain')
-        env['mail.template'].create({
+        template = env['mail.template'].create({
             'name': 'Comprobante de Cadena de Custodia',
             'model_id': model.id,
             'email_from': '${(user.email or "")|safe}',
@@ -20,4 +20,12 @@ def create_mail_template(env):
                 <br/>
                 <p>Atentamente,<br/>El equipo de ${user.company_id.name}</p>
             """,
+        })
+        # 2) Le asignamos el XML ID para que env.ref y el botón lo encuentren
+        env['ir.model.data'].create({
+            'module': 'lims_reception',
+            'name': 'email_template_comprobante',
+            'model': 'mail.template',
+            'res_id': template.id,
+            'noupdate': True,
         })
