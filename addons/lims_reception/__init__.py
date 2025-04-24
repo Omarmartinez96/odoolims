@@ -1,2 +1,3 @@
+# __init__.py
 from . import models
-from .data.post_init import create_mail_template
+from . import post_init    
