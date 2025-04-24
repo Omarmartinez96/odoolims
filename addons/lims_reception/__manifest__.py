@@ -1,6 +1,6 @@
 {
     'name': "Cadenas de Custodia",
-    'version': '1.0',
+    'version': '1.1',
     'summary': "Gestión de Cadenas de Custodia para LIMS",
     'description': """
         Módulo para registrar Cadenas de Custodia y Muestras dentro de un LIMS básico.
