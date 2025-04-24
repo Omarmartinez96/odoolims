@@ -1,0 +1,22 @@
+
+from odoo import api, SUPERUSER_ID
+
+def create_mail_template(cr, registry):
+    env = api.Environment(cr, SUPERUSER_ID, {})
+    if not env.ref('lims_reception.email_template_comprobante', raise_if_not_found=False):
+        model = env['ir.model']._get('lims.custody_chain')
+        if model:
+            env['mail.template'].create({
+                'name': 'Comprobante de Cadena de Custodia',
+                'model_id': model.id,
+                'email_from': '${(user.email or "")|safe}',
+                'email_to': '${object.cliente_id.email}',
+                'subject': 'Comprobante de Cadena de Custodia',
+                'body_html': """<html><body>
+                <p>Estimado/a Cliente,</p>
+                <p>Adjunto el comprobante correspondiente a la siguiente Cadena de Custodia:</p>
+                <p><strong>Código:</strong> ${object.custody_chain_code}</p>
+                <p>Gracias por su confianza.</p>
+                <br/><p>Atentamente,<br/>El equipo de ${user.company_id.name}</p>
+                </body></html>"""
+            })

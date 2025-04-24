@@ -10,7 +10,8 @@
     'depends': [
         'base', 
         'lims_customer', 
-        'sale'
+        'sale',
+        'mail',
     ],
     
     'data': [
@@ -20,8 +21,10 @@
         'data/email_templates.xml',
         'views/lims_sample_views.xml',
         'views/lims_custody_chain_views.xml',
+
     ],
 
+    'post_init_hook': 'create_mail_template',
     'installable': True,
     'application': True,
     'license': 'LGPL-3',
