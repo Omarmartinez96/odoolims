@@ -1,28 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
-
-        <record id="email_template_comprobante" model="mail.template">
-            <field name="name">Comprobante de Cadena de Custodia</field>
-            <field name="model_id" ref="model_lims_custody_chain"/>
-            <field name="email_from">${(user.email or '')|safe}</field>
-            <field name="email_to">${object.cliente_id.email}</field>
-            <field name="subject">Comprobante de Cadena de Custodia</field>
-            <field name="body_html" type="html">
-                <![CDATA[
-                    <html>
-                        <body>
-                            <p>Estimado/a Cliente,</p>
-                            <p>Adjunto el comprobante correspondiente a la siguiente Cadena de Custodia:</p>
-                            <p><strong>Código:</strong> ${object.custody_chain_code}</p>
-                            <p>Gracias por su confianza.</p>
-                            <br/>
-                            <p>Atentamente,<br/>El equipo de ${user.company_id.name}</p>
-                        </body>
-                    </html>
-                ]]>
-            </field>
-        </record>
-
-    </data>
+    <record id="email_template_comprobante" model="mail.template">
+        <field name="name">Comprobante de Cadena de Custodia</field>
+        <field name="model_id" ref="model_lims_custody_chain"/>
+        <field name="email_from">${(user.email or '')|safe}</field>
+        <field name="email_to">${object.cliente_id.email}</field>
+        <field name="subject">Comprobante de Cadena de Custodia</field>
+        <field name="body_html" type="html">
+            <![CDATA[
+                <html>
+                    <body>
+                        <p>Estimado/a Cliente,</p>
+                        <p>Adjunto el comprobante correspondiente a la siguiente Cadena de Custodia:</p>
+                        <p><strong>Código:</strong> ${object.custody_chain_code}</p>
+                        <p>Gracias por su confianza.</p>
+                        <br/>
+                        <p>Atentamente,<br/>El equipo de ${user.company_id.name}</p>
+                    </body>
+                </html>
+            ]]>
+        </field>
+    </record>
 </odoo>
