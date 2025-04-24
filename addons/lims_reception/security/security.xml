@@ -1,9 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
-        <record id="group_portal_sample_user" model="res.groups">
-            <field name="name">Usuarios Portal - Muestras</field>
-            <field name="category_id" ref="base.module_category_hidden"/>
-            <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
-        </record>
-    </data>
+  <data noupdate="1">
+    <!-- Grupo para acceder al portal de muestras -->
+    <record id="group_portal_sample_user" model="res.groups">
+      <field name="name">Usuarios Portal - Muestras</field>
+      <!-- Usa una categoría que exista: module_category_user_type suele estar disponible -->
+      <field name="category_id" ref="base.module_category_user_type"/>
+      <!-- Añade el portal a los implied_ids -->
+      <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+  </data>
 </odoo>
