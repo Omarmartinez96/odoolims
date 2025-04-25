@@ -4,6 +4,7 @@ from odoo.exceptions import UserError
 
 class LimsCustodyChain(models.Model):
     _name = 'lims.custody_chain'
+    _inherit = ['mail.thread','mail.activity.mixin']
     _description = 'Cadena de Custodia'
     _rec_name = 'custody_chain_code'
 
@@ -86,9 +87,9 @@ class LimsCustodyChain(models.Model):
 
             # Busca la plantilla de correo
             template = self.env.ref(
-                'lims_custody_chain.email_template_comprobante', 
+                'lims_reception.email_template_comprobante', 
                 raise_if_not_found=False
-            )
+                )
             if not template:
                 raise UserError(_('No se encontró la plantilla de correo electrónico.'))
 
@@ -98,4 +99,12 @@ class LimsCustodyChain(models.Model):
                 record.id, 
                 force_send=True, 
                 email_values=mail_values
+            )
+
+            # Enviar usando sudo() y force_send
+            template = template.sudo()
+            template.send_mail(
+                rec.id,
+                force_send=True,
+                email_values={'email_to': ','.join(emails)}
             )
