@@ -104,7 +104,7 @@ class LimsCustodyChain(models.Model):
             # Enviar usando sudo() y force_send
             template = template.sudo()
             template.send_mail(
-                rec.id,
+                record.id,
                 force_send=True,
                 email_values={'email_to': ','.join(emails)}
             )
