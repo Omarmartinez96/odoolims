@@ -24,7 +24,6 @@
 
     ],
 
-    #'post_init_hook': 'create_mail_template',
     'installable': True,
     'application': True,
     'license': 'LGPL-3',
