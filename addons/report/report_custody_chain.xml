@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <template id="report_custody_chain_document">
+    <t t-call="web.external_layout">
+      <div class="page">
+        <h2>Comprobante de Cadena de Custodia</h2>
+        <p><strong>Cliente:</strong> <t t-esc="doc.cliente_id.display_name"/></p>
+        <p><strong>Código:</strong> <t t-esc="doc.custody_chain_code"/></p>
+        <p><strong>Fecha:</strong> <t t-esc="doc.create_date.strftime('%Y-%m-%d')"/></p>
+        <h3>Muestras recibidas</h3>
+        <table class="table table-sm">
+          <thead>
+            <tr><th>ID</th><th>Tipo</th><th>Observaciones</th></tr>
+          </thead>
+          <tbody>
+            <tr t-foreach="doc.sample_ids" t-as="s">
+              <td><t t-esc="s.id"/></td>
+              <td><t t-esc="s.sample_type"/></td>
+              <td><t t-esc="s.notes"/></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </t>
+  </template>
+</odoo>
