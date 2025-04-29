@@ -1,114 +1,119 @@
-<!-- lims_custody_chain_views.xml--> 
+<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
-    <data>
+  <data>
 
-        <!-- Vista de Formulario: Detalles de la Cadena de custodia -->
-        <record id="view_lims_custody_chain_form" model="ir.ui.view">
-            <field name="name">lims.custody_chain.form</field>
-            <field name="model">lims.custody_chain</field>
-            <field name="arch" type="xml">
-                <form string="Cadena de Custodia">
+    <!-- Formulario de Cadena de Custodia -->
+    <record id="view_lims_custody_chain_form" model="ir.ui.view">
+      <field name="name">lims.custody_chain.form</field>
+      <field name="model">lims.custody_chain</field>
+      <field name="arch" type="xml">
+        <form string="Cadena de Custodia">
+          <sheet>
+            <group string="Datos de la Cadena de Custodia">
+              <field name="custody_chain_code"/>
+              <field name="cliente_id"/>
+              <field name="sucursal_id"/>
+              <field name="departamento_id"/>
+              <field name="contact_ids"
+                     widget="many2many_tags"
+                     domain="[('department_id','=',departamento_id)]"
+                     modifiers="{'invisible': [['departamento_id','=', False]]}"/>
+              <field name="quotation_id"/>
+              <field name="date_created" widget="datetime"/>
+              <field name="chain_of_custody_state"/>
+            </group>
+
+            <group string="Plan de Muestreo (si aplica)">
+              <field name="sampling_plan"
+                     nolabel="1"
+                     placeholder="Describe el plan de muestreo si aplica"
+                     colspan="4"/>
+            </group>
+
+            <group string="Datos de Recolección">
+              <field name="collection_datetime"/>
+              <field name="collected_by"/>
+            </group>
+
+            <group string="Observaciones">
+              <field name="sampling_observations"/>
+              <field name="internal_notes"/>
+            </group>
+
+            <group>
+              <button name="action_send_comprobante_email"
+                      type="object"
+                      string="Enviar Comprobante"
+                      class="btn-primary"
+                      modifiers="{'invisible': [['chain_of_custody_state','!=','done']]}"/>
+            </group>
+
+            <notebook>
+              <page string="Muestras">
+                <field name="sample_ids"
+                       context="{'default_custody_chain_id': id}"
+                       mode="list,form">
+                  <list>
+                    <field name="sample_identifier"/>
+                    <field name="sample_description"/>
+                    <field name="sample_type_id"/>
+                    <field name="sample_state"/>
+                  </list>
+                  <form>
                     <sheet>
-                        <group string="Datos de la Cadena de Custodia">
-                            <field name="custody_chain_code"/>
-                            <field name="cliente_id"/>
-                            <field name="sucursal_id"/>
-                            <field name="departamento_id"/>
-                            <field name="contact_ids" 
-                                widget="many2many_tags"    
-                                domain="[('department_id', '=', departamento_id)]"
-                                modifiers="{'invisible': [['departamento_id', '=', False]]}"/>
-                            <field name="quotation_id"/>
-                            <field name="date_created" widget="datetime"/>
-                            <field name="chain_of_custody_state"/>
-                        </group>
-
-                        <group string="Plan de Muestreo (si aplica)">
-                            <field name="sampling_plan" nolabel="1" placeholder="Describe el plan de muestreo si aplica" colspan="4"/>
-                        </group>
-
-                        <group string="Datos de Recolección">
-                            <field name="collection_datetime"/>
-                            <field name="collected_by"/>
-                        </group>                        
-
-                        <group string="Observaciones">
-                             <field name="sampling_observations"/>
-                             <field name="internal_notes"/>
-                        </group>     
-
-                        <group>
-                            <button name="action_send_comprobante_email"
-                                    type="object"
-                                    string="Enviar Comprobante"
-                                    class="btn-primary"
-                                    attrs="{'invisible': [('chain_of_custody_state', '!=', 'done')]}"/>
-                        </group>
-
-                        <!-- Lista de muestras -->
-                        <notebook>
-                            <page string="Muestras">
-                                <field name="sample_ids" context="{'default_custody_chain_id': id}" mode="list,form">
-                                    <list>
-                                        <field name="sample_identifier"/>
-                                        <field name="sample_description"/>
-                                        <field name="sample_type_id"/>
-                                        <field name="sample_state"/>
-                                    </list>
-                                    <form>
-                                        <sheet>
-                                            <group>
-                                                <field name="sample_identifier"/>
-                                                <field name="sample_description"/>
-                                                <field name="sample_type_id"/>
-                                                <field name="sample_quantity"/>
-                                                <field name="container_type_id"/>
-                                                <field name="sampling_temperature"/>
-                                                <field name="sampling_date"/>
-                                                <field name="field_results"/>
-                                                <field name="instrument_used"/>    
-                                                <field name="sampling_technician"/>
-                                                <field name="attachment_ids" widget="many2many_binary"/>
-                                            </group>
-                                        </sheet>
-                                    </form>
-                                </field>
-                            </page>
-                        </notebook>
+                      <group>
+                        <field name="sample_identifier"/>
+                        <field name="sample_description"/>
+                        <field name="sample_type_id"/>
+                        <field name="sample_quantity"/>
+                        <field name="container_type_id"/>
+                        <field name="sampling_temperature"/>
+                        <field name="sampling_date"/>
+                        <field name="field_results"/>
+                        <field name="instrument_used"/>
+                        <field name="sampling_technician"/>
+                        <field name="attachment_ids" widget="many2many_binary"/>
+                      </group>
                     </sheet>
-                </form>
-            </field>
-        </record>
+                  </form>
+                </field>
+              </page>
+            </notebook>
 
-        <!-- Vista de Lista: Tabla principal de cadenas de custodia -->
-        <record id="view_lims_custody_chain_list" model="ir.ui.view">
-            <field name="name">lims.custody_chain.list</field>
-            <field name="model">lims.custody_chain</field>
-            <field name="arch" type="xml">
-                <list>
-                    <field name="custody_chain_code"/>
-                    <field name="cliente_id"/>
-                    <field name="sucursal_id"/>
-                    <field name="departamento_id"/>
-                    <field name="chain_of_custody_state"/>
-                    <field name="date_created"/>
-                </list>
-            </field>
-        </record>
+          </sheet>
+        </form>
+      </field>
+    </record>
 
-        <!-- Acción: Enlace a menú y carga de vistas -->
-        <record id="action_lims_custody_chains" model="ir.actions.act_window">
-            <field name="name">Cadenas de Custodia</field>
-            <field name="res_model">lims.custody_chain</field>
-            <field name="view_mode">list,form</field>
-            <field name="view_id" ref="view_lims_custody_chain_list"/>
-        </record>
+    <!-- Vista de lista de Cadenas de Custodia -->
+    <record id="view_lims_custody_chain_list" model="ir.ui.view">
+      <field name="name">lims.custody_chain.list</field>
+      <field name="model">lims.custody_chain</field>
+      <field name="arch" type="xml">
+        <list string="Cadenas de Custodia">
+          <field name="custody_chain_code"/>
+          <field name="cliente_id"/>
+          <field name="sucursal_id"/>
+          <field name="departamento_id"/>
+          <field name="chain_of_custody_state"/>
+          <field name="date_created"/>
+        </list>
+      </field>
+    </record>
 
-        <!-- Menú Principal de Cadenas de Custodia-->
-        <menuitem id="lims_custody_menu_root" name="Cadenas de Custodia" sequence="10"/>
-        <menuitem id="lims_custody_menu" name="Cadenas de Custodia" 
-                parent="lims_custody_menu_root" 
-                action="action_lims_custody_chains" sequence="1"/>
+    <!-- Acción principal -->
+    <record id="action_lims_custody_chains" model="ir.actions.act_window">
+      <field name="name">Cadenas de Custodia</field>
+      <field name="res_model">lims.custody_chain</field>
+      <field name="view_mode">list,form</field>
+      <field name="view_id" ref="view_lims_custody_chain_list"/>
+    </record>
 
-    </data>
+    <!-- Menús -->
+    <menuitem id="lims_custody_menu_root" name="Cadenas de Custodia" sequence="10"/>
+    <menuitem id="lims_custody_menu" name="Cadenas de Custodia"
+              parent="lims_custody_menu_root"
+              action="action_lims_custody_chains" sequence="1"/>
+
+  </data>
 </odoo>
