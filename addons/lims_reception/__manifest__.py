@@ -18,6 +18,9 @@
         'security/security.xml',
         'security/ir.model.access.csv',
         'data/sequences.xml',
+        # reportes
+        'report/report_custody_chain.xml',
+        'report/report_custody_chain_action.xml',
         'data/email_templates.xml',
         'views/lims_sample_views.xml',
         'views/lims_custody_chain_views.xml',

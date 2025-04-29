@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <odoo>
   <data>
-    <!-- cargar siempre en instalación y upgrade -->
     <record id="email_template_comprobante" model="mail.template">
       <field name="name">Comprobante de Cadena de Custodia</field>
       <field name="model_id" model="ir.model" search="[('model','=','lims.custody_chain')]"/>
+      <!-- Adjunta el PDF generado por la acción de reporte -->
+      <field name="report_template_ids" eval="[(4, ref('lims_reception.action_report_custody_chain'))]"/>
       <field name="email_from">${(user.email or '')|safe}</field>
       <field name="email_to">${object.cliente_id.email}</field>
       <field name="subject">Comprobante de Cadena de Custodia</field>
@@ -19,3 +20,4 @@
     </record>
   </data>
 </odoo>
+

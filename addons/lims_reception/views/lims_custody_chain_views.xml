@@ -38,11 +38,11 @@
                         </group>     
 
                         <group>
-                            <button name="send_email_comprobante" 
-                                    type="object" 
-                                    string="Enviar Comprobante a Correo Electrónico" 
+                            <button name="action_send_comprobante_email"
+                                    type="object"
+                                    string="Enviar Comprobante"
                                     class="btn-primary"
-                                    modifiers="{'invisible': [['chain_of_custody_state', '!=', 'done']]}"/>
+                                    attrs="{'invisible': [('chain_of_custody_state', '!=', 'done')]}"/>
                         </group>
 
                         <!-- Lista de muestras -->

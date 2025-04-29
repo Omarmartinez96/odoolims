@@ -1,0 +1,12 @@
+<odoo>
+  <data>
+    <record id="action_report_custody_chain" model="ir.actions.report">
+      <field name="name">Comprobante de Cadena de Custodia</field>
+      <field name="model">lims.custody_chain</field>
+      <field name="report_type">qweb-pdf</field>
+      <field name="report_name">lims_reception.report_custody_chain_document</field>
+      <field name="report_file">lims_reception.report_custody_chain_document</field>
+      <field name="print_report_name">${object.custody_chain_code}.pdf</field>
+    </record>
+  </data>
+</odoo>

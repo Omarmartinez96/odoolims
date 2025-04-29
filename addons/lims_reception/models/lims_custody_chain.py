@@ -70,41 +70,32 @@ class LimsCustodyChain(models.Model):
         string="Observaciones internas"
     )
 
-    def send_email_comprobante(self):
-        for record in self:
-            if record.chain_of_custody_state != 'done':
-                raise UserError(_('La cadena de custodia debe estar finalizada para enviar el comprobante.'))
+    def action_send_comprobante_email(self):
+        """Abre el wizard de composición de correo con la plantilla y el PDF adjunto."""
+        self.ensure_one()
+        if self.chain_of_custody_state != 'done':
+            raise UserError(_('La cadena de custodia debe estar finalizada para enviar el comprobante.'))
 
-            # Obtener correos de contactos seleccionados
-            emails = [c.email for c in record.contact_ids if c.email]
+        template = self.env.ref('lims_reception.email_template_comprobante', raise_if_not_found=False)
+        if not template:
+            raise UserError(_('No se encontró la plantilla de correo electrónico.'))
 
-            # Si no hay contactos o correos, usar el del cliente como respaldo
-            if not emails and record.cliente_id.email:
-                emails = [record.cliente_id.email]
+        compose_form = self.env.ref('mail.email_compose_message_wizard_form')
+        ctx = {
+            'default_model': 'lims.custody_chain',
+            'default_res_id': self.id,
+            'default_use_template': True,
+            'default_template_id': template.id,
+            'default_composition_mode': 'comment',
+        }
+        return {
+            'name': _('Enviar Comprobante'),
+            'type': 'ir.actions.act_window',
+            'view_mode': 'form',
+            'res_model': 'mail.compose.message',
+            'views': [(compose_form.id, 'form')],
+            'view_id': compose_form.id,
+            'target': 'new',
+            'context': ctx,
+        }
 
-            if not emails:
-                raise UserError(_('No se encontró un correo electrónico válido en los contactos o cliente.'))
-
-            # Busca la plantilla de correo
-            template = self.env.ref(
-                'lims_reception.email_template_comprobante', 
-                raise_if_not_found=False
-                )
-            if not template:
-                raise UserError(_('No se encontró la plantilla de correo electrónico.'))
-
-            # Enviar a múltiples correos (separados por coma)
-            mail_values = {'email_to': ",".join(emails)}
-            template.send_mail(
-                record.id, 
-                force_send=True, 
-                email_values=mail_values
-            )
-
-            # Enviar usando sudo() y force_send
-            template = template.sudo()
-            template.send_mail(
-                record.id,
-                force_send=True,
-                email_values={'email_to': ','.join(emails)}
-            )
