@@ -83,7 +83,7 @@ class LimsCustodyChain(models.Model):
         compose_form = self.env.ref('mail.email_compose_message_wizard_form')
         ctx = {
             'default_model': 'lims.custody_chain',
-            'default_res_id': self.id,
+            'default_res_ids': [self.id],
             'default_use_template': True,
             'default_template_id': template.id,
             'default_composition_mode': 'comment',
