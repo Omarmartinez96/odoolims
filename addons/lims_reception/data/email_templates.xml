@@ -5,7 +5,8 @@
       <field name="name">Comprobante de Cadena de Custodia</field>
       <field name="model_id" model="ir.model" search="[('model','=','lims.custody_chain')]"/>
       <!-- Adjunta el PDF generado por la acción de reporte -->
-      <field name="report_template_ids" eval="[(4, ref('lims_reception.action_report_custody_chain'))]"/>
+      <field name="report_template" ref="lims_reception.action_report_custody_chain"/>
+      <field name="report_name" eval="(object.custody_chain_code or '').replace('/','_') + '.pdf'"/>
       <field name="email_from">${(user.email or '')|safe}</field>
       <field name="email_to">${object.cliente_id.email}</field>
       <field name="subject">Comprobante de Cadena de Custodia</field>
