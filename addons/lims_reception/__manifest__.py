@@ -12,6 +12,7 @@
         'lims_customer', 
         'sale',
         'mail',
+        'mass_mailing',
     ],
     
     'data': [
