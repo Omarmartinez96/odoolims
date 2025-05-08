@@ -81,7 +81,7 @@ class LimsCustodyChain(models.Model):
             raise UserError(_('No se encontró la plantilla de correo electrónico.'))
 
         # --- Dynamically generate the PDF report and attach it ---
-        report = self.env.ref('lims_reception.action_report_custody_chain')
+        report = self.env['ir.actions.report']._get_report_from_name('lims_reception.report_custody_chain_document')
         pdf_content, content_type = report._render_qweb_pdf(self.id)
         pdf_base64 = base64.b64encode(pdf_content)
 
