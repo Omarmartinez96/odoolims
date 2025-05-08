@@ -82,7 +82,7 @@ class LimsCustodyChain(models.Model):
 
         # --- Dynamically generate the PDF report and attach it ---
         report = self.env.ref('lims_reception.action_report_custody_chain')
-        pdf_content, content_type = report._render_qweb_pdf([self.id])
+        pdf_content, content_type = report._render_qweb_pdf(self.id)
         pdf_base64 = base64.b64encode(pdf_content)
 
         # Generate filename safely
