@@ -92,8 +92,11 @@ class LimsCustodyChain(models.Model):
             raise UserError(_("No se encontró la cadena de custodia con ID: %s") % self.id)
 
         # Render the PDF (pass list of IDs)
-        pdf_content, content_type = report._render_qweb_pdf(res_ids=[self.id])
-
+        pdf_content, content_type = report._render_qweb_pdf(
+            'lims_reception.action_report_custody_chain',
+            res_ids=[self.id]
+        )
+        
         filename = '%s.pdf' % (self.custody_chain_code.replace('/', '_') if self.custody_chain_code else 'comprobante')
 
         attachment = self.env['ir.attachment'].create({
