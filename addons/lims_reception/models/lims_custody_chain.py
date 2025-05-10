@@ -112,7 +112,7 @@ class LimsCustodyChain(models.Model):
 
         ctx = {
             'default_model': 'lims.custody_chain',
-            'default_res_id': self.id,
+            'default_res_id': [self.id],
             'default_use_template': True,
             'default_template_id': template.id,
             'default_composition_mode': 'comment',
