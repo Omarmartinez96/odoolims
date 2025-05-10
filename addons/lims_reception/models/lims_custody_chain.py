@@ -73,6 +73,7 @@ class LimsCustodyChain(models.Model):
 
     def action_send_comprobante_email(self):
         self.ensure_one()
+        
         if self.chain_of_custody_state != 'done':
             raise UserError(_('La cadena de custodia debe estar finalizada para enviar el comprobante.'))
 
@@ -80,15 +81,15 @@ class LimsCustodyChain(models.Model):
         if not template:
             raise UserError(_('No se encontró la plantilla de correo electrónico.'))
 
-        # --- Dynamically generate the PDF report and attach it ---
-        self.ensure_one()
-        report = self.env.ref('lims_reception.action_report_custody_chain')
-        pdf_content, content_type = report._render_qweb_pdf([self.id])
+        # Get and verify report
+        report = self.env.ref('lims_reception.action_report_custody_chain', raise_if_not_found=False)
+        if not report:
+            raise UserError(_('No se encontró el reporte de comprobante.'))
 
-        # Generate filename safely
+        pdf_content, content_type = report._render_qweb_pdf(self.id)  # self.id, not [self.id], still valid for single record
+
         filename = '%s.pdf' % (self.custody_chain_code.replace('/', '_') if self.custody_chain_code else 'comprobante')
 
-        # Create the attachment
         attachment = self.env['ir.attachment'].create({
             'name': filename,
             'type': 'binary',
@@ -99,6 +100,7 @@ class LimsCustodyChain(models.Model):
         })
 
         compose_form = self.env.ref('mail.email_compose_message_wizard_form')
+
         ctx = {
             'default_model': 'lims.custody_chain',
             'default_res_id': self.id,
@@ -111,8 +113,8 @@ class LimsCustodyChain(models.Model):
         return {
             'name': _('Enviar Comprobante'),
             'type': 'ir.actions.act_window',
-            'view_mode': 'form',
             'res_model': 'mail.compose.message',
+            'view_mode': 'form',
             'views': [(compose_form.id, 'form')],
             'target': 'new',
             'context': ctx,
