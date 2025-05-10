@@ -86,7 +86,13 @@ class LimsCustodyChain(models.Model):
         if not report:
             raise UserError(_('No se encontró el reporte de comprobante.'))
 
-        pdf_content, content_type = report._render_qweb_pdf(self)
+        # Optional but helpful: confirm the record exists
+        record = self.env['lims.custody_chain'].browse(self.id)
+        if not record.exists():
+            raise UserError(_("No se encontró la cadena de custodia con ID: %s") % self.id)
+
+        # Render the PDF (pass list of IDs)
+        pdf_content, content_type = report._render_qweb_pdf([self.id])
 
         filename = '%s.pdf' % (self.custody_chain_code.replace('/', '_') if self.custody_chain_code else 'comprobante')
 
