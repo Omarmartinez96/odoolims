@@ -40,14 +40,6 @@
               <field name="internal_notes"/>
             </group>
 
-            <group>
-              <button name="action_send_comprobante_email"
-                      type="object"
-                      string="Enviar Comprobante"
-                      class="btn-primary"
-                      modifiers="{'invisible': [['chain_of_custody_state','!=','done']]}"/>
-            </group>
-
             <notebook>
               <page string="Muestras">
                 <field name="sample_ids"
@@ -79,6 +71,14 @@
                 </field>
               </page>
             </notebook>
+
+            <group>
+              <button name="action_send_comprobante_email"
+                      type="object"
+                      string="Enviar Comprobante"
+                      class="btn-primary"
+                      modifiers="{'invisible': [['chain_of_custody_state','!=','done']]}"/>
+            </group>
 
           </sheet>
         </form>
