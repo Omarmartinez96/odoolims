@@ -1,7 +1,8 @@
 <odoo>
   <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
-    <!-- ✅ Agregar políticas al final del documento -->
-    <xpath expr="//div[@class='row mt32']" position="after">
+
+    <!-- ✅ Agregar políticas al final del reporte -->
+    <xpath expr="//div[@class='page']" position="inside">
       <div class="row mt32">
         <div class="col-12">
           <h4>Condiciones y Políticas</h4>
@@ -10,7 +11,7 @@
             <li><strong>Política de cancelación:</strong> No reembolsable una vez iniciado el análisis.</li>
             <li><strong>Revisión de formato:</strong> Este documento ha sido revisado y aprobado por el área técnica.</li>
             <li><strong>Notas adicionales:</strong> Este documento no es un informe de resultados.</li>
-            <li><strong>Notas sobre símbolos:</strong> * Acreditado por la EMA | ** Subrogado</li>
+            <li><strong>Notas sobre símbolos:</strong> * Acreditado por la EMA &nbsp;&nbsp; ** Subrogado</li>
           </ul>
         </div>
       </div>
