@@ -1,5 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?>
 <odoo>
+  <!-- ya tienes esta -->
   <record id="view_order_form_lims" model="ir.ui.view">
     <field name="name">sale.order.form.lims</field>
     <field name="model">sale.order</field>
@@ -10,6 +10,19 @@
         <field name="lims_branch_id"/>
         <field name="lims_department_id"/>
         <field name="lims_contact_ids" widget="many2many_tags"/>
+      </xpath>
+    </field>
+  </record>
+
+  <!-- 🆕 NUEVA vista heredada para el formulario de líneas -->
+  <record id="view_order_line_form_lims" model="ir.ui.view">
+    <field name="name">sale.order.line.form.lims</field>
+    <field name="model">sale.order.line</field>
+    <field name="inherit_id" ref="sale.view_order_line_form"/>
+    <field name="arch" type="xml">
+      <xpath expr="//field[@name='product_id']" position="after">
+        <field name="analysis_method"/>
+        <field name="is_accredited"/>
       </xpath>
     </field>
   </record>
