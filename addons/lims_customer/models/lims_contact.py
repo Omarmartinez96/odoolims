@@ -20,18 +20,18 @@ class LimsContact(models.Model):
         help="Se utiliza para funciones nativas como correos."
     )
 
-    @api.model
-    def create(self, vals):
-        contact = super().create(vals)
+    @api.model_create_multi
+    def create(self, vals_list):
+        contacts = super().create(vals_list)
 
-        if not contact.partner_id and contact.email:
-            # Crear automáticamente un res.partner
-            partner = contact.env['res.partner'].create({
-                'name': contact.name,
-                'email': contact.email,
-                'phone': contact.phone,
-                'type': 'contact',
-            })
-            contact.partner_id = partner.id
+        for contact in contacts:
+            if not contact.partner_id and contact.email:
+                partner = self.env['res.partner'].create({
+                    'name': contact.name,
+                    'email': contact.email,
+                    'phone': contact.phone,
+                    'type': 'contact',
+                })
+                contact.partner_id = partner.id
 
-        return contact
+        return contacts
