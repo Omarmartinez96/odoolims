@@ -1,14 +1,14 @@
 <odoo>
   <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
 
-    <!-- Agregar columnas al encabezado de la tabla -->
+    <!-- Encabezados -->
     <xpath expr="//table[contains(@class, 'o_main_table')]/thead/tr" position="inside">
       <th>Método de Análisis</th>
       <th>Acreditado</th>
     </xpath>
 
-    <!-- Inyectar columnas SOLO en líneas normales (no notas ni secciones) -->
-    <xpath expr="//t[@t-if='not line.display_type and line.product_type != &#39;combo&#39;']" position="inside">
+    <!-- Celdas dentro de líneas normales (productos, no notas ni secciones) -->
+    <xpath expr="//t[@t-if=&quot;not line.display_type and line.product_type != 'combo'&quot;]" position="inside">
       <td>
         <span t-esc="line.analysis_method or ''"/>
       </td>
@@ -17,7 +17,7 @@
       </td>
     </xpath>
 
-    <!-- Sección de políticas -->
+    <!-- Políticas -->
     <xpath expr="//div[@class='oe_structure'][last()]" position="before">
       <div class="row mt32">
         <div class="col-12">
