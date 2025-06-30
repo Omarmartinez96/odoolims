@@ -1,11 +1,11 @@
 <odoo>
-  <!-- Vista del formulario de pedidos -->
   <record id="view_order_form_lims" model="ir.ui.view">
     <field name="name">sale.order.form.lims</field>
     <field name="model">sale.order</field>
     <field name="inherit_id" ref="sale.view_order_form"/>
     <field name="arch" type="xml">
-      <!-- Campos extra abajo de cliente -->
+
+      <!-- Campos adicionales al lado del cliente -->
       <xpath expr="//field[@name='partner_id']" position="after">
         <field name="client_code" readonly="1"/>
         <field name="lims_branch_id"/>
@@ -13,17 +13,11 @@
         <field name="lims_contact_ids" widget="many2many_tags"/>
       </xpath>
 
-      <!-- Modificamos las columnas visibles de order_line -->
-      <xpath expr="//field[@name='order_line']/tree/field[@name='name']" position="after">
-        <field name="analysis_method"/>
-        <field name="is_accredited"/>
+      <!-- Agregar columnas en la definición del one2many -->
+      <xpath expr="//field[@name='order_line']" position="attributes">
+        <attribute name="context">{'default_analysis_method': '', 'default_is_accredited': False}</attribute>
       </xpath>
 
-      <!-- Agregar campos al formulario de cada línea (popup) si existe -->
-      <xpath expr="//field[@name='order_line']/form//field[@name='product_id']" position="after">
-        <field name="analysis_method"/>
-        <field name="is_accredited"/>
-      </xpath>
     </field>
   </record>
 </odoo>
