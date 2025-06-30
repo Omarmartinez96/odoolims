@@ -1,6 +1,7 @@
 {
     'name': 'Integración LIMS con Ventas',
     'version': '1.0',
+    'category': 'Laboratory',
     'depends': [
         'sale',
         'lims_customer',

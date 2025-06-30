@@ -1,6 +1,7 @@
 {
     'name': 'Website Private Access',
     'version': '1.0',
+    'category': 'Laboratory',
     'summary': 'Forzar login antes de mostrar el sitio web',
     'depends': ['website'],
     'installable': True,

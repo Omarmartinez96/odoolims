@@ -5,7 +5,7 @@
     'description': """
         Módulo para registrar Cadenas de Custodia y Muestras dentro de un LIMS básico.
     """,
-    'category': 'Tools',  
+    'category': 'Laboratory',
     'author': "Laboratorio Proteus",
     'depends': [
         'base', 
