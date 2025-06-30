@@ -7,8 +7,8 @@
       <th>Acreditado</th>
     </xpath>
 
-    <!-- Añadir valores por línea (REEMPLAZADO xpath AQUÍ) -->
-    <xpath expr="//tbody/tr" position="inside">
+    <!-- Añadir celdas a cada línea (modificado el xpath correctamente) -->
+    <xpath expr="//t[@t-foreach='doc.order_line']/tr" position="inside">
       <td>
         <span t-esc="line.analysis_method or ''"/>
       </td>
@@ -17,7 +17,7 @@
       </td>
     </xpath>
 
-    <!-- Agregar sección de políticas y notas al final -->
+    <!-- Sección de políticas y notas -->
     <xpath expr="//div[@class='row mt32']" position="after">
       <div class="row mt32">
         <div class="col-12">
