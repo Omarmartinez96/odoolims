@@ -1,5 +1,4 @@
-# lims_contact.py
-from odoo import models, fields
+from odoo import models, fields, api
 
 class LimsContact(models.Model):
     _name = 'lims.contact'
@@ -9,10 +8,30 @@ class LimsContact(models.Model):
     email = fields.Char(string="Correo Electrónico")
     phone = fields.Char(string="Teléfono")
 
-    # Campo Many2one apuntando a 'lims.department'
-    # (cada contacto pertenece a un departamento)
     department_id = fields.Many2one(
         'lims.department',
         string="Departamento",
         required=True
     )
+
+    partner_id = fields.Many2one(
+        'res.partner',
+        string="Contacto (Odoo)",
+        help="Se utiliza para funciones nativas como correos."
+    )
+
+    @api.model
+    def create(self, vals):
+        contact = super().create(vals)
+
+        if not contact.partner_id and contact.email:
+            # Crear automáticamente un res.partner
+            partner = contact.env['res.partner'].create({
+                'name': contact.name,
+                'email': contact.email,
+                'phone': contact.phone,
+                'type': 'contact',
+            })
+            contact.partner_id = partner.id
+
+        return contact
