@@ -1,14 +1,14 @@
 <odoo>
   <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
-    
+
     <!-- Añadir columnas al encabezado -->
     <xpath expr="//thead/tr" position="inside">
       <th>Método de Análisis</th>
       <th>Acreditado</th>
     </xpath>
 
-    <!-- Añadir valores por línea -->
-    <xpath expr="//tbody/tr/td[1]" position="after">
+    <!-- Añadir valores por línea (REEMPLAZADO xpath AQUÍ) -->
+    <xpath expr="//tbody/tr" position="inside">
       <td>
         <span t-esc="line.analysis_method or ''"/>
       </td>
