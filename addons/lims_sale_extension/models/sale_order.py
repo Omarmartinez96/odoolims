@@ -30,3 +30,9 @@ class SaleOrder(models.Model):
         string="Contactos",
         domain="[('department_id', '=', lims_department_id)]"
     )
+
+class SaleOrderLine(models.Model):
+    _inherit = 'sale.order.line'
+
+    analysis_method = fields.Char(string="Método de Análisis")
+    is_accredited = fields.Boolean(string="Acreditado")

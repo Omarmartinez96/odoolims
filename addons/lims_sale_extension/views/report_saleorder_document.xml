@@ -1,0 +1,36 @@
+<odoo>
+  <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
+    
+    <!-- Añadir columnas al encabezado -->
+    <xpath expr="//thead/tr" position="inside">
+      <th>Método de Análisis</th>
+      <th>Acreditado</th>
+    </xpath>
+
+    <!-- Añadir valores por línea -->
+    <xpath expr="//tbody/tr/td[1]" position="after">
+      <td>
+        <span t-esc="line.analysis_method or ''"/>
+      </td>
+      <td>
+        <span t-esc="'Sí' if line.is_accredited else 'No'"/>
+      </td>
+    </xpath>
+
+    <!-- Agregar sección de políticas y notas al final -->
+    <xpath expr="//div[@class='row mt32']" position="after">
+      <div class="row mt32">
+        <div class="col-12">
+          <h4>Condiciones y Políticas</h4>
+          <ul>
+            <li><strong>Condiciones de pago:</strong> 50 % al ordenar, 50 % antes de entrega.</li>
+            <li><strong>Política de cancelación:</strong> No reembolsable una vez iniciado el análisis.</li>
+            <li><strong>Revisión de formato:</strong> Este documento ha sido revisado y aprobado por el área técnica.</li>
+            <li><strong>Notas adicionales:</strong> Este documento no es un informe de resultados.</li>
+          </ul>
+        </div>
+      </div>
+    </xpath>
+
+  </template>
+</odoo>

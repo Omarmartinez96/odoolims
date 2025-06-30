@@ -8,6 +8,7 @@
     ],
     'data': [
         'views/sale_order_views.xml',
+        'views/report_saleorder_document.xml',
     ],
     'installable': True,
     'application': True,
