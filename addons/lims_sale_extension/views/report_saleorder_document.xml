@@ -1,42 +1,17 @@
 <odoo>
   <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
-
-    <!-- ✅ Agregar columnas al encabezado de la tabla -->
-    <xpath expr="//table[contains(@class, 'o_main_table')]/thead/tr" position="inside">
-      <th style="width: 120px;">Método de Análisis</th>
-      <th style="width: 80px;">Acreditado</th>
-    </xpath>
-
-    <!-- ✅ Agregar celdas sólo para líneas normales -->
-    <xpath expr="//t[@t-if=&quot;not line.display_type and line.product_type != 'combo'&quot;]" position="inside">
-      <td style="white-space: nowrap;">
-        <span t-esc="line.analysis_method or ''"/>
-      </td>
-      <td style="text-align: center;">
-        <span t-esc="'Sí' if line.is_accredited else 'No'"/>
-      </td>
-    </xpath>
-
-    <!-- ✅ Agregar bloque de condiciones y políticas después del total -->
-    <xpath expr="//div[@id='total']" position="after">
+    <!-- ✅ Agregar políticas al final del documento -->
+    <xpath expr="//div[@class='row mt32']" position="after">
       <div class="row mt32">
         <div class="col-12">
-          <h4>CONDICIONES DE PAGO Y SERVICIO</h4>
+          <h4>Condiciones y Políticas</h4>
           <ul>
-            <li><strong>I.</strong> La presente cotización tiene una vigencia de 15 días después de la fecha establecida en el documento.</li>
-            <li><strong>II.</strong> Los pagos deberán ser depositados a la cuenta: <br/>
-              HSBC · Cuenta: 4063994511 · CLABE: 021028040639945117 · Beneficiario: Laboratorio de Microbiología Proteus S.A. de C.V.
-            </li>
-            <li><strong>III.</strong> En caso de no tener disponibilidad de análisis, las muestras podrán ser enviadas a laboratorios terceros.</li>
-            <li><strong>IV.</strong> El pago de pruebas subrogadas deberá realizarse al menos 24 horas antes de la recolección.</li>
-            <li><strong>V.</strong> Se requiere el pago cubierto al 100% para iniciar el procesamiento de muestras.</li>
-            <li><strong>VI.</strong> Se requiere el pago cubierto al 100% para entregar resultados o productos.</li>
-            <li><strong>VII.</strong> La entrega de resultados depende del tipo de muestra. Consulte tiempos con el laboratorio.</li>
-            <li><strong>VIII.</strong> Aclaraciones se atenderán dentro de los 5 días hábiles posteriores a la entrega de resultados.</li>
-            <li><strong>IX.</strong> Con la firma u orden de compra, se acepta la confidencialidad de la información proporcionada.</li>
+            <li><strong>Condiciones de pago:</strong> 50 % al ordenar, 50 % antes de entrega.</li>
+            <li><strong>Política de cancelación:</strong> No reembolsable una vez iniciado el análisis.</li>
+            <li><strong>Revisión de formato:</strong> Este documento ha sido revisado y aprobado por el área técnica.</li>
+            <li><strong>Notas adicionales:</strong> Este documento no es un informe de resultados.</li>
+            <li><strong>Notas sobre símbolos:</strong> * Acreditado por la EMA | ** Subrogado</li>
           </ul>
-          <p><strong>Contacto:</strong> contacto@proteuslaboratorio.com · Tel. (664) 973-8185</p>
-          <p><strong>Responsable:</strong> Francisco Arnulfo Ávila Moreno, Gerente de Laboratorio</p>
         </div>
       </div>
     </xpath>
