@@ -1,14 +1,14 @@
 <odoo>
   <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
 
-    <!-- Agregar columnas al encabezado de la tabla -->
-    <xpath expr="//table[@class='table table-sm mt32']/thead/tr" position="inside">
+    <!-- ✅ Agregar columnas al encabezado de la tabla de líneas -->
+    <xpath expr="//table[contains(@class, 'o_main_table')]/thead/tr" position="inside">
       <th>Método de Análisis</th>
       <th>Acreditado</th>
     </xpath>
 
-    <!-- Agregar columnas al cuerpo de la tabla -->
-    <xpath expr="//table[@class='table table-sm mt32']/tbody/tr" position="inside">
+    <!-- ✅ Agregar columnas al cuerpo de la tabla -->
+    <xpath expr="//table[contains(@class, 'o_main_table')]/tbody/tr" position="inside">
       <td>
         <span t-esc="line.analysis_method or ''"/>
       </td>
@@ -17,7 +17,7 @@
       </td>
     </xpath>
 
-    <!-- Sección de políticas al final del documento -->
+    <!-- ✅ Sección de políticas al final del documento -->
     <xpath expr="//div[@class='row mt32']" position="after">
       <div class="row mt32">
         <div class="col-12">
