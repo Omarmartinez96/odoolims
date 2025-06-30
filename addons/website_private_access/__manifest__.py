@@ -4,7 +4,7 @@
     'summary': 'Forzar login antes de mostrar el sitio web',
     'depends': ['website'],
     'installable': True,
-    'auto_install': False,
+    'application': True,
+    'auto_install': True,
     'license': 'LGPL-3',
-
 }
