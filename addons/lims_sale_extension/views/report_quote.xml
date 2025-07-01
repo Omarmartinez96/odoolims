@@ -1,86 +1,100 @@
 <odoo>
   <template id="report_saleorder_custom">
-    <t t-call="lims_sale_extension.external_layout_inherit_lims">
-      <t t-foreach="docs" t-as="doc">
-        <!-- 🔧 Eliminamos margen superior del layout -->
-        <main class="o_report_layout" style="margin-top: 0px;">
-          <div class="page">
+    <t t-foreach="docs" t-as="doc">
+      <main class="o_report_layout" style="margin-top: 0px; font-family: 'Lato', sans-serif;">
+        <div class="page">
 
-            <!-- Encabezado más compacto -->
-            <div class="row" style="margin-bottom: 5px;">
-              <div class="col-12 text-center">
-                <h4 style="color:#006699; font-size:16px; margin: 0;">COTIZACIÓN DE SERVICIOS</h4>
-                <p style="font-size:11px; margin-top:4px;"><strong>Referencia:</strong> <t t-esc="doc.name"/></p>
-              </div>
+          <!-- Encabezado con logo y datos de empresa -->
+          <div class="row mb-3">
+            <div class="col-6">
+              <img src="/web/image/res.company/1/logo" style="max-height: 120px;"/>
             </div>
-
-            <!-- Datos del cliente: texto más pequeño -->
-            <div class="row mb-2" style="font-size:10px;">
-              <div class="col-6">
-                <strong>Cliente:</strong> <t t-esc="doc.partner_id.name"/><br/>
-                <t t-esc="doc.partner_id.contact_address"/><br/>
-                <strong>RFC:</strong> <t t-esc="doc.partner_id.vat"/>
-              </div>
-              <div class="col-6 text-right">
-                <strong>Fecha:</strong> <t t-esc="doc.date_order.strftime('%d/%m/%Y')"/><br/>
-                <strong>Condiciones de pago:</strong> <t t-esc="doc.payment_term_id.name"/>
-              </div>
+            <div class="col-6 text-right" style="font-size:10px;">
+              <strong><t t-esc="doc.company_id.name"/></strong><br/>
+              <t t-esc="doc.company_id.street"/><br/>
+              <t t-if="doc.company_id.street2"><t t-esc="doc.company_id.street2"/><br/></t>
+              <t t-esc="doc.company_id.city"/> <t t-esc="doc.company_id.state_id.name"/>, <t t-esc="doc.company_id.zip"/><br/>
+              <t t-esc="doc.company_id.country_id.name"/><br/>
+              RFC: <t t-esc="doc.company_id.vat"/><br/>
+              Tel: <t t-esc="doc.company_id.phone"/><br/>
+              Email: <t t-esc="doc.company_id.email"/>
             </div>
-
-            <!-- Tabla de productos -->
-            <table class="table table-sm mt-2" style="width:100%; font-size:11px;">
-              <thead>
-                <tr style="background-color:#f0f0f0;">
-                  <th style="width:50%;">Producto</th>
-                  <th class="text-center">Cantidad</th>
-                  <th class="text-right">Precio unitario</th>
-                  <th class="text-right">Subtotal</th>
-                </tr>
-              </thead>
-              <tbody>
-                <t t-foreach="doc.order_line" t-as="line">
-                  <tr>
-                    <td>
-                      <div><strong><t t-esc="line.product_id.display_name"/></strong></div>
-                      <div style="white-space: pre-wrap; font-size: 10px;">
-                        <t t-esc="line.name[len(line.product_id.display_name):].strip()"/>
-                      </div>
-                    </td>
-                    <td class="text-center"><t t-esc="line.product_uom_qty"/></td>
-                    <td class="text-right"><t t-esc="line.price_unit"/></td>
-                    <td class="text-right"><t t-esc="line.price_subtotal"/></td>
-                  </tr>
-                </t>
-              </tbody>
-            </table>
-
-            <!-- Totales -->
-            <div class="row mt-3">
-              <div class="col-6"></div>
-              <div class="col-6 text-right" style="font-size:10px;">
-                <p><strong>Subtotal:</strong> <t t-esc="doc.amount_untaxed"/></p>
-                <p><strong>Impuestos:</strong> <t t-esc="doc.amount_tax"/></p>
-                <p><strong>Total:</strong> <t t-esc="doc.amount_total"/></p>
-              </div>
-            </div>
-
-            <!-- Condiciones y Políticas -->
-            <div class="row mt-4">
-              <div class="col-12">
-                <h5 style="margin-bottom: 6px;">Condiciones y Políticas</h5>
-                <ul style="font-size:10px; line-height:1.5;">
-                  <li><strong>Condiciones de pago:</strong> 50% al ordenar, 50% antes de entrega.</li>
-                  <li><strong>Política de cancelación:</strong> No reembolsable una vez iniciado el análisis.</li>
-                  <li><strong>Revisión de formato:</strong> Este documento ha sido revisado y aprobado por el área técnica.</li>
-                  <li><strong>Notas adicionales:</strong> Este documento no es un informe de resultados.</li>
-                  <li><strong>Notas sobre símbolos:</strong> * Acreditado por la EMA &#160;&#160; ** Subrogado</li>
-                </ul>
-              </div>
-            </div>
-
           </div>
-        </main>
-      </t>
+
+          <!-- Título de cotización -->
+          <div class="row" style="margin-bottom: 5px;">
+            <div class="col-12 text-center">
+              <h4 style="color:#006699; font-size:16px; margin: 0;">COTIZACIÓN DE SERVICIOS</h4>
+              <p style="font-size:11px; margin-top:4px;"><strong>Referencia:</strong> <t t-esc="doc.name"/></p>
+            </div>
+          </div>
+
+          <!-- Datos del cliente -->
+          <div class="row mb-2" style="font-size:10px;">
+            <div class="col-6">
+              <strong>Cliente:</strong> <t t-esc="doc.partner_id.name"/><br/>
+              <t t-esc="doc.partner_id.contact_address"/><br/>
+              <strong>RFC:</strong> <t t-esc="doc.partner_id.vat"/>
+            </div>
+            <div class="col-6 text-right">
+              <strong>Fecha:</strong> <t t-esc="doc.date_order.strftime('%d/%m/%Y')"/><br/>
+              <strong>Condiciones de pago:</strong> <t t-esc="doc.payment_term_id.name"/>
+            </div>
+          </div>
+
+          <!-- Tabla de productos -->
+          <table class="table table-sm mt-2" style="width:100%; font-size:11px;">
+            <thead>
+              <tr style="background-color:#f0f0f0;">
+                <th style="width:50%;">Producto</th>
+                <th class="text-center">Cantidad</th>
+                <th class="text-right">Precio unitario</th>
+                <th class="text-right">Subtotal</th>
+              </tr>
+            </thead>
+            <tbody>
+              <t t-foreach="doc.order_line" t-as="line">
+                <tr>
+                  <td>
+                    <div><strong><t t-esc="line.product_id.display_name"/></strong></div>
+                    <div style="white-space: pre-wrap; font-size: 10px;">
+                      <t t-esc="line.name[len(line.product_id.display_name):].strip()"/>
+                    </div>
+                  </td>
+                  <td class="text-center"><t t-esc="line.product_uom_qty"/></td>
+                  <td class="text-right"><t t-esc="line.price_unit"/></td>
+                  <td class="text-right"><t t-esc="line.price_subtotal"/></td>
+                </tr>
+              </t>
+            </tbody>
+          </table>
+
+          <!-- Totales -->
+          <div class="row mt-3">
+            <div class="col-6"></div>
+            <div class="col-6 text-right" style="font-size:10px;">
+              <p><strong>Subtotal:</strong> <t t-esc="doc.amount_untaxed"/></p>
+              <p><strong>Impuestos:</strong> <t t-esc="doc.amount_tax"/></p>
+              <p><strong>Total:</strong> <t t-esc="doc.amount_total"/></p>
+            </div>
+          </div>
+
+          <!-- Condiciones y Políticas -->
+          <div class="row mt-4">
+            <div class="col-12">
+              <h5 style="margin-bottom: 6px;">Condiciones y Políticas</h5>
+              <ul style="font-size:10px; line-height:1.5;">
+                <li><strong>Condiciones de pago:</strong> 50% al ordenar, 50% antes de entrega.</li>
+                <li><strong>Política de cancelación:</strong> No reembolsable una vez iniciado el análisis.</li>
+                <li><strong>Revisión de formato:</strong> Este documento ha sido revisado y aprobado por el área técnica.</li>
+                <li><strong>Notas adicionales:</strong> Este documento no es un informe de resultados.</li>
+                <li><strong>Notas sobre símbolos:</strong> * Acreditado por la EMA &#160;&#160; ** Subrogado</li>
+              </ul>
+            </div>
+          </div>
+
+        </div>
+      </main>
     </t>
   </template>
 </odoo>
