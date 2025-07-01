@@ -63,6 +63,13 @@
               </div>
             </div>
 
+            <!-- Nota de símbolos, antes de condiciones -->
+            <div class="row mt-2" style="font-size:8px;">
+              <div class="col-12" style="text-align:left;">
+                <em>* Prueba acreditada, ** Prueba subcontratada</em>
+              </div>
+            </div>
+
             <!-- Condiciones y políticas -->
             <div class="row mt-4">
               <div class="col-12">
