@@ -69,16 +69,14 @@
                   <tr>
                     <td style="padding:2px 4px;">
                       <strong>En atención a:</strong>
-                      <t t-esc="', '.join([c.name for c in doc.lims_contact_ids if c.name])"/>
+                      <t t-esc="', '.join([c.name for c in doc.lims_contact_ids])"/>
                     </td>
                     <td style="padding:2px 4px; text-align:right;">
                       <strong>Correos:</strong>
-                      <t t-esc="', '.join([c.email for c in doc.lims_contact_ids if hasattr(c, 'email') and c.email])"/>
+                      <t t-esc="', '.join([c.email for c in doc.lims_contact_ids if c.email])"/>
                     </td>
                   </tr>
                 </t>
-              </tbody>
-            </table>
 
             <!-- Tabla de productos sin bordes utilizando table-borderless -->
             <table class="table table-borderless mt-2"
