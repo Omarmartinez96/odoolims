@@ -18,5 +18,24 @@
       <li style="display:none;"/>
     </xpath>
     -->
+
+    <!-- 4) Ajustar pie de página: tamaño de fuente y espaciado -->
+    <xpath expr="//div[contains(@class,'o_footer_content')]" position="attributes">
+      <attribute name="style">font-size:8px !important; padding-top:4px;</attribute>
+    </xpath>
+
+    <!-- 5) Reemplazar contenido del pie con dos columnas -->
+    <xpath expr="//div[contains(@class,'o_footer_content')]" position="replace">
+      <div class="o_footer_content d-flex border-top pt-2" style="font-size:8px;">
+        <div class="flex-grow-1 text-start me-2">
+          <div t-field="company.report_footer"/>
+        </div>
+        <div class="text-end text-muted d-flex flex-column" style="font-size:8px;">
+          <div t-if="report_type == 'pdf' and display_name_in_footer" t-out="o.name"/>
+          <div t-if="report_type == 'pdf'">Página <span class="page"/> / <span class="topage"/></div>
+        </div>
+      </div>
+    </xpath>
+
   </template>
 </odoo>
