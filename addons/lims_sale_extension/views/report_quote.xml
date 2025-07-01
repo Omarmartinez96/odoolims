@@ -39,7 +39,10 @@
               <tbody>
                 <t t-foreach="doc.order_line" t-as="line">
                   <tr>
-                    <td><t t-esc="line.name"/></td>
+                    <td>
+                      <div><strong><t t-esc="line.product_id.display_name"/></strong></div>
+                      <div style="white-space: pre-wrap; font-size: 11px;"><t t-esc="line.name[len(line.product_id.display_name):].strip()"/></div>
+                    </td>
                     <td class="text-center"><t t-esc="line.product_uom_qty"/></td>
                     <td class="text-right"><t t-esc="line.price_unit"/></td>
                     <td class="text-right"><t t-esc="line.price_subtotal"/></td>
