@@ -16,7 +16,12 @@
             </div>
 
             <!-- Datos del cliente -->
-            <div class="row mb-2" style="font-size:10px;">
+            <div class="row mb-2" style="font-size:14px;">
+              <t t-set="meses" t-value="{
+                '01': 'Ene','02': 'Feb','03': 'Mar','04': 'Abr',
+                '05': 'May','06': 'Jun','07': 'Jul','08': 'Ago',
+                '09': 'Sep','10': 'Oct','11': 'Nov','12': 'Dic'
+              }"/>
               <div class="col-6">
                 <strong>Cliente:</strong> <t t-esc="doc.partner_id.name"/><br/>
                 <t t-esc="doc.partner_id.contact_address"/><br/>
@@ -24,19 +29,27 @@
 
                 <t t-if="doc.lims_contact_ids">
                   <strong>En atención a:</strong>
-                  <t t-esc=", ".join([c.name for c in doc.lims_contact_ids])"/><br/>
+                  <t t-esc="', '.join([c.name for c in doc.lims_contact_ids])"/><br/>
                   <strong>Correos:</strong>
-                  <t t-esc=", ".join([c.email for c in doc.lims_contact_ids if c.email])"/><br/>
+                  <t t-esc="', '.join([c.email for c in doc.lims_contact_ids if c.email])"/><br/>
                 </t>
 
                 <t t-if="doc.validity_date">
                   <strong>Vigencia hasta:</strong>
-                  <t t-esc="doc.validity_date.strftime('%d/%b/%Y')"/>
+                  <t t-set="d" t-value="doc.validity_date.strftime('%d')"/>
+                  <t t-set="m" t-value="doc.validity_date.strftime('%m')"/>
+                  <t t-set="y" t-value="doc.validity_date.strftime('%Y')"/>
+                  <t t-esc="d + '/' + meses[m] + '/' + y"/><br/>
                 </t>
               </div>
               <div class="col-6 text-end">
-                <strong>Fecha:</strong> <t t-esc="doc.date_order.strftime('%d/%b/%Y')"/><br/>
-                <strong>Terminos de pago:</strong> <t t-esc="doc.payment_term_id.name"/>
+                <strong>Fecha:</strong>
+                <t t-set="d2" t-value="doc.date_order.strftime('%d')"/>
+                <t t-set="m2" t-value="doc.date_order.strftime('%m')"/>
+                <t t-set="y2" t-value="doc.date_order.strftime('%Y')"/>
+                <t t-esc="d2 + '/' + meses[m2] + '/' + y2"/><br/>
+                <strong>Términos de pago:</strong>
+                <t t-esc="doc.payment_term_id.name"/>
               </div>
             </div>
 
