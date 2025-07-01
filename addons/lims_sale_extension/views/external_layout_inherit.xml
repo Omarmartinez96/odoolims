@@ -1,8 +1,8 @@
 <odoo>
   <template id="external_layout_inherit_lims" inherit_id="web.external_layout_standard">
 
-    <!-- Aumentar tamaño del logo -->
-    <xpath expr="//t[@t-field='company.logo']" position="attributes">
+    <!-- Aumentar tamaño del logo (forma más segura) -->
+    <xpath expr="//div[contains(@class, 'header')]//img" position="attributes">
       <attribute name="style">max-height: 100px; max-width: 250px;</attribute>
     </xpath>
 
