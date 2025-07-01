@@ -92,9 +92,9 @@
                   <tr>
                     <td style="padding:4px 2px;">
                       <strong><t t-esc="line.product_id.display_name"/></strong>
-                      <p style="font-size:14px; margin:0;">
+                      <div style="white-space: pre-line; font-size:14px; margin:0;">
                         <t t-esc="line.name[len(line.product_id.display_name):].strip()"/>
-                      </p>
+                      </div>
                     </td>
                     <td style="padding:4px 2px; text-align:center;"><t t-esc="line.product_uom_qty"/></td>
                     <td style="padding:4px 2px; text-align:right;"><t t-esc="line.price_unit"/></td>
