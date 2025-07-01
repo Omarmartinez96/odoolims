@@ -12,7 +12,29 @@
       <attribute name="style">font-size:9px !important; line-height:1.2;</attribute>
     </xpath>
 
-    <!-- 3) Ajustar pie de página: tamaño de fuente y espaciado -->
+    <!-- 3) Insertar nota antes de condiciones y políticas de servicio -->
+    <xpath expr="//h5[.='Condiciones y políticas de servicio']" position="before">
+      <div class="row mt-2" style="font-size:8px;">
+        <div class="col-12">
+          <table style="width:100%; table-layout:fixed; border-collapse:collapse;">
+            <tbody>
+              <tr>
+                <td style="width:33%; text-align:left; padding:0;">(664) 973-8185</td>
+                <td style="width:34%; text-align:center; padding:0;">Página <span class="page"/> / <span class="topage"/></td>
+                <td style="width:33%; text-align:right; padding:0;">contacto@proteuslaboratorio.com</td>
+              </tr>
+              <tr>
+                <td colspan="3" style="text-align:left; padding-top:4px; font-size:7.5px;">
+                  <em>* Prueba acreditada, ** Prueba subcontratada</em>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </xpath>
+
+    <!-- 4) Ajustar pie de página: tamaño de fuente y espaciado -->
     <xpath expr="//div[contains(@class,'o_footer_content')]" position="replace">
       <div class="o_footer_content" style="font-size:8px; padding-top:2px;">
         <table style="width:100%; table-layout:fixed; border-collapse:collapse;">
