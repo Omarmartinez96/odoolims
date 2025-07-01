@@ -3,18 +3,19 @@
     <t t-call="web.external_layout">
       <t t-foreach="docs" t-as="doc">
         <main class="o_report_layout">
-          <div class="page">
+          <!-- Reducimos espacio arriba -->
+          <div class="page" style="margin-top: 10px;">
 
-            <!-- Encabezado -->
-            <div class="row mb-3">
+            <!-- Encabezado más compacto -->
+            <div class="row" style="margin-bottom: 5px;">
               <div class="col-12 text-center">
-                <h2 style="color:#006699; margin-bottom: 10px;">COTIZACIÓN DE SERVICIOS</h2>
-                <p><strong>Referencia:</strong> <t t-esc="doc.name"/></p>
+                <h2 style="color:#006699; font-size:16px; margin: 0;">COTIZACIÓN DE SERVICIOS</h2>
+                <p style="font-size:11px; margin-top:4px;"><strong>Referencia:</strong> <t t-esc="doc.name"/></p>
               </div>
             </div>
 
-            <!-- Datos del cliente -->
-            <div class="row mb-2" style="font-size:11px;">
+            <!-- Datos del cliente: texto más pequeño -->
+            <div class="row mb-2" style="font-size:10px;">
               <div class="col-6">
                 <strong>Cliente:</strong> <t t-esc="doc.partner_id.name"/><br/>
                 <t t-esc="doc.partner_id.contact_address"/><br/>
@@ -27,7 +28,7 @@
             </div>
 
             <!-- Tabla de productos -->
-            <table class="table table-sm mt-3" style="width:100%; font-size:12px;">
+            <table class="table table-sm mt-3" style="width:100%; font-size:11px;">
               <thead>
                 <tr style="background-color:#f0f0f0;">
                   <th style="width:50%;">Producto</th>
@@ -41,7 +42,7 @@
                   <tr>
                     <td>
                       <div><strong><t t-esc="line.product_id.display_name"/></strong></div>
-                      <div style="white-space: pre-wrap; font-size: 11px;"><t t-esc="line.name[len(line.product_id.display_name):].strip()"/></div>
+                      <div style="white-space: pre-wrap; font-size: 10px;"><t t-esc="line.name[len(line.product_id.display_name):].strip()"/></div>
                     </td>
                     <td class="text-center"><t t-esc="line.product_uom_qty"/></td>
                     <td class="text-right"><t t-esc="line.price_unit"/></td>
@@ -54,7 +55,7 @@
             <!-- Totales -->
             <div class="row mt-3">
               <div class="col-6"></div>
-              <div class="col-6 text-right">
+              <div class="col-6 text-right" style="font-size:10px;">
                 <p><strong>Subtotal:</strong> <t t-esc="doc.amount_untaxed"/></p>
                 <p><strong>Impuestos:</strong> <t t-esc="doc.amount_tax"/></p>
                 <p><strong>Total:</strong> <t t-esc="doc.amount_total"/></p>
@@ -65,7 +66,7 @@
             <div class="row mt-5">
               <div class="col-12">
                 <h4 style="margin-bottom: 10px;">Condiciones y Políticas</h4>
-                <ul style="font-size:11px; line-height:1.5;">
+                <ul style="font-size:10px; line-height:1.5;">
                   <li><strong>Condiciones de pago:</strong> 50% al ordenar, 50% antes de entrega.</li>
                   <li><strong>Política de cancelación:</strong> No reembolsable una vez iniciado el análisis.</li>
                   <li><strong>Revisión de formato:</strong> Este documento ha sido revisado y aprobado por el área técnica.</li>
