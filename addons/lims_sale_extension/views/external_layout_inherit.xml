@@ -1,15 +1,23 @@
 <odoo>
-  <template id="external_layout_inherit_lims" inherit_id="web.external_layout_standard">
-
-    <!-- Aumentar el tamaño del logo -->
-    <xpath expr="//img[contains(@class, 'company_logo')]" position="attributes">
-      <attribute name="style">max-height: 100px !important;</attribute>
-    </xpath>
-
-    <!-- Reducir texto de información de la compañía -->
-    <xpath expr="//div[contains(@class, 'company_address')]" position="attributes">
-      <attribute name="style">font-size: 9px !important;</attribute>
-    </xpath>
-
+  <template id="custom_external_layout">
+    <t t-set="company" t-value="res_company"/>
+    <div class="header">
+      <div class="row">
+        <div class="col-6">
+          <!-- Logo más grande -->
+          <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height:100px;"/>
+        </div>
+        <div class="col-6 text-right" style="font-size:9px;">
+          <strong t-esc="company.name"/>
+          <div t-esc="company.street"/>
+          <div t-esc="company.city"/>
+          <div t-if="company.phone">Tel: <span t-esc="company.phone"/></div>
+          <div t-if="company.email">Email: <span t-esc="company.email"/></div>
+        </div>
+      </div>
+    </div>
+    <div class="article">
+      <t t-call="0"/>
+    </div>
   </template>
 </odoo>
