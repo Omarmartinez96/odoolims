@@ -1,6 +1,6 @@
 <odoo>
   <template id="report_saleorder_custom">
-    <t t-call="web.external_layout">
+    <t t-call="lims_sale_extension.external_layout_inherit_lims">
       <t t-foreach="docs" t-as="doc">
         <!-- 🔧 Eliminamos margen superior del layout -->
         <main class="o_report_layout" style="margin-top: 0px;">
