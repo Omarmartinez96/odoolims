@@ -10,10 +10,17 @@
             <!-- Encabezado interno de cotización -->
             <div class="row" style="margin-bottom:5px;">
               <div class="col-12 text-center">
-                <h4 style="color:#006699; font-size:20px; margin:0;">COTIZACIÓN DE SERVICIOS</h4>
-                <p style="font-size:14px; margin-top:4px;"><strong>Referencia:</strong> <t t-esc="doc.name"/></p>
+                <h4 style="color:#090D61; font-size:20px; margin:0;">COTIZACIÓN DE SERVICIOS</h4>
               </div>
             </div>
+
+            <tr>
+              <td colspan="2" style="padding:2px 4px;">
+                <p style="text-align:right; font-size:12px;">
+                  <strong>No. de Cotización:</strong> <t t-esc="doc.name"/>
+                </p>
+              </td>
+            </tr>
 
             <!-- Datos del cliente sin bordes -->
             <table class="table table-borderless mt-2"
