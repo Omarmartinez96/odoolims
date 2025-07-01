@@ -37,6 +37,7 @@
                     <t t-esc="d2 + '/' + meses[m2] + '/' + y2"/>
                   </td>
                 </tr>
+
                 <!-- Fila 2: Dirección / Términos de pago -->
                 <tr>
                   <td style="padding:2px 4px;">
@@ -46,6 +47,7 @@
                     <strong>Términos de pago:</strong> <t t-esc="doc.payment_term_id.name"/>
                   </td>
                 </tr>
+
                 <!-- Fila 3: RFC / Vigencia -->
                 <tr>
                   <td style="padding:2px 4px;">
@@ -61,12 +63,13 @@
                     </t>
                   </td>
                 </tr>
+
                 <!-- Fila 4: En atención a / Correos -->
                 <t t-if="doc.lims_contact_ids">
                   <tr>
                     <td style="padding:2px 4px;">
                       <strong>En atención a:</strong>
-                      <t t-esc="', '.join([c.name for c in doc.lims_contact_ids])"/>
+                      <t t-esc="', '.join([c.name for c in doc.lims_contact_ids if c.name])"/>
                     </td>
                     <td style="padding:2px 4px; text-align:right;">
                       <strong>Correos:</strong>
