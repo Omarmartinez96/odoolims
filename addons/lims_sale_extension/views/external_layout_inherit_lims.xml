@@ -25,12 +25,13 @@
     </xpath>
 
     <!-- 5) Reemplazar contenido del pie con tres filas alineadas a la izquierda -->
-    <xpath expr="//div[contains(@class,'o_footer_content')]/div" position="replace">
-      <div class="o_footer_content" style="font-size:8px; padding-top:4px; text-align:left;">
+    <xpath expr="//div[contains(@class,'o_footer_content')]" position="replace">
+      <div class="o_footer_content" style="font-size:8px; padding-top:2px; text-align:left;">
         <!-- Fila 1: Footer de la compañía -->
         <div t-field="company.report_footer" style="margin-bottom:2px;"/>
         <!-- Fila 2: Nombre de documento -->
-        <div t-if="report_type == 'pdf' and display_name_in_footer" t-out="o.name" style="margin-bottom:2px;"/>
+        <div t-if="report_type == 'pdf' and display_name_in_footer"
+            t-out="o.name" style="margin-bottom:2px;"/>
         <!-- Fila 3: Paginación -->
         <div t-if="report_type == 'pdf'">Página <span class="page"/> / <span class="topage"/></div>
       </div>
