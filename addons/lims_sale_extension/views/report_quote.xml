@@ -77,7 +77,8 @@
             </table>
 
             <!-- Tabla de productos -->
-            <table class="table table-sm mt-2" style="width:100%; font-size:14px;">
+            <table class="table table-sm mt-2" 
+                   style="width:100%; font-size:14px; border-collapse:collapse; border:none;">
               <thead>
                 <tr style="background-color: rgb(221,235,247);">
                   <th style="width:50%;"><strong>Descripción</strong></th>
