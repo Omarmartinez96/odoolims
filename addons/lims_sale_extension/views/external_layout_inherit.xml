@@ -1,17 +1,19 @@
 <odoo>
-  <template id="external_layout_inherit_lims" inherit_id="web.external_layout_standard">
+    <template id="external_layout_inherit_lims" inherit_id="web.external_layout">
+        <!-- Hacer más grande el logo -->
+        <xpath expr="//div[contains(@class, 'company_logo')]/img" position="attributes">
+            <attribute name="style">max-height: 120px;</attribute>
+        </xpath>
 
-    <!-- Aumentar tamaño del logo -->
-    <xpath expr="//t[@t-if='company.logo']" position="replace">
-      <t t-if="company.logo">
-        <img t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height: 140px;" class="img img-fluid"/>
-      </t>
-    </xpath>
+        <!-- Hacer más pequeña la fuente de la información de la empresa -->
+        <xpath expr="//div[contains(@class, 'company_address')]" position="attributes">
+            <attribute name="style">font-size: 10px !important;</attribute>
+        </xpath>
 
-    <!-- Reducir tamaño de la información de la empresa -->
-    <xpath expr="//div[contains(@class, 'company_address')]" position="attributes">
-      <attribute name="style">font-size: 10px;</attribute>
-    </xpath>
-
-  </template>
+        <!-- Subir "Cotización de servicios" (ajusta márgenes del body) -->
+        <xpath expr="//div[@class='article']" position="attributes">
+            <attribute name="style">margin-top: 10px !important;</attribute>
+        </xpath>
+    </template>
 </odoo>
+
