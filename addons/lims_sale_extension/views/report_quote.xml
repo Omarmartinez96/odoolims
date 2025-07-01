@@ -1,7 +1,8 @@
 <odoo>
-  <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
+  <template id="report_saleorder_document" inherit_id="sale.report_saleorder_document">
     <xpath expr="//div[@class='page']" position="replace">
       <div class="page">
+
         <!-- ✅ Encabezado -->
         <div class="row mb-3">
           <div class="col-12 text-center">
@@ -68,6 +69,7 @@
             </ul>
           </div>
         </div>
+
       </div>
     </xpath>
   </template>
