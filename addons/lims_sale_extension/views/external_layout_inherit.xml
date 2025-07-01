@@ -1,14 +1,9 @@
 <odoo>
   <template id="external_layout_inherit_lims" inherit_id="web.external_layout_standard">
-
-    <!-- Aumentar tamaño del logo (forma más segura) -->
-    <xpath expr="//div[contains(@class, 'header')]//img" position="attributes">
-      <attribute name="style">max-height: 100px; max-width: 250px;</attribute>
-    </xpath>
-
-    <!-- Reducir tamaño del bloque de dirección -->
-    <xpath expr="//div[contains(@class, 'company_address')]" position="attributes">
-      <attribute name="style">font-size: 9px; line-height: 1.4;</attribute>
+    
+    <!-- Inserta un texto visible para verificar si el xpath está bien apuntado -->
+    <xpath expr="//div[@class='header']" position="inside">
+      <p style="color: red;">[PRUEBA: Vista heredada correctamente]</p>
     </xpath>
 
   </template>
