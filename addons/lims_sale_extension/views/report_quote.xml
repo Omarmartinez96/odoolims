@@ -1,6 +1,5 @@
 <odoo>
   <template id="report_saleorder_custom">
-    <!-- Llamada al layout personalizado -->
     <t t-call="lims_sale_extension.external_layout_inherit_lims">
       <t t-foreach="docs" t-as="doc">
         <main class="o_report_layout" style="margin-top:0 !important;">
@@ -9,12 +8,8 @@
             <!-- Encabezado interno de cotización -->
             <div class="row" style="margin-bottom:5px;">
               <div class="col-12 text-center">
-                <h4 style="color:#006699; font-size:16px; margin:0;">
-                  COTIZACIÓN DE SERVICIOS
-                </h4>
-                <p style="font-size:11px; margin-top:4px;">
-                  <strong>Referencia:</strong> <t t-esc="doc.name"/>
-                </p>
+                <h4 style="color:#006699; font-size:16px; margin:0;">COTIZACIÓN DE SERVICIOS</h4>
+                <p style="font-size:11px; margin-top:4px;"><strong>Referencia:</strong> <t t-esc="doc.name"/></p>
               </div>
             </div>
 
@@ -46,9 +41,7 @@
                   <tr>
                     <td>
                       <div><strong><t t-esc="line.product_id.display_name"/></strong></div>
-                      <div style="white-space:pre-wrap; font-size:10px;">
-                        <t t-esc="line.name[len(line.product_id.display_name):].strip()"/>
-                      </div>
+                      <div style="white-space:pre-wrap; font-size:10px;"><t t-esc="line.name[len(line.product_id.display_name):].strip()"/></div>
                     </td>
                     <td class="text-center"><t t-esc="line.product_uom_qty"/></td>
                     <td class="text-end"><t t-esc="line.price_unit"/></td>

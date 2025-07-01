@@ -2,20 +2,19 @@
   <template id="external_layout_inherit_lims"
             inherit_id="web.external_layout_standard">
     <!-- 1) Reducir el logo -->
-    <xpath expr="//div[contains(@class,'header')]/div[contains(@class,'d-flex')]/img" position="attributes">
+    <xpath expr="//div[contains(@class,'d-flex')]/img" position="attributes">
       <attribute name="class">o_company_logo_small</attribute>
       <attribute name="style">max-height:80px; margin-bottom:0.5em;</attribute>
     </xpath>
 
     <!-- 2) Ajustar fuente y espaciado de la dirección -->
     <xpath expr="//div[@name='company_address']/ul" position="attributes">
-      <attribute name="class">list-unstyled</attribute>
       <attribute name="style">font-size:9px !important; line-height:1.2;</attribute>
     </xpath>
 
     <!-- 3) (Opcional) Ocultar país u otros textos fijos -->
     <!--
-    <xpath expr="//t[contains(., 'Tax ID')]/.." position="replace">
+    <xpath expr="//li[t[contains(., 'Tax ID')]]" position="replace">
       <li style="display:none;"/>
     </xpath>
     -->
