@@ -24,16 +24,14 @@
       <attribute name="style">font-size:8px !important; padding-top:4px;</attribute>
     </xpath>
 
-    <!-- 5) Reemplazar contenido del pie con dos columnas -->
-    <xpath expr="//div[contains(@class,'o_footer_content')]" position="replace">
-      <div class="o_footer_content d-flex border-top pt-2" style="font-size:8px;">
-        <div class="flex-grow-1 text-start me-2">
-          <div t-field="company.report_footer"/>
-        </div>
-        <div class="text-end text-muted d-flex flex-column" style="font-size:8px;">
-          <div t-if="report_type == 'pdf' and display_name_in_footer" t-out="o.name"/>
-          <div t-if="report_type == 'pdf'">Página <span class="page"/> / <span class="topage"/></div>
-        </div>
+    <!-- 5) Reemplazar contenido del pie con tres filas alineadas a la izquierda -->
+    <xpath expr="//div[contains(@class,'o_footer_content')]/div" position="replace">
+      <div class="o_footer_content" style="font-size:8px; padding-top:4px; text-align:left;">
+        <div t-field="company.report_footer" style="margin-bottom:2px;"/>
+        <!-- Fila 2: nombre del documento si aplica -->
+        <div t-if="report_type == 'pdf' and display_name_in_footer" t-out="o.name" style="margin-bottom:2px;"/>
+        <!-- Fila 3: paginación -->
+        <div t-if="report_type == 'pdf'">Página <span class="page"/> / <span class="topage"/></div>
       </div>
     </xpath>
 
