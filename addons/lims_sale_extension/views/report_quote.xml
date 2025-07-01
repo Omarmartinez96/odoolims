@@ -197,6 +197,19 @@
               </div>
             </div>
 
+            <!-- Sección de firmas -->
+            <div class="row mt-5" style="margin-top: 50px;">
+              <div class="col-6" style="text-align:center;">
+                <div style="border-top:1px solid #000; width:80%; margin: 0 auto;"/>
+                <p style="margin-top:5px; font-size:12px;"><strong>Emitido por:</strong></p>
+                <p style="font-size:12px;"><t t-esc="doc.user_id.name"/></p>
+              </div>
+              <div class="col-6" style="text-align:center;">
+                <div style="border-top:1px solid #000; width:80%; margin: 0 auto;"/>
+                <p style="margin-top:5px; font-size:12px;"><strong>Aceptado por el cliente</strong></p>
+                <p style="font-size:12px;">Firma y nombre</p>
+              </div>
+            </div>
 
           </div>
         </main>
