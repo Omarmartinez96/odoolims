@@ -14,7 +14,7 @@
             </div>
 
             <!-- Datos del cliente -->
-            <div class="row mb-2">
+            <div class="row mb-2" style="font-size:11px;">
               <div class="col-6">
                 <strong>Cliente:</strong> <t t-esc="doc.partner_id.name"/><br/>
                 <t t-esc="doc.partner_id.contact_address"/><br/>
