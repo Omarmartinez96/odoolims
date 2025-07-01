@@ -12,34 +12,28 @@
       <attribute name="style">font-size:9px !important; line-height:1.2;</attribute>
     </xpath>
 
-    <!-- 3) (Opcional) Ocultar país u otros textos fijos -->
-    <!--
-    <xpath expr="//li[t[contains(., 'Tax ID')]]" position="replace">
-      <li style="display:none;"/>
-    </xpath>
-    -->
-
-    <!-- 4) Ajustar pie de página: tamaño de fuente y espaciado -->
+    <!-- 3) Ajustar pie de página: tamaño de fuente y espaciado -->
     <xpath expr="//div[contains(@class,'o_footer_content')]" position="replace">
       <div class="o_footer_content" style="font-size:8px; padding-top:2px;">
-        <table style="width:100%; table-layout:fixed;">
-          <tr>
-            <!-- Fila 1: Contacto -->
-            <td style="text-align:left;"><t t-raw="company.report_footer"/></td>
-          </tr>
-          <tr>
-            <!-- Fila 2: Valor RFC u otra leyenda -->
-            <td style="text-align:left;"><t t-if="company.vat">RFC: <t t-esc="company.vat"/></t></td>
-          </tr>
-          <tr>
-            <!-- Fila 3: Paginación -->
-            <td style="text-align:left;">
-              <div t-if="report_type=='pdf'">Página <span class="page"/> / <span class="topage"/></div>
-            </td>
-          </tr>
+        <table style="width:100%; table-layout:fixed; border-collapse:collapse;">
+          <tbody>
+            <tr>
+              <!-- Fila 1: Contacto -->
+              <td style="text-align:left; padding:0;">(664) 973-8185 contacto@proteuslaboratorio.com http://proteuslaboratorio.com</td>
+            </tr>
+            <tr>
+              <!-- Fila 2: Valor RFC -->
+              <td style="text-align:left; padding:0;">RFC: LMP180904LQ6</td>
+            </tr>
+            <tr>
+              <!-- Fila 3: Paginación -->
+              <td style="text-align:left; padding:0;">Página <span class="page"/> / <span class="topage"/></td>
+            </tr>
+          </tbody>
         </table>
       </div>
     </xpath>
+
 
   </template>
 </odoo>
