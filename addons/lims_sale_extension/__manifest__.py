@@ -10,6 +10,7 @@
         'views/sale_order_views.xml',
         'views/report_quote.xml',
         'views/report.xml',
+        'views/external_layout_inherit.xml',
     ],
     'installable': True,
     'application': True,
