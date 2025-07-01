@@ -59,11 +59,6 @@
               <div class="col-6" style="font-size:12px;">
                 <table style="width:100%; border-collapse:collapse;">
                   <tr>
-                    <td colspan="2" style="text-align:left; padding:6px; background: rgb(221,235,247); border:1px solid #ddd;">
-                      <strong>Descripción</strong>
-                    </td>
-                  </tr>
-                  <tr>
                     <td style="text-align:left; padding:6px; border-top:1px solid #ddd;"><strong>Subtotal:</strong></td>
                     <td style="text-align:right; padding:6px; border-top:1px solid #ddd;"><t t-esc="doc.amount_untaxed"/></td>
                   </tr>
