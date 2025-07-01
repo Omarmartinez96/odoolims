@@ -1,12 +1,12 @@
 <odoo>
-  <template id="external_layout_inherit_lims" inherit_id="web.external_layout">
+  <template id="external_layout_inherit_lims" inherit_id="web.external_layout_standard">
 
-    <!-- Cambiar tamaño del logo -->
-    <xpath expr="//t[@t-field='company.logo']" position="attributes">
-      <attribute name="t-options">{'widget': 'image', 'style': 'max-height: 100px; width: auto;'}</attribute>
+    <!-- Aumentar el tamaño del logo -->
+    <xpath expr="//img[contains(@class, 'company_logo')]" position="attributes">
+      <attribute name="style">max-height: 100px !important;</attribute>
     </xpath>
 
-    <!-- Cambiar tamaño del texto de información de la compañía -->
+    <!-- Reducir texto de información de la compañía -->
     <xpath expr="//div[contains(@class, 'company_address')]" position="attributes">
       <attribute name="style">font-size: 9px !important;</attribute>
     </xpath>
