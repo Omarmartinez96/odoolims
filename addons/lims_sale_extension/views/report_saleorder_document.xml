@@ -1,9 +1,7 @@
 <odoo>
-  <template id="report_saleorder_document_custom" inherit_id="sale.report_saleorder_document">
-    <xpath expr="//div[@class='page']" position="inside">
-      <!-- 👇 Tu contenido personalizado dentro de la página estándar -->
-      <div class="custom-quote mt-4">
-
+  <template id="report_saleorder_document" inherit_id="sale.report_saleorder_document">
+    <xpath expr="//div[@class='page']" position="replace">
+      <div class="page">
         <!-- Encabezado -->
         <div class="row mb-3">
           <div class="col-12 text-center">
@@ -70,7 +68,6 @@
             </ul>
           </div>
         </div>
-
       </div>
     </xpath>
   </template>
