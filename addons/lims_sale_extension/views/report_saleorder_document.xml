@@ -1,21 +1,76 @@
 <odoo>
-  <template id="report_saleorder_document_inherit" inherit_id="sale.report_saleorder_document">
+  <template id="report_saleorder_document_custom" inherit_id="sale.report_saleorder_document">
+    <xpath expr="//div[@class='page']" position="replace">
+      <div class="page">
 
-    <!-- ✅ Agregar políticas al final del reporte -->
-    <xpath expr="//div[@class='page']" position="inside">
-      <div class="row mt32">
-        <div class="col-12">
-          <h4>Condiciones y Políticas</h4>
-          <ul>
-            <li><strong>Condiciones de pago:</strong> 50% al ordenar, 50% antes de entrega.</li>
-            <li><strong>Política de cancelación:</strong> No reembolsable una vez iniciado el análisis.</li>
-            <li><strong>Revisión de formato:</strong> Este documento ha sido revisado y aprobado por el área técnica.</li>
-            <li><strong>Notas adicionales:</strong> Este documento no es un informe de resultados.</li>
-            <li><strong>Notas sobre símbolos:</strong> * Acreditado por la EMA &#160;&#160; ** Subrogado</li>
-          </ul>
+        <!-- 🧾 Encabezado -->
+        <div class="row mb-3">
+          <div class="col-12 text-center">
+            <h2 style="color:#006699; margin-bottom: 10px;">COTIZACIÓN DE SERVICIOS</h2>
+            <p><strong>Referencia:</strong> <t t-esc="doc.name"/></p>
+          </div>
         </div>
+
+        <!-- 👤 Datos del cliente -->
+        <div class="row mb-2">
+          <div class="col-6">
+            <strong>Cliente:</strong> <t t-esc="doc.partner_id.name"/><br/>
+            <t t-esc="doc.partner_id.contact_address"/><br/>
+            <strong>RFC:</strong> <t t-esc="doc.partner_id.vat"/>
+          </div>
+          <div class="col-6 text-right">
+            <strong>Fecha:</strong> <t t-esc="doc.date_order.strftime('%d/%m/%Y')"/><br/>
+            <strong>Condiciones de pago:</strong> <t t-esc="doc.payment_term_id.name"/>
+          </div>
+        </div>
+
+        <!-- 📦 Tabla de productos -->
+        <table class="table table-sm mt-3" style="width:100%; font-size:12px;">
+          <thead>
+            <tr style="background-color:#f0f0f0;">
+              <th style="width:50%;">Producto</th>
+              <th class="text-center">Cantidad</th>
+              <th class="text-right">Precio unitario</th>
+              <th class="text-right">Subtotal</th>
+            </tr>
+          </thead>
+          <tbody>
+            <t t-foreach="doc.order_line" t-as="line">
+              <tr>
+                <td><t t-esc="line.name"/></td>
+                <td class="text-center"><t t-esc="line.product_uom_qty"/></td>
+                <td class="text-right"><t t-esc="line.price_unit"/></td>
+                <td class="text-right"><t t-esc="line.price_subtotal"/></td>
+              </tr>
+            </t>
+          </tbody>
+        </table>
+
+        <!-- 💵 Totales -->
+        <div class="row mt-3">
+          <div class="col-6"></div>
+          <div class="col-6 text-right">
+            <p><strong>Subtotal:</strong> <t t-esc="doc.amount_untaxed"/></p>
+            <p><strong>Impuestos:</strong> <t t-esc="doc.amount_tax"/></p>
+            <p><strong>Total:</strong> <t t-esc="doc.amount_total"/></p>
+          </div>
+        </div>
+
+        <!-- 📌 Condiciones y Políticas -->
+        <div class="row mt-5">
+          <div class="col-12">
+            <h4 style="margin-bottom: 10px;">Condiciones y Políticas</h4>
+            <ul style="font-size:11px; line-height:1.5;">
+              <li><strong>Condiciones de pago:</strong> 50% al ordenar, 50% antes de entrega.</li>
+              <li><strong>Política de cancelación:</strong> No reembolsable una vez iniciado el análisis.</li>
+              <li><strong>Revisión de formato:</strong> Este documento ha sido revisado y aprobado por el área técnica.</li>
+              <li><strong>Notas adicionales:</strong> Este documento no es un informe de resultados.</li>
+              <li><strong>Notas sobre símbolos:</strong> * Acreditado por la EMA &#160;&#160; ** Subrogado</li>
+            </ul>
+          </div>
+        </div>
+
       </div>
     </xpath>
-
   </template>
 </odoo>
