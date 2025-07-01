@@ -32,10 +32,10 @@
             <table class="table table-sm mt-2" style="width:100%; font-size:11px;">
               <thead>
                 <tr style="background-color: rgb(221,235,247);">
-                  <th style="width:50%;">Descripción</th>
-                  <th class="text-center">Cantidad</th>
-                  <th class="text-end">Precio unitario</th>
-                  <th class="text-end">Subtotal</th>
+                  <th style="width:50%;"><strong>Descripción</strong></th>
+                  <th class="text-center"><strong>Cantidad</strong></th>
+                  <th class="text-end"><strong>Precio unitario</strong></th>
+                  <th class="text-end"><strong>Subtotal</strong></th>
                 </tr>
               </thead>
               <tbody>
