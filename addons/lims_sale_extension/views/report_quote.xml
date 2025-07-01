@@ -1,7 +1,9 @@
 <odoo>
   <template id="report_saleorder_custom">
     <t t-call="lims_sale_extension.external_layout_inherit_lims">
-      <t t-foreach="docs" t-as="doc">
+      <!-- Definir company en el contexto para evitar KeyError -->
+      <t t-set="company" t-value="docs and docs[0].company_id"/>
+      <t t-foreach="docs" t-as="doc"="docs" t-as="doc">
         <main class="o_report_layout" style="margin-top:0 !important;">
           <div class="page">
 
