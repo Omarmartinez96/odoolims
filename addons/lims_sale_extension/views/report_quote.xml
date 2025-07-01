@@ -109,24 +109,39 @@
               </tbody>
             </table>
 
-            <!-- Resumen de totales: tabla con estilo mejorado -->
+            <!-- Resumen de totales: tabla sin bordes -->
             <div class="row mt-3">
               <div class="col-6"/>
               <div class="col-6" style="font-size:12px;">
-                <table style="width:100%; border-collapse:collapse;">
+                <table class="table table-borderless" 
+                      style="width:100%; border-collapse:collapse; border-spacing:0;">
                   <tr>
-                    <td style="text-align:left; padding:6px; border-top:1px solid #ddd;"><strong>Subtotal:</strong></td>
-                    <td style="text-align:right; padding:6px; border-top:1px solid #ddd;"><t t-esc="doc.amount_untaxed"/></td>
+                    <td style="text-align:left; padding:6px; border-top:1px solid #ddd;">
+                      <strong>Subtotal:</strong>
+                    </td>
+                    <td style="text-align:right; padding:6px; border-top:1px solid #ddd;">
+                      <t t-esc="doc.amount_untaxed"/>
+                    </td>
                   </tr>
                   <tr>
-                    <td style="text-align:left; padding:6px; border-top:1px solid #ddd;"><strong>Impuestos:</strong></td>
-                    <td style="text-align:right; padding:6px; border-top:1px solid #ddd;"><t t-esc="doc.amount_tax"/></td>
+                    <td style="text-align:left; padding:6px; border-top:1px solid #ddd;">
+                      <strong>Impuestos:</strong>
+                    </td>
+                    <td style="text-align:right; padding:6px; border-top:1px solid #ddd;">
+                      <t t-esc="doc.amount_tax"/>
+                    </td>
                   </tr>
                   <tr>
-                    <td style="text-align:left; padding:6px; font-size:14px; border-top:2px solid #000;"><strong>Total:</strong></td>
-                    <td style="text-align:right; padding:6px; font-size:14px; border-top:2px solid #000;"><t t-esc="doc.amount_total"/></td>
+                    <td style="text-align:left; padding:6px; font-size:14px; border-top:2px solid #000;">
+                      <strong>Total:</strong>
+                    </td>
+                    <td style="text-align:right; padding:6px; font-size:14px; border-top:2px solid #000;">
+                      <t t-esc="doc.amount_total"/>
+                    </td>
                   </tr>
                 </table>
+              </div>
+            </div>
 
                 <!-- Nueva fila: Total en palabras (llamada correcta) -->
                 <t t-set="amount_words" t-value="doc.currency_id.amount_to_text(doc.amount_total)"/>
