@@ -15,11 +15,16 @@
     <!-- 3) Ajustar pie de página: tamaño de fuente y espaciado -->
     <xpath expr="//div[contains(@class,'o_footer_content')]" position="replace">
       <div class="o_footer_content" style="font-size:8px; padding-top:2px;">
-        <table style="width:100%; border-collapse:collapse;">
+        <table style="width:100%; table-layout:fixed; border-collapse:collapse;">
           <tbody>
-            <tr><td style="text-align:left; padding:0;">(664) 973-8185 contacto@proteuslaboratorio.com http://proteuslaboratorio.com</td></tr>
-            <tr><td style="text-align:left; padding:0;">RFC: LMP180904LQ6</td></tr>
-            <tr><td style="text-align:left; padding:0;">Página <span class="page"/> / <span class="topage"/></td></tr>
+            <tr>
+              <!-- Celda izquierda: Teléfono -->
+              <td style="width:33%; text-align:left; padding:0;">(664) 973-8185</td>
+              <!-- Celda centro: Paginación -->
+              <td style="width:34%; text-align:center; padding:0;">Página <span class="page"/> / <span class="topage"/></td>
+              <!-- Celda derecha: Correo -->
+              <td style="width:33%; text-align:right; padding:0;">contacto@proteuslaboratorio.com</td>
+            </tr>
           </tbody>
         </table>
       </div>
