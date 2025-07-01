@@ -2,14 +2,14 @@
   <template id="report_saleorder_custom">
     <t t-call="web.external_layout">
       <t t-foreach="docs" t-as="doc">
-        <main class="o_report_layout">
-          <!-- Reducimos espacio arriba -->
-          <div class="page" style="margin-top: 10px;">
+        <!-- 🔧 Eliminamos margen superior del layout -->
+        <main class="o_report_layout" style="margin-top: 0px;">
+          <div class="page">
 
             <!-- Encabezado más compacto -->
             <div class="row" style="margin-bottom: 5px;">
               <div class="col-12 text-center">
-                <h2 style="color:#006699; font-size:16px; margin: 0;">COTIZACIÓN DE SERVICIOS</h2>
+                <h4 style="color:#006699; font-size:16px; margin: 0;">COTIZACIÓN DE SERVICIOS</h4>
                 <p style="font-size:11px; margin-top:4px;"><strong>Referencia:</strong> <t t-esc="doc.name"/></p>
               </div>
             </div>
@@ -28,7 +28,7 @@
             </div>
 
             <!-- Tabla de productos -->
-            <table class="table table-sm mt-3" style="width:100%; font-size:11px;">
+            <table class="table table-sm mt-2" style="width:100%; font-size:11px;">
               <thead>
                 <tr style="background-color:#f0f0f0;">
                   <th style="width:50%;">Producto</th>
@@ -42,7 +42,9 @@
                   <tr>
                     <td>
                       <div><strong><t t-esc="line.product_id.display_name"/></strong></div>
-                      <div style="white-space: pre-wrap; font-size: 10px;"><t t-esc="line.name[len(line.product_id.display_name):].strip()"/></div>
+                      <div style="white-space: pre-wrap; font-size: 10px;">
+                        <t t-esc="line.name[len(line.product_id.display_name):].strip()"/>
+                      </div>
                     </td>
                     <td class="text-center"><t t-esc="line.product_uom_qty"/></td>
                     <td class="text-right"><t t-esc="line.price_unit"/></td>
@@ -63,9 +65,9 @@
             </div>
 
             <!-- Condiciones y Políticas -->
-            <div class="row mt-5">
+            <div class="row mt-4">
               <div class="col-12">
-                <h4 style="margin-bottom: 10px;">Condiciones y Políticas</h4>
+                <h5 style="margin-bottom: 6px;">Condiciones y Políticas</h5>
                 <ul style="font-size:10px; line-height:1.5;">
                   <li><strong>Condiciones de pago:</strong> 50% al ordenar, 50% antes de entrega.</li>
                   <li><strong>Política de cancelación:</strong> No reembolsable una vez iniciado el análisis.</li>
