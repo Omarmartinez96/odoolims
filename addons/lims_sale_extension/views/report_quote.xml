@@ -15,8 +15,9 @@
               </div>
             </div>
 
-            <!-- Datos del cliente -->
-            <table style="width:100%; font-size:12px; border-collapse:collapse;">
+            <!-- Datos del cliente sin bordes -->
+            <table class="table table-borderless mt-2"
+                  style="width:100%; font-size:12px; border-collapse:collapse; border-spacing:0;">
               <t t-set="meses" t-value="{
                 '01': 'Ene','02': 'Feb','03': 'Mar','04': 'Abr',
                 '05': 'May','06': 'Jun','07': 'Jul','08': 'Ago',
