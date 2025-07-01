@@ -8,8 +8,8 @@
     ],
     'data': [
         'views/sale_order_views.xml',
-        'report/report_quote.xml',
-        'report/report.xml',
+        'views/report_quote.xml',
+        'views/report.xml',
     ],
     'installable': True,
     'application': True,
