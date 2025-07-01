@@ -2,23 +2,20 @@
   <template id="external_layout_inherit_lims"
             inherit_id="web.external_layout_standard">
     <!-- 1) Reducir el logo -->
-    <xpath expr="//div[contains(@class,'o_company_logo')]/img" position="attributes">
-      <attribute name="style">max-height: 80px; margin-bottom: 0.5em;</attribute>
+    <xpath expr="//div[contains(@class,'company_logo')]/img" position="attributes">
+      <attribute name="style">max-height:80px; margin-bottom:0.5em;</attribute>
     </xpath>
 
-    <!-- 2) Ajustar fuente y ubicación de la dirección -->
-    <xpath expr="//div[contains(@class,'o_company_address')]" position="attributes">
+    <!-- 2) Ajustar fuente y espaciado de la dirección -->
+    <xpath expr="//div[contains(@class,'company_address')]" position="attributes">
       <attribute name="style">font-size:9px !important; line-height:1.2;</attribute>
     </xpath>
 
-    <!-- 3) Ocultar nombre de la compañía por defecto -->
-    <xpath expr="//div[contains(@class,'o_company_name')]" position="replace">
-      <div class="o_company_name" style="display:none;"/>
-    </xpath>
-
-    <!-- 4) Ocultar país u otros textos fijos -->
+    <!-- 3) (Opcional) Ocultar país u otros textos fijos -->
+    <!--
     <xpath expr="//span[contains(text(),'USA')]" position="replace">
       <span style="display:none;"/>
     </xpath>
+    -->
   </template>
 </odoo>

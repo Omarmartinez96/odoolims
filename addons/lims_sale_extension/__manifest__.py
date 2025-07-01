@@ -7,10 +7,10 @@
         'lims_customer',
     ],
     'data': [
+        'views/external_layout_inherit_lims.xml',
         'views/sale_order_views.xml',
         'views/report_quote.xml',
         'views/report.xml',
-        'views/external_layout_inherit_lims.xml',
     ],
     'installable': True,
     'application': True,
