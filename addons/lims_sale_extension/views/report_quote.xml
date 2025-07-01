@@ -16,15 +16,27 @@
             </div>
 
             <!-- Datos del cliente -->
-            <div class="row mb-2" style="font-size:14px;">
+            <div class="row mb-2" style="font-size:10px;">
               <div class="col-6">
                 <strong>Cliente:</strong> <t t-esc="doc.partner_id.name"/><br/>
                 <t t-esc="doc.partner_id.contact_address"/><br/>
-                <strong>RFC:</strong> <t t-esc="doc.partner_id.vat"/>
+                <strong>RFC:</strong> <t t-esc="doc.partner_id.vat"/><br/>
+
+                <t t-if="doc.lims_contact_ids">
+                  <strong>En atención a:</strong>
+                  <t t-esc=", ".join([c.name for c in doc.lims_contact_ids])"/><br/>
+                  <strong>Correos:</strong>
+                  <t t-esc=", ".join([c.email for c in doc.lims_contact_ids if c.email])"/><br/>
+                </t>
+
+                <t t-if="doc.validity_date">
+                  <strong>Vigencia hasta:</strong>
+                  <t t-esc="doc.validity_date.strftime('%d/%b/%Y')"/>
+                </t>
               </div>
               <div class="col-6 text-end">
-                <strong>Fecha:</strong> <t t-esc="doc.date_order.strftime('%d/%m/%Y')"/><br/>
-                <strong>Pago:</strong> <t t-esc="doc.payment_term_id.name"/>
+                <strong>Fecha:</strong> <t t-esc="doc.date_order.strftime('%d/%b/%Y')"/><br/>
+                <strong>Terminos de pago:</strong> <t t-esc="doc.payment_term_id.name"/>
               </div>
             </div>
 
