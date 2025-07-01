@@ -4,12 +4,12 @@
     <!-- 1) Reducir el logo -->
     <xpath expr="//div[contains(@class,'d-flex')]/img" position="attributes">
       <attribute name="class">o_company_logo_small</attribute>
-      <attribute name="style">max-height:120px; margin-bottom:0.5em;</attribute>
+      <attribute name="style">max-height:100px; margin-bottom:0.5em;</attribute>
     </xpath>
 
     <!-- 2) Ajustar fuente y espaciado de la dirección -->
     <xpath expr="//div[@name='company_address']/ul" position="attributes">
-      <attribute name="style">font-size:14px !important; line-height:1.2;</attribute>
+      <attribute name="style">font-size:12px !important; line-height:1.2;</attribute>
     </xpath>
 
     <!-- 3) Ajustar pie de página: tamaño de fuente y espaciado -->
