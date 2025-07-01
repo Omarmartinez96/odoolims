@@ -76,26 +76,35 @@
               </tbody>
             </table>
 
-            <!-- Tabla de productos sin clases -->
-            <table style="width:100%; font-size:14px; border-collapse:collapse; border:none;">
+            <!-- Tabla de productos sin bordes visibles -->
+            <table style="
+                  width:100%;
+                  font-size:14px;
+                  border-collapse:collapse;
+                  border: none !important;
+                  margin-top: 0.5em;
+                ">
               <thead>
-                <tr style="background-color: rgb(221,235,247); border-bottom:1px solid #000;">
-                  <th style="width:50%; text-align:left; padding:4px;"><strong>Descripción</strong></th>
-                  <th style="text-align:center; padding:4px;"><strong>Cantidad</strong></th>
-                  <th style="text-align:right; padding:4px;"><strong>Precio unitario</strong></th>
-                  <th style="text-align:right; padding:4px;"><strong>Subtotal</strong></th>
+                <tr style="
+                    background-color: rgb(221,235,247);
+                    border: none !important;
+                  ">
+                  <th style="width:50%; border: none !important;"><strong>Descripción</strong></th>
+                  <th class="text-center" style="border: none !important;"><strong>Cantidad</strong></th>
+                  <th class="text-end" style="border: none !important;"><strong>Precio unitario</strong></th>
+                  <th class="text-end" style="border: none !important;"><strong>Subtotal</strong></th>
                 </tr>
               </thead>
               <tbody>
                 <t t-foreach="doc.order_line" t-as="line">
-                  <tr>
-                    <td style="padding:4px;">
+                  <tr style="border: none !important;">
+                    <td style="border: none !important;">
                       <div><strong><t t-esc="line.product_id.display_name"/></strong></div>
                       <div style="white-space:pre-wrap; font-size:14px;"><t t-esc="line.name[len(line.product_id.display_name):].strip()"/></div>
                     </td>
-                    <td style="padding:4px; text-align:center;"><t t-esc="line.product_uom_qty"/></td>
-                    <td style="padding:4px; text-align:right;"><t t-esc="line.price_unit"/></td>
-                    <td style="padding:4px; text-align:right;"><t t-esc="line.price_subtotal"/></td>
+                    <td class="text-center" style="border: none !important;"><t t-esc="line.product_uom_qty"/></td>
+                    <td class="text-end" style="border: none !important;"><t t-esc="line.price_unit"/></td>
+                    <td class="text-end" style="border: none !important;"><t t-esc="line.price_subtotal"/></td>
                   </tr>
                 </t>
               </tbody>
