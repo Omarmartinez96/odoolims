@@ -1,9 +1,10 @@
 <odoo>
   <template id="report_saleorder_document_custom" inherit_id="sale.report_saleorder_document">
-    <xpath expr="//div[@class='page']" position="replace">
-      <div class="page">
+    <xpath expr="//div[@class='page']" position="inside">
+      <!-- 👇 Tu contenido personalizado dentro de la página estándar -->
+      <div class="custom-quote mt-4">
 
-        <!-- 🧾 Encabezado -->
+        <!-- Encabezado -->
         <div class="row mb-3">
           <div class="col-12 text-center">
             <h2 style="color:#006699; margin-bottom: 10px;">COTIZACIÓN DE SERVICIOS</h2>
@@ -11,7 +12,7 @@
           </div>
         </div>
 
-        <!-- 👤 Datos del cliente -->
+        <!-- Datos del cliente -->
         <div class="row mb-2">
           <div class="col-6">
             <strong>Cliente:</strong> <t t-esc="doc.partner_id.name"/><br/>
@@ -24,7 +25,7 @@
           </div>
         </div>
 
-        <!-- 📦 Tabla de productos -->
+        <!-- Tabla de productos -->
         <table class="table table-sm mt-3" style="width:100%; font-size:12px;">
           <thead>
             <tr style="background-color:#f0f0f0;">
@@ -46,7 +47,7 @@
           </tbody>
         </table>
 
-        <!-- 💵 Totales -->
+        <!-- Totales -->
         <div class="row mt-3">
           <div class="col-6"></div>
           <div class="col-6 text-right">
@@ -56,7 +57,7 @@
           </div>
         </div>
 
-        <!-- 📌 Condiciones y Políticas -->
+        <!-- Condiciones y Políticas -->
         <div class="row mt-5">
           <div class="col-12">
             <h4 style="margin-bottom: 10px;">Condiciones y Políticas</h4>
