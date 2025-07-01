@@ -57,7 +57,7 @@
             <div class="row mt-3">
               <div class="col-6"/>
               <div class="col-6">              
-                <table style="width:100%; font-size:20px; border-collapse:collapse;">
+                <table style="width:100%; font-size:14px; border-collapse:collapse;">
                   <tr>
                     <td style="text-align:left; padding:14px; border-top:1px solid #ddd;"><strong>Subtotal:</strong></td>
                     <td style="text-align:right; padding:14px; border-top:1px solid #ddd;"><t t-esc="doc.amount_untaxed"/></td>
@@ -67,8 +67,8 @@
                     <td style="text-align:right; padding:14px; border-top:1px solid #ddd;"><t t-esc="doc.amount_tax"/></td>
                   </tr>
                   <tr>
-                    <td style="text-align:left; padding:14px; font-size:12px; border-top:2px solid #000;"><strong>Total:</strong></td>
-                    <td style="text-align:right; padding:14px; font-size:12px; border-top:2px solid #000;"><t t-esc="doc.amount_total"/></td>
+                    <td style="text-align:left; padding:14px; font-size:14px; border-top:2px solid #000;"><strong>Total:</strong></td>
+                    <td style="text-align:right; padding:14px; font-size:14px; border-top:2px solid #000;"><t t-esc="doc.amount_total"/></td>
                   </tr>
                 </table>
               </div>
