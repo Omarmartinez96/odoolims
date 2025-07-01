@@ -77,8 +77,8 @@
                   </tr>
                 </table>
 
-                <!-- Nueva fila: Total en palabras -->
-                <t t-set="amount_words" t-value="doc.amount_to_text(doc.amount_total, 'es', doc.currency_id.name)"/>
+                <!-- Nueva fila: Total en palabras (llamada correcta) -->
+                <t t-set="amount_words" t-value="doc.currency_id.amount_to_text(doc.amount_total)"/>
                 <div style="font-size:10px; margin-top:6px; text-align:left;">
                   <em><t t-esc="amount_words.upper()"/> M.N.</em>
                 </div>
