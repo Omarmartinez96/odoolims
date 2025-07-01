@@ -113,8 +113,8 @@
             <div class="row mt-3">
               <div class="col-6"/>
               <div class="col-6" style="font-size:12px;">
-                <table class="table table-borderless" 
-                      style="width:100%; border-collapse:collapse; border-spacing:0;">
+                <table class="table table-borderless"
+                       style="width:100%; border-collapse:collapse; border-spacing:0;">
                   <tr>
                     <td style="text-align:left; padding:6px; border-top:1px solid #ddd;">
                       <strong>Subtotal:</strong>
@@ -140,16 +140,16 @@
                     </td>
                   </tr>
                 </table>
-              </div>
-            </div>
 
-                <!-- Nueva fila: Total en palabras (llamada correcta) -->
+                <!-- Total en palabras -->
                 <t t-set="amount_words" t-value="doc.currency_id.amount_to_text(doc.amount_total)"/>
                 <div style="font-size:10px; margin-top:6px; text-align:left;">
                   <em><t t-esc="amount_words.upper()"/> M.N.</em>
                 </div>
-              </div>
-            </div>
+
+              </div> <!-- cierra col-6 -->
+            </div> <!-- cierra row mt-3 -->
+
 
             <!-- Nota de símbolos, antes de condiciones -->
             <div class="row mt-2" style="font-size:10px;">
