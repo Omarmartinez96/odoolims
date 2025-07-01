@@ -20,32 +20,21 @@
     -->
 
     <!-- 4) Ajustar pie de página: tamaño de fuente y espaciado -->
-    <xpath expr="//div[contains(@class,'o_footer_content')]" position="attributes">
-      <attribute name="style">font-size:8px !important; padding-top:4px;</attribute>
-    </xpath>
-
-    <!-- 5) Reemplazar contenido del pie con tres filas alineadas a la izquierda -->
     <xpath expr="//div[contains(@class,'o_footer_content')]" position="replace">
       <div class="o_footer_content" style="font-size:8px; padding-top:2px;">
         <table style="width:100%; table-layout:fixed;">
           <tr>
             <!-- Fila 1: Contacto -->
-            <td style="text-align:left;">
-              <t t-raw="company.report_footer"/>
-            </td>
+            <td style="text-align:left;"><t t-raw="company.report_footer"/></td>
           </tr>
           <tr>
             <!-- Fila 2: Valor RFC u otra leyenda -->
-            <td style="text-align:left;">
-              <t t-if="company.vat">RFC: <t t-esc="company.vat"/></t>
-            </td>
+            <td style="text-align:left;"><t t-if="company.vat">RFC: <t t-esc="company.vat"/></t></td>
           </tr>
           <tr>
             <!-- Fila 3: Paginación -->
             <td style="text-align:left;">
-              <div t-if="report_type=='pdf'">
-                Página <span class="page"/> / <span class="topage"/>
-              </div>
+              <div t-if="report_type=='pdf'">Página <span class="page"/> / <span class="topage"/></div>
             </td>
           </tr>
         </table>
