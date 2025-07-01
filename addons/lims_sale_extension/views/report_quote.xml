@@ -1,8 +1,7 @@
 <odoo>
   <template id="report_saleorder_custom">
     <t t-call="web.external_layout">
-      <!-- Usar t-foreach para definir "doc" -->
-      <t t-foreach="docs" t-as="doc">
+      <main class="o_report_layout">
         <div class="page">
           <!-- Encabezado -->
           <div class="row mb-3">
@@ -71,7 +70,7 @@
             </div>
           </div>
         </div>
-      </t>
+      </main>
     </t>
   </template>
 </odoo>
