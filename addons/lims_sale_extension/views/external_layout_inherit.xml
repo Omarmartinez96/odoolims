@@ -1,23 +1,22 @@
 <odoo>
-  <template id="custom_external_layout">
-    <t t-set="company" t-value="res_company"/>
-    <div class="header">
-      <div class="row">
-        <div class="col-6">
-          <!-- Logo más grande -->
-          <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height:100px;"/>
-        </div>
-        <div class="col-6 text-right" style="font-size:9px;">
-          <strong t-esc="company.name"/>
-          <div t-esc="company.street"/>
-          <div t-esc="company.city"/>
-          <div t-if="company.phone">Tel: <span t-esc="company.phone"/></div>
-          <div t-if="company.email">Email: <span t-esc="company.email"/></div>
-        </div>
+  <template id="external_layout_inherit_lims" inherit_id="web.external_layout_standard">
+    
+    <!-- Aumentar tamaño del logo -->
+    <xpath expr="//div[contains(@class, 'header')]//img" position="attributes">
+      <attribute name="style">max-height: 100px; max-width: 250px;</attribute>
+    </xpath>
+
+    <!-- Reducir tamaño del texto de información de empresa -->
+    <xpath expr="//div[contains(@class, 'header')]//div[contains(@class, 'text-right')]" position="attributes">
+      <attribute name="style">font-size: 9px; line-height: 1.4;</attribute>
+    </xpath>
+
+    <!-- Indicador visual -->
+    <xpath expr="//div[contains(@class, 'header')]" position="inside">
+      <div style="color: red; font-weight: bold; text-align: center;">
+        LAYOUT HEREDADO ACTIVO
       </div>
-    </div>
-    <div class="article">
-      <t t-call="0"/>
-    </div>
+    </xpath>
+
   </template>
 </odoo>
