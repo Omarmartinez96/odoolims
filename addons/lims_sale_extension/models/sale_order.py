@@ -37,5 +37,5 @@ class SaleOrder(models.Model):
         if vals.get('name', '/') == '/':
             year = datetime.today().year
             seq = self.env['ir.sequence'].next_by_code('sale.order.lims') or '000'
-            vals['name'] = f'COT-{seq}/{year}'
+            vals['name'] = f'{seq}/{year}'
         return super(SaleOrder, self).create(vals)

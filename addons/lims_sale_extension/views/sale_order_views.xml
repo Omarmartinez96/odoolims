@@ -5,6 +5,11 @@
     <field name="inherit_id" ref="sale.view_order_form"/>
     <field name="arch" type="xml">
 
+      <!-- Hacer editable el campo "name" -->
+      <xpath expr="//field[@name='name']" position="attributes">
+        <attribute name="readonly">0</attribute>
+      </xpath>
+
       <!-- Campos adicionales al lado del cliente -->
       <xpath expr="//field[@name='partner_id']" position="after">
         <field name="client_code" readonly="1"/>
