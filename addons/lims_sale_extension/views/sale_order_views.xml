@@ -5,32 +5,26 @@
     <field name="inherit_id" ref="sale.view_order_form"/>
     <field name="arch" type="xml">
 
-      <!-- ❌ Reemplazar el botón original "Enviar por correo electrónico" -->
-      <xpath expr="//button[@name='action_quotation_send']" position="replace"/>
+      <!-- Hacer editable el campo "name" -->
+      <xpath expr="//field[@name='name']" position="attributes">
+        <attribute name="readonly">0</attribute>
+      </xpath>
 
-      <!-- ✅ Agregar nuevo botón personalizado -->
-      <xpath expr="//header" position="inside">
+      <!-- Eliminar el botón original -->
+      <xpath expr="//button[@name='action_quotation_send']" position="replace">
         <button name="action_quotation_send"
                 type="object"
                 string="Enviar cotización Proteus"
                 class="btn-primary"
                 groups="sales_team.group_sale_salesman"
                 context="{
-                    'default_template_id': ref('lims_sale_extension.email_template_cotizacion_proteus'),
+                    'default_template_id': 'lims_sale_extension.email_template_cotizacion_proteus',
                     'default_use_template': True,
                     'default_composition_mode': 'comment'
                 }"
                 data-hotkey="g"
                 invisible="state != 'draft'"/>
       </xpath>
-
-      <!-- Hacer editable el campo "name" -->
-      <xpath expr="//field[@name='name']" position="attributes">
-        <attribute name="readonly">0</attribute>
-      </xpath>
-
-      <!-- Eliminar el botón original de "Enviar por correo electrónico" -->
-      <xpath expr="//button[@name='action_quotation_send']" position="replace"/>
 
       <!-- Campos adicionales al lado del cliente -->
       <xpath expr="//field[@name='partner_id']" position="after">
