@@ -5,6 +5,11 @@
     <field name="inherit_id" ref="sale.view_order_form"/>
     <field name="arch" type="xml">
 
+      <!-- 🔒 Ocultar botón original "Enviar por correo electrónico" -->
+      <xpath expr="//button[@name='action_quotation_send']" position="attributes">
+        <attribute name="invisible">1</attribute>
+      </xpath>
+
       <!-- Hacer editable el campo "name" -->
       <xpath expr="//field[@name='name']" position="attributes">
         <attribute name="readonly">0</attribute>
