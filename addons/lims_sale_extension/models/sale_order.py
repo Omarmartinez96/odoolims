@@ -4,6 +4,8 @@ from odoo import models, fields, api
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
 
+    name = fields.Char(string='Order Reference', required=True, copy=False, readonly=False, index=True, default='/')
+
     client_code = fields.Char(
         string="Código del Cliente",
         related='partner_id.client_code',
