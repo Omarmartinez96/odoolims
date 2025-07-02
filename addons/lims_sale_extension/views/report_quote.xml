@@ -176,12 +176,6 @@
               </div>
             </t>
 
-            <div class="row mt-2">
-              <div class="col-12" style="font-size:12px;">
-                <strong>Debug note:</strong> <t t-esc="doc.note or 'NO DATA'"/>
-              </div>
-            </div>
-
             <!-- Condiciones y políticas -->
             <div class="row mt-4">
               <div class="col-12">
