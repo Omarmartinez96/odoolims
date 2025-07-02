@@ -36,6 +36,7 @@ class SaleOrder(models.Model):
     def create(self, vals):
         if vals.get('name', '/') == '/':
             year = datetime.today().year
-            seq = self.env['ir.sequence'].next_by_code('sale.order.lims') or '000'
-            vals['name'] = f'{seq}/{year}'
+            next_num = self.env['ir.sequence'].next_by_code('sale.order.lims') or '1'
+            padded = str(next_num).zfill(3)  # asegura que sea 001, 002, etc.
+            vals['name'] = f'{padded}/{year}'
         return super(SaleOrder, self).create(vals)
