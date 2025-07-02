@@ -10,6 +10,19 @@
         <attribute name="readonly">0</attribute>
       </xpath>
 
+      <!-- Forzar plantilla de cotización personalizada -->
+      <xpath expr="//button[@name='action_quotation_send']" position="attributes">
+        <attribute name="context">
+          {
+            'default_template_id': ref('lims_sale_extension.email_template_cotizacion_proteus'),
+            'default_use_template': True,
+            'default_composition_mode': 'comment',
+            'validate_analytic': True,
+            'check_document_layout': True
+          }
+        </attribute>
+      </xpath>
+
       <!-- Campos adicionales al lado del cliente -->
       <xpath expr="//field[@name='partner_id']" position="after">
         <field name="client_code" readonly="1"/>
@@ -18,31 +31,10 @@
         <field name="lims_contact_ids" widget="many2many_tags"/>
       </xpath>
 
-      <!-- Agregar columnas en la definición del one2many -->
+      <!-- Agregar contexto en order_line -->
       <xpath expr="//field[@name='order_line']" position="attributes">
         <attribute name="context">{'default_analysis_method': '', 'default_is_accredited': False}</attribute>
       </xpath>
-
-      <!-- Hereda plantilla de cotizacion al hacer click en enviar -->
-      <record id="view_order_form_email_template_custom" model="ir.ui.view">
-        <field name="name">sale.order.email.template.override</field>
-        <field name="model">sale.order</field>
-        <field name="inherit_id" ref="sale.view_order_form"/>
-        <field name="arch" type="xml">
-          <xpath expr="//button[@name='action_quotation_send']" position="attributes">
-            <attribute name="context">
-              {
-                'default_template_id': ref('lims_sale_extension.email_template_cotizacion_proteus'),
-                'default_use_template': True,
-                'default_composition_mode': 'comment',
-                'validate_analytic': True,
-                'check_document_layout': True
-              }
-            </attribute>
-          </xpath>
-        </field>
-      </record>
-
 
     </field>
   </record>
