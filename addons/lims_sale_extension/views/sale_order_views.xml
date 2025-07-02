@@ -23,6 +23,27 @@
         <attribute name="context">{'default_analysis_method': '', 'default_is_accredited': False}</attribute>
       </xpath>
 
+      <!-- Hereda plantilla de cotizacion al hacer click en enviar -->
+      <record id="view_order_form_email_template_custom" model="ir.ui.view">
+        <field name="name">sale.order.email.template.override</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+          <xpath expr="//button[@name='action_quotation_send']" position="attributes">
+            <attribute name="context">
+              {
+                'default_template_id': ref('lims_sale_extension.email_template_cotizacion_proteus'),
+                'default_use_template': True,
+                'default_composition_mode': 'comment',
+                'validate_analytic': True,
+                'check_document_layout': True
+              }
+            </attribute>
+          </xpath>
+        </field>
+      </record>
+
+
     </field>
   </record>
 </odoo>
