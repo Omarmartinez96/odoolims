@@ -50,7 +50,6 @@
                         <group string="Información de contacto">
                             <field name="email"/>
                             <field name="phone"/>
-                            <field name="company_type"/>
                         </group>
 
                         <group string="Dirección Fiscal Completa">
