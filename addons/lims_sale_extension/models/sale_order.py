@@ -1,4 +1,5 @@
-from odoo import models, fields
+from datetime import datetime
+from odoo import models, fields, api
 
 class SaleOrder(models.Model):
     _inherit = 'sale.order'
@@ -30,3 +31,11 @@ class SaleOrder(models.Model):
         string="Contactos",
         domain="[('department_id', '=', lims_department_id)]"
     )
+
+    @api.model
+    def create(self, vals):
+        if vals.get('name', '/') == '/':
+            year = datetime.today().year
+            seq = self.env['ir.sequence'].next_by_code('sale.order.lims') or '000'
+            vals['name'] = f'COT-{seq}/{year}'
+        return super(SaleOrder, self).create(vals)
