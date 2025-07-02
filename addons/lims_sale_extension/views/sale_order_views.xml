@@ -10,22 +10,9 @@
         <attribute name="readonly">0</attribute>
       </xpath>
 
-      <!-- Reemplazar botón para usar plantilla de correo por defecto -->
-      <xpath expr="//button[@name='action_quotation_send']" position="replace">
-        <button name="action_quotation_send"
-                type="object"
-                string="Enviar por correo electrónico"
-                class="btn-primary"
-                groups="sales_team.group_sale_salesman"
-                t-att-context="{
-                  'default_template_id': ref('lims_sale_extension.email_template_cotizacion_proteus'),
-                  'default_use_template': True,
-                  'default_composition_mode': 'comment',
-                  'validate_analytic': True,
-                  'check_document_layout': True
-                }"
-                data-hotkey="g"
-                invisible="state != 'draft'"/>
+      <!-- Ocultar el botón original de "Enviar por correo electrónico" -->
+      <xpath expr="//button[@name='action_quotation_send']" position="attributes">
+        <attribute name="invisible">1</attribute>
       </xpath>
 
       <!-- Campos adicionales al lado del cliente -->
@@ -36,7 +23,7 @@
         <field name="lims_contact_ids" widget="many2many_tags"/>
       </xpath>
 
-      <!-- Agregar contexto en order_line -->
+      <!-- Agregar columnas en la definición del one2many -->
       <xpath expr="//field[@name='order_line']" position="attributes">
         <attribute name="context">{'default_analysis_method': '', 'default_is_accredited': False}</attribute>
       </xpath>
