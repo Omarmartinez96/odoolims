@@ -227,8 +227,8 @@
             <!-- Firma del cliente centrada -->
             <div class="row mt-4">
               <div class="col-12" style="text-align:center; margin-top:50px;">
-                <t t-if="doc.acceptance_signature">
-                  <img t-att-src="'data:image/png;base64,%s' % doc.acceptance_signature"
+                <t t-if="doc.signature">
+                  <img t-att-src="'data:image/png;base64,%s' % doc.signature"
                       style="max-height:100px; max-width:300px;"/>
                 </t>
                 <div style="border-top:1px solid #000; width:40%; margin: 10px auto 0 auto;"/>
