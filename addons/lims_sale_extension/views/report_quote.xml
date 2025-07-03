@@ -224,12 +224,16 @@
               <t t-esc="doc.user_id.name"/>
             </p>
 
-            <!-- Firma del cliente centrada -->
+            <!-- Firma del cliente centrada con diagnóstico -->
             <div class="row mt-4">
               <div class="col-12" style="text-align:center; margin-top:50px;">
                 <t t-if="doc.signature">
+                  <p style="color:green; font-size:12px;">✅ La firma fue detectada</p>
                   <img t-att-src="'data:image/png;base64,%s' % doc.signature"
                       style="max-height:100px; max-width:300px;"/>
+                </t>
+                <t t-else="">
+                  <p style="color:red; font-size:12px;">❌ No hay firma registrada</p>
                 </t>
                 <div style="border-top:1px solid #000; width:40%; margin: 10px auto 0 auto;"/>
                 <p style="margin-top:5px; font-size:12px;"><strong>Aceptado por el cliente</strong></p>
