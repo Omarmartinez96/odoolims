@@ -1,0 +1,8 @@
+<odoo>
+  <template id="web.brand_promotion_message" inherit_id="web.brand_promotion_message">
+    <xpath expr="." position="replace">
+      <t t-set="final_message"></t>
+      <t t-out="final_message"/>
+    </xpath>
+  </template>
+</odoo>
