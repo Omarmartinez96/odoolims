@@ -1,5 +1,5 @@
 <odoo>
-  <template inherit_id="web.brand_promotion_message" name="Remove Powered by Odoo">
+  <template id="remove_brand_promotion_message" t-inherit="web.brand_promotion_message" t-inherit-mode="extension">
     <xpath expr="." position="replace"/>
   </template>
 </odoo>
