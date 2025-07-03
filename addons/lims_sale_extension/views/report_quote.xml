@@ -224,12 +224,12 @@
               <t t-esc="doc.user_id.name"/>
             </p>
 
-            <!-- Firma del cliente centrada con diagnóstico -->
+            <!-- Firma del cliente centrada con diagnóstico y visualización compatible con PDF -->
             <div class="row mt-4">
               <div class="col-12" style="text-align:center; margin-top:50px;">
                 <t t-if="doc.signature">
                   <p style="color:green; font-size:12px;">✅ La firma fue detectada</p>
-                  <img t-att-src="'data:image/png;base64,%s' % doc.signature"
+                  <img t-att-src="'/web/image?model=sale.order&amp;id=%s&amp;field=signature' % doc.id"
                       style="max-height:100px; max-width:300px;"/>
                 </t>
                 <t t-else="">
@@ -240,6 +240,7 @@
                 <p style="font-size:12px;">Firma y nombre</p>
               </div>
             </div>
+
 
           </div>
         </main>
