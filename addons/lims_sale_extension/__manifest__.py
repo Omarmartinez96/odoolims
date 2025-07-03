@@ -13,7 +13,6 @@
         'views/sale_order_views.xml',
         'views/report_quote.xml',
         'views/report.xml',
-        'views/remove_brand_footer.xml',
     ],
     'installable': True,
     'application': True,
