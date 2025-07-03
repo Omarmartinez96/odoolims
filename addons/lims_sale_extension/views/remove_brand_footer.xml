@@ -1,7 +1,5 @@
 <odoo>
-  <template id="remove_brand_promotion" inherit_id="web.brand_promotion_message">
-    <xpath expr="." position="replace">
-      <!-- Se elimina completamente el contenido -->
-    </xpath>
+  <template inherit_id="web.brand_promotion_message" name="Remove Powered by Odoo">
+    <xpath expr="." position="replace"/>
   </template>
 </odoo>
