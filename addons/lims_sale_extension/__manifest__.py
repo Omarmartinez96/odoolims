@@ -5,6 +5,7 @@
     'depends': [
         'sale',
         'lims_customer',
+        'web',
     ],
     'data': [
         'views/external_layout_inherit_lims.xml',
