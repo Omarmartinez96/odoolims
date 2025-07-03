@@ -1,6 +1,6 @@
 <odoo>
-  <template id="remove_brand_promotion_message" inherit_id="web.brand_promotion" name="Remove Powered by Odoo">
-    <xpath expr="//t[@t-call='web.brand_promotion_message']" position="replace">
+  <template id="remove_brand_message" inherit_id="web.brand_promotion_message" name="Remove Powered by Odoo">
+    <xpath expr="." position="replace">
     </xpath>
   </template>
 </odoo>
