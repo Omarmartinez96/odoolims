@@ -1,16 +1,69 @@
 .btn-primary {
   background-color: $odoo-brand-primary;
   border-color: darken($odoo-brand-primary, 10%);
+  color: $odoo-text-color;
   font-family: $odoo-font-family;
-  color: #fff;
+
+  &:hover {
+    background-color: lighten($odoo-brand-primary, 5%);
+    border-color: $odoo-brand-primary;
+    color: $odoo-text-color;
+  }
+}
+
+.btn-secondary {
+  background-color: $odoo-brand-secondary;
+  border-color: darken($odoo-brand-secondary, 10%);
+  color: $odoo-text-color;
+
+  &:hover {
+    background-color: lighten($odoo-brand-secondary, 5%);
+    color: $odoo-text-color;
+  }
+}
+
+// Corrige el botón "Nuevo" y otros botones morados
+.o_form_button_create, .btn-outline-primary {
+  background-color: $odoo-brand-primary;
+  border-color: $odoo-brand-primary;
+  color: $odoo-text-color;
+
+  &:hover {
+    background-color: lighten($odoo-brand-primary, 10%);
+    border-color: $odoo-brand-primary;
+    color: $odoo-text-color;
+  }
 }
 
 .o_main_navbar {
-  background-color: lighten($odoo-brand-primary, 5%);
-  color: #fff;
+  background-color: $odoo-brand-secondary;
+  color: $odoo-text-color;
 
   .o_menu_brand {
     font-family: $odoo-font-family;
-    color: #fff;
+    color: $odoo-text-color;
+    font-weight: bold;
+  }
+
+  a, .dropdown-toggle {
+    color: $odoo-text-color;
+
+    &:hover {
+      color: lighten($odoo-text-color, 15%);
+    }
+  }
+}
+
+// Botones del menú horizontal como texto blanco sin fondo
+.o_main_navbar .o_menu_sections > li > a {
+  background: none !important;
+  border: none !important;
+  color: $odoo-text-color !important;
+  font-weight: bold;
+  padding: 8px 12px;
+
+  &:hover {
+    text-decoration: underline;
+    background: none;
   }
 }
