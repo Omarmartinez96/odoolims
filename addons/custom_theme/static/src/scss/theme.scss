@@ -23,6 +23,7 @@ $odoo-text-color: #ffffff !default;
   background-color: $odoo-brand-secondary;
   border-color: darken($odoo-brand-secondary, 10%);
   color: $odoo-text-color;
+  font-family: $odoo-font-family;
 
   &:hover {
     background-color: lighten($odoo-brand-secondary, 5%);
@@ -36,6 +37,7 @@ $odoo-text-color: #ffffff !default;
   background-color: $odoo-brand-primary;
   border-color: $odoo-brand-primary;
   color: $odoo-text-color;
+  font-family: $odoo-font-family;
 
   &:hover {
     background-color: lighten($odoo-brand-primary, 10%);
@@ -66,17 +68,22 @@ $odoo-text-color: #ffffff !default;
   }
 }
 
-// === Botones del menú horizontal (estilo navbar web institucional) ===
+// === Botones del menú horizontal (estilo navbar institucional) ===
 .o_main_navbar .o_menu_sections > li > a {
   background: none !important;
   border: none !important;
+  box-shadow: none !important;
   color: $odoo-text-color !important;
   font-weight: bold;
+  font-family: $odoo-font-family;
   padding: 8px 12px;
+  border-radius: 0 !important;
+  text-transform: uppercase;
 
   &:hover {
     text-decoration: underline;
     background: none !important;
+    color: lighten($odoo-text-color, 10%) !important;
   }
 }
 
