@@ -1,10 +1,10 @@
-// === Variables principales ===
-$odoo-brand-primary: #2c5aa0;       // Azul oscuro profesional
-$odoo-brand-secondary: #1d3557;     // Azul profundo para navbar
+// === Variables ===
+$odoo-brand-primary: #2c5aa0 !default;   // Azul oscuro profesional
+$odoo-brand-secondary: #1d3557 !default; // Azul profundo para navbar
 $odoo-font-family: 'Roboto', sans-serif !default;
-$odoo-text-color: #ffffff;
+$odoo-text-color: #ffffff !default;
 
-// === Botón primario (Guardar, Confirmar, etc.) ===
+// === Botón primario ===
 .btn-primary {
   background-color: $odoo-brand-primary;
   border-color: darken($odoo-brand-primary, 10%);
@@ -18,7 +18,7 @@ $odoo-text-color: #ffffff;
   }
 }
 
-// === Botón secundario (Editar, Descartar, etc.) ===
+// === Botón secundario ===
 .btn-secondary {
   background-color: $odoo-brand-secondary;
   border-color: darken($odoo-brand-secondary, 10%);
@@ -31,7 +31,7 @@ $odoo-text-color: #ffffff;
   }
 }
 
-// === Botón "Nuevo" y botones tipo outline (que eran morados) ===
+// === Botón "Nuevo" y botones morados de Odoo ===
 .o_form_button_create,
 .btn-outline-primary {
   background-color: $odoo-brand-primary;
@@ -68,28 +68,37 @@ $odoo-text-color: #ffffff;
   }
 }
 
-// === Botones del menú horizontal (navbar) convertidos en texto negro)
-.o_main_navbar .o_menu_sections > li > a.btn:not(.btn-primary):not(.o_form_button_create),
-.o_main_navbar .o_menu_sections > li > a.btn-secondary {
+// === Botones del menú horizontal (solo texto blanco, sin fondo ni bordes) ===
+.o_main_navbar .o_menu_sections > li > a {
   background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
-  color: black !important; // ← Para probar si se aplica correctamente
+  color: $odoo-text-color !important;
   font-weight: bold !important;
   font-family: $odoo-font-family;
-  text-transform: uppercase;
-  padding: 10px 16px;
   border-radius: 0 !important;
-  cursor: pointer;
+  padding: 10px 16px;
+  text-transform: uppercase;
+  display: inline-block;
+  vertical-align: middle;
 
   &:hover {
     background-color: transparent !important;
     text-decoration: underline !important;
-    color: lighten(black, 15%) !important;
+    color: lighten($odoo-text-color, 10%) !important;
   }
 }
 
-// === Títulos y encabezados ===
+// === Corrección adicional si heredan clases .btn o .btn-primary ===
+.o_main_navbar .o_menu_sections > li > a.btn,
+.o_main_navbar .o_menu_sections > li > a.btn-primary {
+  all: unset !important;
+  color: $odoo-text-color !important;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+// === Títulos y encabezados (ej. "Cotizaciones") ===
 .o_form_view .o_form_sheet_bg h1,
 .o_form_view .o_form_sheet_bg h2 {
   color: $odoo-brand-primary !important;
