@@ -14,27 +14,42 @@ $odoo-text-color: #ffffff;
     font-weight: bold;
   }
 
-  // Enlaces del menú principal
+  // Enlaces del menú principal (incluso si heredan clase .btn)
   .o_menu_sections > li > a {
-    background: none !important;
-    border: none !important;
-    box-shadow: none !important;
+    all: unset;
+    display: inline-block;
+    padding: 10px 14px;
     color: $odoo-text-color !important;
     font-weight: bold;
-    border-radius: 0;
-    padding: 8px 12px;
+    font-family: inherit;
     text-transform: uppercase;
+    border-radius: 0 !important;
+    cursor: pointer;
 
     &:hover {
-      text-decoration: underline;
-      color: $odoo-text-color !important;
-      background: none !important;
+      text-decoration: underline !important;
+      color: lighten($odoo-text-color, 10%) !important;
+      background-color: transparent !important;
     }
   }
 
-  // Dropdowns (en sub-menús)
+  // Eliminar apariencia de botón si heredan clases .btn, .btn-primary, etc.
+  .o_menu_sections > li > a.btn,
+  .o_menu_sections > li > a.btn-primary {
+    all: unset !important;
+    display: inline-block;
+    padding: 10px 14px;
+    color: $odoo-text-color !important;
+    font-weight: bold;
+    font-family: inherit;
+    text-transform: uppercase;
+    cursor: pointer;
+  }
+
+  // Dropdowns
   .dropdown-toggle, a {
     color: $odoo-text-color !important;
+
     &:hover, &:focus {
       color: lighten($odoo-text-color, 15%) !important;
     }
@@ -42,8 +57,10 @@ $odoo-text-color: #ffffff;
 }
 
 // Botones estándar y de ventana (Create, Outline-Primary…)
-.btn-primary, .btn-outline-primary, .o_form_button_create {
+.btn-primary,
+.btn-outline-primary,
+.o_form_button_create {
   background-color: $odoo-brand-primary !important;
   border-color: $odoo-brand-primary !important;
-  color: $odoo-text-color !important; 
+  color: $odoo-text-color !important;
 }
