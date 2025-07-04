@@ -1,3 +1,10 @@
+// === Variables ===
+$odoo-brand-primary: #2c5aa0 !default;   // Azul oscuro profesional
+$odoo-brand-secondary: #1d3557 !default; // Azul profundo para navbar
+$odoo-font-family: 'Roboto', sans-serif !default;
+$odoo-text-color: #ffffff !default;
+
+// === Botón primario ===
 .btn-primary {
   background-color: $odoo-brand-primary;
   border-color: darken($odoo-brand-primary, 10%);
@@ -11,6 +18,7 @@
   }
 }
 
+// === Botón secundario ===
 .btn-secondary {
   background-color: $odoo-brand-secondary;
   border-color: darken($odoo-brand-secondary, 10%);
@@ -22,8 +30,9 @@
   }
 }
 
-// Corrige el botón "Nuevo" y otros botones morados
-.o_form_button_create, .btn-outline-primary {
+// === Botón "Nuevo" y botones morados de Odoo ===
+.o_form_button_create,
+.btn-outline-primary {
   background-color: $odoo-brand-primary;
   border-color: $odoo-brand-primary;
   color: $odoo-text-color;
@@ -35,26 +44,29 @@
   }
 }
 
+// === Barra superior ===
 .o_main_navbar {
   background-color: $odoo-brand-secondary;
   color: $odoo-text-color;
 
   .o_menu_brand {
     font-family: $odoo-font-family;
-    color: $odoo-text-color;
+    color: $odoo-text-color !important;
     font-weight: bold;
+    opacity: 1 !important;
   }
 
-  a, .dropdown-toggle {
-    color: $odoo-text-color;
+  a,
+  .dropdown-toggle {
+    color: $odoo-text-color !important;
 
     &:hover {
-      color: lighten($odoo-text-color, 15%);
+      color: lighten($odoo-text-color, 15%) !important;
     }
   }
 }
 
-// Botones del menú horizontal como texto blanco sin fondo
+// === Botones del menú horizontal (estilo navbar web institucional) ===
 .o_main_navbar .o_menu_sections > li > a {
   background: none !important;
   border: none !important;
@@ -64,6 +76,14 @@
 
   &:hover {
     text-decoration: underline;
-    background: none;
+    background: none !important;
   }
+}
+
+// === Títulos y encabezados (ej. "Cotizaciones") ===
+.o_form_view .o_form_sheet_bg h1,
+.o_form_view .o_form_sheet_bg h2 {
+  color: $odoo-brand-primary !important;
+  font-weight: bold;
+  font-family: $odoo-font-family;
 }
