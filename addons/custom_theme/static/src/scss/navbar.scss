@@ -1,0 +1,49 @@
+// Variables principales
+$odoo-brand-primary: #2c5aa0;
+$odoo-brand-secondary: #1d3557;
+$odoo-text-color: #ffffff;
+
+// Estilos para el navbar y los enlaces
+.o_main_navbar {
+  background-color: $odoo-brand-secondary !important;
+  color: $odoo-text-color !important;
+
+  // Logo/nombre
+  .o_menu_brand {
+    color: $odoo-text-color !important;
+    font-weight: bold;
+  }
+
+  // Enlaces del menú principal
+  .o_menu_sections > li > a {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: $odoo-text-color !important;
+    font-weight: bold;
+    border-radius: 0;
+    padding: 8px 12px;
+    text-transform: uppercase;
+
+    &:hover {
+      text-decoration: underline;
+      color: $odoo-text-color !important;
+      background: none !important;
+    }
+  }
+
+  // Dropdowns (en sub-menús)
+  .dropdown-toggle, a {
+    color: $odoo-text-color !important;
+    &:hover, &:focus {
+      color: lighten($odoo-text-color, 15%) !important;
+    }
+  }
+}
+
+// Botones estándar y de ventana (Create, Outline-Primary…)
+.btn-primary, .btn-outline-primary, .o_form_button_create {
+  background-color: $odoo-brand-primary !important;
+  border-color: $odoo-brand-primary !important;
+  color: $odoo-text-color !important; 
+}
