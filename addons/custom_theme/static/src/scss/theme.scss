@@ -6,50 +6,50 @@ $odoo-text-color: #ffffff !default;
 
 // === Botón primario ===
 .btn-primary {
-  background-color: $odoo-brand-primary;
-  border-color: darken($odoo-brand-primary, 10%);
-  color: $odoo-text-color;
+  background-color: $odoo-brand-primary !important;
+  border-color: darken($odoo-brand-primary, 10%) !important;
+  color: $odoo-text-color !important;
   font-family: $odoo-font-family;
 
   &:hover {
-    background-color: lighten($odoo-brand-primary, 5%);
-    border-color: $odoo-brand-primary;
-    color: $odoo-text-color;
+    background-color: lighten($odoo-brand-primary, 5%) !important;
+    border-color: $odoo-brand-primary !important;
+    color: $odoo-text-color !important;
   }
 }
 
 // === Botón secundario ===
 .btn-secondary {
-  background-color: $odoo-brand-secondary;
-  border-color: darken($odoo-brand-secondary, 10%);
-  color: $odoo-text-color;
+  background-color: $odoo-brand-secondary !important;
+  border-color: darken($odoo-brand-secondary, 10%) !important;
+  color: $odoo-text-color !important;
   font-family: $odoo-font-family;
 
   &:hover {
-    background-color: lighten($odoo-brand-secondary, 5%);
-    color: $odoo-text-color;
+    background-color: lighten($odoo-brand-secondary, 5%) !important;
+    color: $odoo-text-color !important;
   }
 }
 
 // === Botón "Nuevo" y botones morados de Odoo ===
 .o_form_button_create,
 .btn-outline-primary {
-  background-color: $odoo-brand-primary;
-  border-color: $odoo-brand-primary;
-  color: $odoo-text-color;
+  background-color: $odoo-brand-primary !important;
+  border-color: $odoo-brand-primary !important;
+  color: $odoo-text-color !important;
   font-family: $odoo-font-family;
 
   &:hover {
-    background-color: lighten($odoo-brand-primary, 10%);
-    border-color: $odoo-brand-primary;
-    color: $odoo-text-color;
+    background-color: lighten($odoo-brand-primary, 10%) !important;
+    border-color: $odoo-brand-primary !important;
+    color: $odoo-text-color !important;
   }
 }
 
 // === Barra superior ===
 .o_main_navbar {
-  background-color: $odoo-brand-secondary;
-  color: $odoo-text-color;
+  background-color: $odoo-brand-secondary !important;
+  color: $odoo-text-color !important;
 
   .o_menu_brand {
     font-family: $odoo-font-family;
@@ -67,43 +67,29 @@ $odoo-text-color: #ffffff !default;
     }
   }
 
-  // === Botones del menú horizontal ===
-  .o_menu_sections > li > a {
+  // === Botones del menú horizontal (sin bordes ni fondo)
+  .o_menu_sections > li > a,
+  .o_menu_sections > li > a.btn,
+  .o_menu_sections > li > a.btn-primary,
+  .o_menu_sections > li > a.btn-outline-primary {
     background-color: transparent !important;
     border: none !important;
     box-shadow: none !important;
     color: $odoo-text-color !important;
-    font-weight: bold !important;
     font-family: $odoo-font-family;
+    font-weight: bold;
     border-radius: 0 !important;
     padding: 10px 16px;
     text-transform: uppercase;
     display: inline-block;
     vertical-align: middle;
+    cursor: pointer;
 
     &:hover {
       background-color: transparent !important;
-      text-decoration: underline !important;
       color: lighten($odoo-text-color, 10%) !important;
+      text-decoration: underline !important;
     }
-  }
-
-  // === Corrección si heredan clases .btn ===
-  .o_menu_sections > li > a.btn,
-  .o_menu_sections > li > a.btn-primary {
-    all: unset !important;
-    color: $odoo-text-color !important;
-    font-weight: bold;
-    font-family: $odoo-font-family;
-    cursor: pointer;
-    text-transform: uppercase;
-    padding: 10px 16px !important;
-    display: inline-block;
-    vertical-align: middle;
-    border-radius: 0 !important;
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
   }
 }
 
