@@ -1,7 +1,7 @@
 {
-    'name': 'Custom Theme',
+    'name': 'Custom Theme Proteus',
     'version': '1.0',
-    'category': 'Theme/Backend',
+    'category': 'Laboratory',
     'summary': 'Custom theme for Proteus Laboratorio',
     'author': 'Omar Martinez',
     'depends': ['web'],
@@ -14,5 +14,7 @@
         ],
     },
     'installable': True,
-    'application': False,
+    'application': True,
+    'auto_install': True,
+    'license': 'LGPL-3',
 }
