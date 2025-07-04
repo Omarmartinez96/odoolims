@@ -1,0 +1,33 @@
+// Custom Odoo SCSS Variables
+$odoo-brand-primary: #006699;  // Color principal
+$odoo-brand-secondary: #ff9900;
+$odoo-font-family: 'Roboto', sans-serif;
+
+// Botones
+.btn-primary {
+    background-color: $odoo-brand-primary;
+    border-color: darken($odoo-brand-primary, 10%);
+    font-family: $odoo-font-family;
+}
+
+.btn-secondary {
+    background-color: $odoo-brand-secondary;
+    color: #fff;
+}
+
+// Encabezados
+h1, h2, h3, h4, h5, h6 {
+    font-family: $odoo-font-family;
+    color: $odoo-brand-primary;
+}
+
+// Navbar personalizado
+.o_main_navbar {
+    background-color: lighten($odoo-brand-primary, 5%);
+    color: #fff;
+
+    .o_menu_brand {
+        font-family: $odoo-font-family;
+        color: #fff;
+    }
+}
