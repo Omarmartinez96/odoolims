@@ -7,7 +7,7 @@
     'depends': ['web'],
     'assets': {
         'web._assets_primary_variables': [
-            ('prepend', 'custom_theme/static/src/scss/variables.scss'),
+            ('prepend', 'custom_theme/static/src/scss/primary_variables.scss'),
         ],
         'web.assets_backend': [
             'custom_theme/static/src/scss/theme.scss',
