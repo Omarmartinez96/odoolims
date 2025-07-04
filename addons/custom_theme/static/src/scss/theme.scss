@@ -1,11 +1,11 @@
 .btn-primary {
   background-color: $odoo-brand-primary;
-  border-color: scale-color($odoo-brand-primary, $lightness: -10%);
+  border-color: darken($odoo-brand-primary, 10%);
   font-family: $odoo-font-family;
 }
 
 .o_main_navbar {
-  background-color: scale-color($odoo-brand-primary, $lightness: 5%);
+  background-color: lighten($odoo-brand-primary, 5%);
   color: #fff;
 
   .o_menu_brand {
