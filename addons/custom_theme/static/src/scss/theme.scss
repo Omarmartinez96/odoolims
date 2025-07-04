@@ -68,23 +68,34 @@ $odoo-text-color: #ffffff !default;
   }
 }
 
-// === Botones del menú horizontal (estilo navbar institucional) ===
+// === Botones del menú horizontal (solo texto blanco, sin fondo ni bordes) ===
 .o_main_navbar .o_menu_sections > li > a {
-  background: none !important;
+  background-color: transparent !important;
   border: none !important;
   box-shadow: none !important;
   color: $odoo-text-color !important;
-  font-weight: bold;
+  font-weight: bold !important;
   font-family: $odoo-font-family;
-  padding: 8px 12px;
   border-radius: 0 !important;
+  padding: 10px 16px;
   text-transform: uppercase;
+  display: inline-block;
+  vertical-align: middle;
 
   &:hover {
-    text-decoration: underline;
-    background: none !important;
+    background-color: transparent !important;
+    text-decoration: underline !important;
     color: lighten($odoo-text-color, 10%) !important;
   }
+}
+
+// === Corrección adicional si heredan clases .btn o .btn-primary ===
+.o_main_navbar .o_menu_sections > li > a.btn,
+.o_main_navbar .o_menu_sections > li > a.btn-primary {
+  all: unset !important;
+  color: $odoo-text-color !important;
+  font-weight: bold;
+  cursor: pointer;
 }
 
 // === Títulos y encabezados (ej. "Cotizaciones") ===
