@@ -1,35 +1,25 @@
-@import 'web.variables';
-
-$odoo-brand-primary: #006699 !default;
-$odoo-brand-secondary: #ff9900 !default;
-$odoo-font-family: 'Roboto', sans-serif !default;
-
-body {
-  background-color: $odoo-brand-primary;
-}
-
 .btn-primary {
-    background-color: $odoo-brand-primary;
-    border-color: color.scale($odoo-brand-primary, $lightness: -10%);
-    font-family: $odoo-font-family;
+  background-color: $odoo-brand-primary;
+  border-color: color.scale($odoo-brand-primary, $lightness: -10%);
+  font-family: $odoo-font-family;
 }
 
 .btn-secondary {
-    background-color: $odoo-brand-secondary;
-    color: #fff;
+  background-color: $odoo-brand-secondary;
+  color: #fff;
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-family: $odoo-font-family;
-    color: $odoo-brand-primary;
+  font-family: $odoo-font-family;
+  color: $odoo-brand-primary;
 }
 
 .o_main_navbar {
-    background-color: color.scale($odoo-brand-primary, $lightness: 5%);
-    color: #fff;
+  background-color: color.scale($odoo-brand-primary, $lightness: 5%);
+  color: #fff;
 
-    .o_menu_brand {
-        font-family: $odoo-font-family;
-        color: #fff;
-    }
+  .o_menu_brand {
+    font-family: $odoo-font-family;
+    color: #fff;
+  }
 }

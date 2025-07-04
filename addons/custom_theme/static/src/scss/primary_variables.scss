@@ -1,0 +1,7 @@
+// Carga del núcleo de variables Odoo
+@import 'web.variables';
+
+// Sobrescrituras de variables con !default
+$odoo-brand-primary: #006699 !default;
+$odoo-brand-secondary: #ff9900 !default;
+$odoo-font-family: 'Roboto', sans-serif !default;
