@@ -1,50 +1,8 @@
 // === Variables ===
-$odoo-brand-primary: #2c5aa0 !default;   // Azul oscuro profesional
-$odoo-brand-secondary: #1d3557 !default; // Azul profundo para navbar
+$odoo-brand-primary: #2c5aa0 !default;
+$odoo-brand-secondary: #1d3557 !default;
 $odoo-font-family: 'Roboto', sans-serif !default;
 $odoo-text-color: #ffffff !default;
-
-// === Botón primario ===
-.btn-primary {
-  background-color: $odoo-brand-primary !important;
-  border-color: darken($odoo-brand-primary, 10%) !important;
-  color: $odoo-text-color !important;
-  font-family: $odoo-font-family;
-
-  &:hover {
-    background-color: lighten($odoo-brand-primary, 5%) !important;
-    border-color: $odoo-brand-primary !important;
-    color: $odoo-text-color !important;
-  }
-}
-
-// === Botón secundario ===
-.btn-secondary {
-  background-color: $odoo-brand-secondary !important;
-  border-color: darken($odoo-brand-secondary, 10%) !important;
-  color: $odoo-text-color !important;
-  font-family: $odoo-font-family;
-
-  &:hover {
-    background-color: lighten($odoo-brand-secondary, 5%) !important;
-    color: $odoo-text-color !important;
-  }
-}
-
-// === Botón "Nuevo" y botones morados de Odoo ===
-.o_form_button_create,
-.btn-outline-primary {
-  background-color: $odoo-brand-primary !important;
-  border-color: $odoo-brand-primary !important;
-  color: $odoo-text-color !important;
-  font-family: $odoo-font-family;
-
-  &:hover {
-    background-color: lighten($odoo-brand-primary, 10%) !important;
-    border-color: $odoo-brand-primary !important;
-    color: $odoo-text-color !important;
-  }
-}
 
 // === Barra superior ===
 .o_main_navbar {
@@ -52,10 +10,28 @@ $odoo-text-color: #ffffff !default;
   color: $odoo-text-color !important;
 
   .o_menu_brand {
-    font-family: $odoo-font-family;
     color: $odoo-text-color !important;
     font-weight: bold;
-    opacity: 1 !important;
+    font-family: $odoo-font-family;
+  }
+
+  // Solo enlaces del menú horizontal
+  .o_menu_sections > li > a {
+    background: none !important;
+    border: none !important;
+    box-shadow: none !important;
+    color: $odoo-text-color !important;
+    font-weight: bold;
+    font-family: $odoo-font-family;
+    border-radius: 0 !important;
+    padding: 8px 12px;
+    text-transform: uppercase;
+
+    &:hover {
+      text-decoration: underline;
+      background: none !important;
+      color: lighten($odoo-text-color, 10%) !important;
+    }
   }
 
   a,
@@ -66,37 +42,33 @@ $odoo-text-color: #ffffff !default;
       color: lighten($odoo-text-color, 15%) !important;
     }
   }
-
-  // === Botones del menú horizontal (sin bordes ni fondo)
-  .o_menu_sections > li > a,
-  .o_menu_sections > li > a.btn,
-  .o_menu_sections > li > a.btn-primary,
-  .o_menu_sections > li > a.btn-outline-primary {
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    color: $odoo-text-color !important;
-    font-family: $odoo-font-family;
-    font-weight: bold;
-    border-radius: 0 !important;
-    padding: 10px 16px;
-    text-transform: uppercase;
-    display: inline-block;
-    vertical-align: middle;
-    cursor: pointer;
-
-    &:hover {
-      background-color: transparent !important;
-      color: lighten($odoo-text-color, 10%) !important;
-      text-decoration: underline !important;
-    }
-  }
 }
 
-// === Títulos y encabezados (ej. "Cotizaciones") ===
-.o_form_view .o_form_sheet_bg h1,
-.o_form_view .o_form_sheet_bg h2 {
-  color: $odoo-brand-primary !important;
-  font-weight: bold;
+// === Botones estándar
+.btn-primary {
+  background-color: $odoo-brand-primary !important;
+  border-color: darken($odoo-brand-primary, 10%) !important;
+  color: $odoo-text-color !important;
   font-family: $odoo-font-family;
+}
+
+.btn-primary:hover {
+  background-color: lighten($odoo-brand-primary, 5%) !important;
+  border-color: $odoo-brand-primary !important;
+  color: $odoo-text-color !important;
+}
+
+// === Botón "Nuevo" y outline
+.btn-outline-primary,
+.o_form_button_create {
+  background-color: $odoo-brand-primary !important;
+  border-color: $odoo-brand-primary !important;
+  color: $odoo-text-color !important;
+  font-family: $odoo-font-family;
+}
+
+.btn-outline-primary:hover,
+.o_form_button_create:hover {
+  background-color: lighten($odoo-brand-primary, 10%) !important;
+  color: $odoo-text-color !important;
 }
