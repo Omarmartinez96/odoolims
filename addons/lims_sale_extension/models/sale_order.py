@@ -34,26 +34,27 @@ class SaleOrder(models.Model):
         domain="[('department_id', '=', lims_department_id)]"
     )
 
-    @api.model
-    def create(self, vals):
-        if vals.get('name', '/') == '/':
-            year = str(datetime.today().year)
+    @api.model_create_multi
+    def create(self, vals_list):
+        year = str(datetime.today().year)
 
-            # Buscar todas las cotizaciones con ese año en el nombre
-            existing = self.search([
-                ('name', 'like', f'%/{year}'),
-                ('name', '!=', '/')
-            ])
+        for vals in vals_list:
+            if vals.get('name', '/') == '/':
+                # Buscar todas las cotizaciones con ese año en el nombre
+                existing = self.search([
+                    ('name', 'like', f'%/{year}'),
+                    ('name', '!=', '/')
+                ])
 
-            # Obtener el mayor consecutivo existente
-            def extract_number(name):
-                try:
-                    return int(name.split('/')[0])
-                except:
-                    return 0
+                # Obtener el mayor consecutivo existente
+                def extract_number(name):
+                    try:
+                        return int(name.split('/')[0])
+                    except Exception:
+                        return 0
 
-            max_num = max([extract_number(rec.name) for rec in existing], default=0)
-            next_num = str(max_num + 1).zfill(3)
-            vals['name'] = f'{next_num}/{year}'
+                max_num = max([extract_number(rec.name) for rec in existing], default=0)
+                next_num = str(max_num + 1).zfill(3)
+                vals['name'] = f'{next_num}/{year}'
 
-        return super(SaleOrder, self).create(vals)
+        return super(SaleOrder, self).create(vals_list)
