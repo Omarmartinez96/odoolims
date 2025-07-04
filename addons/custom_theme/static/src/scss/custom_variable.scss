@@ -1,12 +1,16 @@
-// Importar las variables base de Odoo
+// 1. Importar variables base
 @import 'web.variables';
 
-// Custom Odoo SCSS Variables
-$odoo-brand-primary: #006699;  // Color principal
-$odoo-brand-secondary: #ff9900;
-$odoo-font-family: 'Roboto', sans-serif;
+// 2. Definir tus variantes con !default para respetar el orden de carga
+$odoo-brand-primary: #006699 !default;
+$odoo-brand-secondary: #ff9900 !default;
+$odoo-font-family: 'Roboto', sans-serif !default;
 
-// Botones
+// 3. Estilos personalizados
+body {
+  background-color: $odoo-brand-primary;
+}
+
 .btn-primary {
     background-color: $odoo-brand-primary;
     border-color: darken($odoo-brand-primary, 10%);
@@ -18,13 +22,11 @@ $odoo-font-family: 'Roboto', sans-serif;
     color: #fff;
 }
 
-// Encabezados
 h1, h2, h3, h4, h5, h6 {
     font-family: $odoo-font-family;
     color: $odoo-brand-primary;
 }
 
-// Navbar personalizado
 .o_main_navbar {
     background-color: lighten($odoo-brand-primary, 5%);
     color: #fff;
