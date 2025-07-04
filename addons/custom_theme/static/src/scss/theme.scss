@@ -1,37 +1,61 @@
-// === Variables ===
-$odoo-brand-primary: #2c5aa0 !default;
-$odoo-brand-secondary: #1d3557 !default;
+// === Variables principales ===
+$odoo-brand-primary: #2c5aa0;       // Azul oscuro profesional
+$odoo-brand-secondary: #1d3557;     // Azul profundo para navbar
 $odoo-font-family: 'Roboto', sans-serif !default;
-$odoo-text-color: #ffffff !default;
+$odoo-text-color: #ffffff;
+
+// === Botón primario (Guardar, Confirmar, etc.) ===
+.btn-primary {
+  background-color: $odoo-brand-primary;
+  border-color: darken($odoo-brand-primary, 10%);
+  color: $odoo-text-color;
+  font-family: $odoo-font-family;
+
+  &:hover {
+    background-color: lighten($odoo-brand-primary, 5%);
+    border-color: $odoo-brand-primary;
+    color: $odoo-text-color;
+  }
+}
+
+// === Botón secundario (Editar, Descartar, etc.) ===
+.btn-secondary {
+  background-color: $odoo-brand-secondary;
+  border-color: darken($odoo-brand-secondary, 10%);
+  color: $odoo-text-color;
+  font-family: $odoo-font-family;
+
+  &:hover {
+    background-color: lighten($odoo-brand-secondary, 5%);
+    color: $odoo-text-color;
+  }
+}
+
+// === Botón "Nuevo" y botones tipo outline (que eran morados) ===
+.o_form_button_create,
+.btn-outline-primary {
+  background-color: $odoo-brand-primary;
+  border-color: $odoo-brand-primary;
+  color: $odoo-text-color;
+  font-family: $odoo-font-family;
+
+  &:hover {
+    background-color: lighten($odoo-brand-primary, 10%);
+    border-color: $odoo-brand-primary;
+    color: $odoo-text-color;
+  }
+}
 
 // === Barra superior ===
 .o_main_navbar {
-  background-color: $odoo-brand-secondary !important;
-  color: $odoo-text-color !important;
+  background-color: $odoo-brand-secondary;
+  color: $odoo-text-color;
 
   .o_menu_brand {
+    font-family: $odoo-font-family;
     color: $odoo-text-color !important;
     font-weight: bold;
-    font-family: $odoo-font-family;
-  }
-
-  // Solo enlaces del menú horizontal
-  .o_menu_sections > li > a {
-    background: none !important;
-    border: none !important;
-    box-shadow: none !important;
-    color: $odoo-text-color !important;
-    font-weight: bold;
-    font-family: $odoo-font-family;
-    border-radius: 0 !important;
-    padding: 8px 12px;
-    text-transform: uppercase;
-
-    &:hover {
-      text-decoration: underline;
-      background: none !important;
-      color: lighten($odoo-text-color, 10%) !important;
-    }
+    opacity: 1 !important;
   }
 
   a,
@@ -44,31 +68,31 @@ $odoo-text-color: #ffffff !default;
   }
 }
 
-// === Botones estándar
-.btn-primary {
-  background-color: $odoo-brand-primary !important;
-  border-color: darken($odoo-brand-primary, 10%) !important;
-  color: $odoo-text-color !important;
+// === Botones del menú horizontal (navbar) convertidos en texto negro)
+.o_main_navbar .o_menu_sections > li > a.btn:not(.btn-primary):not(.o_form_button_create),
+.o_main_navbar .o_menu_sections > li > a.btn-secondary {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  color: black !important; // ← Para probar si se aplica correctamente
+  font-weight: bold !important;
   font-family: $odoo-font-family;
+  text-transform: uppercase;
+  padding: 10px 16px;
+  border-radius: 0 !important;
+  cursor: pointer;
+
+  &:hover {
+    background-color: transparent !important;
+    text-decoration: underline !important;
+    color: lighten(black, 15%) !important;
+  }
 }
 
-.btn-primary:hover {
-  background-color: lighten($odoo-brand-primary, 5%) !important;
-  border-color: $odoo-brand-primary !important;
-  color: $odoo-text-color !important;
-}
-
-// === Botón "Nuevo" y outline
-.btn-outline-primary,
-.o_form_button_create {
-  background-color: $odoo-brand-primary !important;
-  border-color: $odoo-brand-primary !important;
-  color: $odoo-text-color !important;
+// === Títulos y encabezados ===
+.o_form_view .o_form_sheet_bg h1,
+.o_form_view .o_form_sheet_bg h2 {
+  color: $odoo-brand-primary !important;
+  font-weight: bold;
   font-family: $odoo-font-family;
-}
-
-.btn-outline-primary:hover,
-.o_form_button_create:hover {
-  background-color: lighten($odoo-brand-primary, 10%) !important;
-  color: $odoo-text-color !important;
 }
