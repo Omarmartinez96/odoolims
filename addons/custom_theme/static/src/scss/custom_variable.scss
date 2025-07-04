@@ -1,19 +1,16 @@
-// 1. Importar variables base
 @import 'web.variables';
 
-// 2. Definir tus variantes con !default para respetar el orden de carga
 $odoo-brand-primary: #006699 !default;
 $odoo-brand-secondary: #ff9900 !default;
 $odoo-font-family: 'Roboto', sans-serif !default;
 
-// 3. Estilos personalizados
 body {
   background-color: $odoo-brand-primary;
 }
 
 .btn-primary {
     background-color: $odoo-brand-primary;
-    border-color: darken($odoo-brand-primary, 10%);
+    border-color: color.scale($odoo-brand-primary, $lightness: -10%);
     font-family: $odoo-font-family;
 }
 
@@ -28,7 +25,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .o_main_navbar {
-    background-color: lighten($odoo-brand-primary, 5%);
+    background-color: color.scale($odoo-brand-primary, $lightness: 5%);
     color: #fff;
 
     .o_menu_brand {
