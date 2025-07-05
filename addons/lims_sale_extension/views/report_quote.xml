@@ -183,6 +183,13 @@
               </div>
             </div>
 
+            <!-- Notas de símbolos -->
+            <div class="row mt-2" style="font-size:10px;">
+              <div class="col-12" style="text-align:left;">
+                <em>* Acreditado, ** Subrogado</em>
+              </div>
+            </div>
+            
             <!-- Notas y políticas -->
             <div class="row mt-4">
               <div class="col-12">
