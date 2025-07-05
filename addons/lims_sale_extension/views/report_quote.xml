@@ -93,7 +93,7 @@
 
             <!-- Tabla de líneas -->
             <table class="table table-borderless mt-2"
-                   style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0;">
+                  style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0;">
               <thead>
                 <tr style="background-color:rgb(221,235,247);">
                   <th style="width:40%; padding:4px 2px; text-align:left;"><strong>Descripción</strong></th>
@@ -106,9 +106,9 @@
               <tbody>
                 <t t-foreach="doc.order_line" t-as="line">
                   <tr>
-                    <td style="padding:4px 2px;">
+                    <td style="padding:4px 2px; vertical-align:top;">
                       <strong><span t-esc="line.product_id.display_name"/></strong>
-                      <t t-foreach="(line.name[len(line.product_id.display_name):] or '').split('\n')" t-as="ln">
+                      <t t-foreach="line.product_id.description_sale.split('\n')" t-as="ln">
                         <t t-if="ln.strip()">
                           <div style="font-size:14px; margin:0;">
                             <span t-esc="ln.strip()"/>
