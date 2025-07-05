@@ -26,13 +26,14 @@
 
             <!-- Datos del cliente -->
             <table class="table table-borderless mt-2"
-                   style="width:100%; font-size:12px; border-collapse:collapse; border-spacing:0;">
+                  style="width:100%; font-size:12px; border-collapse:collapse; border-spacing:0;">
               <t t-set="meses" t-value="{
                 '01':'Ene','02':'Feb','03':'Mar','04':'Abr',
                 '05':'May','06':'Jun','07':'Jul','08':'Ago',
                 '09':'Sep','10':'Oct','11':'Nov','12':'Dic'
               }"/>
               <tbody>
+                <!-- Fila 1: Cliente / Fecha -->
                 <tr>
                   <td style="width:50%; padding:2px 4px;">
                     <strong>Cliente:</strong> <span t-esc="doc.partner_id.name"/>
@@ -45,14 +46,26 @@
                     <span t-esc="d2 + '/' + meses[m2] + '/' + y2"/>
                   </td>
                 </tr>
+                <!-- Fila 2: Dirección personalizada / Términos de pago -->
                 <tr>
-                  <td style="padding:2px 4px;">
-                    <span t-esc="doc.partner_id.contact_address"/>
+                  <td style="padding:2px 4px; vertical-align:top;">
+                    <!-- Calle y número -->
+                    <span t-esc="doc.partner_id.street"/><br/>
+                    <!-- Colonia o complemento -->
+                    <t t-if="doc.partner_id.street2">
+                      <span t-esc="doc.partner_id.street2"/><br/>
+                    </t>
+                    <!-- Código postal, ciudad -->
+                    <span t-esc="doc.partner_id.zip"/> <span t-esc="doc.partner_id.city"/><br/>
+                    <!-- Estado y país -->
+                    <span t--if="doc.partner_id.state_id" t-esc="doc.partner_id.state_id.name"/> 
+                    <span t-esc="doc.partner_id.country_id.name"/>
                   </td>
                   <td style="padding:2px 4px; text-align:right;">
                     <strong>Términos de pago:</strong> <span t-esc="doc.payment_term_id.name"/>
                   </td>
                 </tr>
+                <!-- Fila 3: Vigencia -->
                 <tr>
                   <td style="padding:2px 4px;">
                     <t t-if="doc.validity_date">
@@ -64,6 +77,7 @@
                     </t>
                   </td>
                 </tr>
+                <!-- Fila 4: En atención a / Correos -->
                 <tr t-if="doc.lims_contact_ids">
                   <td style="padding:2px 4px;">
                     <strong>En atención a:</strong>
