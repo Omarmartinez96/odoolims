@@ -57,9 +57,6 @@
 
                 <!-- Fila 3: RFC / Vigencia -->
                 <tr>
-                  <td style="padding:2px 4px;">
-                    <strong>RFC:</strong> <t t-esc="doc.partner_id.vat"/>
-                  </td>
                   <td style="padding:2px 4px; text-align:right;">
                     <t t-if="doc.validity_date">
                       <strong>Vigencia hasta:</strong>
