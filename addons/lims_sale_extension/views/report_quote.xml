@@ -57,7 +57,7 @@
 
                 <!-- Fila 3: RFC / Vigencia -->
                 <tr>
-                  <td style="padding:2px 4px; text-align:right;">
+                  <td style="padding:2px 4px; text-align:left;">
                     <t t-if="doc.validity_date">
                       <strong>Vigencia hasta:</strong>
                       <t t-set="d" t-value="doc.validity_date.strftime('%d')"/>
@@ -106,9 +106,9 @@
                         </t>
                       </t>
                     </td>
-                    <td style="padding:4px 2px; text-align:center;"><t t-esc="line.product_uom_qty"/></td>
-                    <td style="padding:4px 2px; text-align:right;"><t t-esc="line.price_unit"/></td>
-                    <td style="padding:4px 2px; text-align:right;"><t t-esc="line.price_subtotal"/></td>
+                    <td style="padding:4px 2px; text-align:center;"><t t-esc="formatLang(line.product_uom_qty, digits=0)"/></td>
+                    <td style="padding:4px 2px; text-align:right;"><t t-esc="line.price_unit" t-field-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/></td>
+                    <td style="padding:4px 2px; text-align:right;"><t t-esc="line.price_subtotal" t-field-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/></td>
                   </tr>
                 </t>
               </tbody>
@@ -125,7 +125,7 @@
                       <strong>Subtotal:</strong>
                     </td>
                     <td style="text-align:right; padding:6px; border-top:1px solid #ddd;">
-                      <t t-esc="doc.amount_untaxed"/>
+                      <t t-esc="doc.amount_untaxed" t-field-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                     </td>
                   </tr>
                   <tr>
@@ -133,7 +133,7 @@
                       <strong>Impuestos:</strong>
                     </td>
                     <td style="text-align:right; padding:6px; border-top:1px solid #ddd;">
-                      <t t-esc="doc.amount_tax"/>
+                      <t t-esc="doc.amount_tax" t-field-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                     </td>
                   </tr>
                   <tr>
@@ -141,7 +141,7 @@
                       <strong>Total:</strong>
                     </td>
                     <td style="text-align:right; padding:6px; font-size:14px; border-top:2px solid #000;">
-                      <t t-esc="doc.amount_total"/>
+                      <t t-esc="doc.amount_total" t-field-options="{'widget': 'monetary', 'display_currency': doc.currency_id}"/>
                     </td>
                   </tr>
                 </table>
