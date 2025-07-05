@@ -1,12 +1,11 @@
 <odoo>
-  <!-- Heredamos el formulario de sale.order para varios cambios -->
   <record id="view_order_form_lims" model="ir.ui.view">
     <field name="name">sale.order.form.lims</field>
     <field name="model">sale.order</field>
     <field name="inherit_id" ref="sale.view_order_form"/>
     <field name="arch" type="xml">
 
-      <!-- 1) Hacer editable el campo "name" (número de cotización) -->
+      <!-- 1) Hacer editable el campo "name" -->
       <xpath expr="//field[@name='name']" position="attributes">
         <attribute name="readonly">0</attribute>
       </xpath>
@@ -24,8 +23,10 @@
         <attribute name="context">{'default_analysis_method': '', 'default_is_accredited': False}</attribute>
       </xpath>
 
-      <!-- 4) Insertar la descripción completa en el tree inline de order_line -->
-      <xpath expr="//field[@name='order_line']//tree//field[@name='product_id']" position="after">
+      <!-- 4) Insertar la descripción completa tras product_id 
+           dentro de la pestaña "Líneas de la orden" -->
+      <xpath expr="//page[@string='Líneas de la orden']//field[@name='order_line']//tree//field[@name='product_id']"
+             position="after">
         <field name="name"
                attrs="{'invisible': [('name', '=', False)]}"
                widget="char"
@@ -35,3 +36,4 @@
     </field>
   </record>
 </odoo>
+
