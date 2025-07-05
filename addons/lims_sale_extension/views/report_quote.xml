@@ -111,7 +111,7 @@
                             t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                     </td>
                     <td style="padding:4px 2px; text-align:right;">
-                      <span t-esc="'%0.2f%%' % line.discount"/>
+                      <span t-esc="('%.2f' % line.discount) + '%'" />
                     </td>
                     <td style="padding:4px 2px; text-align:right;">
                       <span t-field="line.price_subtotal"
