@@ -1,17 +1,16 @@
 <odoo>
-  <!-- Heredamos el formulario de sale.order para ajustes generales -->
+  <!-- Heredamos el formulario de sale.order para tus ajustes -->
   <record id="view_order_form_lims" model="ir.ui.view">
     <field name="name">sale.order.form.lims</field>
     <field name="model">sale.order</field>
     <field name="inherit_id" ref="sale.view_order_form"/>
     <field name="arch" type="xml">
-
-      <!-- 1) Hacer editable el campo "name" -->
+      <!-- 1) Número de cotización editable -->
       <xpath expr="//field[@name='name']" position="attributes">
         <attribute name="readonly">0</attribute>
       </xpath>
 
-      <!-- 2) Campos adicionales al lado del cliente -->
+      <!-- 2) Campos junto al cliente -->
       <xpath expr="//field[@name='partner_id']" position="after">
         <field name="client_code" readonly="1"/>
         <field name="lims_branch_id"/>
@@ -19,19 +18,18 @@
         <field name="lims_contact_ids" widget="many2many_tags"/>
       </xpath>
 
-      <!-- 3) Ajustar contexto de order_line -->
+      <!-- 3) Contexto por defecto en líneas -->
       <xpath expr="//field[@name='order_line']" position="attributes">
         <attribute name="context">{'default_analysis_method': '', 'default_is_accredited': False}</attribute>
       </xpath>
 
-      <!-- 4) Insertar el campo 'name' (descripción completa) dentro del tree de líneas -->
-      <xpath expr="//field[@name='order_line']/tree" position="inside">
+      <!-- 4) Insertar la descripción completa (order_line.name) dentro del tree -->
+      <xpath expr="//field[@name='order_line']//tree" position="inside">
         <field name="name"
                widget="char"
                nolabel="1"
                attrs="{'invisible': [('name', '=', False)]}"/>
       </xpath>
-
     </field>
   </record>
 </odoo>
