@@ -1,16 +1,16 @@
 <odoo>
+  <!-- Heredamos el formulario de sale.order para ajustes generales -->
   <record id="view_order_form_lims" model="ir.ui.view">
     <field name="name">sale.order.form.lims</field>
     <field name="model">sale.order</field>
     <field name="inherit_id" ref="sale.view_order_form"/>
     <field name="arch" type="xml">
-
-      <!-- Hacer editable el campo "name" -->
+      <!-- 1) Hacer editable el campo "name" (número de cotización) -->
       <xpath expr="//field[@name='name']" position="attributes">
         <attribute name="readonly">0</attribute>
       </xpath>
 
-      <!-- Campos adicionales al lado del cliente -->
+      <!-- 2) Añadir campos al lado del cliente -->
       <xpath expr="//field[@name='partner_id']" position="after">
         <field name="client_code" readonly="1"/>
         <field name="lims_branch_id"/>
@@ -18,11 +18,26 @@
         <field name="lims_contact_ids" widget="many2many_tags"/>
       </xpath>
 
-      <!-- Agregar columnas en la definición del one2many -->
+      <!-- 3) Ajustar el contexto de order_line -->
       <xpath expr="//field[@name='order_line']" position="attributes">
         <attribute name="context">{'default_analysis_method': '', 'default_is_accredited': False}</attribute>
       </xpath>
+    </field>
+  </record>
 
+  <!-- Heredamos la vista de árbol de sale.order.line para mostrar descripción completa -->
+  <record id="view_order_line_tree_lims" model="ir.ui.view">
+    <field name="name">sale.order.line.tree.lims</field>
+    <field name="model">sale.order.line</field>
+    <field name="inherit_id" ref="sale.view_order_line_tree"/>
+    <field name="arch" type="xml">
+      <!-- Insertamos el campo 'name' (descripción de línea) justo después de 'product_id' -->
+      <xpath expr="//tree/field[@name='product_id']" position="after">
+        <field name="name"
+               attrs="{'invisible': [('name', '=', False)]}"
+               widget="char"
+               nolabel="1"/>
+      </xpath>
     </field>
   </record>
 </odoo>
