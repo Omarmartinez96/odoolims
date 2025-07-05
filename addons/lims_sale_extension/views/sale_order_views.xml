@@ -1,4 +1,5 @@
 <odoo>
+  <!-- Heredamos el formulario de Sale Order -->
   <record id="view_order_form_lims" model="ir.ui.view">
     <field name="name">sale.order.form.lims</field>
     <field name="model">sale.order</field>
@@ -10,7 +11,7 @@
         <attribute name="readonly">0</attribute>
       </xpath>
 
-      <!-- 2) Añadir campos al lado del cliente -->
+      <!-- 2) Añadir campos al lado de 'partner_id' -->
       <xpath expr="//field[@name='partner_id']" position="after">
         <field name="client_code" readonly="1"/>
         <field name="lims_branch_id"/>
@@ -18,19 +19,17 @@
         <field name="lims_contact_ids" widget="many2many_tags"/>
       </xpath>
 
-      <!-- 3) Ajustar el contexto de order_line -->
+      <!-- 3) Ajustar el contexto del one2many 'order_line' -->
       <xpath expr="//field[@name='order_line']" position="attributes">
         <attribute name="context">{'default_analysis_method': '', 'default_is_accredited': False}</attribute>
       </xpath>
 
-      <!-- 4) Insertar la descripción completa tras product_id 
-           dentro de la pestaña "Líneas de la orden" -->
-      <xpath expr="//page[@string='Líneas de la orden']//field[@name='order_line']//tree//field[@name='product_id']"
-             position="after">
+      <!-- 4) Mostrar la descripción completa (campo 'name') en el grid de líneas -->
+      <xpath expr="//field[@name='order_line']//tree//field[@name='product_id']" position="after">
         <field name="name"
-               attrs="{'invisible': [('name', '=', False)]}"
                widget="char"
-               nolabel="1"/>
+               nolabel="1"
+               attrs="{'invisible': [('name', '=', False)]}" />
       </xpath>
 
     </field>
