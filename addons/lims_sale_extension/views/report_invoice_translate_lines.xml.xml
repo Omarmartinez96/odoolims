@@ -1,0 +1,23 @@
+<odoo>
+  <template id="report_invoice_document_translate_lines"
+            inherit_id="account.report_invoice_document">
+
+    <!-- Encabezados de tabla -->
+    <xpath expr="//thead/tr/th[1]" position="replace">
+      <th>Descripción</th>
+    </xpath>
+    <xpath expr="//thead/tr/th[2]" position="replace">
+      <th>Cantidad</th>
+    </xpath>
+    <xpath expr="//thead/tr/th[3]" position="replace">
+      <th>Precio Unitario</th>
+    </xpath>
+    <xpath expr="//thead/tr/th[4]" position="replace">
+      <th>Impuestos</th>
+    </xpath>
+    <xpath expr="//thead/tr/th[5]" position="replace">
+      <th>Subtotal</th>
+    </xpath>
+
+  </template>
+</odoo>
