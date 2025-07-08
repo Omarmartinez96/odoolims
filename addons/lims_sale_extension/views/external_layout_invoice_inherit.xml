@@ -1,0 +1,10 @@
+<odoo>
+  <template id="external_layout_invoice_inherit" inherit_id="web.external_layout_standard">
+    <!-- Solo mostrar algo si es factura -->
+    <xpath expr="//div[@class='o_footer_content']" position="inside">
+      <t t-if="o and o._name == 'account.move'">
+        <p style="font-size:8px;">FACTURA emitida por Proteus Laboratorio — CFDI vigente</p>
+      </t>
+    </xpath>
+  </template>
+</odoo>
