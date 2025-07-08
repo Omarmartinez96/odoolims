@@ -5,7 +5,7 @@
     'category': 'Laboratory',
     'summary': 'Gestión personalizada de clientes para LIMS',
     'depends': [
-        'base'
+        'base',
         'l10n_mx_edi',
     ],
     'data': [
