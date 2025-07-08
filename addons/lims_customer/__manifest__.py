@@ -4,7 +4,10 @@
     'author': 'Omar Martinez',
     'category': 'Laboratory',
     'summary': 'Gestión personalizada de clientes para LIMS',
-    'depends': ['base'],
+    'depends': [
+        'base'
+        'l10n_mx_edi',
+    ],
     'data': [
         'security/ir.model.access.csv',
         'views/lims_customer_views.xml',
