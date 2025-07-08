@@ -1,15 +1,24 @@
 <odoo>
   <template id="external_layout_inherit_lims"
             inherit_id="web.external_layout_standard">
-    <!-- 1) Reducir el logo -->
+    <!-- 1) Reducir el logo SOLO en cotización -->
     <xpath expr="//div[contains(@class,'d-flex')]/img" position="attributes">
-      <attribute name="class">o_company_logo_small</attribute>
-      <attribute name="style">max-height:100px; margin-bottom:0.5em;</attribute>
+      <attribute name="t-attf-class">
+        <t t-if="o and o._name == 'sale.order'">o_company_logo_small</t>
+        <t t-else="">d-block img-fluid mx-auto</t>  <!-- clase estándar de Odoo -->
+      </attribute>
+      <attribute name="t-att-style">
+        <t t-if="o and o._name == 'sale.order'">max-height:100px; margin-bottom:0.5em;</t>
+        <t t-else="">max-height:45mm;</t> <!-- estilo estándar -->
+      </attribute>
     </xpath>
 
-    <!-- 2) Ajustar fuente y espaciado de la dirección -->
+    <!-- 2) Ajustar fuente y espaciado SOLO en cotización -->
     <xpath expr="//div[@name='company_address']/ul" position="attributes">
-      <attribute name="style">font-size:12px !important; line-height:1.2;</attribute>
+      <attribute name="t-att-style">
+        <t t-if="o and o._name == 'sale.order'">font-size:12px !important; line-height:1.2;</t>
+        <t t-else=""></t> <!-- sin cambios en factura -->
+      </attribute>
     </xpath>
 
     <!-- Pie de página refinado sin bordes -->
