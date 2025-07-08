@@ -53,7 +53,7 @@
                         </group>
 
                         <group string="Dirección Fiscal Completa">
-                            <field name="street" string="Calle"/>
+                            <field name="street" string="Calle y Exterior"/>
                             <field name="street2" string="Colonia / Interior"/>
                             <field name="city" string="Ciudad"/>
                             <field name="state_id" string="Estado"/>
