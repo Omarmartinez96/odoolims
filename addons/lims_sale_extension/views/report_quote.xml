@@ -16,7 +16,7 @@
 
             <!-- Número de cotización -->
             <table class="table table-borderless mt-1"
-                   style="width:100%; font-size:12px; border-collapse:collapse; border-spacing:0;">
+                   style="width:100%; font-size:16px; border-collapse:collapse; border-spacing:0;">
               <tr>
                 <td style="padding:2px 4px;">
                   <strong>No. de Cotización:</strong> <span t-esc="doc.name"/>
