@@ -7,12 +7,19 @@
     </xpath>
 
     <!-- 2) Ajustar fuente y espaciado SOLO en cotización -->
-    <xpath expr="//div[@name='company_address']/ul" position="attributes">
-      <attribute name="t-att-style">
-        <t t-if="o and o._name == 'sale.order'">font-size:12px !important; line-height:1.2;</t>
-        <t t-else=""></t> <!-- sin cambios en factura -->
-      </attribute>
+    <xpath expr="//div[@name='company_address']" position="replace">
+      <t t-if="o and o._name == 'sale.order'">
+        <div name="company_address">
+          <ul style="font-size:11px; line-height:1.2;">
+            <li t-if="company.partner_id.name" t-esc="company.partner_id.name"/>
+            <li t-if="company.partner_id.street" t-esc="company.partner_id.street"/>
+            <li t-if="company.partner_id.street2" t-esc="company.partner_id.street2"/> <!-- Colonia -->
+            <li t-if="company.partner_id.city" t-esc="company.partner_id.city"/>
+          </ul>
+        </div>
+      </t>
     </xpath>
+
 
     <!-- Pie de página refinado sin bordes -->
     <xpath expr="//div[contains(@class,'o_footer_content')]" position="inside">
