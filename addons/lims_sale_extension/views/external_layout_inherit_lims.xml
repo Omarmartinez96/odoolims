@@ -33,14 +33,12 @@
               <td colspan="3" style="text-align:center; font-size:7px; padding-top:4px;">
                 <t t-if="company.partner_id">
                   <t t-esc="company.partner_id.name"/>,
-                  <t t-if="company.partner_id.street" t-esc="company.partner_id.street"/><t t-if="company.partner_id.street2">, <t t-esc="company.partner_id.street2"/></t>,
-                  <t t-if="company.partner_id.city" t-esc="company.partner_id.city"/>
+                  <t t-if="company.partner_id.street"> <t t-esc="company.partner_id.street"/>, </t>
+                  <t t-if="company.partner_id.street2"> <t t-esc="company.partner_id.street2"/>, </t>
+                  <t t-if="company.partner_id.city"> <t t-esc="company.partner_id.city"/>, </t>
+                  <t t-if="company.partner_id.zip">C.P. <t t-esc="company.partner_id.zip"/>, </t>
+                  <t t-if="company.partner_id.country_id" t-esc="company.partner_id.country_id.name"/>
                 </t>
-              </td>
-            </tr>
-            <tr>
-              <td colspan="3" style="text-align:center; font-size:7px; padding-top:2px;">
-                Documento controlado. Prohibida su reproducción parcial o total sin autorización escrita por parte del Laboratorio.
               </td>
             </tr>
           </tbody>
