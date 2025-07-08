@@ -1,0 +1,41 @@
+<odoo>
+  <template id="report_invoice_document_inherit"
+            inherit_id="account.report_invoice_document">
+
+    <!-- Cambiar el título de la factura -->
+    <xpath expr="//h2" position="replace">
+      <h2>
+        <t t-if="o.move_type == 'out_invoice'">Factura</t>
+        <t t-elif="o.move_type == 'out_refund'">Nota de crédito</t>
+        <t t-elif="o.move_type == 'in_invoice'">Factura recibida</t>
+        <t t-else="">Documento contable</t>
+      </h2>
+    </xpath>
+
+    <!-- Cambiar los títulos de la tabla de líneas de factura -->
+    <xpath expr="//th[1][contains(text(),'Description')]" position="replace">
+      <th>Descripción</th>
+    </xpath>
+    <xpath expr="//th[2][contains(text(),'Quantity')]" position="replace">
+      <th>Cantidad</th>
+    </xpath>
+    <xpath expr="//th[3][contains(text(),'Unit Price')]" position="replace">
+      <th>Precio Unitario</th>
+    </xpath>
+    <xpath expr="//th[4][contains(text(),'Taxes')]" position="replace">
+      <th>Impuestos</th>
+    </xpath>
+    <xpath expr="//th[5][contains(text(),'Subtotal')]" position="replace">
+      <th>Subtotal</th>
+    </xpath>
+
+    <!-- Traducir totales -->
+    <xpath expr="//td[contains(text(),'Subtotal')]" position="replace">
+      <td>Subtotal</td>
+    </xpath>
+    <xpath expr="//td[contains(text(),'Total')]" position="replace">
+      <td>Total</td>
+    </xpath>
+
+  </template>
+</odoo>
