@@ -10,6 +10,22 @@
       </attribute>
     </xpath>
 
+    <!-- 2) Header container: quitar padding y margin inferior -->
+    <xpath expr="//div[@class='header']" position="attributes">
+      <attribute name="style">
+        padding-bottom:0 !important;
+        margin-bottom:0 !important;
+      </attribute>
+    </xpath>
+
+    <!-- 3) Si aún queda espacio, también reducir el row del header -->
+    <xpath expr="//div[@class='header']/div[@class='row']" position="attributes">
+      <attribute name="style">
+        margin-bottom:0 !important;
+      </attribute>
+    </xpath>
+
+
     <!-- ❌ Eliminamos dirección fiscal del encabezado -->
     <xpath expr="//div[@name='company_address']" position="replace">
       <div name="company_address"/>
