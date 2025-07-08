@@ -3,13 +3,14 @@
             inherit_id="web.external_layout_standard">
     <!-- 1) Reducir el logo SOLO en cotización -->
     <xpath expr="//div[contains(@class,'d-flex')]/img" position="attributes">
-      <attribute name="t-attf-class">
-        <t t-if="o and o._name == 'sale.order'">o_company_logo_small</t>
-        <t t-else="">d-block img-fluid mx-auto</t>  <!-- clase estándar de Odoo -->
+      <!-- Clase condicional -->
+      <attribute name="t-att-class">
+        "'o_company_logo_small' if o and o._name == 'sale.order' else 'd-block img-fluid mx-auto'"
       </attribute>
+
+      <!-- Estilo condicional -->
       <attribute name="t-att-style">
-        <t t-if="o and o._name == 'sale.order'">max-height:100px; margin-bottom:0.5em;</t>
-        <t t-else="">max-height:45mm;</t> <!-- estilo estándar -->
+        "'max-height:100px; margin-bottom:0.5em;' if o and o._name == 'sale.order' else 'max-height:45mm;'"
       </attribute>
     </xpath>
 
