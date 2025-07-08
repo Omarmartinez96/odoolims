@@ -4,7 +4,9 @@
 
     <!-- ✅ Encabezado: solo el logotipo, más pequeño -->
     <xpath expr="//div[contains(@class,'d-flex')]/img" position="attributes">
-      <attribute name="style">max-height:100px !important; margin-bottom:0.5em;</attribute>
+      <attribute name="style">
+        max-height:100px !important; margin-bottom:0 !important; display:block; margin:auto;
+      </attribute>
     </xpath>
 
     <!-- ❌ Eliminamos dirección fiscal del encabezado -->
