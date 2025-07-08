@@ -13,30 +13,32 @@
     </xpath>
 
     <!-- Pie de página refinado sin bordes -->
-    <xpath expr="//div[contains(@class,'o_footer_content')]" position="replace">
-      <div class="o_footer_content" style="font-size:8px; padding-top:2px;">
-        <table class="table table-borderless" 
-              style="width:100%; table-layout:fixed; border-collapse:collapse; border-spacing:0;">
-          <tbody>
-            <tr>
-              <!-- Celda izquierda: Teléfono -->
-              <td style="width:33%; text-align:left; padding:0;">Teléfono: (664) 973-8185</td>
-              <!-- Celda centro: Paginación -->
-              <td style="width:34%; text-align:center; padding:0;">
-                Página <span class="page"/> / <span class="topage"/>
-              </td>
-              <!-- Celda derecha: Correo -->
-              <td style="width:33%; text-align:right; padding:0;">Correo: contacto@proteuslaboratorio.com</td>
-            </tr>
-            <tr>
-              <!-- Nueva fila: Formato y Procedimiento -->
-              <td colspan="3" style="text-align:center; padding-top:4px; font-size:8px;">
-                FOR-021 Rev. 01 | PROC-005
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+    <xpath expr="//div[contains(@class,'o_footer_content')]" position="inside">
+      <t t-if="o and o._name == 'sale.order'">
+        <div class="o_footer_content" style="font-size:8px; padding-top:2px;">
+          <table class="table table-borderless" 
+                style="width:100%; table-layout:fixed; border-collapse:collapse; border-spacing:0;">
+            <tbody>
+              <tr>
+                <!-- Celda izquierda: Teléfono -->
+                <td style="width:33%; text-align:left; padding:0;">Teléfono: (664) 973-8185</td>
+                <!-- Celda centro: Paginación -->
+                <td style="width:34%; text-align:center; padding:0;">
+                  Página <span class="page"/> / <span class="topage"/>
+                </td>
+                <!-- Celda derecha: Correo -->
+                <td style="width:33%; text-align:right; padding:0;">Correo: contacto@proteuslaboratorio.com</td>
+              </tr>
+              <tr>
+                <!-- Nueva fila: Formato y Procedimiento -->
+                <td colspan="3" style="text-align:center; padding-top:4px; font-size:8px;">
+                  FOR-021 Rev. 01 | PROC-005
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </t>
     </xpath>
 
   </template>
