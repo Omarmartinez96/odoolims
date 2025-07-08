@@ -65,12 +65,6 @@
                             <field name="l10n_mx_edi_fiscal_regime" string="Régimen Fiscal" required="1"/>
                         </group>
 
-                        <group string="Facturación de Cliente">
-                            <field name="invoice_email" string="Correo para envío de factura"/>
-                            <field name="cfdi_format" string="Formato eInvoice"/>
-                            <field name="cfdi_addenda" string="Adenda"/>
-                        </group>
-
                         <group>
                             <button name="%(action_lims_branches)d"
                                     string="Ver Sucursales"
