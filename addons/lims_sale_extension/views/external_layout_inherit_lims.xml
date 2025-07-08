@@ -1,53 +1,46 @@
 <odoo>
   <template id="external_layout_inherit_lims"
             inherit_id="web.external_layout_standard">
-    <!-- 1) Reducir el logo SOLO en cotización -->
+
+    <!-- ✅ Encabezado: solo el logotipo, más pequeño -->
     <xpath expr="//div[contains(@class,'d-flex')]/img" position="attributes">
       <attribute name="style">max-height:100px !important; margin-bottom:0.5em;</attribute>
     </xpath>
 
-    <!-- 2) Ajustar fuente y espaciado SOLO en cotización -->
+    <!-- ❌ Eliminamos dirección fiscal del encabezado -->
     <xpath expr="//div[@name='company_address']" position="replace">
-      <t t-if="o and o._name == 'sale.order'">
-        <div name="company_address">
-          <ul style="font-size:11px; line-height:1.2;">
-            <li t-if="company.partner_id.name" t-esc="company.partner_id.name"/>
-            <li t-if="company.partner_id.street" t-esc="company.partner_id.street"/>
-            <li t-if="company.partner_id.street2" t-esc="company.partner_id.street2"/> <!-- Colonia -->
-            <li t-if="company.partner_id.city" t-esc="company.partner_id.city"/>
-          </ul>
-        </div>
-      </t>
+      <div name="company_address"/>
     </xpath>
 
-
-    <!-- Pie de página refinado sin bordes -->
-    <xpath expr="//div[contains(@class,'o_footer_content')]" position="inside">
-      <t t-if="o and o._name == 'sale.order'">
-        <div class="o_footer_content" style="font-size:8px; padding-top:2px;">
-          <table class="table table-borderless" 
-                style="width:100%; table-layout:fixed; border-collapse:collapse; border-spacing:0;">
-            <tbody>
-              <tr>
-                <!-- Celda izquierda: Teléfono -->
-                <td style="width:33%; text-align:left; padding:0;">Teléfono: (664) 973-8185</td>
-                <!-- Celda centro: Paginación -->
-                <td style="width:34%; text-align:center; padding:0;">
-                  Página <span class="page"/> / <span class="topage"/>
-                </td>
-                <!-- Celda derecha: Correo -->
-                <td style="width:33%; text-align:right; padding:0;">Correo: contacto@proteuslaboratorio.com</td>
-              </tr>
-              <tr>
-                <!-- Nueva fila: Formato y Procedimiento -->
-                <td colspan="3" style="text-align:center; padding-top:4px; font-size:8px;">
-                  FOR-021 Rev. 01 | PROC-005
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </t>
+    <!-- ✅ Footer unificado con datos de contacto y dirección -->
+    <xpath expr="//div[@class='o_footer_content']" position="replace">
+      <div class="o_footer_content" style="font-size:8px; padding-top:2px;">
+        <table class="table table-borderless"
+              style="width:100%; table-layout:fixed; border-collapse:collapse; border-spacing:0;">
+          <tbody>
+            <tr>
+              <td style="width:33%; text-align:left; padding:0;">
+                Teléfono: (664) 973-8185
+              </td>
+              <td style="width:34%; text-align:center; padding:0;">
+                Página <span class="page"/> / <span class="topage"/>
+              </td>
+              <td style="width:33%; text-align:right; padding:0;">
+                contacto@proteuslaboratorio.com
+              </td>
+            </tr>
+            <tr>
+              <td colspan="3" style="text-align:center; font-size:7px; padding-top:4px;">
+                <t t-if="company.partner_id">
+                  <t t-esc="company.partner_id.name"/>,
+                  <t t-if="company.partner_id.street" t-esc="company.partner_id.street"/><t t-if="company.partner_id.street2">, <t t-esc="company.partner_id.street2"/></t>,
+                  <t t-if="company.partner_id.city" t-esc="company.partner_id.city"/>
+                </t>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </xpath>
 
   </template>
