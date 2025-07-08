@@ -12,9 +12,9 @@
       <div name="company_address"/>
     </xpath>
 
-    <!-- ✅ Footer unificado con datos de contacto y dirección -->
-    <xpath expr="//div[@class='o_footer_content']" position="replace">
-      <div class="o_footer_content" style="font-size:8px; padding-top:2px;">
+    <!-- ✅ Footer unificado -->
+    <xpath expr="//footer" position="replace">
+      <footer class="text-muted" style="font-size:8px; padding-top:2px;">
         <table class="table table-borderless"
               style="width:100%; table-layout:fixed; border-collapse:collapse; border-spacing:0;">
           <tbody>
@@ -40,7 +40,7 @@
             </tr>
           </tbody>
         </table>
-      </div>
+      </footer>
     </xpath>
 
   </template>
