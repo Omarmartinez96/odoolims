@@ -41,24 +41,34 @@
                 <form string="Cliente">
                     <sheet>
                         <group>
-                            <field name="name" required="1"/>
+                            <field name="name" required="1" string="Razón Social"/>
                             <field name="is_lims_customer" invisible="1"/>
-                            <field name="vat" string="RFC / TAX ID"/>
+                            <field name="vat" string="RFC"/>
                             <field name="client_code"/>
                         </group>
 
-                        <group string="Información de contacto">
-                            <field name="email"/>
-                            <field name="phone"/>
+                        <group string="Responsable de Cuenta">
+                            <field name="email" string="Correo electrónico"/>
+                            <field name="phone" string="Teléfono"/>
                         </group>
 
                         <group string="Dirección Fiscal Completa">
                             <field name="street" string="Calle"/>
-                            <field name="street2" string="Calle 2"/>
+                            <field name="street2" string="Colonia / Interior"/>
                             <field name="city" string="Ciudad"/>
                             <field name="state_id" string="Estado"/>
                             <field name="zip" string="Código Postal"/>
                             <field name="country_id" string="País"/>
+                        </group>
+
+                        <group string="Datos Fiscales para CFDI">
+                            <field name="l10n_mx_edi_fiscal_regime" string="Régimen Fiscal" required="1"/>
+                        </group>
+
+                        <group string="Facturación de Cliente">
+                            <field name="invoice_email" string="Correo para envío de factura"/>
+                            <field name="cfdi_format" string="Formato eInvoice"/>
+                            <field name="cfdi_addenda" string="Adenda"/>
                         </group>
 
                         <group>
