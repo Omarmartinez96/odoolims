@@ -1,5 +1,5 @@
 <odoo>
-  <template id="external_layout_inherit_lims"
+  <template id="external_layout_quote_lims"
             inherit_id="web.external_layout_standard">
 
     <!-- ✅ Encabezado: solo el logotipo, más pequeño -->
