@@ -1,0 +1,12 @@
+<odoo>
+  <template id="external_layout_folder_invoice_fix" inherit_id="web.external_layout_folder">
+    
+    <!-- Solo aplica margen adicional si el documento es una factura -->
+    <xpath expr="//main" position="attributes">
+      <attribute name="t-att-style">
+        "'margin-top:140px;' if o._name == 'account.move' else ''"
+      </attribute>
+    </xpath>
+
+  </template>
+</odoo>
