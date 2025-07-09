@@ -2,7 +2,7 @@
     'name': 'LIMS Accounting Extension',
     'version': '1.0',
     'summary': 'Plantillas de factura LIMS personalizadas',
-    'category': 'Accounting',
+    'category': 'Laboratory',
     'author': 'Proteus LIMS',
     'depends': ['account', 'lims_sale_extension'],
     'data': [
