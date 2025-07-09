@@ -9,7 +9,6 @@
     ],
     'data': [
         'views/external_layout_inherit_lims.xml',
-        'views/external_layout_invoice_folder.xml',
         'data/sale_order_sequence.xml',
         'views/sale_order_views.xml',
         'views/report_quote.xml',
