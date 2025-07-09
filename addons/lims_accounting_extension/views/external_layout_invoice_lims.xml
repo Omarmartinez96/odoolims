@@ -1,0 +1,28 @@
+<odoo>
+  <template id="external_layout_invoice_lims" inherit_id="web.external_layout_standard">
+    <!-- Personaliza encabezado: incluye logo, datos de empresa, etc. -->
+    <xpath expr="//div[@name='company_address']" position="replace">
+      <div name="company_address">
+        <!-- Tus datos de dirección fiscal en el header -->
+        <span t-field="company.company_details"/>
+      </div>
+    </xpath>
+    <!-- Personaliza footer similar a cotización -->
+    <xpath expr="//div[contains(@class,'o_footer_content')]" position="replace">
+      <div class="o_footer_content" style="font-size:8px; padding-top:2px;">
+        <table style="width:100%; font-size:7px;">
+          <tr>
+            <td>Tel: (664) 973-8185</td>
+            <td style="text-align:center;">Página <span class="page"/> / <span class="topage"/></td>
+            <td style="text-align:right;">contacto@proteuslaboratorio.com</td>
+          </tr>
+          <tr>
+            <td colspan="3" style="text-align:center; padding-top:4px;">
+              FOR-021 Rev. 01 | PROC-005
+            </td>
+          </tr>
+        </table>
+      </div>
+    </xpath>
+  </template>
+</odoo>

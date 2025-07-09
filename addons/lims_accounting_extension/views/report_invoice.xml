@@ -1,0 +1,16 @@
+<odoo>
+  <template id="report_invoice_custom">
+    <t t-call="lims_accounting_extension.external_layout_invoice_lims">
+      <t t-set="company" t-value="docs and docs[0].company_id"/>
+      <t t-foreach="docs" t-as="doc">
+        <main class="o_report_layout" style="margin-top:0 !important;">
+          <!-- Aquí insertas tu estructura de factura, campos, líneas, totales, etc. -->
+          <div class="page">
+            <!-- Número de factura, cliente, fechas, términos, etc. -->
+            ...
+          </div>
+        </main>
+      </t>
+    </t>
+  </template>
+</odoo>
