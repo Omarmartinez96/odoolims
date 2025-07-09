@@ -1,13 +1,13 @@
 <odoo>
   <!-- Acción para facturas LIMS -->
   <report
-    id="action_report_invoice_lims"
+    id="account.account_invoices"
     string="Factura LIMS"
     model="account.move"
     report_type="qweb-pdf"
     name="lims_accounting_extension.report_invoice_custom"
     file="lims_accounting_extension.report_invoice_custom"
     print_report_name="'Factura - %s' % (object.name)"
-    paperformat="hr_payroll.paperformat_us_light"
+    paperformat="base.paperformat_us"
   />
 </odoo>
