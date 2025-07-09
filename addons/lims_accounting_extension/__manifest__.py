@@ -7,7 +7,7 @@
     'depends': ['account', 'lims_sale_extension'],
     'data': [
         'views/external_layout_invoice_lims.xml',
-        'views/report_invoice_custom.xml',
+        'views/report_invoice.xml',
         'views/report.xml',
     ],
     'installable': True,
