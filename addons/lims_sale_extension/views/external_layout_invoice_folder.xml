@@ -1,7 +1,12 @@
 <odoo>
-  <template id="external_layout_folder_invoice_fix" inherit_id="web.external_layout_folder">
+  <template id="external_layout_invoice_folder" inherit_id="web.external_layout_folder">
+    
+    <!-- Aumentar el margen superior solo para PDF de facturas -->
     <xpath expr="//div[contains(@class, 'article')]" position="attributes">
-      <attribute name="t-attf-style">margin-top: 140px;</attribute>
+      <attribute name="t-attf-style">
+        {{ 'margin-top: 140px;' if report_type == 'pdf' and o and o._name == 'account.move' else '' }}
+      </attribute>
     </xpath>
+
   </template>
 </odoo>
