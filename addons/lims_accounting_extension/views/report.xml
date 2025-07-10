@@ -1,7 +1,7 @@
 <odoo>
   <!-- Acción para facturas LIMS -->
   <report
-    id="account.account_invoices"
+    id="action_report_invoice_custom"
     string="Factura LIMS"
     model="account.move"
     report_type="qweb-pdf"
