@@ -5,10 +5,8 @@
     'category': 'Laboratory',
     'author': 'Proteus LIMS',
     'depends': ['account', 'lims_sale_extension'],
-    'qweb': [
-        'views/external_layout_invoice_lims.xml',
-    ],
     'data': [
+        'views/external_layout_invoice_lims.xml',
         'views/report_invoice.xml',
         'views/report.xml',
     ],
