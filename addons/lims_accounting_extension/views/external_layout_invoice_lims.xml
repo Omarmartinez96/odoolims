@@ -1,33 +1,35 @@
 <odoo>
-  <template id="external_layout_invoice_lims" t-name="lims_accounting_extension.external_layout_invoice_lims">
-    <t t-set="o" t-value="o"/>
-    <t t-set="company" t-value="o and o.company_id or (docs and docs[0].company_id)"/>
+  <templates id="template" xml:space="preserve">  
+    <template id="external_layout_invoice_lims" t-name="lims_accounting_extension.external_layout_invoice_lims">
+      <t t-set="o" t-value="o"/>
+      <t t-set="company" t-value="o and o.company_id or (docs and docs[0].company_id)"/>
 
-    <div class="header">
-      <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height:80px;" />
-      <p><t t-esc="company.name"/></p>
-      <p><t t-esc="company.company_details"/></p>
-    </div>
-
-    <div class="article o_report_layout o_table_striped">
-      <t t-out="0"/>
-    </div>
-
-    <div class="footer">
-      <div class="o_footer_content" style="font-size:8px; padding-top:2px;">
-        <table style="width:100%; font-size:7px;">
-          <tr>
-            <td>Tel: (664) 973-8185</td>
-            <td style="text-align:center;">Página <span class="page"/> / <span class="topage"/></td>
-            <td style="text-align:right;">contacto@proteuslaboratorio.com</td>
-          </tr>
-          <tr>
-            <td colspan="3" style="text-align:center; padding-top:4px;">
-              FOR-XXX Rev. XX | PROC-XXX
-            </td>
-          </tr>
-        </table>
+      <div class="header">
+        <img t-if="company.logo" t-att-src="'data:image/png;base64,%s' % company.logo" style="max-height:80px;" />
+        <p><t t-esc="company.name"/></p>
+        <p><t t-esc="company.company_details"/></p>
       </div>
-    </div>
-  </template>
+
+      <div class="article o_report_layout o_table_striped">
+        <t t-out="0"/>
+      </div>
+
+      <div class="footer">
+        <div class="o_footer_content" style="font-size:8px; padding-top:2px;">
+          <table style="width:100%; font-size:7px;">
+            <tr>
+              <td>Tel: (664) 973-8185</td>
+              <td style="text-align:center;">Página <span class="page"/> / <span class="topage"/></td>
+              <td style="text-align:right;">contacto@proteuslaboratorio.com</td>
+            </tr>
+            <tr>
+              <td colspan="3" style="text-align:center; padding-top:4px;">
+                FOR-XXX Rev. XX | PROC-XXX
+              </td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </template>
+  </templates>
 </odoo>
