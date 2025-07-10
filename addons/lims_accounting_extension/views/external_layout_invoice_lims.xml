@@ -1,5 +1,5 @@
 <odoo>
-  <template id="external_layout_invoice_lims">
+  <template id="external_layout_invoice_lims" t-name="lims_accounting_extension.external_layout_invoice_lims">
     <t t-set="o" t-value="o"/>
     <t t-set="company" t-value="o and o.company_id or (docs and docs[0].company_id)"/>
 
