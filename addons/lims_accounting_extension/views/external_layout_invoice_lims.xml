@@ -2,35 +2,27 @@
   <template id="external_layout_invoice_lims"
             inherit_id="web.external_layout_standard">
     <!-- Reemplaza la cabecera nativa -->
-    <xpath expr="//div[contains(@t-attf-class,'header')]" position="replace">
-      <div t-attf-class="header o_company_#{company.id}_layout">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-          <img t-if="company.logo"
-               class="o_company_logo_small"
-               t-att-src="image_data_uri(company.logo)"
-               alt="Logo"
-               style="max-height:80px;"/>
-          <div class="text-end">
-            <h2 t-esc="company.name"/>
-            <!-- opcionalmente dirección -->
-            <div t-field="company.company_details"/>
-          </div>
-        </div>
-      </div>
+    <xpath expr="//div[contains(@class,'d-flex')]/img" position="attributes">
+      <attribute name="style">
+        max-height:80px !important;
+      </attribute>
     </xpath>
 
     <!-- Reemplaza el pie nativo -->
-    <xpath expr="//div[contains(@class,'footer')]" position="replace">
-      <div t-attf-class="footer o_company_#{company.id}_layout">
-        <div class="o_footer_content d-flex border-top pt-2" style="font-size:8px;">
-          <div class="flex-grow-1 text-start">
-            <!-- tu texto de footer, p.ej. FOR-XXX… -->
-            FOR-XXX Rev.XX | PROC-XXX
-          </div>
-          <div class="text-end text-muted">
-            <div t-if="report_type=='pdf'">Página <span class="page"/> / <span class="topage"/></div>
-          </div>
-        </div>
+    <xpath expr="//div[contains(@class,'o_footer_content')]" position="replace">
+      <div class="o_footer_content" style="font-size:8px; padding-top:2px;">
+        <table style="width:100%; font-size:7px; border-collapse:collapse;">
+          <tr>
+            <td>Tel: (664) 973-8185</td>
+            <td style="text-align:center;">Página <span class="page"/> / <span class="topage"/></td>
+            <td style="text-align:right;">contacto@proteuslaboratorio.com</td>
+          </tr>
+          <tr>
+            <td colspan="3" style="text-align:center; padding-top:4px;">
+              FOR-XXX Rev. XX | PROC-XXX
+            </td>
+          </tr>
+        </table>
       </div>
     </xpath>
   </template>
