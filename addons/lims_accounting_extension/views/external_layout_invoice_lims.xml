@@ -1,5 +1,5 @@
 <odoo>
-  <template id="external_layout_invoice_lims" inherit_id="web.external_layout_standard">
+  <template id="external_layout_invoice_lims" inherit_id="account.report_invoice_document">
     <!-- Header -->
     <xpath expr="//div[contains(@class, 'header')]" position="replace">
       <div class="header">

@@ -1,5 +1,5 @@
 <odoo>
-  <template id="report_invoice_custom" inherit_id="account.report_invoice_document">
+  <template id="report_invoice_custom">
     <t t-call="lims_accounting_extension.external_layout_invoice_lims">
       <t t-set="company" t-value="docs and docs[0].company_id"/>
       <t t-foreach="docs" t-as="doc">
