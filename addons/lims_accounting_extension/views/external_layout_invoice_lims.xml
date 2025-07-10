@@ -2,7 +2,7 @@
   <template id="external_layout_invoice_lims"
             inherit_id="web.external_layout_standard">
     <!-- Reemplaza la cabecera nativa -->
-    <xpath expr="//div[contains(@class,'header')]" position="replace">
+    <xpath expr="//div[contains(@t-attf-class,'header')]" position="replace">
       <div t-attf-class="header o_company_#{company.id}_layout">
         <div class="d-flex justify-content-between align-items-center mb-2">
           <img t-if="company.logo"
