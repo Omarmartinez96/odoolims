@@ -2,7 +2,7 @@
   <template id="external_layout_invoice_lims"
             inherit_id="web.external_layout_folder">
     <!-- 1) Ajustamos sólo el <img> del logo -->
-    <xpath expr="//img[contains(@class,'o_company_logo_small')]" position="attributes">
+    <xpath expr="//img[@alt='Logo']" position="attributes">
       <attribute name="style">
         max-height:80px !important;
       </attribute>
