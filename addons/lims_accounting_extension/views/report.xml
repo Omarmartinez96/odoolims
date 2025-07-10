@@ -1,5 +1,4 @@
 <odoo>
-  <!-- Acción para facturas LIMS -->
   <report
     id="action_report_invoice_custom"
     string="Factura LIMS"
