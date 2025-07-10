@@ -44,14 +44,18 @@
               <tbody>
                 <t t-foreach="doc.invoice_line_ids" t-as="line">
                   <tr>
-                    <td t-esc="line.name"/>
-                    <td class="text-center" t-field="line.quantity"/>
-                    <td class="text-end"
-                        t-field="line.price_unit"
-                        t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                    <td class="text-end"
-                        t-field="line.price_subtotal"
-                        t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    <td><span t-esc="line.name"/></td>
+                    <td class="text-center">
+                      <span t-field="line.quantity"/>
+                    </td>
+                    <td class="text-end">
+                      <span t-field="line.price_unit"
+                            t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    </td>
+                    <td class="text-end">
+                      <span t-field="line.price_subtotal"
+                            t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    </td>
                   </tr>
                 </t>
               </tbody>
@@ -63,21 +67,24 @@
                 <table class="table table-borderless" style="width:100%;">
                   <tr>
                     <td><strong>Subtotal:</strong></td>
-                    <td class="text-end"
-                        t-field="doc.amount_untaxed"
-                        t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    <td class="text-end">
+                      <span t-field="doc.amount_untaxed"
+                            t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    </td>
                   </tr>
                   <tr>
                     <td><strong>IVA:</strong></td>
-                    <td class="text-end"
-                        t-field="doc.amount_tax"
-                        t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    <td class="text-end">
+                      <span t-field="doc.amount_tax"
+                            t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    </td>
                   </tr>
                   <tr>
                     <td><strong>Total:</strong></td>
-                    <td class="text-end"
-                        t-field="doc.amount_total"
-                        t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    <td class="text-end">
+                      <span t-field="doc.amount_total"
+                            t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    </td>
                   </tr>
                 </table>
               </div>
