@@ -6,9 +6,6 @@
     <!-- Abrimos el contenedor y metemos TODO dentro -->
     <t t-call="web.html_container">
 
-      <!-- (Descomenta si quieres la css de Odoo) -->
-      <!-- <t t-call="web.report_layout_style"/> -->
-
       <!-- ===== HEADER ===== -->
       <div class="header"
            style="position:fixed; top:0; left:0; right:0; height:100px;">
