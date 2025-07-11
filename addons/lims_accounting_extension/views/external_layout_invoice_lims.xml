@@ -1,43 +1,40 @@
 <odoo>
-  <data>
-    <!-- 1) Layout completamente independiente -->
-    <template id="external_layout_invoice_lims"
-              t-name="lims_accounting_extension.external_layout_invoice_lims">
-      <!-- 2) Wrapping mínimo que inyecta el CSS de Odoo -->
-      <t t-call="web.html_container">
-        <t t-call="web.external_layout_style"/>
+  <!-- Definición de un template QWeb independiente con slot "content" -->
+  <template id="external_layout_invoice_lims"
+            t-name="lims_accounting_extension.external_layout_invoice_lims">
+    <!-- 1) Contenedor base, inyecta CSS -->
+    <t t-call="web.html_container">
+      <t t-call="web.external_layout_style"/>
 
-        <!-- ===== HEADER PERSONALIZADO ===== -->
-        <div class="header" style="position:fixed; top:0; left:0; right:0; height:100px;">
-          <div style="display:flex; justify-content:space-between; align-items:center; padding:0 20px;">
-            <img t-if="company.logo"
-                 t-att-src="'data:image/png;base64,%s' % company.logo"
-                 style="max-height:80px;"/>
-            <div style="text-align:right; font-size:10px;">
-              <t t-esc="company.partner_id.name"/><br/>
-              <t t-esc="company.partner_id.street"/><br/>
-              <t t-esc="company.partner_id.city"/>, 
-              <t t-esc="company.partner_id.country_id.name"/>
-            </div>
+      <!-- ===== HEADER ===== -->
+      <div class="header" style="position:fixed; top:0; left:0; right:0; height:100px;">
+        <div style="display:flex; justify-content:space-between; align-items:center; padding:0 20px;">
+          <img t-if="company.logo"
+               t-att-src="'data:image/png;base64,%s' % company.logo"
+               style="max-height:80px; margin-bottom:0;"/>
+          <div style="text-align:right; font-size:10px;">
+            <t t-esc="company.partner_id.name"/><br/>
+            <t t-esc="company.partner_id.street"/><br/>
+            <t t-esc="company.partner_id.city"/>, <t t-esc="company.partner_id.country_id.name"/>
           </div>
         </div>
+      </div>
 
-        <!-- ===== CUERPO (INSERTADO POR EL report_invoice.xml) ===== -->
-        <!-- Aquí se renderearán las facturas que envíes en tu override -->
-        <t t-raw="0"/>
+      <!-- ===== SLOT DE CONTENIDO ===== -->
+      <!-- Ahí se inyecta el body que le pases desde el override -->
+      <div t-slot="content"/>
 
-        <!-- ===== FOOTER PERSONALIZADO ===== -->
-        <div class="footer" style="position:fixed; bottom:0; left:0; right:0; height:50px;">
-          <div style="display:flex; justify-content:space-between; padding:0 20px; font-size:8px;">
-            <div>Tel: (664) 973-8185</div>
-            <div>Página <span class="page"/> / <span class="topage"/></div>
-            <div>contacto@proteuslaboratorio.com</div>
-          </div>
-          <div style="text-align:center; font-size:7px; margin-top:4px;">
-            FOR-XXX Rev. XX | PROC-XXX
-          </div>
+      <!-- ===== FOOTER ===== -->
+      <div class="footer" style="position:fixed; bottom:0; left:0; right:0; height:50px;">
+        <div style="display:flex; justify-content:space-between; padding:0 20px; font-size:8px;">
+          <div>Tel: (664) 973-8185</div>
+          <div>Página <span class="page"/> / <span class="topage"/></div>
+          <div>contacto@proteuslaboratorio.com</div>
         </div>
-      </t>
-    </template>
-  </data>
+        <div style="text-align:center; font-size:7px; margin-top:4px;">
+          FOR-XXX Rev. XX | PROC-XXX
+        </div>
+      </div>
+    </t>
+  </template>
 </odoo>
