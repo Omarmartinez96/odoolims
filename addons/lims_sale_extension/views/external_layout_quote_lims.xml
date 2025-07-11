@@ -2,18 +2,17 @@
   <template id="external_layout_quote_lims"
             t-name="lims_sale_extension.external_layout_quote_lims"
             name="External Layout Quote LIMS">
-
-    <!-- Engánchate al layout standard SIN modificarlo globalmente -->
+    <!-- Usamos siempre el estándar, sin heredarlo -->
     <t t-call="web.external_layout_standard">
-      <!-- HEADER personalizado para cotizaciones -->
+
+      <!-- ===== HEADER personalizado para cotización ===== -->
       <div class="header"
            style="position:fixed; top:0; left:0; right:0; height:80px;">
         <div style="display:flex; align-items:center; padding:0 20px;">
-          <!-- Logo más pequeño -->
           <img t-if="company.logo"
                t-att-src="'data:image/png;base64,%s' % company.logo"
-               style="max-height:60px;"/>
-          <!-- puede ir algo más de texto si lo deseas -->
+               style="max-height:60px; margin-bottom:0;"/>
+          <!-- (puedes añadir más datos aquí) -->
         </div>
       </div>
 
@@ -23,18 +22,20 @@
         <div t-slot="content"/>
       </div>
 
-      <!-- FOOTER personalizado para cotizaciones -->
+      <!-- ===== FOOTER personalizado para cotización ===== -->
       <div class="footer"
            style="position:fixed; bottom:0; left:0; right:0; height:50px;">
-        <div style="display:flex; justify-content:space-between; padding:0 20px; font-size:8px;">
+        <div style="display:flex; justify-content:space-between;
+                    padding:0 20px; font-size:8px;">
           <div>Teléfono: (664) 973-8185</div>
-          <div>Página <span class="page"/>/<span class="topage"/></div>
+          <div>Página <span class="page"/> / <span class="topage"/></div>
           <div>contacto@proteuslaboratorio.com</div>
         </div>
         <div style="text-align:center; font-size:7px; margin-top:4px;">
           FOR-021 Rev. 01 | PROC-005
         </div>
       </div>
+
     </t>
   </template>
 </odoo>
