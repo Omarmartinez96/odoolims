@@ -1,7 +1,7 @@
 <odoo>
   <!-- Define el template QWeb de tu reporte -->
-  <template id="report_saleorder_custom"
-            t-name="lims_sale_extension.report_saleorder_custom">
+  <template id="external_layout_quote_lims"
+            t-name="lims_sale_extension.external_layout_quote_lims">
     <!-- 1) Invoca tu layout primario, que ya tiene los slots abiertos -->
     <t t-call="lims_sale_extension.external_layout_quote_lims">
       <!-- 2) Pasa la company al header -->
