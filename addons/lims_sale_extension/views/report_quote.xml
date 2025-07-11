@@ -1,100 +1,19 @@
 <odoo>
   <template id="report_saleorder_custom"
             t-name="lims_sale_extension.report_saleorder_custom">
-    <!-- 1) Llamamos a tu layout de quote, que define slots header/content/footer -->
-    <t t-call="lims_sale_extension.external_layout_quote_lims">
-      <!-- 2) Definimos la variable company para el header -->
-      <t t-set="company" t-value="docs and docs[0].company_id"/>
+    <t t-set="company" t-value="docs and docs[0].company_id"/>
 
-      <!-- 3) Rellenamos el slot "content" de tu layout -->
+    <!-- llamamos a nuestro layout CUSTOM -->
+    <t t-call="lims_sale_extension.external_layout_quote_lims">
+      <!-- rellenamos el slot "content" -->
       <t t-slot="content">
         <t t-foreach="docs" t-as="doc">
           <div class="page">
-            <!-- — Aquí todo tu HTML de cotización — -->
-
-            <!-- Ejemplo de título -->
-            <h4 style="color:#090D61; font-size:20px; margin:0 0 5px;">
-              COTIZACIÓN DE SERVICIOS
-            </h4>
-
-            <!-- N° de cotización -->
-            <div style="font-size:16px; margin-bottom:10px;">
-              <strong>No. de Cotización:</strong>
-              <span t-esc="doc.name"/>
-            </div>
-
-            <!-- Datos del cliente y fecha -->
-            <table style="width:100%; font-size:12px; margin-bottom:10px;">
-              <tr>
-                <td><strong>Cliente:</strong> <span t-esc="doc.partner_id.name"/></td>
-                <td style="text-align:right;">
-                  <strong>Fecha:</strong>
-                  <t t-set="d" t-value="doc.date_order.strftime('%d')"/>
-                  <t t-set="m" t-value="doc.date_order.strftime('%m')"/>
-                  <t t-set="y" t-value="doc.date_order.strftime('%Y')"/>
-                  <span t-esc="d + '/' + m + '/' + y"/>
-                </td>
-              </tr>
-            </table>
-
-            <!-- Tabla de líneas -->
-            <table style="width:100%; font-size:14px; border-collapse:collapse; margin-bottom:10px;">
-              <thead>
-                <tr style="background-color:rgb(221,235,247);">
-                  <th style="text-align:left;">Descripción</th>
-                  <th style="text-align:center;">Cantidad</th>
-                  <th style="text-align:right;">Precio unitario</th>
-                  <th style="text-align:right;">Descuento</th>
-                  <th style="text-align:right;">Subtotal</th>
-                </tr>
-              </thead>
-              <tbody>
-                <t t-foreach="doc.order_line" t-as="line">
-                  <tr>
-                    <td><t t-esc="line.product_id.display_name"/></td>
-                    <td style="text-align:center;"><t t-esc="line.product_uom_qty"/></td>
-                    <td style="text-align:right;">
-                      <t t-esc="line.price_unit"/>
-                    </td>
-                    <td style="text-align:right;"><t t-esc="line.discount"/>%</td>
-                    <td style="text-align:right;">
-                      <t t-esc="line.price_subtotal"/>
-                    </td>
-                  </tr>
-                </t>
-              </tbody>
-            </table>
-
-            <!-- Totales -->
-            <div style="text-align:right; font-size:12px; margin-top:10px;">
-              <table style="margin-left:auto;">
-                <tr>
-                  <td><strong>Subtotal:</strong></td>
-                  <td style="text-align:right;">
-                    <t t-esc="doc.amount_untaxed"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>IVA:</strong></td>
-                  <td style="text-align:right;">
-                    <t t-esc="doc.amount_tax"/>
-                  </td>
-                </tr>
-                <tr>
-                  <td><strong>Total:</strong></td>
-                  <td style="text-align:right;">
-                    <t t-esc="doc.amount_total"/>
-                  </td>
-                </tr>
-              </table>
-            </div>
-
-            <!-- Aquí iría el resto de tu contenido… -->
-
+            <!-- …todo tu cuerpo de cotización… -->
+            <h3>Cotización <t t-esc="doc.name"/></h3>
           </div>
         </t>
-      </t>  <!-- fin slot content -->
-
-    </t>    <!-- fin t-call external_layout_quote_lims -->
+      </t>
+    </t>
   </template>
 </odoo>
