@@ -3,18 +3,19 @@
             inherit_id="account.report_invoice_document"
             priority="30">
 
-    <!-- selector genérico: cualquier layout estándar -->
+    <!-- capturamos cualquier layout estándar -->
     <xpath expr="//t[contains(@t-call, 'external_layout')]" position="replace">
 
       <t t-call="lims_accounting_extension.external_layout_invoice_lims">
-        <!-- la empresa que usa el header -->
+        <!-- variable que usa tu header -->
         <t t-set="company" t-value="docs and docs[0].company_id"/>
 
-        <!-- ⬇️  aquí SI enviamos el cuerpo al slot -->
+        <!-- SLOT de contenido: solo el cuerpo, nada de layouts -->
         <t t-slot="content">
-          <t t-raw="0"/>        <!--  (o pega tu HTML personalizado) -->
+          <!-- reutilizamos el cuerpo estándar -->
+          <t t-call="account.report_invoice_document_content"/>
+          <!-- si tu instalación no tiene ese template, pega aquí las líneas/totales -->
         </t>
-
       </t>
 
     </xpath>
