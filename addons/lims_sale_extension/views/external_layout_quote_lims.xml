@@ -1,36 +1,85 @@
 <odoo>
-  <template id="external_layout_quote_lims"
-            t-name="lims_sale_extension.external_layout_quote_lims"
-            name="External Layout Quote LIMS">
-    <t t-call="web.external_layout_standard">
-      <!-- Slot HEADER -->
-      <t t-slot="header">
-        <div class="header" style="position:fixed;top:0;left:0;right:0;height:80px;">
-          <div style="display:flex;align-items:center;padding:0 20px;">
-            <img t-if="company.logo"
-                 t-att-src="'data:image/png;base64,%s' % company.logo"
-                 style="max-height:60px;"/>
-          </div>
-        </div>
-      </t>
-      <!-- Slot CONTENT: YA está abierto y ahora podrá recibir lo que le mande el reporte -->
+  <!-- Define el template QWeb de tu reporte -->
+  <template id="report_saleorder_custom"
+            t-name="lims_sale_extension.report_saleorder_custom">
+    <!-- 1) Invoca tu layout primario, que ya tiene los slots abiertos -->
+    <t t-call="lims_sale_extension.external_layout_quote_lims">
+      <!-- 2) Pasa la company al header -->
+      <t t-set="company" t-value="docs and docs[0].company_id"/>
+
+      <!-- 3) Rellena el slot "content" CON TODO el HTML de la cotización -->
       <t t-slot="content">
-        <!-- aquí no hace falta nada más -->
-      </t>
-      <!-- Slot FOOTER -->
-      <t t-slot="footer">
-        <div class="footer"
-             style="position:fixed;bottom:0;left:0;right:0;height:50px;">
-          <div style="display:flex;justify-content:space-between;padding:0 20px;font-size:8px;">
-            <div>Teléfono: (664) 973-8185</div>
-            <div>Página <span class="page"/> / <span class="topage"/></div>
-            <div>contacto@proteuslaboratorio.com</div>
+        <t t-foreach="docs" t-as="doc">
+          <div class="page">
+            <!-- — Título interno — -->
+            <h4 style="color:#090D61; font-size:20px; margin-bottom:5px;">
+              COTIZACIÓN DE SERVICIOS
+            </h4>
+
+            <!-- — Datos principales (ejemplo) — -->
+            <table style="width:100%; font-size:12px; margin-bottom:10px;">
+              <tr>
+                <td><strong>No. Cotización:</strong> <t t-esc="doc.name"/></td>
+                <td style="text-align:right;">
+                  <strong>Fecha:</strong>
+                  <t t-set="d" t-value="doc.date_order.strftime('%d')"/>
+                  <t t-set="m" t-value="doc.date_order.strftime('%m')"/>
+                  <t t-set="y" t-value="doc.date_order.strftime('%Y')"/>
+                  <span t-esc="d + '/' + m + '/' + y"/>
+                </td>
+              </tr>
+            </table>
+
+            <!-- — Tabla de líneas de ejemplo — -->
+            <table style="width:100%; font-size:14px; border-collapse:collapse; margin-bottom:10px;">
+              <thead>
+                <tr style="background-color:rgb(221,235,247);">
+                  <th style="text-align:left;">Descripción</th>
+                  <th style="text-align:center;">Cant.</th>
+                  <th style="text-align:right;">P. Unitario</th>
+                  <th style="text-align:right;">Subtotal</th>
+                </tr>
+              </thead>
+              <tbody>
+                <t t-foreach="doc.order_line" t-as="line">
+                  <tr>
+                    <td><t t-esc="line.name"/></td>
+                    <td style="text-align:center;"><t t-esc="line.product_uom_qty"/></td>
+                    <td style="text-align:right;">
+                      <t t-esc="line.price_unit"/>
+                    </td>
+                    <td style="text-align:right;">
+                      <t t-esc="line.price_subtotal"/>
+                    </td>
+                  </tr>
+                </t>
+              </tbody>
+            </table>
+
+            <!-- — Totales — -->
+            <div style="text-align:right; font-size:12px; margin-top:10px;">
+              <table style="margin-left:auto;">
+                <tr>
+                  <td><strong>Subtotal:</strong></td>
+                  <td style="text-align:right;"><t t-esc="doc.amount_untaxed"/></td>
+                </tr>
+                <tr>
+                  <td><strong>IVA:</strong></td>
+                  <td style="text-align:right;"><t t-esc="doc.amount_tax"/></td>
+                </tr>
+                <tr>
+                  <td><strong>Total:</strong></td>
+                  <td style="text-align:right;"><t t-esc="doc.amount_total"/></td>
+                </tr>
+              </table>
+            </div>
+
+            <!-- — Aquí el resto de notas, condiciones, firma, etc. — -->
+
           </div>
-          <div style="text-align:center;font-size:7px;margin-top:4px;">
-            FOR-021 Rev. 01 | PROC-005
-          </div>
-        </div>
+        </t>
       </t>
+      <!-- ¡Fin del slot content! -->
     </t>
   </template>
 </odoo>
