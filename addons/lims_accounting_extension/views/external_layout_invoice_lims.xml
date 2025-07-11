@@ -1,6 +1,6 @@
 <odoo>
   <template id="external_layout_invoice_lims"
-            inherit_id="web.external_layout_standard">
+            inherit_id="account.external_layout_invoice">
     <!-- 1) Ajustamos sólo el <img> del logo -->
     <xpath expr="//div[contains(@class,'d-flex')]/img" position="attributes">
       <attribute name="style">
