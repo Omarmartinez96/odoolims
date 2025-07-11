@@ -5,7 +5,7 @@
             name="External Layout Invoice LIMS">
 
     <!-- 1) ENGÁNCHATE A web.external_layout -->
-    <t t-call="web.external_layout">
+    <t t-call="web.external_layout_standard">
 
 
       <!-- ===== HEADER ===== -->
