@@ -2,11 +2,21 @@
   <template id="inherit_account_report_invoice_document"
             inherit_id="account.report_invoice_document"
             priority="30">
+
+    <!-- selector genérico: cualquier layout estándar -->
     <xpath expr="//t[contains(@t-call, 'external_layout')]" position="replace">
+
       <t t-call="lims_accounting_extension.external_layout_invoice_lims">
+        <!-- la empresa que usa el header -->
         <t t-set="company" t-value="docs and docs[0].company_id"/>
-        <t t-raw="0"/>   <!-- o tu HTML personalizado -->
+
+        <!-- ⬇️  aquí SI enviamos el cuerpo al slot -->
+        <t t-slot="content">
+          <t t-raw="0"/>        <!--  (o pega tu HTML personalizado) -->
+        </t>
+
       </t>
+
     </xpath>
   </template>
 </odoo>
