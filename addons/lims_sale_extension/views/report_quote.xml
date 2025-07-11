@@ -5,7 +5,7 @@
       <!-- Definir company en el contexto para evitar KeyError -->
       <t t-set="company" t-value="docs and docs[0].company_id"/>
         <t t-foreach="docs" t-as="doc">
-            <div class="page">
+          <div class="page">
 
               <!-- Encabezado interno de cotización -->
               <div class="row" style="margin-bottom:5px;">
@@ -247,9 +247,10 @@
                 </div>
               </div>
 
-            </div>
+            </div>    
         </t>
       </t>
+    
     </t>
   </template>
 </odoo>
