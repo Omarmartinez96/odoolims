@@ -1,36 +1,39 @@
+<!-- views/external_layout_quote_lims.xml -->
 <odoo>
   <template id="external_layout_quote_lims"
             t-name="lims_sale_extension.external_layout_quote_lims"
             name="External Layout Quote LIMS">
 
-    <!-- Invoca el layout estándar -->
-    <t t-call="web.external_layout_standard">
+    <!-- 1. Contenedor estándar de Odoo (añade DOCTYPE, <html>, …) -->
+    <t t-call="web.html_container">
 
-      <!-- ===== HEADER ===== -->
-      <t t-set="header">
-        <div style="position:fixed; top:0; left:0; right:0; height:80px;">
-          <div style="display:flex; align-items:center; padding:0 20px;">
-            <img t-if="company.logo"
-                 t-att-src="'data:image/png;base64,%s' % company.logo"
-                 style="max-height:60px;"/>
-          </div>
+      <!-- ============ HEADER fijo ============ -->
+      <header style="position:fixed; top:0; left:0; right:0; height:80px;">
+        <div style="display:flex; align-items:center; padding:0 20px;">
+          <img t-if="company.logo"
+               t-att-src="'data:image/png;base64,%s' % company.logo"
+               style="max-height:60px;"/>
         </div>
-      </t>
+      </header>
 
-      <!-- ===== FOOTER ===== -->
-      <t t-set="footer">
-        <div style="position:fixed; bottom:0; left:0; right:0; height:50px;">
-          <div style="display:flex; justify-content:space-between;
-                      padding:0 20px; font-size:8px;">
-            <div>Teléfono: (664) 973-8185</div>
-            <div>Página <span class="page"/> / <span class="topage"/></div>
-            <div>contacto@proteuslaboratorio.com</div>
-          </div>
-          <div style="text-align:center; font-size:7px; margin-top:4px;">
-            FOR-021 Rev. 01 | PROC-005
-          </div>
+      <!-- ============ CUERPO ============ -->
+      <!-- *** ESTE es el único <main>; dentro tenemos un slot *** -->
+      <main style="margin-top:90px; margin-bottom:60px;">
+        <div t-slot="content"/>
+      </main>
+
+      <!-- ============ FOOTER fijo ============ -->
+      <footer style="position:fixed; bottom:0; left:0; right:0; height:50px;">
+        <div style="display:flex; justify-content:space-between;
+                    padding:0 20px; font-size:8px;">
+          <div>Teléfono: (664) 973-8185</div>
+          <div>Página <span class="page"/> / <span class="topage"/></div>
+          <div>contacto@proteuslaboratorio.com</div>
         </div>
-      </t>
+        <div style="text-align:center; font-size:7px; margin-top:4px;">
+          FOR-021 Rev. 01| PROC-005
+        </div>
+      </footer>
 
     </t>
   </template>
