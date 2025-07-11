@@ -2,10 +2,7 @@
   <template id="external_layout_quote_lims"
             t-name="lims_sale_extension.external_layout_quote_lims"
             name="External Layout Quote LIMS">
-
-    <!-- Apóyate en el layout estándar, que define <main> y los slots -->
     <t t-call="web.external_layout_standard">
-
       <!-- Slot HEADER -->
       <t t-slot="header">
         <div class="header"
@@ -17,16 +14,8 @@
           </div>
         </div>
       </t>
-
-      <!-- Slot CONTENT -->
-      <t t-slot="content">
-        <t t-foreach="docs" t-as="doc">
-          <div class="page">
-            <!-- … aquí tu HTML de cotización: título, tabla de líneas, totales … -->
-          </div>
-        </t>
-      </t>
-
+      <!-- Slot CONTENT (¡aquí irá tu cuerpo!) -->
+      <t t-slot="content"/>
       <!-- Slot FOOTER -->
       <t t-slot="footer">
         <div class="footer"
@@ -42,7 +31,6 @@
           </div>
         </div>
       </t>
-
     </t>
   </template>
 </odoo>
