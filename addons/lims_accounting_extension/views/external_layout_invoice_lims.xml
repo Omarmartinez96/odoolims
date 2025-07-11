@@ -1,30 +1,43 @@
 <odoo>
-  <template id="external_layout_invoice_lims"
-            inherit_id="account.external_layout_invoice">
-    <!-- 1) Ajustamos sólo el <img> del logo -->
-    <xpath expr="//div[contains(@class,'d-flex')]/img" position="attributes">
-      <attribute name="style">
-        max-height:100px !important;
-        margin-bottom:0 !important;
-      </attribute>
-    </xpath>
+  <data>
+    <!-- 1) Layout completamente independiente -->
+    <template id="external_layout_invoice_lims"
+              t-name="lims_accounting_extension.external_layout_invoice_lims">
+      <!-- 2) Wrapping mínimo que inyecta el CSS de Odoo -->
+      <t t-call="web.html_container">
+        <t t-call="web.external_layout_style"/>
 
-    <!-- Reemplaza el pie nativo -->
-    <xpath expr="//div[contains(@class,'o_footer_content')]" position="replace">
-      <div class="o_footer_content" style="font-size:8px; padding-top:2px;">
-        <table style="width:100%; font-size:7px; border-collapse:collapse;">
-          <tr>
-            <td>Tel: (664) 973-8185</td>
-            <td style="text-align:center;">Página <span class="page"/> / <span class="topage"/></td>
-            <td style="text-align:right;">contacto@proteuslaboratorio.com</td>
-          </tr>
-          <tr>
-            <td colspan="3" style="text-align:center; padding-top:4px;">
-              FOR-XXX Rev. XX | PROC-XXX
-            </td>
-          </tr>
-        </table>
-      </div>
-    </xpath>
-  </template>
+        <!-- ===== HEADER PERSONALIZADO ===== -->
+        <div class="header" style="position:fixed; top:0; left:0; right:0; height:100px;">
+          <div style="display:flex; justify-content:space-between; align-items:center; padding:0 20px;">
+            <img t-if="company.logo"
+                 t-att-src="'data:image/png;base64,%s' % company.logo"
+                 style="max-height:80px;"/>
+            <div style="text-align:right; font-size:10px;">
+              <t t-esc="company.partner_id.name"/><br/>
+              <t t-esc="company.partner_id.street"/><br/>
+              <t t-esc="company.partner_id.city"/>, 
+              <t t-esc="company.partner_id.country_id.name"/>
+            </div>
+          </div>
+        </div>
+
+        <!-- ===== CUERPO (INSERTADO POR EL report_invoice.xml) ===== -->
+        <!-- Aquí se renderearán las facturas que envíes en tu override -->
+        <t t-raw="0"/>
+
+        <!-- ===== FOOTER PERSONALIZADO ===== -->
+        <div class="footer" style="position:fixed; bottom:0; left:0; right:0; height:50px;">
+          <div style="display:flex; justify-content:space-between; padding:0 20px; font-size:8px;">
+            <div>Tel: (664) 973-8185</div>
+            <div>Página <span class="page"/> / <span class="topage"/></div>
+            <div>contacto@proteuslaboratorio.com</div>
+          </div>
+          <div style="text-align:center; font-size:7px; margin-top:4px;">
+            FOR-XXX Rev. XX | PROC-XXX
+          </div>
+        </div>
+      </t>
+    </template>
+  </data>
 </odoo>
