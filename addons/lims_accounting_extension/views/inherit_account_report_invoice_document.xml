@@ -4,7 +4,8 @@
             inherit_id="account.report_invoice_document"
             priority="30">
     <!-- 1) Apunta al t-call original -->
-    <xpath expr="//t[@t-call='web.external_layout']" position="replace">
+    <xpath expr="//template[@id='account.report_invoice_document']/t[@t-call and contains(@t-call, 'external_layout')]"
+           position="replace">
       <!-- 2) Sustitúyelo por tu layout -->
       <t t-call="lims_accounting_extension.external_layout_invoice_lims">
         <!-- 3) La compañía para el header -->
