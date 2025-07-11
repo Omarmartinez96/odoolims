@@ -1,21 +1,29 @@
-<!-- file: views/inherit_account_report_invoice_document.xml -->
 <odoo>
   <template id="inherit_account_report_invoice_document"
             inherit_id="account.report_invoice_document"
-            priority="30">
-    <!-- 1) Apunta al t-call original -->
-    <xpath expr="//template[@id='account.report_invoice_document']/t[@t-call and contains(@t-call, 'external_layout')]"
-           position="replace">
-      <!-- 2) Sustitúyelo por tu layout -->
+            priority="60">
+    <!-- 1) Apuntamos SOLO al <t t-call="web.external_layout"> original -->
+    <xpath expr="//t[@t-call='web.external_layout']" position="replace">
+      <!-- 2) Sustituimos esa llamada por tu layout “Invoice LIMS” -->
       <t t-call="lims_accounting_extension.external_layout_invoice_lims">
-        <!-- 3) La compañía para el header -->
+        <!-- 3) Pasamos la empresa para el header -->
         <t t-set="company" t-value="docs and docs[0].company_id"/>
-
-        <!-- 4) Inyecta TODO el cuerpo aquí -->
+        <!-- 4) Inyectamos TODO el contenido de la factura aquí -->
         <t t-slot="content">
           <t t-foreach="docs" t-as="doc">
             <div class="page">
-              <!-- aquí va tu HTML de título, tablas de líneas y totales -->
+              <!-- — tu HTML de FACTURA tal cual lo definiste — -->
+              
+              <h4 style="text-align:center; font-size:20px; margin:0 0 10px;">
+                FACTURA DE VENTA
+              </h4>
+              
+              <!-- Datos principales -->
+              <table style="width:100%; font-size:12px; margin-bottom:10px;">
+                <!-- … completa con tus filas … -->
+              </table>
+              <!-- Líneas, totales, etc. -->
+              
             </div>
           </t>
         </t>
