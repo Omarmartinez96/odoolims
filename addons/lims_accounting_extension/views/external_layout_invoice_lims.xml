@@ -4,7 +4,6 @@
             t-name="lims_accounting_extension.external_layout_invoice_lims">
     <!-- 1) Contenedor base, inyecta CSS -->
     <t t-call="web.html_container">
-      <t t-call="web.external_layout_style"/>
 
       <!-- ===== HEADER ===== -->
       <div class="header" style="position:fixed; top:0; left:0; right:0; height:100px;">
