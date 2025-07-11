@@ -2,9 +2,7 @@
   <template id="external_layout_quote_lims"
             t-name="lims_sale_extension.external_layout_quote_lims"
             name="External Layout Quote LIMS">
-    <!-- Usamos siempre el estándar, sin heredarlo -->
     <t t-call="web.external_layout_standard">
-
       <!-- ===== HEADER personalizado para cotización ===== -->
       <div class="header"
            style="position:fixed; top:0; left:0; right:0; height:80px;">
@@ -12,16 +10,14 @@
           <img t-if="company.logo"
                t-att-src="'data:image/png;base64,%s' % company.logo"
                style="max-height:60px; margin-bottom:0;"/>
-          <!-- (puedes añadir más datos aquí) -->
+          <!-- aquí lo que quieras en el header de quote -->
         </div>
       </div>
-
       <!-- ===== CUERPO ===== -->
       <div class="article"
            style="margin-top:90px; margin-bottom:60px; min-height:20cm;">
         <div t-slot="content"/>
       </div>
-
       <!-- ===== FOOTER personalizado para cotización ===== -->
       <div class="footer"
            style="position:fixed; bottom:0; left:0; right:0; height:50px;">
@@ -35,7 +31,6 @@
           FOR-021 Rev. 01 | PROC-005
         </div>
       </div>
-
     </t>
   </template>
 </odoo>
