@@ -2,10 +2,10 @@
   <template id="inherit_account_report_invoice_document"
             inherit_id="account.report_invoice_document"
             priority="30">
-    <xpath expr="//t[@t-call='web.external_layout']" position="replace">
+    <xpath expr="//t[contains(@t-call, 'external_layout')]" position="replace">
       <t t-call="lims_accounting_extension.external_layout_invoice_lims">
-        <t t-set="company" t-value="o and o.company_id or docs and docs[0].company_id"/>
-        <t t-raw="0"/>   <!-- o pega tu HTML de líneas/totales aquí -->
+        <t t-set="company" t-value="docs and docs[0].company_id"/>
+        <t t-raw="0"/>   <!-- o tu HTML personalizado -->
       </t>
     </xpath>
   </template>
