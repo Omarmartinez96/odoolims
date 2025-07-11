@@ -1,0 +1,13 @@
+<odoo>
+  <template id="inherit_account_report_invoice"
+            inherit_id="account.report_invoice"
+            priority="30">
+    <xpath expr="//t[@t-call='web.external_layout']" position="replace">
+      <t t-call="lims_accounting_extension.external_layout_invoice_lims">
+        <t t-set="company" t-value="docs and docs[0].company_id"/>
+        <!-- Dejamos que la plantilla original inserte todo su HTML -->
+        <t t-raw="0"/>
+      </t>
+    </xpath>
+  </template>
+</odoo>
