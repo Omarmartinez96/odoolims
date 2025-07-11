@@ -1,47 +1,30 @@
+<!-- file: views/external_layout_invoice_lims.xml -->
 <odoo>
   <template id="external_layout_invoice_lims"
             t-name="lims_accounting_extension.external_layout_invoice_lims"
             name="External Layout Invoice LIMS">
 
-    <!-- Abrimos el contenedor y metemos TODO dentro -->
-    <t t-call="web.html_container">
+    <!-- 1) ENGÁNCHATE A web.external_layout -->
+    <t t-call="web.external_layout">
+
+      <!-- 2) Recupera la CSS estándar que Odoo 18 ahora pone en otro template -->
+      <t t-call="web.report_layout_style"/>
 
       <!-- ===== HEADER ===== -->
-      <div class="header"
-           style="position:fixed; top:0; left:0; right:0; height:100px;">
-        <div style="display:flex; justify-content:space-between;
-                    align-items:center; padding:0 20px;">
-          <img t-if="company.logo"
-               t-att-src="'data:image/png;base64,%s' % company.logo"
-               style="max-height:80px; margin-bottom:0;"/>
-          <div style="text-align:right; font-size:10px;">
-            <t t-esc="company.partner_id.name"/><br/>
-            <t t-esc="company.partner_id.street"/><br/>
-            <t t-esc="company.partner_id.city"/>,
-            <t t-esc="company.partner_id.country_id.name"/>
-          </div>
-        </div>
+      <div class="header">
+        <!-- tu logo y datos -->
       </div>
 
       <!-- ===== CUERPO ===== -->
-      <main style="margin-top:110px; margin-bottom:60px;">
+      <div class="article">
         <div t-slot="content"/>
-      </main>
-
-      <!-- ===== FOOTER ===== -->
-      <div class="footer"
-           style="position:fixed; bottom:0; left:0; right:0; height:50px;">
-        <div style="display:flex; justify-content:space-between;
-                    padding:0 20px; font-size:8px;">
-          <div>Tel: (664) 973-8185</div>
-          <div>Página <span class="page"/> / <span class="topage"/></div>
-          <div>contacto@proteuslaboratorio.com</div>
-        </div>
-        <div style="text-align:center; font-size:7px; margin-top:4px;">
-          FOR-XXX Rev. XX | PROC-XXX
-        </div>
       </div>
 
-    </t>  <!-- ← cierre del html_container -->
+      <!-- ===== FOOTER ===== -->
+      <div class="footer">
+        <!-- tu pie -->
+      </div>
+
+    </t>
   </template>
 </odoo>
