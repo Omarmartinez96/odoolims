@@ -5,28 +5,28 @@
     <t t-call="web.external_layout_standard">
       <!-- Slot HEADER -->
       <t t-slot="header">
-        <div class="header"
-             style="position:fixed; top:0; left:0; right:0; height:80px;">
-          <div style="display:flex; align-items:center; padding:0 20px;">
+        <div class="header" style="position:fixed;top:0;left:0;right:0;height:80px;">
+          <div style="display:flex;align-items:center;padding:0 20px;">
             <img t-if="company.logo"
                  t-att-src="'data:image/png;base64,%s' % company.logo"
-                 style="max-height:60px; margin-bottom:0;"/>
+                 style="max-height:60px;"/>
           </div>
         </div>
       </t>
-      <!-- Slot CONTENT (¡aquí irá tu cuerpo!) -->
-      <t t-slot="content"/>
+      <!-- Slot CONTENT: YA está abierto y ahora podrá recibir lo que le mande el reporte -->
+      <t t-slot="content">
+        <!-- aquí no hace falta nada más -->
+      </t>
       <!-- Slot FOOTER -->
       <t t-slot="footer">
         <div class="footer"
-             style="position:fixed; bottom:0; left:0; right:0; height:50px;">
-          <div style="display:flex; justify-content:space-between;
-                      padding:0 20px; font-size:8px;">
+             style="position:fixed;bottom:0;left:0;right:0;height:50px;">
+          <div style="display:flex;justify-content:space-between;padding:0 20px;font-size:8px;">
             <div>Teléfono: (664) 973-8185</div>
             <div>Página <span class="page"/> / <span class="topage"/></div>
             <div>contacto@proteuslaboratorio.com</div>
           </div>
-          <div style="text-align:center; font-size:7px; margin-top:4px;">
+          <div style="text-align:center;font-size:7px;margin-top:4px;">
             FOR-021 Rev. 01 | PROC-005
           </div>
         </div>
