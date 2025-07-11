@@ -1,39 +1,51 @@
 <odoo>
-  <!-- Definición de un template QWeb independiente con slot "content" -->
+  <!-- Layout PRIMARIO: nada de inherit_id -->
   <template id="external_layout_invoice_lims"
-            t-name="lims_accounting_extension.external_layout_invoice_lims">
-    <!-- 1) Contenedor base, inyecta CSS -->
-    <t t-call="web.html_container">
+            t-name="lims_accounting_extension.external_layout_invoice_lims"
+            name="External Layout Invoice LIMS">
 
-      <!-- ===== HEADER ===== -->
-      <div class="header" style="position:fixed; top:0; left:0; right:0; height:100px;">
-        <div style="display:flex; justify-content:space-between; align-items:center; padding:0 20px;">
-          <img t-if="company.logo"
-               t-att-src="'data:image/png;base64,%s' % company.logo"
-               style="max-height:80px; margin-bottom:0;"/>
-          <div style="text-align:right; font-size:10px;">
-            <t t-esc="company.partner_id.name"/><br/>
-            <t t-esc="company.partner_id.street"/><br/>
-            <t t-esc="company.partner_id.city"/>, <t t-esc="company.partner_id.country_id.name"/>
-          </div>
+    <!-- Contenedor html + normas genéricas de Odoo -->
+    <t t-call="web.html_container"/>
+    <!-- Si quieres conservar la CSS estándar descomenta la línea siguiente.
+         En 18.0 suele llamarse web.report_layout_style -->
+    <!-- <t t-call="web.report_layout_style"/> -->
+
+    <!-- ===== HEADER FIJO ===== -->
+    <div class="header"
+         style="position:fixed; top:0; left:0; right:0; height:100px;">
+      <div style="display:flex; justify-content:space-between;
+                  align-items:center; padding:0 20px;">
+        <img t-if="company.logo"
+             t-att-src="'data:image/png;base64,%s' % company.logo"
+             style="max-height:80px; margin-bottom:0;"/>
+        <div style="text-align:right; font-size:10px;">
+          <t t-esc="company.partner_id.name"/><br/>
+          <t t-esc="company.partner_id.street"/><br/>
+          <t t-esc="company.partner_id.city"/>,
+          <t t-esc="company.partner_id.country_id.name"/>
         </div>
       </div>
+    </div>
 
-      <!-- ===== SLOT DE CONTENIDO ===== -->
-      <!-- Ahí se inyecta el body que le pases desde el override -->
+    <!-- ===== CUERPO ===== -->
+    <!-- Dejo márgenes para que nada se monte sobre header/footer -->
+    <main style="margin-top:110px; margin-bottom:60px;">
       <div t-slot="content"/>
+    </main>
 
-      <!-- ===== FOOTER ===== -->
-      <div class="footer" style="position:fixed; bottom:0; left:0; right:0; height:50px;">
-        <div style="display:flex; justify-content:space-between; padding:0 20px; font-size:8px;">
-          <div>Tel: (664) 973-8185</div>
-          <div>Página <span class="page"/> / <span class="topage"/></div>
-          <div>contacto@proteuslaboratorio.com</div>
-        </div>
-        <div style="text-align:center; font-size:7px; margin-top:4px;">
-          FOR-XXX Rev. XX | PROC-XXX
-        </div>
+    <!-- ===== FOOTER FIJO ===== -->
+    <div class="footer"
+         style="position:fixed; bottom:0; left:0; right:0; height:50px;">
+      <div style="display:flex; justify-content:space-between;
+                  padding:0 20px; font-size:8px;">
+        <div>Tel: (664) 973-8185</div>
+        <div>Página <span class="page"/> / <span class="topage"/></div>
+        <div>contacto@proteuslaboratorio.com</div>
       </div>
-    </t>
+      <div style="text-align:center; font-size:7px; margin-top:4px;">
+        FOR-XXX Rev. XX|PROC-XXX
+      </div>
+    </div>
+
   </template>
 </odoo>

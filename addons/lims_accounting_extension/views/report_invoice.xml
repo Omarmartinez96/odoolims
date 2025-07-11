@@ -1,103 +1,114 @@
 <odoo>
+  <!-- Sustituimos SOLO el layout del informe de factura -->
   <template id="inherit_account_report_invoice_document"
             inherit_id="account.report_invoice_document"
             priority="30">
+
+    <!-- Ojo: en 18.0 el layout base es web.external_layout -->
     <xpath expr="//t[@t-call='web.external_layout']" position="replace">
+
       <t t-call="lims_accounting_extension.external_layout_invoice_lims">
-        <!-- Contexto de company -->
+        <!-- La compañía la usa el header -->
         <t t-set="company" t-value="docs and docs[0].company_id"/>
 
-        <!--  ⬇️  TODO el cuerpo va dentro del slot -->
+        <!-- SLOT obligatorio -->
         <t t-slot="content">
 
           <!-- Bucle de facturas -->
           <t t-foreach="docs" t-as="doc">
             <div class="page">
-              <!-- Título interno -->
-              <div class="row mb-2">
-                <div class="col-12 text-center">
-                  <h4 style="font-size:20px; margin:0;">FACTURA DE VENTA</h4>
-                </div>
-              </div>
+
+              <!-- Título -->
+              <h4 class="text-center" style="font-size:20px; margin:0 0 10px;">
+                FACTURA DE VENTA
+              </h4>
+
               <!-- Datos principales -->
-              <table class="table table-borderless mb-2" style="width:100%; font-size:12px;">
+              <table style="width:100%; font-size:12px; margin-bottom:10px;">
                 <tr>
-                  <td><strong>No. Factura:</strong> <span t-esc="doc.name"/></td>
+                  <td><strong>No. Factura:&nbsp;</strong><t t-esc="doc.name"/></td>
                   <td class="text-end">
-                    <strong>Fecha:</strong> <span t-esc="doc.invoice_date or doc.date"/>
+                    <strong>Fecha:&nbsp;</strong>
+                    <t t-esc="doc.invoice_date or doc.date"/>
                   </td>
                 </tr>
                 <tr>
-                  <td><strong>Cliente:</strong> <span t-esc="doc.partner_id.name"/></td>
+                  <td><strong>Cliente:&nbsp;</strong><t t-esc="doc.partner_id.name"/></td>
                   <td class="text-end">
-                    <strong>Vence:</strong> <span t-esc="doc.invoice_date_due"/>
+                    <strong>Vence:&nbsp;</strong>
+                    <t t-esc="doc.invoice_date_due"/>
                   </td>
                 </tr>
               </table>
-              <!-- Líneas de factura -->
-              <table class="table table-sm mb-2"
-                    style="width:100%; font-size:11px; border-collapse:collapse;">
+
+              <!-- Líneas -->
+              <table style="width:100%; font-size:11px; border-collapse:collapse;">
                 <thead>
                   <tr>
                     <th>Descripción</th>
-                    <th class="text-center">Cant.</th>
-                    <th class="text-end">Precio U.</th>
-                    <th class="text-end">Subtotal</th>
+                    <th style="text-align:center;">Cant.</th>
+                    <th style="text-align:right;">Precio U.</th>
+                    <th style="text-align:right;">Subtotal</th>
                   </tr>
                 </thead>
                 <tbody>
                   <t t-foreach="doc.invoice_line_ids" t-as="line">
                     <tr>
-                      <td><span t-esc="line.name"/></td>
-                      <td class="text-center">
+                      <td><t t-esc="line.name"/></td>
+                      <td style="text-align:center;">
                         <span t-field="line.quantity"/>
                       </td>
-                      <td class="text-end">
+                      <td style="text-align:right;">
                         <span t-field="line.price_unit"
-                              t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                              t-field-options="{'widget':'monetary',
+                                               'display_currency':doc.currency_id}"/>
                       </td>
-                      <td class="text-end">
+                      <td style="text-align:right;">
                         <span t-field="line.price_subtotal"
-                              t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                              t-field-options="{'widget':'monetary',
+                                               'display_currency':doc.currency_id}"/>
                       </td>
                     </tr>
                   </t>
                 </tbody>
               </table>
+
               <!-- Totales -->
-              <div class="row">
-                <div class="col-6"/>
-                <div class="col-6" style="font-size:12px;">
-                  <table class="table table-borderless" style="width:100%;">
-                    <tr>
-                      <td><strong>Subtotal:</strong></td>
-                      <td class="text-end">
-                        <span t-field="doc.amount_untaxed"
-                              t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><strong>IVA:</strong></td>
-                      <td class="text-end">
-                        <span t-field="doc.amount_tax"
-                              t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td><strong>Total:</strong></td>
-                      <td class="text-end">
-                        <span t-field="doc.amount_total"
-                              t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                      </td>
-                    </tr>
-                  </table>
-                </div>
+              <div style="margin-top:10px; font-size:12px; width:100%;">
+                <table style="float:right;">
+                  <tr>
+                    <td><strong>Subtotal:&nbsp;</strong></td>
+                    <td style="text-align:right;">
+                      <span t-field="doc.amount_untaxed"
+                            t-field-options="{'widget':'monetary',
+                                             'display_currency':doc.currency_id}"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>IVA:&nbsp;</strong></td>
+                    <td style="text-align:right;">
+                      <span t-field="doc.amount_tax"
+                            t-field-options="{'widget':'monetary',
+                                             'display_currency':doc.currency_id}"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Total:&nbsp;</strong></td>
+                    <td style="text-align:right;">
+                      <span t-field="doc.amount_total"
+                            t-field-options="{'widget':'monetary',
+                                             'display_currency':doc.currency_id}"/>
+                    </td>
+                  </tr>
+                </table>
               </div>
+
             </div>
           </t>
-        </t>
 
+        </t><!-- /slot -->
       </t>
+
     </xpath>
   </template>
 </odoo>
