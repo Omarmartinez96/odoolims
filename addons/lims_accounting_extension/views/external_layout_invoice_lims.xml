@@ -7,8 +7,6 @@
     <!-- 1) ENGÁNCHATE A web.external_layout -->
     <t t-call="web.external_layout">
 
-      <!-- 2) Recupera la CSS estándar que Odoo 18 ahora pone en otro template -->
-      <t t-call="web.report_layout_style"/>
 
       <!-- ===== HEADER ===== -->
       <div class="header">
