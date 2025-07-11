@@ -1,0 +1,7 @@
+<odoo>
+  <template id="report_invoice_payment_table_stub"
+            t-name="account.report_invoice_payment_table">
+    <!-- stub vacío; pon tu diseño más tarde -->
+  </template>
+</odoo>
+

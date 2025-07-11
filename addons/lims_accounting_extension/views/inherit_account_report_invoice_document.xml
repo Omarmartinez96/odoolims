@@ -97,11 +97,6 @@
                 </table>
               </div>
 
-              <!-- Tabla de pagos si existe la variable -->
-              <t t-if="print_with_payments">
-                <t t-call="account.report_invoice_payment_table"/>
-              </t>
-
             </div>
           </t>
 
