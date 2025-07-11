@@ -7,15 +7,105 @@
     <xpath expr="//t[contains(@t-call, 'external_layout')]" position="replace">
 
       <t t-call="lims_accounting_extension.external_layout_invoice_lims">
-        <!-- variable que usa tu header -->
         <t t-set="company" t-value="docs and docs[0].company_id"/>
 
-        <!-- SLOT de contenido: solo el cuerpo, nada de layouts -->
+        <!-- SOLO el cuerpo de la factura -->
         <t t-slot="content">
-          <!-- reutilizamos el cuerpo estándar -->
-          <t t-call="account.report_invoice_document_content"/>
-          <!-- si tu instalación no tiene ese template, pega aquí las líneas/totales -->
-        </t>
+
+          <!-- Bucle de facturas -->
+          <t t-foreach="docs" t-as="doc">
+            <div class="page">
+
+              <!-- Título -->
+              <h4 class="text-center" style="font-size:20px; margin:0 0 10px;">
+                FACTURA DE VENTA
+              </h4>
+
+              <!-- Datos principales -->
+              <table style="width:100%; font-size:12px; margin-bottom:10px;">
+                <tr>
+                  <td><strong>No. Factura:</strong> <t t-esc="doc.name"/></td>
+                  <td style="text-align:right;">
+                    <strong>Fecha:</strong> <t t-esc="doc.invoice_date or doc.date"/>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Cliente:</strong> <t t-esc="doc.partner_id.name"/></td>
+                  <td style="text-align:right;">
+                    <strong>Vence:</strong> <t t-esc="doc.invoice_date_due"/>
+                  </td>
+                </tr>
+              </table>
+
+              <!-- Líneas -->
+              <table style="width:100%; font-size:11px; border-collapse:collapse;">
+                <thead>
+                  <tr>
+                    <th>Descripción</th>
+                    <th style="text-align:center;">Cant.</th>
+                    <th style="text-align:right;">Precio U.</th>
+                    <th style="text-align:right;">Subtotal</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <t t-foreach="doc.invoice_line_ids" t-as="line">
+                    <tr>
+                      <td><t t-esc="line.name"/></td>
+                      <td style="text-align:center;"><span t-field="line.quantity"/></td>
+                      <td style="text-align:right;">
+                        <span t-field="line.price_unit"
+                              t-field-options="{'widget':'monetary',
+                                               'display_currency':doc.currency_id}"/>
+                      </td>
+                      <td style="text-align:right;">
+                        <span t-field="line.price_subtotal"
+                              t-field-options="{'widget':'monetary',
+                                               'display_currency':doc.currency_id}"/>
+                      </td>
+                    </tr>
+                  </t>
+                </tbody>
+              </table>
+
+              <!-- Totales -->
+              <div style="margin-top:10px; font-size:12px; width:100%;">
+                <table style="float:right;">
+                  <tr>
+                    <td><strong>Subtotal:</strong></td>
+                    <td style="text-align:right;">
+                      <span t-field="doc.amount_untaxed"
+                            t-field-options="{'widget':'monetary',
+                                             'display_currency':doc.currency_id}"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>IVA:</strong></td>
+                    <td style="text-align:right;">
+                      <span t-field="doc.amount_tax"
+                            t-field-options="{'widget':'monetary',
+                                             'display_currency':doc.currency_id}"/>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td><strong>Total:</strong></td>
+                    <td style="text-align:right;">
+                      <span t-field="doc.amount_total"
+                            t-field-options="{'widget':'monetary',
+                                             'display_currency':doc.currency_id}"/>
+                    </td>
+                  </tr>
+                </table>
+              </div>
+
+              <!-- Tabla de pagos si existe la variable -->
+              <t t-if="print_with_payments">
+                <t t-call="account.report_invoice_payment_table"/>
+              </t>
+
+            </div>
+          </t>
+
+        </t><!-- /slot -->
       </t>
 
     </xpath>
