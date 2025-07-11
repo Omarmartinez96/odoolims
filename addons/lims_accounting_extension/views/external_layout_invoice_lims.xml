@@ -10,7 +10,7 @@
 
       <!-- ===== HEADER ===== -->
       <div class="header">
-        <!-- tu logo y datos -->
+        Header 
       </div>
 
       <!-- ===== CUERPO ===== -->
@@ -20,7 +20,7 @@
 
       <!-- ===== FOOTER ===== -->
       <div class="footer">
-        <!-- tu pie -->
+        Footer
       </div>
 
     </t>
