@@ -2,40 +2,32 @@
   <template id="inherit_account_report_invoice_document"
             inherit_id="account.report_invoice_document"
             priority="60">
-    <!-- Insertamos después del título FACTURA -->
-    <xpath expr="//h4[contains(text(), 'Factura')]" position="after">
-      <table class="table table-sm" style="margin: 10px 0; font-size:12px;">
-        <tr>
-          <td><strong>Número de Factura:</strong></td>
-          <td>
-            <t t-esc="doc.name"/>
-          </td>
-        </tr>
-        <tr>
-          <td><strong>RFC del Emisor:</strong></td>
-          <td>
-            <t t-esc="company.vat or ''"/>
-          </td>
-        </tr>
-        <tr>
-          <td><strong>Régimen Fiscal:</strong></td>
-          <td>
-            <t t-esc="company.partner_id.l10n_mx_edi_fiscal_regime_id.name or ''"/>
-          </td>
-        </tr>
-        <tr>
-          <td><strong>RFC del Receptor:</strong></td>
-          <td>
-            <t t-esc="doc.partner_id.vat or ''"/>
-          </td>
-        </tr>
-        <tr>
-          <td><strong>Uso de CFDI:</strong></td>
-          <td>
-            <t t-esc="doc.l10n_mx_edi_usage_id.name or ''"/>
-          </td>
-        </tr>
-      </table>
+    <!-- Insertamos después del primer div con clase "page" -->
+    <xpath expr="//div[@class='page']" position="inside">
+      <div style="margin-bottom:10px;">
+        <table class="table table-sm" style="font-size:12px; width: 100%;">
+          <tr>
+            <td><strong>Número de Factura:</strong></td>
+            <td><t t-esc="doc.name"/></td>
+          </tr>
+          <tr>
+            <td><strong>RFC del Emisor:</strong></td>
+            <td><t t-esc="company.vat or ''"/></td>
+          </tr>
+          <tr>
+            <td><strong>Régimen Fiscal:</strong></td>
+            <td><t t-esc="company.partner_id.l10n_mx_edi_fiscal_regime_id.name or ''"/></td>
+          </tr>
+          <tr>
+            <td><strong>RFC del Receptor:</strong></td>
+            <td><t t-esc="doc.partner_id.vat or ''"/></td>
+          </tr>
+          <tr>
+            <td><strong>Uso de CFDI:</strong></td>
+            <td><t t-esc="doc.l10n_mx_edi_usage_id.name or ''"/></td>
+          </tr>
+        </table>
+      </div>
     </xpath>
 
   </template>
