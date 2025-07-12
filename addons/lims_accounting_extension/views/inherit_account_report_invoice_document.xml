@@ -3,7 +3,7 @@
             inherit_id="account.report_invoice_document"
             priority="20">
     <!-- Insertamos después del primer div con clase "page" -->
-    <xpath expr="//t[@t-call='web.external_layout']" position="replace">
+    <xpath expr="//t[@t-call='web.external_layout' or @t-call='web.external_layout_standard']" position="replace">
       <t t-call="lims_accounting_extension.external_layout_invoice_lims">
         <!-- Contexto de company -->
         <t t-set="company" t-value="docs and docs[0].company_id"/>

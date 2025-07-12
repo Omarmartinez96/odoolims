@@ -15,6 +15,7 @@
       </div>
 
       <!-- ===== FOOTER VACÍO (HEREDADO DE AJUSTES NATIVOS DE ODOO VER "t-call")===== -->
+      <div class="footer">…tu pie aquí…</div>
 
     </t>
   </template>
