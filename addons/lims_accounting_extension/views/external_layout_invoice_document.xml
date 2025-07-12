@@ -1,0 +1,6 @@
+<odoo>
+  <template id="external_layout_invoice_lims"
+            inherit_id="web.external_layout_standard"
+            name="External Layout Invoice LIMS (Customized)">
+  </template>
+</odoo>

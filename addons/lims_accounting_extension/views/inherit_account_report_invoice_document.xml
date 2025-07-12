@@ -4,15 +4,18 @@
             priority="20">
     <xpath expr="//t[@t-call='web.external_layout']" position="replace">
       <!-- Llamamos al layout nativo -->
-      <t t-call="web.external_layout">
+      <t t-call="lims_accounting_extension.external_layout_invoice_lims">
         <t t-slot="content">
-          <!-- Contexto de la empresa -->
           <t t-set="company" t-value="docs and docs[0].company_id"/>
 
-          <!-- Bucle de facturas -->
+          <style>
+            .custom-row:nth-child(even) {
+              background-color: rgb(221, 235, 247);
+            }
+          </style>
+
           <t t-foreach="docs" t-as="doc">
             <div class="page">
-              <!-- Cabecera interna -->
               <div class="row mb-2">
                 <div class="col-6">
                   <strong>No. Factura:</strong> <span t-esc="doc.name"/>
@@ -22,7 +25,6 @@
                 </div>
               </div>
 
-              <!-- Información del cliente -->
               <div class="row mb-3">
                 <div class="col-12">
                   <strong>Cliente:</strong> <span t-esc="doc.partner_id.name"/><br/>
@@ -30,7 +32,6 @@
                 </div>
               </div>
 
-              <!-- Tabla de líneas -->
               <table class="table table-borderless table-sm mb-3"
                      style="width:100%; font-size:11px;">
                 <thead>
@@ -52,7 +53,8 @@
                               t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                       </td>
                       <td class="text-end">
-                        <span t-field="line.discount" t-options="{'widget': 'percentage'}"/>
+                        <span t-field="line.discount"
+                              t-field-options="{'widget':'percentage'}"/>
                       </td>
                       <td class="text-end">
                         <span t-field="line.price_subtotal"
@@ -63,7 +65,6 @@
                 </tbody>
               </table>
 
-              <!-- Totales -->
               <div class="row">
                 <div class="col-6"/>
                 <div class="col-6">
@@ -109,21 +110,6 @@
                   </table>
                 </div>
               </div>
-              <!-- CFDI Información -->
-              <t t-if="doc.l10n_mx_edi_cfdi_uuid">
-                <div class="mt-4" style="font-size:10px;">
-                  <strong>UUID:</strong> <span t-esc="doc.l10n_mx_edi_cfdi_uuid"/><br/>
-                  <strong>RFC Emisor:</strong> <span t-esc="doc.company_id.vat"/><br/>
-                  <strong>RFC Receptor:</strong> <span t-esc="doc.partner_id.vat"/><br/>
-                  <strong>Sello Digital del CFDI:</strong><br/>
-                  <span t-esc="doc.l10n_mx_edi_cfdi_sello"/><br/>
-                  <strong>Sello del SAT:</strong><br/>
-                  <span t-esc="doc.l10n_mx_edi_cfdi_sello_sat"/><br/>
-                  <strong>Certificado SAT No.:</strong> <span t-esc="doc.l10n_mx_edi_cfdi_no_certificado_sat"/><br/>
-                  <strong>Cadena original del complemento de certificación digital del SAT:</strong><br/>
-                  <span t-esc="doc.l10n_mx_edi_cfdi_cadena_original"/><br/><br/>
-                  <strong>Este documento es una representación impresa de un CFDI.</strong>
-                </div>
             </div>
           </t>
         </t>
