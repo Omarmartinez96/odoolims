@@ -1,0 +1,13 @@
+<odoo>
+  <data>
+    <report
+      id="report_invoice_lims"
+      model="account.move"
+      string="Factura LIMS"
+      report_type="qweb-pdf"
+      name="lims_accounting_extension.report_invoice_document"
+      file="lims_accounting_extension.report_invoice_document"
+      print_report_name="'Factura - %s' % (object.name)"
+    />
+  </data>
+</odoo>

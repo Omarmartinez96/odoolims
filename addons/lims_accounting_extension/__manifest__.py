@@ -9,6 +9,7 @@
         'views/external_layout_invoice_document.xml',
         'views/inherit_account_report_invoice_document.xml',       
         'views/payment_table_stub.xml',     
+        'views/report_invoice_action.xml',
     ],
     'installable': True,
     'application': True,
