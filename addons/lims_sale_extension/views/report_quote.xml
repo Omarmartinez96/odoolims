@@ -1,10 +1,27 @@
 <odoo>
   <template id="report_saleorder_custom">
     <t t-call="web.html_container">
+      <!-- Inyecta estilos para habilitar saltos dentro del contenido -->
+      <t>
+        <style>
+          .page {
+            page-break-after: auto;
+            page-break-inside: auto !important;
+            break-inside: auto !important;
+            -webkit-column-break-inside: auto !important;
+          }
+          thead {
+            display: table-header-group !important;
+          }
+          tr {
+            page-break-inside: avoid;
+          }
+        </style>
+      </t>
       <t t-set="company" t-value="docs and docs[0].company_id"/>
       <t t-foreach="docs" t-as="doc">
         <main class="o_report_layout">
-          <div class="page" style="page-break-after: always;">
+          <div class="page">
 
             <!-- Encabezado interno de cotización -->
             <div class="row" style="margin-bottom:5px;">
