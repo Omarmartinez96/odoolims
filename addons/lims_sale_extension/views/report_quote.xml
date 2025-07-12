@@ -3,8 +3,8 @@
     <t t-call="web.html_container">
       <t t-set="company" t-value="docs and docs[0].company_id"/>
       <t t-foreach="docs" t-as="doc">
-        <main class="o_report_layout" style="margin-top:0 !important;">
-          <div class="page">
+        <main class="o_report_layout">
+          <div class="page" style="margin-top: 120px; margin-bottom: 100px;">
 
             <!-- Encabezado interno de cotización -->
             <div class="row" style="margin-bottom:5px;">
