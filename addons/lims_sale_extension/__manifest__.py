@@ -6,6 +6,7 @@
         'sale',
         'lims_customer',
         'web',
+        'lims_paperformat',
     ],
     'data': [
         'data/sale_order_sequence.xml',

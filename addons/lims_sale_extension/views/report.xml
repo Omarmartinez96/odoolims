@@ -6,7 +6,7 @@
     report_type="qweb-pdf"
     name="lims_sale_extension.report_saleorder_custom"
     file="lims_sale_extension.report_saleorder_custom"
+    paperformat="lims_paperformat.paperformat_lims_letter"
     print_report_name="'Cotización - %s' % (object.name)"
-    paperformat="hr_payroll.paperformat_us_light"
   />
 </odoo>
