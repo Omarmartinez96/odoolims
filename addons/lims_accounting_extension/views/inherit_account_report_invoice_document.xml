@@ -1,14 +1,11 @@
+<!-- file: views/inherit_account_report_invoice_document.xml -->
 <odoo>
   <template id="inherit_account_report_invoice_document"
             inherit_id="account.report_invoice_document"
             priority="20">
-    <!--
-      Usamos contains() para capturar tanto web.external_layout
-      como web.external_layout_standard (por si cambia en tu versión)
-    -->
-    <xpath expr="//t[contains(@t-call, 'external_layout')]" position="replace">
-      <!-- Llamamos a tu wrapper, que internamente vuelve a t-call a web.external_layout -->
-      <t t-call="lims_accounting_extension.external_layout_invoice_lims"/>
+    <!-- Cambiamos sólo el call al layout nativo para que use nuestro wrapper -->
+    <xpath expr="//t[@t-call='web.external_layout']" position="attributes">
+      <attribute name="t-call">lims_accounting_extension.external_layout_invoice_lims</attribute>
     </xpath>
   </template>
 </odoo>

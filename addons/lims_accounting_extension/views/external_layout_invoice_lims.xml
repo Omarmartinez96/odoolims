@@ -1,16 +1,15 @@
 <odoo>
   <template id="external_layout_invoice_lims"
             t-name="lims_accounting_extension.external_layout_invoice_lims">
-    <!-- 1) Llamamos al layout estándar de Odoo -->
-    <t t-call="web.external_layout">
-      <!-- 2) Reponemos las variables que el standard define -->
-      <t t-set="o"          t-value="o.with_context(lang=lang)"/>
-      <t t-set="forced_vat" t-value="o.fiscal_position_id.foreign_vat"/>
-      <t t-set="company"    t-value="o.company_id"/>
-
-      <!-- 3) Slot de contenido: inyectamos TODO el cuerpo original -->
-      <t t-slot="content">
-        <t t-raw="0"/>
+    <!-- 1) Contenedor base -->
+    <t t-call="web.html_container">
+      <!-- 2) Encapsulamos el layout nativo -->
+      <t t-call="web.external_layout">
+        <!-- 3) Header/footer “out-of-the-box” de Odoo siguen igual -->
+        <!-- 4) Aquí va tu slot de contenido -->
+        <div class="article o_report_in_container">
+          <t t-slot="content"/>
+        </div>
       </t>
     </t>
   </template>
