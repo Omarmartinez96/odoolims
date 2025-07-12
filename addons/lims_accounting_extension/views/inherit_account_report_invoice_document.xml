@@ -7,7 +7,7 @@
       <!-- 2) Sustituimos esa llamada por tu layout “Invoice LIMS” -->
       <t t-call="lims_accounting_extension.external_layout_invoice_lims">
         <!-- 3) Pasamos la empresa para el header -->
-        <t t-set="company" t-value="docs and docs[0].company_id"/>
+        <t t-set="company" t-value="doc.company_id"/>
         <!-- 4) Inyectamos TODO el contenido de la factura aquí -->
         <t t-slot="content">
           <t t-foreach="docs" t-as="doc">
