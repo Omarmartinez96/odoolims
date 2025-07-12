@@ -109,6 +109,21 @@
                   </table>
                 </div>
               </div>
+              <!-- CFDI Información -->
+              <t t-if="doc.l10n_mx_edi_cfdi_uuid">
+                <div class="mt-4" style="font-size:10px;">
+                  <strong>UUID:</strong> <span t-esc="doc.l10n_mx_edi_cfdi_uuid"/><br/>
+                  <strong>RFC Emisor:</strong> <span t-esc="doc.company_id.vat"/><br/>
+                  <strong>RFC Receptor:</strong> <span t-esc="doc.partner_id.vat"/><br/>
+                  <strong>Sello Digital del CFDI:</strong><br/>
+                  <span t-esc="doc.l10n_mx_edi_cfdi_sello"/><br/>
+                  <strong>Sello del SAT:</strong><br/>
+                  <span t-esc="doc.l10n_mx_edi_cfdi_sello_sat"/><br/>
+                  <strong>Certificado SAT No.:</strong> <span t-esc="doc.l10n_mx_edi_cfdi_no_certificado_sat"/><br/>
+                  <strong>Cadena original del complemento de certificación digital del SAT:</strong><br/>
+                  <span t-esc="doc.l10n_mx_edi_cfdi_cadena_original"/><br/><br/>
+                  <strong>Este documento es una representación impresa de un CFDI.</strong>
+                </div>
             </div>
           </t>
         </t>
