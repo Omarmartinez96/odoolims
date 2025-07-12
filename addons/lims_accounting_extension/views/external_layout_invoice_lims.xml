@@ -6,16 +6,30 @@
 
     <!-- 1) ENGÁNCHATE A web.external_layout -->
     <t t-call="web.html_container">
+      <t t-call="web.external_layout_style"/>
 
       <!-- ===== HEADER VACIO (HEREDADO DE AJUSTES NATIVOS DE ODOO VER "t-call")===== -->
 
+      <div class="header" style="padding:10px 20px; display:flex; justify-content:space-between; align-items:center;">
+        <img t-if="company.logo"
+             t-att-src="'data:image/png;base64,%s' % company.logo"
+             style="max-height:80px;"/>
+        <div style="text-align:right; font-size:10px;">
+          <strong><t t-esc="company.name"/></strong><br/>
+          <t t-esc="company.partner_id.contact_address"/>
+        </div>
+      </div>
+
       <!-- ===== ARTÍCULO / CONTENIDO (OBLIGATORIO, NO MOVER NI ELIMINAR)===== -->
-      <div class="article">
-        <div t-slot="content"/>
+      <div class="article o_report_in_container">
+        <t t-slot="content"/>
       </div>
 
       <!-- ===== FOOTER VACÍO (HEREDADO DE AJUSTES NATIVOS DE ODOO VER "t-call")===== -->
-      <div class="footer">…tu pie aquí…</div>
+      <div class="footer" style="padding:5px 20px; font-size:8px; text-align:center; border-top:1px solid #DDD;">
+        Página <span class="page"/> de <span class="topage"/>
+      </div>
+
 
     </t>
   </template>
