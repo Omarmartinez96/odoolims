@@ -4,96 +4,10 @@
             priority="60">
     <!-- Insertamos después del primer div con clase "page" -->
     <xpath expr="//t[@t-call='web.external_layout']" position="replace">
+      <!-- Llamamos a nuestro layout independiente -->
       <t t-call="lims_accounting_extension.external_layout_invoice_lims">
-        <t t-set="company" t-value="docs and docs[0].company_id"/>
-        <t t-slot="content">
-          <t t-foreach="docs" t-as="doc">
-            <div class="page">
-
-              <!-- Número de factura -->
-              <div class="text-right" style="font-size:12px;">
-                <strong>Número de factura:</strong>
-                <span t-esc="doc.name"/>
-              </div>
-
-              <!-- Título -->
-              <div class="text-center" style="margin:10px 0;">
-                <h4 style="font-size:20px;">FACTURA DE VENTA</h4>
-              </div>
-
-              <!-- Datos del emisor y receptor -->
-              <table style="width:100%; font-size:12px; margin-bottom:10px;">
-                <tr>
-                  <td>
-                    <strong>Emisor:</strong><br/>
-                    <t t-esc="company.partner_id.name"/><br/>
-                    RFC: <t t-esc="company.vat"/><br/>
-                    Régimen Fiscal: <t t-esc="company.partner_id.l10n_mx_edi_fiscal_regime_id.name or ''"/>
-                  </td>
-                  <td>
-                    <strong>Receptor:</strong><br/>
-                    <t t-esc="doc.partner_id.name"/><br/>
-                    RFC: <t t-esc="doc.partner_id.vat"/><br/>
-                    Uso de CFDI: <t t-esc="doc.l10n_mx_edi_usage"/>
-                  </td>
-                </tr>
-              </table>
-
-              <!-- Tabla de productos -->
-              <table class="table table-sm" style="width:100%; font-size:11px; border-collapse:collapse;" border="1">
-                <thead>
-                  <tr style="background-color:#f0f0f0;">
-                    <th>Descripción</th>
-                    <th>Cantidad</th>
-                    <th>U. de Medida</th>
-                    <th>Precio Unitario</th>
-                    <th>Descuento</th>
-                    <th>Importe</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <t t-foreach="doc.invoice_line_ids" t-as="line">
-                    <tr>
-                      <td><t t-esc="line.name"/></td>
-                      <td><t t-esc="line.quantity"/></td>
-                      <td><t t-esc="line.product_uom_id.name"/></td>
-                      <td><t t-esc="line.price_unit" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
-                      <td><t t-esc="line.discount"/>%</td>
-                      <td><t t-esc="line.price_subtotal" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></td>
-                    </tr>
-                  </t>
-                </tbody>
-              </table>
-
-              <!-- Totales -->
-              <div class="text-right" style="font-size:12px; margin-top:10px;">
-                <p><strong>Subtotal:</strong> <span t-esc="doc.amount_untaxed" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></p>
-                <p><strong>Descuento total:</strong> <span t-esc="sum(line.price_unit * line.quantity * line.discount / 100 for line in doc.invoice_line_ids)" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></p>
-                <t t-foreach="doc.tax_line_ids" t-as="tax">
-                  <p>
-                    <strong><t t-esc="tax.name"/>:</strong>
-                    <t t-esc="tax.amount" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/>
-                  </p>
-                </t>
-                <p><strong>Total:</strong> <span t-esc="doc.amount_total" t-options='{"widget": "monetary", "display_currency": doc.currency_id}'/></p>
-              </div>
-
-              <!-- Total con letra -->
-              <div style="font-size:12px; margin-top:5px;">
-                <strong>Total con letra:</strong> <span t-esc="doc.amount_to_text"/>
-              </div>
-
-              <!-- CFDI: UUID, Sello, Leyenda -->
-              <div style="margin-top:10px; font-size:8px; word-break:break-all;">
-                <p><strong>UUID:</strong> <span t-esc="doc.l10n_mx_edi_cfdi_uuid"/></p>
-                <p><strong>Sello digital del CFDI:</strong><br/><span t-esc="doc.l10n_mx_edi_cfdi_sello"/></p>
-                <p><strong>Sello digital del SAT:</strong><br/><span t-esc="doc.l10n_mx_edi_sat_cert_sn"/></p>
-                <p style="text-align:center;"><strong>Este documento es una representación impresa de un CFDI</strong></p>
-              </div>
-
-            </div>
-          </t>
-        </t>
+        <!-- Aquí inyectamos TODO el contenido original de la factura -->
+        <t t-raw="0"/>
       </t>
     </xpath>
   </template>
