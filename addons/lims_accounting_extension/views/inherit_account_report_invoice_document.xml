@@ -1,17 +1,10 @@
 <odoo>
-  <template id="inherit_account_report_invoice_document"
+  <template id="report_invoice_document_inherit"
             inherit_id="account.report_invoice_document"
             priority="20">
-    <!-- Insertamos después del primer div con clase "page" -->
     <xpath expr="//t[@t-call='web.external_layout']" position="replace">
       <t t-call="lims_accounting_extension.external_layout_invoice_lims">
-        <!-- Contexto de company -->
-        <t t-set="company" t-value="docs and docs[0].company_id"/>
-        <!-- Aquí abrimos el slot “content” que tu layout tiene dentro de .article -->
-        <t t-slot="content">
-          <!-- Y dentro metemos el raw que representa TODO el cuerpo original -->
-          <t t-raw="0"/>
-        </t>
+        <!-- el t-raw ya está dentro de tu layout -->
       </t>
     </xpath>
   </template>
