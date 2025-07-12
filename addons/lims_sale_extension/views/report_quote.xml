@@ -4,7 +4,7 @@
       <t t-set="company" t-value="docs and docs[0].company_id"/>
       <t t-foreach="docs" t-as="doc">
         <main class="o_report_layout">
-          <div class="page" style="margin-top: 120px; margin-bottom: 100px;">
+          <div class="page">
 
             <!-- Encabezado interno de cotización -->
             <div class="row" style="margin-bottom:5px;">
