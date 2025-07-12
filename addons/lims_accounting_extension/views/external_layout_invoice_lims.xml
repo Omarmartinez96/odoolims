@@ -2,17 +2,15 @@
 <odoo>
   <template id="external_layout_invoice_lims"
             t-name="lims_accounting_extension.external_layout_invoice_lims">
-    <!-- 1) Invocamos el layout estándar -->
+    <!-- Invocamos el layout estándar (header+footer nativos) -->
     <t t-call="web.external_layout">
-      <!-- 2) Reestablecemos las variables que espera el standard -->
+      <!-- Volvemos a definir las variables que el estándar necesita -->
       <t t-set="o"          t-value="o.with_context(lang=lang)"/>
       <t t-set="forced_vat" t-value="o.fiscal_position_id.foreign_vat"/>
       <t t-set="company"    t-value="o.company_id"/>
 
-      <!-- 3) Aquí va TODO el contenido original -->
-      <t t-slot="content">
-        <t t-raw="0"/>
-      </t>
+      <!-- Aquí se inyecta TODO el cuerpo original de la factura -->
+      <t t-raw="0"/>
     </t>
   </template>
 </odoo>
