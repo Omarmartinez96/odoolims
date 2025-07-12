@@ -8,12 +8,6 @@
         <t t-slot="content">
           <t t-set="company" t-value="docs and docs[0].company_id"/>
 
-          <style>
-            .custom-row:nth-child(even) {
-              background-color: rgb(221, 235, 247);
-            }
-          </style>
-
           <t t-foreach="docs" t-as="doc">
             <div class="page">
               <div class="row mb-2">
