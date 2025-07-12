@@ -3,17 +3,16 @@
             inherit_id="account.report_invoice_document"
             priority="20">
     <xpath expr="//t[@t-call='web.external_layout']" position="replace">
-      <!-- 1) Invocamos tu wrapper -->
-      <t t-call="lims_accounting_extension.external_layout_invoice_lims">
-        <!-- 2) TODO esto va dentro del slot 'content' de tu wrapper -->
+      <!-- Llamamos al layout nativo -->
+      <t t-call="web.external_layout">
         <t t-slot="content">
-          <!-- Contexto de company -->
+          <!-- Contexto de la empresa -->
           <t t-set="company" t-value="docs and docs[0].company_id"/>
 
           <!-- Bucle de facturas -->
           <t t-foreach="docs" t-as="doc">
             <div class="page">
-              <!-- Cabecera interna - -->
+              <!-- Cabecera interna -->
               <div class="row mb-2">
                 <div class="col-6">
                   <strong>No. Factura:</strong> <span t-esc="doc.name"/>
@@ -22,14 +21,16 @@
                   <strong>Fecha:</strong> <span t-esc="doc.invoice_date or doc.date"/>
                 </div>
               </div>
-              <!-- Cliente  -->
+
+              <!-- Información del cliente -->
               <div class="row mb-3">
                 <div class="col-12">
                   <strong>Cliente:</strong> <span t-esc="doc.partner_id.name"/><br/>
                   <small t-esc="doc.partner_id.contact_address"/>
                 </div>
               </div>
-              <!-- Líneas -->
+
+              <!-- Tabla de líneas -->
               <table class="table table-sm mb-3"
                      style="width:100%; font-size:11px; border-collapse:collapse;">
                 <thead>
@@ -57,6 +58,7 @@
                   </t>
                 </tbody>
               </table>
+
               <!-- Totales -->
               <div class="row">
                 <div class="col-6"/>
@@ -88,8 +90,8 @@
               </div>
             </div>
           </t>
-        </t> 
-      </t>   
+        </t>
+      </t>
     </xpath>
   </template>
 </odoo>
