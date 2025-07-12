@@ -4,6 +4,10 @@
             t-name="lims_accounting_extension.external_layout_invoice_lims"
             name="External Layout Invoice LIMS">
 
+    <!-- 1) ENGÁNCHATE A web.external_layout -->
+    <t t-call="web.external_layout">
+
+
       <!-- ===== HEADER ===== -->
       <div class="header">
         Header 
