@@ -93,7 +93,7 @@
 
             </div>
           </t>
-        </t-slot>
+        </t>
       </t>
     </xpath>
   </template>
