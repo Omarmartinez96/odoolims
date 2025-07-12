@@ -1,12 +1,11 @@
 <odoo>
-  <report
-    id="action_report_saleorder_custom"
-    string="Cotización LIMS"
-    model="sale.order"
-    report_type="qweb-pdf"
-    name="lims_sale_extension.report_saleorder_custom"
-    file="lims_sale_extension.report_saleorder_custom"
-    paperformat="lims_paperformat.paperformat_lims_letter"
-    print_report_name="'Cotización - %s' % (object.name)"
-  />
+  <record id="action_report_saleorder_custom" model="ir.actions.report">
+    <field name="name">Cotización LIMS</field>
+    <field name="model">sale.order</field>
+    <field name="report_type">qweb-pdf</field>
+    <field name="report_name">lims_sale_extension.report_saleorder_custom</field>
+    <field name="report_file">lims_sale_extension.report_saleorder_custom</field>
+    <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
+    <field name="print_report_name">'Cotización - %s' % (object.name)</field>
+  </record>
 </odoo>
