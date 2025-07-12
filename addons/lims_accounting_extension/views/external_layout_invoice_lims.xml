@@ -7,27 +7,14 @@
     <!-- 1) ENGÁNCHATE A web.external_layout -->
     <t t-call="web.external_layout">
 
-      <!-- ===== HEADER VACIO ===== -->
+      <!-- ===== HEADER VACIO (HEREDADO DE AJUSTES NATIVOS DE ODOO VER "t-call")===== -->
 
-      <!-- ===== ARTÍCULO / CONTENIDO ===== -->
+      <!-- ===== ARTÍCULO / CONTENIDO (OBLIGATORIO, NO MOVER NI ELIMINAR)===== -->
       <div class="article">
         <div t-slot="content"/>
       </div>
 
-      <!-- ===== FOOTER ===== -->
-      <div class="footer" style="font-size:10px; text-align:center; border-top:1px solid #ccc; padding-top:5px;">
-        <div style="display:flex; justify-content:space-between; width:100%;">
-          <div style="text-align:left; width:33%;">
-             <t t-esc="company.phone or ''"/>
-          </div>
-          <div style="text-align:center; width:33%;">
-             <t t-esc="company.partner_id.contact_address or ''"/>
-          </div>
-          <div style="text-align:right; width:33%;">
-             <t t-esc="company.email or ''"/>
-          </div>
-        </div>
-      </div>
+      <!-- ===== FOOTER VACÍO (HEREDADO DE AJUSTES NATIVOS DE ODOO VER "t-call")===== -->
 
     </t>
   </template>
