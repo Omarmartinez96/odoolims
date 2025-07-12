@@ -1,7 +1,7 @@
 <odoo>
   <template id="inherit_account_report_invoice_document"
             inherit_id="account.report_invoice_document"
-            priority="60">
+            priority="20">
     <!-- Insertamos después del primer div con clase "page" -->
     <xpath expr="//t[@t-call='web.external_layout']" position="replace">
       <t t-call="lims_accounting_extension.external_layout_invoice_lims">
