@@ -28,7 +28,7 @@
                     <strong>Emisor:</strong><br/>
                     <t t-esc="company.partner_id.name"/><br/>
                     RFC: <t t-esc="company.vat"/><br/>
-                    Régimen Fiscal: <t t-esc="company.l10n_mx_edi_fiscal_regime_id.name"/>
+                    Régimen Fiscal: <t t-esc="company.partner_id.l10n_mx_edi_fiscal_regime_id.name or ''"/>
                   </td>
                   <td>
                     <strong>Receptor:</strong><br/>
