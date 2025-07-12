@@ -4,10 +4,14 @@
             priority="60">
     <!-- Insertamos después del primer div con clase "page" -->
     <xpath expr="//t[@t-call='web.external_layout']" position="replace">
-      <!-- Llamamos a nuestro layout independiente -->
       <t t-call="lims_accounting_extension.external_layout_invoice_lims">
-        <!-- Aquí inyectamos TODO el contenido original de la factura -->
-        <t t-raw="0"/>
+        <!-- Contexto de company -->
+        <t t-set="company" t-value="docs and docs[0].company_id"/>
+        <!-- Aquí abrimos el slot “content” que tu layout tiene dentro de .article -->
+        <t t-slot="content">
+          <!-- Y dentro metemos el raw que representa TODO el cuerpo original -->
+          <t t-raw="0"/>
+        </t>
       </t>
     </xpath>
   </template>
