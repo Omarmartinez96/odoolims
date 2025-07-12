@@ -1,266 +1,267 @@
 <odoo>
   <template id="report_saleorder_custom">
     <t t-call="web.html_container">
-      <!-- Inyecta estilos para habilitar saltos dentro del contenido -->
+      
+      <!-- Estilos para evitar cortes bruscos -->
       <t>
         <style>
-          .page {
-            page-break-after: auto;
-            page-break-inside: auto !important;
-            break-inside: auto !important;
-            -webkit-column-break-inside: auto !important;
-          }
           thead {
-            display: table-header-group !important;
+            display: table-header-group;
+          }
+          tfoot {
+            display: table-footer-group;
           }
           tr {
             page-break-inside: avoid;
           }
+          .no-break {
+            page-break-inside: avoid;
+            break-inside: avoid;
+          }
         </style>
       </t>
+
       <t t-set="company" t-value="docs and docs[0].company_id"/>
       <t t-foreach="docs" t-as="doc">
         <main class="o_report_layout">
-          <div class="page">
 
-            <!-- Encabezado interno de cotización -->
-            <div class="row" style="margin-bottom:5px;">
-              <div class="col-12 text-center">
-                <h4 style="color:#090D61; font-size:20px; margin:0;">COTIZACIÓN DE SERVICIOS</h4>
-              </div>
+          <!-- Encabezado interno de cotización -->
+          <div class="row" style="margin-bottom:5px;">
+            <div class="col-12 text-center">
+              <h4 style="color:#090D61; font-size:20px; margin:0;">COTIZACIÓN DE SERVICIOS</h4>
             </div>
+          </div>
 
-            <!-- Número de cotización -->
-            <table class="table table-borderless mt-1"
-                  style="width:100%; font-size:16px; border-collapse:collapse; border-spacing:0;">
+          <!-- Número de cotización -->
+          <table class="table table-borderless mt-1"
+                style="width:100%; font-size:16px; border-collapse:collapse; border-spacing:0;">
+            <tr>
+              <td style="padding:2px 4px;">
+                <strong>No. de Cotización:</strong> <span t-esc="doc.name"/>
+              </td>
+            </tr>
+          </table>
+
+          <!-- Datos del cliente -->
+          <table class="table table-borderless mt-2"
+                style="width:100%; font-size:12px; border-collapse:collapse; border-spacing:0;">
+            <t t-set="meses" t-value="{
+              '01':'Ene','02':'Feb','03':'Mar','04':'Abr',
+              '05':'May','06':'Jun','07':'Jul','08':'Ago',
+              '09':'Sep','10':'Oct','11':'Nov','12':'Dic'
+            }"/>
+            <tbody>
+              <!-- Fila 1: Cliente / Fecha -->
               <tr>
-                <td style="padding:2px 4px;">
-                  <strong>No. de Cotización:</strong> <span t-esc="doc.name"/>
+                <td style="width:50%; padding:2px 4px;">
+                  <strong>Cliente:</strong> <span t-esc="doc.partner_id.name"/>
+                </td>
+                <td style="width:50%; padding:2px 4px; text-align:right;">
+                  <strong>Fecha:</strong>
+                  <t t-set="d2" t-value="doc.date_order.strftime('%d')"/>
+                  <t t-set="m2" t-value="doc.date_order.strftime('%m')"/>
+                  <t t-set="y2" t-value="doc.date_order.strftime('%Y')"/>
+                  <span t-esc="d2 + '/' + meses[m2] + '/' + y2"/>
                 </td>
               </tr>
-            </table>
+              <!-- Fila 2: Dirección personalizada / Términos de pago -->
+              <tr>
+                <td style="padding:2px 4px; vertical-align:top;">
+                  <!-- Calle y número -->
+                  <span t-esc="doc.partner_id.street"/><br/>
+                  <!-- Colonia o complemento -->
+                  <t t-if="doc.partner_id.street2">
+                    <span t-esc="doc.partner_id.street2"/><br/>
+                  </t>
+                  <!-- Código postal, ciudad -->
+                  <span t-esc="doc.partner_id.zip"/> <span t-esc="doc.partner_id.city"/><br/>
+                  <!-- Estado y país -->
+                  <t t-if="doc.partner_id.state_id">
+                    <span t-esc="doc.partner_id.state_id.name"/> 
+                  </t>
+                  <span t-esc="doc.partner_id.country_id.name"/>
+                </td>
+                <td style="padding:2px 4px; text-align:right;">
+                  <strong>Términos de pago:</strong> <span t-esc="doc.payment_term_id.name"/>
+                </td>
+              </tr>
+              <!-- Fila 3: Vigencia -->
+              <tr>
+                <td style="padding:2px 4px;">
+                  <t t-if="doc.validity_date">
+                    <strong>Vigencia hasta:</strong>
+                    <t t-set="d" t-value="doc.validity_date.strftime('%d')"/>
+                    <t t-set="m" t-value="doc.validity_date.strftime('%m')"/>
+                    <t t-set="y" t-value="doc.validity_date.strftime('%Y')"/>
+                    <span t-esc="d + '/' + meses[m] + '/' + y"/>
+                  </t>
+                </td>
+              </tr>
+              <!-- Fila 4: En atención a / Correos -->
+              <tr t-if="doc.lims_contact_ids">
+                <td style="padding:2px 4px;">
+                  <strong>En atención a:</strong>
+                  <span t-esc="', '.join([c.name for c in doc.lims_contact_ids])"/>
+                </td>
+                <td style="padding:2px 4px; text-align:right;">
+                  <strong>Correos:</strong>
+                  <span t-esc="', '.join([c.email for c in doc.lims_contact_ids if c.email])"/>
+                </td>
+              </tr>
+            </tbody>
+          </table>
 
-            <!-- Datos del cliente -->
-            <table class="table table-borderless mt-2"
-                  style="width:100%; font-size:12px; border-collapse:collapse; border-spacing:0;">
-              <t t-set="meses" t-value="{
-                '01':'Ene','02':'Feb','03':'Mar','04':'Abr',
-                '05':'May','06':'Jun','07':'Jul','08':'Ago',
-                '09':'Sep','10':'Oct','11':'Nov','12':'Dic'
-              }"/>
-              <tbody>
-                <!-- Fila 1: Cliente / Fecha -->
+          <!-- Tabla de líneas -->
+          <table class="table table-borderless mt-2"
+                style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0;">
+            <thead>
+              <tr style="background-color:rgb(221,235,247);">
+                <th style="width:40%; padding:4px 2px; text-align:left;"><strong>Descripción</strong></th>
+                <th style="width:10%; padding:4px 2px; text-align:center;"><strong>Cantidad</strong></th>
+                <th style="width:15%; padding:4px 2px; text-align:right;"><strong>Precio unitario</strong></th>
+                <th style="width:15%; padding:4px 2px; text-align:right;"><strong>Descuento</strong></th>
+                <th style="width:20%; padding:4px 2px; text-align:right;"><strong>Subtotal</strong></th>
+              </tr>
+            </thead>
+            <tbody>
+              <t t-foreach="doc.order_line" t-as="line">
                 <tr>
-                  <td style="width:50%; padding:2px 4px;">
-                    <strong>Cliente:</strong> <span t-esc="doc.partner_id.name"/>
-                  </td>
-                  <td style="width:50%; padding:2px 4px; text-align:right;">
-                    <strong>Fecha:</strong>
-                    <t t-set="d2" t-value="doc.date_order.strftime('%d')"/>
-                    <t t-set="m2" t-value="doc.date_order.strftime('%m')"/>
-                    <t t-set="y2" t-value="doc.date_order.strftime('%Y')"/>
-                    <span t-esc="d2 + '/' + meses[m2] + '/' + y2"/>
-                  </td>
-                </tr>
-                <!-- Fila 2: Dirección personalizada / Términos de pago -->
-                <tr>
-                  <td style="padding:2px 4px; vertical-align:top;">
-                    <!-- Calle y número -->
-                    <span t-esc="doc.partner_id.street"/><br/>
-                    <!-- Colonia o complemento -->
-                    <t t-if="doc.partner_id.street2">
-                      <span t-esc="doc.partner_id.street2"/><br/>
-                    </t>
-                    <!-- Código postal, ciudad -->
-                    <span t-esc="doc.partner_id.zip"/> <span t-esc="doc.partner_id.city"/><br/>
-                    <!-- Estado y país -->
-                    <t t-if="doc.partner_id.state_id">
-                      <span t-esc="doc.partner_id.state_id.name"/> 
-                    </t>
-                    <span t-esc="doc.partner_id.country_id.name"/>
-                  </td>
-                  <td style="padding:2px 4px; text-align:right;">
-                    <strong>Términos de pago:</strong> <span t-esc="doc.payment_term_id.name"/>
-                  </td>
-                </tr>
-                <!-- Fila 3: Vigencia -->
-                <tr>
-                  <td style="padding:2px 4px;">
-                    <t t-if="doc.validity_date">
-                      <strong>Vigencia hasta:</strong>
-                      <t t-set="d" t-value="doc.validity_date.strftime('%d')"/>
-                      <t t-set="m" t-value="doc.validity_date.strftime('%m')"/>
-                      <t t-set="y" t-value="doc.validity_date.strftime('%Y')"/>
-                      <span t-esc="d + '/' + meses[m] + '/' + y"/>
-                    </t>
-                  </td>
-                </tr>
-                <!-- Fila 4: En atención a / Correos -->
-                <tr t-if="doc.lims_contact_ids">
-                  <td style="padding:2px 4px;">
-                    <strong>En atención a:</strong>
-                    <span t-esc="', '.join([c.name for c in doc.lims_contact_ids])"/>
-                  </td>
-                  <td style="padding:2px 4px; text-align:right;">
-                    <strong>Correos:</strong>
-                    <span t-esc="', '.join([c.email for c in doc.lims_contact_ids if c.email])"/>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
-
-            <!-- Tabla de líneas -->
-            <table class="table table-borderless mt-2"
-                  style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0;">
-              <thead>
-                <tr style="background-color:rgb(221,235,247);">
-                  <th style="width:40%; padding:4px 2px; text-align:left;"><strong>Descripción</strong></th>
-                  <th style="width:10%; padding:4px 2px; text-align:center;"><strong>Cantidad</strong></th>
-                  <th style="width:15%; padding:4px 2px; text-align:right;"><strong>Precio unitario</strong></th>
-                  <th style="width:15%; padding:4px 2px; text-align:right;"><strong>Descuento</strong></th>
-                  <th style="width:20%; padding:4px 2px; text-align:right;"><strong>Subtotal</strong></th>
-                </tr>
-              </thead>
-              <tbody>
-                <t t-foreach="doc.order_line" t-as="line">
-                  <tr>
-                    <td style="padding:4px 2px; vertical-align:top;">
-                      <strong><span t-esc="line.product_id.display_name"/></strong>
-                      <t t-foreach="line.product_id.description_sale.split('\n')" t-as="ln">
-                        <t t-if="ln.strip()">
-                          <div style="font-size:14px; margin:0;">
-                            <span t-esc="ln.strip()"/>
-                          </div>
-                        </t>
+                  <td style="padding:4px 2px; vertical-align:top;">
+                    <strong><span t-esc="line.product_id.display_name"/></strong>
+                    <t t-foreach="line.product_id.description_sale.split('\n')" t-as="ln">
+                      <t t-if="ln.strip()">
+                        <div style="font-size:14px; margin:0;">
+                          <span t-esc="ln.strip()"/>
+                        </div>
                       </t>
-                    </td>
-                    <td style="padding:4px 2px; text-align:center;">
-                      <span t-field="line.product_uom_qty"
-                            t-field-options="{'widget':'float','precision':0}"/>
-                    </td>
-                    <td style="padding:4px 2px; text-align:right;">
-                      <span t-field="line.price_unit"
-                            t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                    </td>
-                    <td style="padding:4px 2px; text-align:right;">
-                      <span t-esc="('%.2f' % line.discount) + '%'" />
-                    </td>
-                    <td style="padding:4px 2px; text-align:right;">
-                      <span t-field="line.price_subtotal"
-                            t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                    </td>
-                  </tr>
-                </t>
-              </tbody>
-            </table>
+                    </t>
+                  </td>
+                  <td style="padding:4px 2px; text-align:center;">
+                    <span t-field="line.product_uom_qty"
+                          t-field-options="{'widget':'float','precision':0}"/>
+                  </td>
+                  <td style="padding:4px 2px; text-align:right;">
+                    <span t-field="line.price_unit"
+                          t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                  </td>
+                  <td style="padding:4px 2px; text-align:right;">
+                    <span t-esc="('%.2f' % line.discount) + '%'" />
+                  </td>
+                  <td style="padding:4px 2px; text-align:right;">
+                    <span t-field="line.price_subtotal"
+                          t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                  </td>
+                </tr>
+              </t>
+            </tbody>
+          </table>
 
-            <!-- Totales -->
-            <div class="row mt-3">
-              <div class="col-6"/>
-              <div class="col-6" style="font-size:12px;">
-                <table class="table table-borderless"
-                      style="width:100%; border-collapse:collapse; border-spacing:0;">
-                  <!-- Subtotal -->
-                  <tr>
-                    <td style="text-align:left; padding:6px; border-top:1px solid #ddd;">
-                      <strong>Subtotal:</strong>
-                    </td>
-                    <td style="text-align:right; padding:6px; border-top:1px solid #ddd;">
-                      <span t-field="doc.amount_untaxed"
-                            t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                    </td>
-                  </tr>
-                  <!-- IVA -->
-                  <t t-set="tax_rate" t-value="(doc.order_line and doc.order_line[0].tax_id.amount) or 0"/>
-                  <tr>
-                    <td style="text-align:left; padding:6px; border-top:1px solid #ddd;">
-                      <strong>IVA <span t-esc="('%.0f' % tax_rate)"/>%:</strong>
-                    </td>
-                    <td style="text-align:right; padding:6px; border-top:1px solid #ddd;">
-                      <span t-field="doc.amount_tax"
-                            t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                    </td>
-                  </tr>
-                  <!-- Total -->
-                  <tr>
-                    <td style="text-align:left; padding:6px; font-size:14px; border-top:2px solid #000;">
-                      <strong>Total:</strong>
-                    </td>
-                    <td style="text-align:right; padding:6px; font-size:14px; border-top:2px solid #000;">
-                      <span t-field="doc.amount_total"
-                            t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                    </td>
-                  </tr>
-                </table>
-                <t t-set="amount_words" t-value="doc.currency_id.amount_to_text(doc.amount_total)"/>
-                <div style="font-size:10px; margin-top:6px; text-align:left;">
-                  <em><span t-esc="amount_words.upper()"/> M.N.</em>
-                </div>
+          <!-- Totales -->
+          <div class="row mt-3">
+            <div class="col-6"/>
+            <div class="col-6" style="font-size:12px;">
+              <table class="table table-borderless"
+                    style="width:100%; border-collapse:collapse; border-spacing:0;">
+                <!-- Subtotal -->
+                <tr>
+                  <td style="text-align:left; padding:6px; border-top:1px solid #ddd;">
+                    <strong>Subtotal:</strong>
+                  </td>
+                  <td style="text-align:right; padding:6px; border-top:1px solid #ddd;">
+                    <span t-field="doc.amount_untaxed"
+                          t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                  </td>
+                </tr>
+                <!-- IVA -->
+                <t t-set="tax_rate" t-value="(doc.order_line and doc.order_line[0].tax_id.amount) or 0"/>
+                <tr>
+                  <td style="text-align:left; padding:6px; border-top:1px solid #ddd;">
+                    <strong>IVA <span t-esc="('%.0f' % tax_rate)"/>%:</strong>
+                  </td>
+                  <td style="text-align:right; padding:6px; border-top:1px solid #ddd;">
+                    <span t-field="doc.amount_tax"
+                          t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                  </td>
+                </tr>
+                <!-- Total -->
+                <tr>
+                  <td style="text-align:left; padding:6px; font-size:14px; border-top:2px solid #000;">
+                    <strong>Total:</strong>
+                  </td>
+                  <td style="text-align:right; padding:6px; font-size:14px; border-top:2px solid #000;">
+                    <span t-field="doc.amount_total"
+                          t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                  </td>
+                </tr>
+              </table>
+              <t t-set="amount_words" t-value="doc.currency_id.amount_to_text(doc.amount_total)"/>
+              <div style="font-size:10px; margin-top:6px; text-align:left;">
+                <em><span t-esc="amount_words.upper()"/> M.N.</em>
               </div>
             </div>
+          </div>
 
-            <!-- Notas de símbolos -->
-            <div class="row mt-2" style="font-size:10px;">
-              <div class="col-12" style="text-align:left;">
-                <em>* Acreditado, ** Subrogado</em>
-              </div>
+          <!-- Notas de símbolos -->
+          <div class="row mt-2" style="font-size:10px;">
+            <div class="col-12" style="text-align:left;">
+              <em>* Acreditado, ** Subrogado</em>
             </div>
-            
-            <!-- Notas y políticas -->
-            <div class="row mt-4">
-              <div class="col-12">
-                <h5 style="margin-bottom:6px;">Condiciones y políticas de servicio</h5>
-                <ul style="
-                    font-size: 10px;
-                    line-height: 1.5;
-                    list-style-type: none;
-                    margin: 0;
-                    padding: 0;
-                  ">
-                  <li><strong>1. Datos de pago:</strong> Los pagos deberán realizarse mediante efectivo, cheque o transferencia electrónica, según lo acordado previamente por escrito con el Laboratorio, a través de sus medios oficiales de comunicación o representantes autorizados.</li>
-                  <li><strong>2. Subcontratación de análisis:</strong> Si algún servicio o análisis no se encuentra disponible internamente, las muestras podrán remitirse a un Laboratorio externo previa autorización del Cliente.</li>
-                  <li><strong>3. Pago de análisis subcontratados:</strong> Se requiere el pago total para iniciar el procesamiento de pruebas subcontratadas, salvo autorización escrita por el Laboratorio.</li>
-                  <li><strong>4. Entrega:</strong> La entrega de productos o informes de ensayo está sujeta al pago íntegro del servicio. Las solicitudes de crédito deben atenderse por los mismos canales de contacto con el Laboratorio mediante autorización escrita.</li>
-                  <li><strong>5. Plazos de entrega:</strong> Los tiempos de entrega dependen del tipo y complejidad de la muestra. Los plazos estimados se informarán al momento de la cotización o confirmación del servicio.</li>
-                  <li><strong>6. Aclaraciones:</strong> El Laboratorio atenderá solicitudes de aclaración sobre los resultados entregados en un plazo máximo de 5 días hábiles posteriores a su emisión. Pasado ese periodo, no se garantizarán modificaciones al informe.</li>
-                  <li><strong>7. Confidencialidad:</strong> Con la autorización de esta cotización o la emisión de la orden de compra, el Laboratorio se compromete a preservar la confidencialidad de toda la información del Cliente, tanto recibida como generada durante la prestación del servicio y el Cliente se compromete a no divulgar información técnica del Laboratorio sin autorización escrita.</li>
-                  <li><strong>8. Moneda y ajuste de precios:</strong> Todas las tarifas están expresadas en MXN. Cualquier variación cambiaria, impuestos adicionales o nuevos aranceles aplicables después de la emisión de la cotización podrán repercutirse al Cliente con previo aviso.</li>
-                  <li><strong>9. Emisión de factura:</strong> La factura electrónica se emitirá al confirmar el servicio, salvo acuerdo escrito con el Laboratorio.</li>
-                  <li><strong>10. Crédito y mora:</strong> En el caso de que el Cliente no cumpla con el plazo de pago otorgado bajo crédito, el Laboratorio se reserva el derecho de suspender los servicios y/o cancelar el crédito concedido automáticamente sin previo aviso.</li>
-                  <li><strong>11. Cancelaciones y reprogramaciones:</strong> Las solicitudes de cancelación o cambio de fecha deberán notificarse con al menos 48 horas hábiles de antelación. De no cumplirse este plazo, el Cliente incurrirá en una penalización equivalente al 25% del valor del servicio contratado.</li>
-                  <li><strong>12. Responsabilidad del Laboratorio:</strong> La responsabilidad del Laboratorio por cualquier reclamación se limitará al monto facturado por el servicio cuestionado.</li>
-                  <li><strong>13. Fuerza mayor:</strong> Ninguna de las partes será responsable por incumplimientos derivados de eventos de fuerza mayor, tales como desastres naturales, pandemias y/o fallos de energía. La parte afectada deberá notificar por escrito en un plazo razonable y reprogramar las obligaciones cuando sea posible.</li>
-                  <li><strong>14. Cumplimiento normativo y ética:</strong> El Cliente garantiza que las muestras y los análisis solicitados cumplen con todas las normativas sanitarias, de bioseguridad y de transporte vigentes. El Laboratorio se reserva el derecho de rechazar muestras que no cumplan con estos requisitos.</li>
-                  <li><strong>15. Horario de servicio y recargos:</strong> Los trabajos y servicios se prestarán dentro del horario operativo previamente acordado entre el Cliente y el Laboratorio. En caso de que las actividades se extiendan por causas imputables al Cliente o ajenas al Laboratorio, este podrá facturar una cuota adicional por el tiempo extra del operador, calculada a la tarifa vigente por hora hombre.</li>
-                  <li><strong>16. Uso de equipamiento:</strong> El Laboratorio no presta, arrienda ni cede bajo ninguna modalidad sus equipos, instrumentos ni materiales de uso interno. Cualquier requerimiento de equipamiento específico deberá canalizarse mediante un contrato de servicio independiente o la adquisición directa de consumibles y accesorios autorizados.</li>
-                  <li><strong>17. Disposición de muestras no reclamadas:</strong> Dado que la mayoría de los estudios de microbiología son destructivos, el Laboratorio no podrá devolver muestras o restos de muestra salvo que exista un acuerdo escrito previo; de lo contrario, serán desechadas tras su procesamiento.</li>
-                  <li><strong>18. Propiedad intelectual y uso de resultados:</strong> Todos los métodos, procedimientos, protocolos, formatos y resultados generados por el Laboratorio son de su propiedad intelectual y estarán disponibles para el Cliente una vez realizado el pago total del servicio. El Cliente podrá usarlos únicamente con fines internos, regulatorios o contractuales vinculados al servicio solicitado. Se prohíbe su reproducción, distribución o divulgación sin autorización escrita del Laboratorio. El uso indebido podrá generar acciones legales y/o notificación al organismo acreditador correspondiente.</li>
-                  <li><strong>19. Legislación aplicable y jurisdicción:</strong> Este contrato se regirá por las leyes de México y para la resolución de cualquier controversia las partes se someten a los tribunales competentes de la ciudad de Tijuana, Baja California.</li>
-                  <li><strong>20. Modificaciones y actualizaciones:</strong> El Laboratorio se reserva el derecho de modificar estos términos y políticas en cualquier momento, reflejado en la cotización emitida. El uso continuado de los servicios tras dicha notificación implicará la aceptación de las nuevas condiciones.</li>
-                  <li><strong>21. Validez de resultados preliminares:</strong> Los resultados entregados en modo preliminar tienen carácter informativo y estarán sujetos a revisión interna hasta su validación definitiva, la cual se comunicará al Cliente en un informe final.</li>
-                  <li><strong>22. Custodia de informes:</strong> El Laboratorio conservará los informes emitidos durante un periodo de 4 años. Pasado este plazo, podrá proceder a su archivo o eliminación conforme a sus procedimientos internos.</li>
-                  <li><strong>23. Revisión de resultados:</strong> Si el cliente desea un reanálisis o revisión por disconformidad con los resultados, deberá notificarlo dentro del plazo establecido en la cláusula 6 y correrá con los costos derivados, salvo que se demuestre error por parte del Laboratorio.</li>
-                  <li><strong>24. Uso de logotipos de acreditación:</strong> El Cliente no está autorizado a utilizar el logotipo de acreditación del Laboratorio, ni a presentar los informes como certificación de producto.</li>
-                </ul>
-              </div>
+          </div>
+          
+          <!-- Notas y políticas -->
+          <div class="row mt-4">
+            <div class="col-12">
+              <h5 style="margin-bottom:6px;">Condiciones y políticas de servicio</h5>
+              <ul style="
+                  font-size: 10px;
+                  line-height: 1.5;
+                  list-style-type: none;
+                  margin: 0;
+                  padding: 0;
+                ">
+                <li><strong>1. Datos de pago:</strong> Los pagos deberán realizarse mediante efectivo, cheque o transferencia electrónica, según lo acordado previamente por escrito con el Laboratorio, a través de sus medios oficiales de comunicación o representantes autorizados.</li>
+                <li><strong>2. Subcontratación de análisis:</strong> Si algún servicio o análisis no se encuentra disponible internamente, las muestras podrán remitirse a un Laboratorio externo previa autorización del Cliente.</li>
+                <li><strong>3. Pago de análisis subcontratados:</strong> Se requiere el pago total para iniciar el procesamiento de pruebas subcontratadas, salvo autorización escrita por el Laboratorio.</li>
+                <li><strong>4. Entrega:</strong> La entrega de productos o informes de ensayo está sujeta al pago íntegro del servicio. Las solicitudes de crédito deben atenderse por los mismos canales de contacto con el Laboratorio mediante autorización escrita.</li>
+                <li><strong>5. Plazos de entrega:</strong> Los tiempos de entrega dependen del tipo y complejidad de la muestra. Los plazos estimados se informarán al momento de la cotización o confirmación del servicio.</li>
+                <li><strong>6. Aclaraciones:</strong> El Laboratorio atenderá solicitudes de aclaración sobre los resultados entregados en un plazo máximo de 5 días hábiles posteriores a su emisión. Pasado ese periodo, no se garantizarán modificaciones al informe.</li>
+                <li><strong>7. Confidencialidad:</strong> Con la autorización de esta cotización o la emisión de la orden de compra, el Laboratorio se compromete a preservar la confidencialidad de toda la información del Cliente, tanto recibida como generada durante la prestación del servicio y el Cliente se compromete a no divulgar información técnica del Laboratorio sin autorización escrita.</li>
+                <li><strong>8. Moneda y ajuste de precios:</strong> Todas las tarifas están expresadas en MXN. Cualquier variación cambiaria, impuestos adicionales o nuevos aranceles aplicables después de la emisión de la cotización podrán repercutirse al Cliente con previo aviso.</li>
+                <li><strong>9. Emisión de factura:</strong> La factura electrónica se emitirá al confirmar el servicio, salvo acuerdo escrito con el Laboratorio.</li>
+                <li><strong>10. Crédito y mora:</strong> En el caso de que el Cliente no cumpla con el plazo de pago otorgado bajo crédito, el Laboratorio se reserva el derecho de suspender los servicios y/o cancelar el crédito concedido automáticamente sin previo aviso.</li>
+                <li><strong>11. Cancelaciones y reprogramaciones:</strong> Las solicitudes de cancelación o cambio de fecha deberán notificarse con al menos 48 horas hábiles de antelación. De no cumplirse este plazo, el Cliente incurrirá en una penalización equivalente al 25% del valor del servicio contratado.</li>
+                <li><strong>12. Responsabilidad del Laboratorio:</strong> La responsabilidad del Laboratorio por cualquier reclamación se limitará al monto facturado por el servicio cuestionado.</li>
+                <li><strong>13. Fuerza mayor:</strong> Ninguna de las partes será responsable por incumplimientos derivados de eventos de fuerza mayor, tales como desastres naturales, pandemias y/o fallos de energía. La parte afectada deberá notificar por escrito en un plazo razonable y reprogramar las obligaciones cuando sea posible.</li>
+                <li><strong>14. Cumplimiento normativo y ética:</strong> El Cliente garantiza que las muestras y los análisis solicitados cumplen con todas las normativas sanitarias, de bioseguridad y de transporte vigentes. El Laboratorio se reserva el derecho de rechazar muestras que no cumplan con estos requisitos.</li>
+                <li><strong>15. Horario de servicio y recargos:</strong> Los trabajos y servicios se prestarán dentro del horario operativo previamente acordado entre el Cliente y el Laboratorio. En caso de que las actividades se extiendan por causas imputables al Cliente o ajenas al Laboratorio, este podrá facturar una cuota adicional por el tiempo extra del operador, calculada a la tarifa vigente por hora hombre.</li>
+                <li><strong>16. Uso de equipamiento:</strong> El Laboratorio no presta, arrienda ni cede bajo ninguna modalidad sus equipos, instrumentos ni materiales de uso interno. Cualquier requerimiento de equipamiento específico deberá canalizarse mediante un contrato de servicio independiente o la adquisición directa de consumibles y accesorios autorizados.</li>
+                <li><strong>17. Disposición de muestras no reclamadas:</strong> Dado que la mayoría de los estudios de microbiología son destructivos, el Laboratorio no podrá devolver muestras o restos de muestra salvo que exista un acuerdo escrito previo; de lo contrario, serán desechadas tras su procesamiento.</li>
+                <li><strong>18. Propiedad intelectual y uso de resultados:</strong> Todos los métodos, procedimientos, protocolos, formatos y resultados generados por el Laboratorio son de su propiedad intelectual y estarán disponibles para el Cliente una vez realizado el pago total del servicio. El Cliente podrá usarlos únicamente con fines internos, regulatorios o contractuales vinculados al servicio solicitado. Se prohíbe su reproducción, distribución o divulgación sin autorización escrita del Laboratorio. El uso indebido podrá generar acciones legales y/o notificación al organismo acreditador correspondiente.</li>
+                <li><strong>19. Legislación aplicable y jurisdicción:</strong> Este contrato se regirá por las leyes de México y para la resolución de cualquier controversia las partes se someten a los tribunales competentes de la ciudad de Tijuana, Baja California.</li>
+                <li><strong>20. Modificaciones y actualizaciones:</strong> El Laboratorio se reserva el derecho de modificar estos términos y políticas en cualquier momento, reflejado en la cotización emitida. El uso continuado de los servicios tras dicha notificación implicará la aceptación de las nuevas condiciones.</li>
+                <li><strong>21. Validez de resultados preliminares:</strong> Los resultados entregados en modo preliminar tienen carácter informativo y estarán sujetos a revisión interna hasta su validación definitiva, la cual se comunicará al Cliente en un informe final.</li>
+                <li><strong>22. Custodia de informes:</strong> El Laboratorio conservará los informes emitidos durante un periodo de 4 años. Pasado este plazo, podrá proceder a su archivo o eliminación conforme a sus procedimientos internos.</li>
+                <li><strong>23. Revisión de resultados:</strong> Si el cliente desea un reanálisis o revisión por disconformidad con los resultados, deberá notificarlo dentro del plazo establecido en la cláusula 6 y correrá con los costos derivados, salvo que se demuestre error por parte del Laboratorio.</li>
+                <li><strong>24. Uso de logotipos de acreditación:</strong> El Cliente no está autorizado a utilizar el logotipo de acreditación del Laboratorio, ni a presentar los informes como certificación de producto.</li>
+              </ul>
             </div>
+          </div>
 
-            <!-- Emitido por y firma -->
-            <div style="margin-top:60px;"/>
-            <p style="font-size:12px;">
-              <strong>Emitido por:</strong> <span t-esc="doc.user_id.name"/>
-            </p>
-            <div class="row mt-4">
-              <div class="col-12" style="text-align:center; margin-top:50px;">
-                <t t-if="doc.signature">
-                  <img t-attf-src="data:image/png;base64,{{ doc.signature.decode('utf-8') }}"
-                      style="max-height:100px; max-width:300px;"/>
-                </t>
-                <div style="border-top:1px solid #000; width:40%; margin:10px auto 0;"/>
-                <p style="margin-top:5px; font-size:12px;">
-                  <strong>Firma de aceptación del cliente.</strong>
-                </p>
-              </div>
+          <!-- Emitido por y firma -->
+          <div style="margin-top:60px;"/>
+          <p style="font-size:12px;">
+            <strong>Emitido por:</strong> <span t-esc="doc.user_id.name"/>
+          </p>
+          <div class="row mt-4">
+            <div class="col-12" style="text-align:center; margin-top:50px;">
+              <t t-if="doc.signature">
+                <img t-attf-src="data:image/png;base64,{{ doc.signature.decode('utf-8') }}"
+                    style="max-height:100px; max-width:300px;"/>
+              </t>
+              <div style="border-top:1px solid #000; width:40%; margin:10px auto 0;"/>
+              <p style="margin-top:5px; font-size:12px;">
+                <strong>Firma de aceptación del cliente.</strong>
+              </p>
             </div>
           </div>
         </main>
