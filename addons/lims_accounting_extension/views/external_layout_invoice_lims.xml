@@ -1,16 +1,17 @@
-<!-- file: views/external_layout_invoice_lims.xml -->
 <odoo>
   <template id="external_layout_invoice_lims"
             t-name="lims_accounting_extension.external_layout_invoice_lims">
-    <!-- Invocamos el layout estándar (header+footer nativos) -->
+    <!-- 1) Llamamos al layout estándar de Odoo -->
     <t t-call="web.external_layout">
-      <!-- Volvemos a definir las variables que el estándar necesita -->
+      <!-- 2) Reponemos las variables que el standard define -->
       <t t-set="o"          t-value="o.with_context(lang=lang)"/>
       <t t-set="forced_vat" t-value="o.fiscal_position_id.foreign_vat"/>
       <t t-set="company"    t-value="o.company_id"/>
 
-      <!-- Aquí se inyecta TODO el cuerpo original de la factura -->
-      <t t-raw="0"/>
+      <!-- 3) Slot de contenido: inyectamos TODO el cuerpo original -->
+      <t t-slot="content">
+        <t t-raw="0"/>
+      </t>
     </t>
   </template>
 </odoo>
