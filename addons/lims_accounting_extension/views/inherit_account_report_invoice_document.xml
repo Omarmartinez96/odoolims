@@ -31,24 +31,28 @@
               </div>
 
               <!-- Tabla de líneas -->
-              <table class="table table-sm mb-3"
-                     style="width:100%; font-size:11px; border-collapse:collapse;">
+              <table class="table table-borderless table-sm mb-3"
+                     style="width:100%; font-size:11px;">
                 <thead>
                   <tr>
                     <th>Descripción</th>
                     <th class="text-center">Cant.</th>
                     <th class="text-end">Precio U.</th>
+                    <th class="text-end">Descuento</th>
                     <th class="text-end">Subtotal</th>
                   </tr>
                 </thead>
                 <tbody>
                   <t t-foreach="doc.invoice_line_ids" t-as="line">
-                    <tr>
+                    <tr class="custom-row">
                       <td><span t-esc="line.name"/></td>
                       <td class="text-center"><span t-field="line.quantity"/></td>
                       <td class="text-end">
                         <span t-field="line.price_unit"
                               t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                      </td>
+                      <td class="text-end">
+                        <span t-field="line.discount" t-options="{'widget': 'percentage'}"/>
                       </td>
                       <td class="text-end">
                         <span t-field="line.price_subtotal"
@@ -71,13 +75,30 @@
                               t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                       </td>
                     </tr>
+
                     <tr>
-                      <td><strong>IVA:</strong></td>
+                      <td><strong>Descuento Total:</strong></td>
+                      <td class="text-end">
+                        <t t-set="total_discount" t-value="sum([(line.price_unit * line.quantity * (line.discount or 0.0) / 100.0) for line in doc.invoice_line_ids])"/>
+                        <span t-esc="total_discount"
+                              t-options="{'widget':'monetary', 'display_currency':doc.currency_id}"/>
+                      </td>
+                    </tr>
+
+                    <tr>
+                      <td>
+                        <strong>
+                          IVA
+                          <t t-set="tax_rate" t-value="(doc.amount_untaxed and round((doc.amount_tax / doc.amount_untaxed) * 100.0, 0)) or 0"/>
+                          (<t t-esc="tax_rate"/>%)
+                        </strong>
+                      </td>
                       <td class="text-end">
                         <span t-field="doc.amount_tax"
                               t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                       </td>
                     </tr>
+
                     <tr>
                       <td><strong>Total:</strong></td>
                       <td class="text-end">
