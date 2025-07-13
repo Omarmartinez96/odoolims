@@ -52,18 +52,41 @@
 
       <!-- FOOTER FIJO -->
       <div class="footer">
-        <table style="width:100%; font-size:9px; border: none;">
-          <tr>
-            <td style="text-align: left;">Tel: 664 973 8185</td>
-            <td style="text-align: center;">FOR-021 Rev. 01 | PROC-005</td>
-            <td style="text-align: right;">Email: contacto@proteuslaboratorio.com</td>
-          </tr>
-          <tr>
-            <td colspan="3" style="text-align: center; padding-top: 4px;">
-              Página <span class="page"/> de <span class="topage"/>
-            </td>
-          </tr>
-        </table>
+        <div class="o_footer_content" style="font-size:8px; padding-top:2px;">
+          <table class="table table-borderless"
+                style="width:100%; table-layout:fixed; border-collapse:collapse; border-spacing:0;">
+            <tbody>
+              <tr>
+                <td style="width:33%; text-align:left; padding:0;">
+                  Teléfono: (664) 973-8185
+                </td>
+                <td style="width:34%; text-align:center; padding:0;">
+                  Página <span class="page"/> / <span class="topage"/>
+                </td>
+                <td style="width:33%; text-align:right; padding:0;">
+                  contacto@proteuslaboratorio.com
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3" style="text-align:center; font-size:7px; padding-top:4px;">
+                  <t t-if="company.partner_id">
+                    <t t-esc="company.partner_id.name"/>,
+                    <t t-if="company.partner_id.street" t-esc="company.partner_id.street"/>
+                    <t t-if="company.partner_id.street2">, <t t-esc="company.partner_id.street2"/></t>,
+                    <t t-if="company.partner_id.city" t-esc="company.partner_id.city"/>,
+                    <t t-if="company.partner_id.zip">C.P. <t t-esc="company.partner_id.zip"/></t>,
+                    <t t-if="company.partner_id.country_id" t-esc="company.partner_id.country_id.name"/>
+                  </t>
+                </td>
+              </tr>
+              <tr>
+                <td colspan="3" style="text-align:center; font-size:7px; padding-top:4px;">
+                  FOR-021 Rev. 01 | PROC-005
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
 
       <!-- Número de cotización --> 
