@@ -52,14 +52,18 @@
 
       <!-- FOOTER FIJO -->
       <div class="footer">
-        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 9px; width: 100%;">
-          <div style="flex: 1; text-align: left;">Tel: 664 973 8185</div>
-          <div style="flex: 1; text-align: center;">FOR-021 Rev. 01 | PROC-005</div>
-          <div style="flex: 1; text-align: right;">Email: contacto@proteuslaboratorio.com</div>
-        </div>
-        <div class="text-center" style="margin-top:4px; font-size:9px;">
-          Página <span class="page"/> de <span class="topage"/>
-        </div>
+        <table style="width:100%; font-size:9px; border: none;">
+          <tr>
+            <td style="text-align: left;">Tel: 664 973 8185</td>
+            <td style="text-align: center;">FOR-021 Rev. 01 | PROC-005</td>
+            <td style="text-align: right;">Email: contacto@proteuslaboratorio.com</td>
+          </tr>
+          <tr>
+            <td colspan="3" style="text-align: center; padding-top: 4px;">
+              Página <span class="page"/> de <span class="topage"/>
+            </td>
+          </tr>
+        </table>
       </div>
 
       <!-- Número de cotización --> 
