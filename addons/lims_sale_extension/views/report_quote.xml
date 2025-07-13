@@ -52,12 +52,10 @@
 
       <!-- FOOTER FIJO -->
       <div class="footer">
-        <div class="row">
-          <div class="col-6 text-left">Tel: 664 973 8185</div>
-          <div class="col-6 text-right">FOR-021 Rev. 01 | PROC-005</div>
-        </div>
-        <div class="row">
-          <div class="col-12 text-right">Email: contacto@proteuslaboratorio.com</div>
+        <div style="display: flex; justify-content: space-between; align-items: center; font-size: 9px; width: 100%;">
+          <div style="flex: 1; text-align: left;">Tel: 664 973 8185</div>
+          <div style="flex: 1; text-align: center;">FOR-021 Rev. 01 | PROC-005</div>
+          <div style="flex: 1; text-align: right;">Email: contacto@proteuslaboratorio.com</div>
         </div>
         <div class="text-center" style="margin-top:4px; font-size:9px;">
           Página <span class="page"/> de <span class="topage"/>
