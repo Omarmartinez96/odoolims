@@ -23,9 +23,8 @@
             left: 0;
             right: 0;
             height: 70px;
-            padding: 10px 20px;
-            border-top: 1px solid #ccc;
-            font-size: 9px;
+            z-index: 1000;
+            background: white;
           }
           .content {
             margin-top: 110px;
