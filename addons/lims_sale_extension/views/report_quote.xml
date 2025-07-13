@@ -1,42 +1,6 @@
 <odoo>
   <template id="report_saleorder_custom">
     <t t-call="web.html_container">
-      <t>
-        <style>
-          @page {
-            margin: 30mm 10mm 30mm 10mm;
-          }
-
-          thead {
-            display: table-header-group;
-          }
-
-          tfoot {
-            display: table-footer-group;
-          }
-
-          table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 11px;
-          }
-
-          th, td {
-            border: 1px solid #ddd;
-            padding: 6px;
-            page-break-inside: avoid;
-          }
-
-          tr {
-            page-break-inside: avoid;
-          }
-
-          .no-break {
-            break-inside: avoid;
-          }
-        </style>
-      </t>
-
       <t t-set="company" t-value="docs and docs[0].company_id"/>
       <t t-foreach="docs" t-as="doc">
         <div class="o_report_layout">
