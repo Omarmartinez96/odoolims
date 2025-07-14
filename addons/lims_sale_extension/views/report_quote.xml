@@ -25,25 +25,8 @@
             left: 0; !important;
             right: 0; !important;
             height: auto; !important;
-            background: red; !important;
-            overflow: visible; !important;
-            border: 2px solid blue !important;
-            z-index: 9999 !important;
-          }
-          .footer .o_footer_content {
-            background: yellow !important;
-            border: 3px solid green !important;
-            margin: 0 !important;
-            padding: 5px !important;
-          }
-          .footer table {
-            background: orange !important;
-            border: 2px solid purple !important;
-            margin: 0 !important;
-          }
-          .footer td {
-            background: pink !important;
-            border: 1px solid black !important;
+            background: white; !important;
+            overflow: hidden; !important;
           }
           .content {
             margin-top: 110px;
