@@ -24,12 +24,9 @@
             bottom: 0;
             left: 0;
             right: 0;
-            height: 40px;
-            padding: 10px 20px;
-            font-size: 8px;
+            height: auto;
             z-index: 1000;
-            background: #f0f0f0;
-            border-top: 1px solid #ccc;
+            background: white;
           }
           .content {
             margin-top: 110px;
