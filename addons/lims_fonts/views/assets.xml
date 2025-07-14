@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <template id="assets_fonts" name="Custom Font Assets" inherit_id="web.report_assets_common">
+    <xpath expr="." position="inside">
+      <link rel="stylesheet" type="text/css" href="/lims_fonts/static/src/css/fonts.css"/>
+    </xpath>
+  </template>
+</odoo>
