@@ -28,7 +28,7 @@
             background: white;
           }
           .content {
-            margin-top: 110px;
+            margin-top: 40px;
             margin-bottom: 40px;
           }
           body,
