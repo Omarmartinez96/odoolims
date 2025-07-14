@@ -29,6 +29,10 @@
             overflow: hidden;
             display: flex;
             align-items: center;
+            border: 2px solid blue !important;
+          }
+          .footer * {
+            border: 1px solid green !important;
           }
           .content {
             margin-top: 110px;
