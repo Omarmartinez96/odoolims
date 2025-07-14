@@ -222,7 +222,7 @@
 
             <!-- Totales -->
             <div style="width:100%; margin-top:20px;">
-              <div style="width:50%; float:right; font-size:12px"/>
+              <div style="width:50%; float:right; font-size:12px">
                 <table class="table table-borderless"
                        style="width:100%; border-collapse:collapse; border-spacing:0;">
                   <!-- Subtotal -->
