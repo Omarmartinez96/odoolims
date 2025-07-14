@@ -57,7 +57,7 @@
 
       <!-- FOOTER FIJO -->
       <div class="footer">
-        <div class="o_footer_content" style="font-size:8px; padding-top:2px;">
+        <div class="o_footer_content" style="font-size:8px;">
           <table class="table table-borderless"
                 style="width:100%; table-layout:fixed; border-collapse:collapse; border-spacing:0;">
             <tbody>
@@ -73,7 +73,7 @@
                 </td>
               </tr>
               <tr>
-                <td colspan="3" style="text-align:center; font-size:7px; padding-top:4px;">
+                <td colspan="3" style="text-align:center; font-size:7px; padding-top:2px;">
                   <t t-if="company.partner_id">
                     <t t-esc="company.partner_id.name"/>,
                     <t t-if="company.partner_id.street" t-esc="company.partner_id.street"/>
@@ -85,7 +85,7 @@
                 </td>
               </tr>
               <tr>
-                <td colspan="3" style="text-align:center; font-size:7px; padding-top:4px;">
+                <td colspan="3" style="text-align:center; font-size:7px; padding-top:2px;">
                   FOR-021 Rev. 01 | PROC-005
                 </td>
               </tr>
@@ -290,8 +290,6 @@
                   <strong>Firma de aceptación del cliente.</strong>
                 </p>
               </div>
-
-            
 
               <!-- Notas y políticas -->
               <div class="page" style="page-break-before:always;">
