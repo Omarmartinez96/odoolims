@@ -52,8 +52,8 @@
       </div>
 
       <!-- FOOTER FIJO -->
-      <div class="footer">
-        <div class="o_footer_content" style="font-size:10px;">
+      <div class="footer" style="padding-bottom: 0px;">
+        <div class="o_footer_content" style="font-size:10px; padding-bottom: 0px;">
           <table class="table table-borderless"
                 style="width:100%; table-layout:fixed; border-collapse:collapse; border-spacing:0;">
             <tbody>
