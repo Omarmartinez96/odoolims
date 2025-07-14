@@ -291,7 +291,7 @@
             
 
               <!-- Notas y políticas -->
-              <div style="page-break-before:always;"></div>
+              <div class="page" style="page-break-before:always;">
               <div class="row mt-4">
                 <div class="col-12">
                   <h5 style="margin-bottom:6px;">Condiciones y políticas de servicio</h5>
