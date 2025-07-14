@@ -52,10 +52,10 @@
       </div>
 
       <!-- FOOTER FIJO -->
-      <div class="footer" style="padding-bottom: 0px; background-color: #ffeeee; border: 1px solid red;">
-        <div class="o_footer_content" style="font-size:10px; padding-top: 0px; padding-bottom: 0px;">
-          <table class="table table-borderless"
-                style="width:100%; table-layout:fixed; border-collapse:collapse; border-spacing:0;">
+      <div class="footer" style="padding-bottom: 5px 0; background-color: #ffeeee; border: 1px solid red;">
+        <div class="o_footer_content" style="font-size:10px; line-height:1.2;">
+          <table class="table table-borderless" 
+                style="width:100%; table-layout:fixed; border-collapse:collapse; margin: 0;">
             <tbody>
               <tr>
                 <td style="width:33%; text-align:left; padding:0;">
