@@ -65,7 +65,7 @@
                 <td style="width:33%; text-align:left; padding:0;">
                   Teléfono: (664) 973-8185
                 </td>
-                <td colspan="3" style="text-align:center; font-size:10px; padding:0;">
+                <td style="width:33%; text-align:center;  padding:0;">
                   FOR-021 Rev. 01 | PROC-005
                 </td>
                 <td style="width:33%; text-align:right; padding:0;">
@@ -73,7 +73,7 @@
                 </td>
               </tr>
               <tr>
-                <td colspan="3" style="text-align:center; font-size:10px; padding:0;">
+                <td style="text-align:center; font-size:10px; padding:0;">
                   <t t-if="company.partner_id">
                     <t t-esc="company.partner_id.name"/>,
                     <t t-if="company.partner_id.street" t-esc="company.partner_id.street"/>
@@ -85,7 +85,7 @@
                 </td>
               </tr>
               <tr>
-                <td style="width:34%; text-align:center; padding:0;">
+                <td style="text-align:center; font-size:10px; padding:0;">
                   Página <span class="page"/> / <span class="topage"/>
                 </td>
               </tr>
