@@ -73,7 +73,7 @@
                 </td>
               </tr>
               <tr>
-                <td colspan="3" style="text-align:center; font-size:10px; padding-top:2px;">
+                <td colspan="3" style="text-align:center; font-size:10px; padding:0;">
                   <t t-if="company.partner_id">
                     <t t-esc="company.partner_id.name"/>,
                     <t t-if="company.partner_id.street" t-esc="company.partner_id.street"/>
@@ -85,7 +85,7 @@
                 </td>
               </tr>
               <tr>
-                <td colspan="3" style="text-align:center; font-size:10px; padding-top:2px;">
+                <td colspan="3" style="text-align:center; font-size:10px; padding:0;">
                   FOR-021 Rev. 01 | PROC-005
                 </td>
               </tr>
