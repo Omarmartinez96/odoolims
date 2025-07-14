@@ -34,10 +34,11 @@
           body,
           .o_report_layout,
           table,
-          p,
           td,
+          th,
           span,
-          div {
+          div,
+          p {
             font-family: "DejaVu Sans", sans-serif !important;
           }
         </style>
