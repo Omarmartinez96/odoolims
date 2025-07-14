@@ -44,6 +44,40 @@
             style="max-height: 120px; width: auto;"/>
       </div>
 
+      <!-- FOOTER FIJO -->
+      <div class="footer" style="font-size: 10px; border-top: 1px solid #ddd; padding-top: 5px;">
+        <table style="width: 100%; table-layout: fixed; border-collapse: collapse;">
+          <tr>
+            <td style="width: 33%; text-align: left; padding: 3px;">
+              Teléfono: (664) 973-8185
+            </td>
+            <td style="width: 33%; text-align: center; padding: 3px;">
+              FOR-021 Rev. 01 | PROC-005
+            </td>
+            <td style="width: 33%; text-align: right; padding: 3px;">
+              contacto@proteuslaboratorio.com
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3" style="text-align: center; font-size: 9px; padding: 2px;">
+              <t t-if="company.partner_id">
+                <t t-esc="company.partner_id.name"/>,
+                <t t-if="company.partner_id.street" t-esc="company.partner_id.street"/>
+                <t t-if="company.partner_id.street2">, <t t-esc="company.partner_id.street2"/></t>,
+                <t t-if="company.partner_id.city" t-esc="company.partner_id.city"/>,
+                <t t-if="company.partner_id.zip">C.P. <t t-esc="company.partner_id.zip"/></t>,
+                <t t-if="company.partner_id.country_id" t-esc="company.partner_id.country_id.name"/>
+              </t>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3" style="text-align: center; font-size: 9px; padding: 2px;">
+              Página <span class="page"/> / <span class="topage"/>
+            </td>
+          </tr>
+        </table>
+      </div>
+
       <!-- Número de cotización --> 
       <t t-foreach="docs" t-as="doc">
         <div class="o_report_layout">
@@ -280,46 +314,11 @@
               </div>
               
 
-
             </div>
           </div>
         </div>  
 
       </t>
-           <!-- FOOTER FIJO -->
-      <div class="footer" style="font-size: 10px; border-top: 1px solid #ddd; padding-top: 5px;">
-        <table style="width: 100%; table-layout: fixed; border-collapse: collapse;">
-          <tr>
-            <td style="width: 33%; text-align: left; padding: 3px;">
-              Teléfono: (664) 973-8185
-            </td>
-            <td style="width: 33%; text-align: center; padding: 3px;">
-              FOR-021 Rev. 01 | PROC-005
-            </td>
-            <td style="width: 33%; text-align: right; padding: 3px;">
-              contacto@proteuslaboratorio.com
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3" style="text-align: center; font-size: 9px; padding: 2px;">
-              <t t-if="company.partner_id">
-                <t t-esc="company.partner_id.name"/>,
-                <t t-if="company.partner_id.street" t-esc="company.partner_id.street"/>
-                <t t-if="company.partner_id.street2">, <t t-esc="company.partner_id.street2"/></t>,
-                <t t-if="company.partner_id.city" t-esc="company.partner_id.city"/>,
-                <t t-if="company.partner_id.zip">C.P. <t t-esc="company.partner_id.zip"/></t>,
-                <t t-if="company.partner_id.country_id" t-esc="company.partner_id.country_id.name"/>
-              </t>
-            </td>
-          </tr>
-          <tr>
-            <td colspan="3" style="text-align: center; font-size: 9px; padding: 2px;">
-              Página <span class="page"/> / <span class="topage"/>
-            </td>
-          </tr>
-        </table>
-      </div>
-
     </t>
   </template>
 </odoo>
