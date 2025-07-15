@@ -11,17 +11,18 @@
           <sheet>
             <group string="Datos de la Cadena de Custodia">
               <field name="custody_chain_code" placeholder="Se genera automaticamente"/>
-              <field name="cliente_id"/>
+              <field name="cliente_id" placeholder="Selecciona el cliente"/>  
               <field name="client_code" readonly="1"/>
-              <field name="sucursal_id"/>
-              <field name="departamento_id"/>
+              <field name="sucursal_id" placeholder="Selecciona la sucursal"/> 
+              <field name="departamento_id" placerholder="Selecciona el departamento"/>
               <field name="contact_ids"
                      widget="many2many_tags"
                      domain="[('department_id','=',departamento_id)]"
-                     modifiers="{'invisible': [['departamento_id','=', False]]}"/>
-              <field name="quotation_id"/>
-              <field name="date_created" widget="datetime"/>
-              <field name="chain_of_custody_state"/>
+                     modifiers="{'invisible': [['departamento_id','=', False]]}"
+                     placerholder="Selecciona los contactos relacionados a este servicio"/>
+              <field name="quotation_id" placeholder="Selecciona la cotizacion relacionada a este servicio"/>
+              <field name="date_created" widget="datetime" placeholder="Inserta la fecha de creacion de registro"/>
+              <field name="chain_of_custody_state" widget="radio"/> 
             </group>
 
             <group string="Plan de Muestreo (si aplica)">
@@ -32,20 +33,18 @@
             </group>
 
             <group string="Datos de Recolección">
-              <field name="collection_datetime"/>
-              <field name="collected_by"/>
+              <field name="collection_datetime" placerholder="Selecciona la fecha de recoleccion de las muestras geneneral"/>
+              <field name="collected_by" placeholder="Inserta nombre del personal de recolección"/>
             </group>
 
             <group string="Observaciones">
-              <field name="sampling_observations"/>
+              <field name="sampling_observations " placeholder="Inserta observaciones generales de muestreo (si aplica)"/>
               <field name="internal_notes"/>
             </group>
 
             <notebook>
               <page string="Muestras">
-                <field name="sample_ids"
-                       context="{'default_custody_chain_id': id}"
-                       mode="list,form">
+                <field name="sample_ids" context="{'default_custody_chain_id': id}" mode="list,form">
                   <list>
                     <field name="sample_identifier"/>
                     <field name="sample_description"/>

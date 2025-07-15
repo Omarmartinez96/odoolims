@@ -10,74 +10,46 @@ class LimsCustodyChain(models.Model):
     _description = 'Cadena de Custodia'
     _rec_name = 'custody_chain_code'
 
-    contact_ids = fields.Many2many(
-        'lims.contact',
-        string='Contactos Relacionados',
-        domain="[('department_id', '=', departamento_id)]"
-    )
-    custody_chain_code = fields.Char(
-        string="Código de Cadena de Custodia", 
-        copy=False, 
-        default='/',
-        help="Se genera automaticamente al crear la cadena de custodia"
-    )
-    cliente_id = fields.Many2one(
-        'res.partner', 
-        string="Cliente", 
-        #required=True, 
-        domain=[('is_lims_customer', '=', True)]
-    )
-    client_code = fields.Char(
-        string="Código de Cliente",
-        related='cliente_id.client_code',
-        readonly=True,
-        store=False,
-    )
-    sucursal_id = fields.Many2one(
-        'lims.branch', 
-        string="Sucursal", 
-        #required=True, 
-        domain="[('customer_id', '=', cliente_id)]"
-    )
-    departamento_id = fields.Many2one(
-        'lims.department', 
-        string="Departamento", 
-        domain="[('branch_id', '=', sucursal_id)]"
-    )
-    date_created = fields.Datetime(
-        string="Fecha de Creación", 
-        default=fields.Datetime.now
-    )
-    sample_ids = fields.One2many(
-        'lims.sample', 
-        'custody_chain_id', 
-        string='Muestra'
-    )
-    chain_of_custody_state = fields.Selection(
-        [('draft', 'Borrador'), ('in_progress', 'En Proceso'), ('done', 'Finalizado')], 
-        string="Estado de CdC",
-        default='draft', 
-    )
-    quotation_id = fields.Many2one(
-        'sale.order',
-        string ="Referencia de cotización"
-    )
-    sampling_plan = fields.Text(
-        string="Plan de muestreo"
-    )
-    collected_by = fields.Char(
-        string="Recolectado por"
-    )
-    collection_datetime = fields.Datetime(
-        string="Fecha y Hora de Recolección"
-    )
-    sampling_observations = fields.Text(
-        string="Observaciones de Muestreo"
-    )
-    internal_notes = fields.Text(
-        string="Observaciones internas"
-    )
+    # Campos de la Cadena de Custodia
+    contact_ids = fields.Many2many('lims.contact', string='Contactos Relacionados', domain="[('department_id', '=', departamento_id)]")
+    custody_chain_code = fields.Char(string="Código de Cadena de Custodia", copy=False, default='/', help="Se genera automaticamente al crear la cadena de custodia")
+    cliente_id = fields.Many2one('res.partner', string="Cliente", domain=[('is_lims_customer', '=', True)])
+    client_code = fields.Char(string="Código de Cliente", related='cliente_id.client_code', readonly=True, store=False,)
+    sucursal_id = fields.Many2one('lims.branch', string="Sucursal", domain="[('customer_id', '=', cliente_id)]")
+    departamento_id = fields.Many2one('lims.department', string="Departamento", domain="[('branch_id', '=', sucursal_id)]")
+    date_created = fields.Datetime(string="Fecha de Creación", default=fields.Datetime.now)
+    sample_ids = fields.One2many('lims.sample', 'custody_chain_id', string='Muestra')
+    chain_of_custody_state = fields.Selection([('draft', 'Borrador'), ('in_progress', 'En Proceso'), ('done', 'Finalizado')], string="Estado de CC", default='draft',)
+    quotation_id = fields.Many2one('sale.order', string ="Referencia de cotización")
+    sampling_plan = fields.Text(string="Plan de muestreo")
 
+    # Recolección
+    collection_datetime = fields.Datetime(string="Fecha y Hora de Recolección")
+      # Campo original para temperatura de recolección
+    collection_temperature = fields.Float(string="Temperatura de Recolección", help="Temperatura en grados Celsius al momento de la recolección")
+      # Campo de display 
+    collection_temperature_display = fields.Char(string="Temperatura de Recolección", compute='_compute_display_collection_temperature', store=False)
+
+    # Observaciones
+    sampling_observations = fields.Text(string="Observaciones de Muestreo")
+    internal_notes = fields.Text(string="Observaciones internas")
+
+    @api.depends('collection_temperature')
+    def _compute_display_collection_temperature(self):
+        for record in self:
+            field_config = {
+                'collection_temperature': ('°C', 'N/A'),
+                #Agregar mas campos si es necesario
+            }
+
+            for field_name, (suffix, default) in field_config.items():
+                value = getattr(record, field_name)
+                display_field = f"{field_name}_display"
+
+                if value:
+                    setattr(record, display_field, f"{value}{suffix}")
+                else:
+                    setattr(record, display_field, default)
 
     @api.model_create_multi
     def create(self, vals_list):
