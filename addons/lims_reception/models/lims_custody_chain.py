@@ -25,6 +25,7 @@ class LimsCustodyChain(models.Model):
 
     # Recolección
     collection_datetime = fields.Datetime(string="Fecha y Hora de Recolección")
+    collected_by = fields.Char(string="Recolectado por", help="Nombre del personal que realizó la recolección")
       # Campo original para temperatura de recolección
     collection_temperature = fields.Float(string="Temperatura de Recolección", help="Temperatura en grados Celsius al momento de la recolección")
       # Campo de display 

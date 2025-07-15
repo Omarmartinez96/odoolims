@@ -34,6 +34,7 @@
 
             <group string="Datos de Recolección">
               <field name="collection_datetime" placerholder="Selecciona la fecha de recoleccion de las muestras geneneral"/>
+              <field name="collection_temperature" placeholder="Temperatura en °C (vacío = N/A en reportes)"/>
               <field name="collected_by" placeholder="Inserta nombre del personal de recolección"/>
             </group>
 
