@@ -1,4 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
 <odoo>
+  <!-- REPORT ACTION -->
   <record id="action_report_saleorder_custom" model="ir.actions.report">
     <field name="name">Cotización LIMS</field>
     <field name="model">sale.order</field>
@@ -7,5 +9,17 @@
     <field name="report_file">lims_sale_extension.report_saleorder_custom</field>
     <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/> 
     <field name="print_report_name">'Cotización - %s' % (object.name)</field>
+  </record>
+
+  <!-- HEREDAR EL TEMPLATE DE EMAIL  -->
+  <record id="sale.email_template_edi_sale" model="mail.template">
+    <field name="report_template" ref="action_report_saleorder_custom"/>
+  </record>
+
+  <!-- REEMPLAZAR EL REPORTE DEL PORTAL -->
+  <record id="sale.action_report_saleorder" model="ir.actions.report">
+    <field name="report_name">lims_sale_extension.report_saleorder_custom</field>
+    <field name="report_file">lims_sale_extension.report_saleorder_custom</field>
+    <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
   </record>
 </odoo>
