@@ -1,7 +1,7 @@
 {
     'name': 'Integración LIMS con Ventas',
     'version': '1.0',
-    'category': 'Laboratory',
+    'category': 'LIMS',
     'author': 'Omar Martínez',
     'depends': [
         'sale',
