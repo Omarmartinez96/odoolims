@@ -156,7 +156,7 @@
             <table class="table table-borderless mt-2"
                   style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0;">
               <thead>
-                <tr style="background-color:rgb(189,215,238);">
+                <tr style="background-color:rgb(218,227,243);">
                   <th style="width:40%; padding:4px 2px; text-align:left;"><strong>Descripción</strong></th>
                   <th style="width:10%; padding:4px 2px; text-align:center;"><strong>Cantidad</strong></th>
                   <th style="width:15%; padding:4px 2px; text-align:right;"><strong>Precio unitario</strong></th>
