@@ -251,14 +251,17 @@
               <strong>Emitido por:</strong> <span t-esc="doc.user_id.name"/>
             </p>
             <div class="row mt-4">
-              <div class="col-12" style="text-align:center; padding-top:160px;">
+              <div class="col-12" style="text-align:center; padding-top:180px;">
                 <t t-if="doc.signature">
                   <img t-attf-src="data:image/png;base64,{{ doc.signature.decode('utf-8') }}"
                       style="max-height:100px; max-width:300px;"/>
                 </t>
                 <div style="border-top:1px solid #000; width:40%; margin:10px auto 0;"/>
-                <p style="margin-top:5px; font-size:12px;">
-                  <strong>Firma de aceptación del cliente.</strong>
+                <p style="margin-top:5px; font-size:8px;">
+                  <strong>Al firmar esta cotización, confirmarla por cualquier medio (verbal, telefónico, 
+                          escrito, electrónico) y/o emitir la orden de compra correspondiente, el cliente 
+                          acepta expresamente las condiciones y políticas de servicio detalladas en 
+                          este documento. Las confirmaciones verbales deberán ser documentadas por escrito.</strong>
                 </p>
               </div>
 
