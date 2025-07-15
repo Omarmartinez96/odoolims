@@ -4,9 +4,10 @@
         <record id="seq_custody_chain" model="ir.sequence">
             <field name="name">Cadena de Custodia</field>
             <field name="code">lims.custody_chain</field>
-            <field name="prefix">CC-</field>
-            <field name="padding">5</field>
+            <field name="prefix"></field>
+            <field name="padding">3</field>
             <field name="number_increment">1</field>
+            <field name="active">False</field>
         </record>
     </data>
 </odoo>

@@ -1,6 +1,6 @@
 {
     'name': "Cadenas de Custodia",
-    'version': '1.1',
+    'version': '1.0',
     'summary': "Gestión de Cadenas de Custodia para LIMS",
     'description': """
         Módulo para registrar Cadenas de Custodia y Muestras dentro de un LIMS básico.
@@ -30,6 +30,6 @@
 
     'installable': True,
     'application': True,
-    'auto_install': True,
+    'auto_install': False,
     'license': 'LGPL-3',
 }

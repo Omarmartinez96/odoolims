@@ -2,6 +2,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 import base64
+from datetime import datetime
 
 class LimsCustodyChain(models.Model):
     _name = 'lims.custody_chain'
@@ -16,8 +17,9 @@ class LimsCustodyChain(models.Model):
     )
     custody_chain_code = fields.Char(
         string="Código de Cadena de Custodia", 
-        #required=True, 
-        copy=False
+        copy=False, 
+        default='/',
+        help="Se genera automaticamente al crear la cadena de custodia"
     )
     cliente_id = fields.Many2one(
         'res.partner', 
@@ -49,7 +51,6 @@ class LimsCustodyChain(models.Model):
         [('draft', 'Borrador'), ('in_progress', 'En Proceso'), ('done', 'Finalizado')], 
         string="Estado de CdC",
         default='draft', 
-        #required=True
     )
     quotation_id = fields.Many2one(
         'sale.order',
@@ -70,6 +71,32 @@ class LimsCustodyChain(models.Model):
     internal_notes = fields.Text(
         string="Observaciones internas"
     )
+
+
+    @api.model 
+    def create(slef, vals_list):
+        year = str(datetime.today().year)
+
+        for vals in vals_list:
+            if not vals.get('custody_chain_code') or vals.get('custody_chain_code') == '/':
+                # Buscar todas las cadenas de custodia del año actual
+                existing = self.search([
+                    ('custody_chain_code', 'like', f'%/{year}'),
+                    ('custody_chain_code', '!', '/')
+                ])
+
+                # Obtener el mayor consecutivo existente
+                def extract_number(code):
+                    try:
+                        return int(code.split('/')[0])
+                    except Exception:
+                        return 0
+
+                max_num = max([extract_number(rec.custody_chain_code) for rec in existing], default=0)
+                next_num = str(max_num + 1).zfill(3)
+                vals['custody_chain_code'] = f'{next_num}/{year}'
+            
+            return super(LimsCustodyChain, self).create(vals_list)
 
     def action_send_comprobante_email(self):
         self.ensure_one()
