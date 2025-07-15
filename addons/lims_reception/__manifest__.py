@@ -6,7 +6,7 @@
         Módulo para registrar Cadenas de Custodia y Muestras dentro de un LIMS básico.
     """,
     'category': 'LIMS',
-    'author': "Laboratorio Proteus",
+    'author': "Omar Martinez",
     'depends': [
         'base', 
         'lims_customer', 

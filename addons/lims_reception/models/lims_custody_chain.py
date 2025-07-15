@@ -73,8 +73,8 @@ class LimsCustodyChain(models.Model):
     )
 
 
-    @api.model 
-    def create(slef, vals_list):
+    @api.model_create_multi
+    def create(self, vals_list):
         year = str(datetime.today().year)
 
         for vals in vals_list:
@@ -82,7 +82,7 @@ class LimsCustodyChain(models.Model):
                 # Buscar todas las cadenas de custodia del año actual
                 existing = self.search([
                     ('custody_chain_code', 'like', f'%/{year}'),
-                    ('custody_chain_code', '!', '/')
+                    ('custody_chain_code', '!=', '/')
                 ])
 
                 # Obtener el mayor consecutivo existente
@@ -96,7 +96,7 @@ class LimsCustodyChain(models.Model):
                 next_num = str(max_num + 1).zfill(3)
                 vals['custody_chain_code'] = f'{next_num}/{year}'
             
-            return super(LimsCustodyChain, self).create(vals_list)
+        return super(LimsCustodyChain, self).create(vals_list)
 
     def action_send_comprobante_email(self):
         self.ensure_one()
