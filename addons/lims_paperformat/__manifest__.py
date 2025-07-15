@@ -10,6 +10,6 @@
         'data/paperformat.xml',
     ],
     'installable': True,
-    'application': False,
+    'application': True,
     'auto_install': False,
 }
