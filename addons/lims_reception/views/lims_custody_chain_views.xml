@@ -10,7 +10,7 @@
         <form string="Cadena de Custodia">
           <sheet>
             <group string="Datos de la Cadena de Custodia">
-              <field name="custody_chain_code"/>
+              <field name="custody_chain_code" placeholder="Se genera automaticamente"/>
               <field name="cliente_id"/>
               <field name="sucursal_id"/>
               <field name="departamento_id"/>
