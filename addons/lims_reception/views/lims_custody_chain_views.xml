@@ -39,7 +39,7 @@
             </group>
 
             <group string="Observaciones">
-              <field name="sampling_observations " placeholder="Inserta observaciones generales de muestreo (si aplica)"/>
+              <field name="sampling_observations" placeholder="Inserta observaciones generales de muestreo (si aplica)"/>
               <field name="internal_notes"/>
             </group>
 
