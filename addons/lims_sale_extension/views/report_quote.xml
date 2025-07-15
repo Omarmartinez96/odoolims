@@ -9,20 +9,6 @@
       <!-- ESTILOS LOCALES -->
       <t>
         <style>
-          .header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: auto;
-            padding: 10px 10px;
-            border-bottom: 1px solid #ccc;
-            font-size: 10px;
-          }
-          .content {
-            margin-top: 110px;
-            margin-bottom: 70px;
-          }
           body,
           .o_report_layout,
           table,
@@ -79,12 +65,17 @@
 
       <!-- Número de cotización --> 
       <t t-foreach="docs" t-as="doc">
-        <div class="o_report_layout">
-          <div class="content">
+        <div class="page">
+          <div class="main-content">
+
+            <!-- Título principal -->
+            <div style="text-align: center; margin: 20px 0 30px 0;">
+              <h1 style="font-size: 24px; font-weight: bold; margin: 0; color: #333;">COTIZACIÓN</h1>
+            </div>
 
             <!-- Número de cotización -->
             <table class="table table-borderless mt-1"
-                  style="width:100%; font-size:16px; border-collapse:collapse; border-spacing:0;">
+                  style="width:100%; font-size:18px; border-collapse:collapse; border-spacing:0;">
               <tr>
                 <td style="padding:2px 4px;">
                   <strong>No. de Cotización:</strong> <span t-esc="doc.name"/>
@@ -94,7 +85,7 @@
 
             <!-- Datos del cliente -->
             <table class="table table-borderless mt-2"
-                  style="width:100%; font-size:12px; border-collapse:collapse; border-spacing:0;">
+                  style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0;">
               <t t-set="meses" t-value="{
                 '01':'Ene','02':'Feb','03':'Mar','04':'Abr',
                 '05':'May','06':'Jun','07':'Jul','08':'Ago',
@@ -260,7 +251,7 @@
               <strong>Emitido por:</strong> <span t-esc="doc.user_id.name"/>
             </p>
             <div class="row mt-4">
-              <div class="col-12" style="text-align:center; margin-top:50px;">
+              <div class="col-12" style="text-align:center; padding-top:80px;">
                 <t t-if="doc.signature">
                   <img t-attf-src="data:image/png;base64,{{ doc.signature.decode('utf-8') }}"
                       style="max-height:100px; max-width:300px;"/>
