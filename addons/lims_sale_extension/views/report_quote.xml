@@ -251,7 +251,7 @@
               <strong>Emitido por:</strong> <span t-esc="doc.user_id.name"/>
             </p>
             <div class="row mt-4">
-              <div class="col-12" style="text-align:center; padding-top:80px;">
+              <div class="col-12" style="text-align:center; padding-top:160px;">
                 <t t-if="doc.signature">
                   <img t-attf-src="data:image/png;base64,{{ doc.signature.decode('utf-8') }}"
                       style="max-height:100px; max-width:300px;"/>
