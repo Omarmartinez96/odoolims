@@ -27,6 +27,12 @@ class LimsCustodyChain(models.Model):
         #required=True, 
         domain=[('is_lims_customer', '=', True)]
     )
+    client_code = fields.Char(
+        string="Código de Cliente",
+        related='cliente_id.client_code',
+        readonly=True,
+        store=False,
+    )
     sucursal_id = fields.Many2one(
         'lims.branch', 
         string="Sucursal", 

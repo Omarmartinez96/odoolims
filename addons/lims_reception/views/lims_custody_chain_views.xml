@@ -12,6 +12,7 @@
             <group string="Datos de la Cadena de Custodia">
               <field name="custody_chain_code" placeholder="Se genera automaticamente"/>
               <field name="cliente_id"/>
+              <field name="client_code" readonly="1"/>
               <field name="sucursal_id"/>
               <field name="departamento_id"/>
               <field name="contact_ids"
