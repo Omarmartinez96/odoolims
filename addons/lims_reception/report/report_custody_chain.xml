@@ -15,9 +15,9 @@
               </thead>
               <tbody>
                 <tr t-foreach="doc.sample_ids" t-as="s">
-                  <td><t t-esc="s.id"/></td>
-                  <td><t t-esc="s.sample_type"/></td>
-                  <td><t t-esc="s.notes"/></td>
+                  <td><t t-esc="s.sample_identifier"/></td>
+                  <td><t t-esc="s.sample_type_id.name if s.sample_type_id else 'N/A'"/></td>
+                  <td><t t-esc="s.sampling_observations or 'N/A'"/></td>
                 </tr>
               </tbody>
             </table>
