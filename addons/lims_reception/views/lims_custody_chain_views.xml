@@ -54,16 +54,18 @@
                                     <field name="container_type_id" placeholder="Seleccione el tipo de recipiente"/>
                                 </group>
                                 <group string="Datos de recolección">
-                                  <field name="collection_datetime" placeholder="Seleccione fecha de recolección"/>
+                                  <field name="collection_date" placeholder="Seleccione fecha de recolección"/>
+                                  <field name="collection_time" placeholder="Hora de recolección (HH:MM)"/>
                                   <field name="collection_temperature" placeholder="Temperatura de recolección en °C (vacío = N/A en reportes)"/>
-                                  <field name="collection_temperature_display" placeholder="Temperatura de recolección en °C (vacío = N/A en reportes)" readonly="1"/>
                                   <field name="collected_by" placeholder="Inserte nombre del personal de recolección"/>
+                                  <field name="collection_observations" placeholder="Inserte observaciones generales de recolección (si aplica)"/>
                                 </group>
                                 <group string="Datos de Muestreo">
                                   <field name="sampling_plan" nolabel="1" placeholder="Describe el plan de muestreo si aplica" colspan="4"/>
-                                  <field name="sampling_technician" placeholder="Inserte técnico de muestreo"/>
                                   <field name="sampling_date" placeholder="Seleccione fecha de muestreo"/>
+                                  <field name="sampling_time" placeholder="Hora de muestreo (HH:MM)"/>
                                   <field name="sampling_temperature" placeholder="Temperatura de recolección en °C (vacío = N/A en reportes)"/>
+                                  <field name="sampling_technician" placeholder="Inserte técnico de muestreo"/>
                                   <field name="sampling_observations" placeholder="Inserta observaciones generales de muestreo (si aplica)"/>
                                 </group>
                                 <group string="Pendientes por clasificar">

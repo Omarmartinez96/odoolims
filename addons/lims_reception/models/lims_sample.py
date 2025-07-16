@@ -20,41 +20,21 @@ class LimsSample(models.Model):
     container_type_id = fields.Many2one('lims.container.type', string='Tipo de recipiente', help='Selecciona o crea el tipo de recipiente utilizado')
     instrument_used = fields.Char(string="Instrumento utilizado")
     field_results = fields.Char(string="Resultados en campo")
-    sampling_date = fields.Char(string="Fecha de Muestreo")
+    
+    # Recolección
+    collection_date = fields.Date(string="Fecha de Recolección")
+    collection_time = fields.Char(string="Hora de Recolección", help="Hora en que se realizó la recolección")
+    collection_temperature = fields.Char(string="Temperatura de Recolección", help="Temperatura en grados Celsius al momento de la recolección")    
+    collected_by = fields.Char(string="Recolectado por", help="Nombre del personal que realizó la recolección")
+    collection_observations = fields.Text(string="Observaciones de Recolección", help="Observaciones generales sobre la recolección de la muestra")
+
+    # Muestreo
+    sampling_plan = fields.Text(string="Plan de muestreo")    
+    sampling_date = fields.Date(string="Fecha de Muestreo")
+    sampling_time = fields.Char(string="Hora de Muestreo", help="Hora en que se realizó el muestreo")
     sampling_temperature = fields.Char(string="Temperatura de muestreo")
     sampling_technician = fields.Char(string="Técnico de muestreo")
-    sampling_plan = fields.Text(string="Plan de muestreo")
-
-    # Recolección
-    collection_datetime = fields.Datetime(string="Fecha y Hora de Recolección")
-    collected_by = fields.Char(string="Recolectado por", help="Nombre del personal que realizó la recolección")
-      # Campo original para temperatura de recolección
-    collection_temperature = fields.Float(string="Temperatura de Recolección", help="Temperatura en grados Celsius al momento de la recolección")
-      # Campo de display 
-    collection_temperature_display = fields.Char(string="Temperatura de Recolección", compute='_compute_display_collection_temperature', store=False)
-
-    # Observaciones
     sampling_observations = fields.Text(string="Observaciones de Muestreo")
-
-    @api.depends('collection_temperature')
-    def _compute_display_collection_temperature(self):
-        for record in self:
-            field_config = {
-                'collection_temperature': ('°C', 'N/A'),
-                #Agregar mas campos si es necesario
-            }
-
-            for field_name, suffix in field_config.items():
-                value = getattr(record, field_name, None)
-                display_field = f"{field_name}_display"
-                
-                if value:
-                    if suffix:
-                        record[display_field] = f"{value}{suffix}"
-                    else:
-                        record[display_field] = str(value)
-                else:
-                    record[display_field] = 'N/A'
 
     def create(self, vals_list):
         for vals in vals_list:
