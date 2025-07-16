@@ -87,8 +87,11 @@ class LimsCustodyChain(models.Model):
             raise UserError(_("No se encontró la cadena de custodia con ID: %s") % self.id)
 
         try:
-            # Render the PDF - método actualizado y más robusto
-            pdf_content, content_type = report._render_qweb_pdf(res_ids=[self.id])
+            # Render the PDF - método corregido con report_ref
+            pdf_content, content_type = report._render_qweb_pdf(
+                report_ref='lims_reception.action_report_custody_chain',
+                res_ids=[self.id]
+            )
         except Exception as e:
             raise UserError(_("Error al generar el PDF: %s") % str(e))
         
