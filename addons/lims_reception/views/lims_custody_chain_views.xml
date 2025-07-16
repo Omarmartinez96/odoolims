@@ -25,11 +25,6 @@
               <field name="chain_of_custody_state" widget="radio"/> 
             </group>
 
-            <group string="Datos de Recolección">
-              <field name="collection_datetime" placerholder="Selecciona la fecha de recoleccion de las muestras geneneral"/>
-              <field name="collected_by" placeholder="Inserta nombre del personal de recolección"/>
-            </group>
-
             <group string="Observaciones">
               <field name="sampling_observations" placeholder="Inserta observaciones generales de muestreo (si aplica)"/>
               <field name="internal_notes"/>
