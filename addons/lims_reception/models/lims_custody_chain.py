@@ -75,7 +75,7 @@ class LimsCustodyChain(models.Model):
                 next_num = str(max_num + 1).zfill(3)
                 vals['custody_chain_code'] = f'{next_num}/{year}'
 
-            text_fields_na = ['sampling_plan', 'sampling_observations', 'internal_notes']
+            text_fields_na = ['sampling_plan', 'sampling_observations', 'internal_notes', 'collected_by']
             for field in text_fields_na: 
                 if not vals.get (field) or (vals.get(field) and vals.get(field).strip() == ''):
                    vals[field] = 'N/A'

@@ -1,24 +1,44 @@
 <odoo>
     <data>
 
-        <!-- Vista de Formulario -->
+        <!-- Vista de Formulario MEJORADA -->
         <record id="view_lims_sample_form" model="ir.ui.view">
             <field name="name">lims.sample.form</field>
             <field name="model">lims.sample</field>
             <field name="arch" type="xml">
                 <form string="Recepción de Muestra">
                     <sheet>
+                        <!-- 🆕 BOTÓN PARA GUARDAR COMO PLANTILLA -->
+                        <header>
+                            <button name="action_save_as_template" 
+                                    string="💾 Guardar como Plantilla" 
+                                    type="object" 
+                                    class="btn-secondary"
+                                    attrs="{'invisible': [('id', '=', False)]}"/>
+                        </header>
+
                         <group>
                             <separator string="DATOS DEL CLIENTE" colspan="4"/>
                             <field name="cliente_id"/>
                             <field name="sucursal_id"/>
                             <field name="departamento_id"/>
                         </group>
+                        
+                        <!-- 🆕 SECCIÓN DE PLANTILLAS -->
+                        <group>
+                            <separator string="PLANTILLAS RÁPIDAS" colspan="4"/>
+                            <field name="sample_template_id" 
+                                   placeholder="Selecciona una plantilla para cargar datos automáticamente"
+                                   attrs="{'invisible': [('cliente_id', '=', False)]}"/>
+                        </group>
+
                         <group>
                             <separator string="DATOS DE LA MUESTRA" colspan="4"/>
                             <field name="sample_identifier" required="1"/>
                             <field name="sample_description"/>
                             <field name="sample_type_id"/>
+                            <field name="sample_quantity"/>  <!-- 🆕 AGREGAR -->
+                            <field name="container_type_id"/>  <!-- 🆕 AGREGAR -->
                             <field name="date_received"/>
                             <field name="sample_state"/>
                         </group>
@@ -35,7 +55,7 @@
             </field>
         </record>
 
-        <!-- Vista de Lista -->
+        <!-- Vista de Lista (sin cambios) -->
         <record id="view_lims_sample_list" model="ir.ui.view">
             <field name="name">lims.sample.list</field>
             <field name="model">lims.sample</field>
@@ -52,15 +72,13 @@
             </field>
         </record>
 
-        <!-- Acción -->
+        <!-- Acción (sin cambios) -->
         <record id="action_lims_samples" model="ir.actions.act_window">
             <field name="name">Recepción de Muestras</field>
             <field name="res_model">lims.sample</field>
             <field name="view_mode">list,form</field>
             <field name="view_id" ref="view_lims_sample_list"/>
         </record>
-
-        <!-- Menú -->
 
     </data>
 </odoo>

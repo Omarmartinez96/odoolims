@@ -44,33 +44,39 @@
             </group>
 
             <notebook>
-              <page string="Muestras">
-                <field name="sample_ids" context="{'default_custody_chain_id': id}" mode="list,form">
-                  <list>
-                    <field name="sample_identifier"/>
-                    <field name="sample_description"/>
-                    <field name="sample_type_id"/>
-                    <field name="sample_state"/>
-                  </list>
-                  <form>
-                    <sheet>
-                      <group>
-                        <field name="sample_identifier"/>
-                        <field name="sample_description"/>
-                        <field name="sample_type_id"/>
-                        <field name="sample_quantity"/>
-                        <field name="container_type_id"/>
-                        <field name="sampling_temperature"/>
-                        <field name="sampling_date"/>
-                        <field name="field_results"/>
-                        <field name="instrument_used"/>
-                        <field name="sampling_technician"/>
-                        <field name="attachment_ids" widget="many2many_binary"/>
-                      </group>
-                    </sheet>
-                  </form>
-                </field>
-              </page>
+                <page string="Muestras">
+                    <field name="sample_ids" context="{'default_custody_chain_id': id}" mode="list,form">
+                        <list>
+                            <field name="sample_identifier"/>
+                            <field name="sample_description"/>
+                            <field name="sample_type_id"/>
+                            <field name="sample_state"/>
+                        </list>
+                        <form>
+                            <sheet>
+                                <!-- 🆕 AGREGAR PLANTILLAS EN LA VISTA EMBEBIDA -->
+                                <group>
+                                    <field name="sample_template_id" 
+                                          placeholder="Usar plantilla"
+                                          attrs="{'invisible': [('cliente_id', '=', False)]}"/>
+                                </group>
+                                <group>
+                                    <field name="sample_identifier"/>
+                                    <field name="sample_description"/>
+                                    <field name="sample_type_id"/>
+                                    <field name="sample_quantity"/>
+                                    <field name="container_type_id"/>
+                                    <field name="sampling_temperature"/>
+                                    <field name="sampling_date"/>
+                                    <field name="field_results"/>
+                                    <field name="instrument_used"/>
+                                    <field name="sampling_technician"/>
+                                    <field name="attachment_ids" widget="many2many_binary"/>
+                                </group>
+                            </sheet>
+                        </form>
+                    </field>
+                </page>
             </notebook>
 
             <group>

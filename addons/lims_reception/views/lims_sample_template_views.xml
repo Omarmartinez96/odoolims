@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vista Lista de Plantillas -->
+        <record id="view_lims_sample_template_list" model="ir.ui.view">
+            <field name="name">lims.sample.template.list</field>
+            <field name="model">lims.sample.template</field>
+            <field name="arch" type="xml">
+                <list string="Plantillas de Muestras">
+                    <field name="name"/>
+                    <field name="cliente_id"/>
+                    <field name="sample_type_id"/>
+                    <field name="times_used"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Formulario de Plantillas -->
+        <record id="view_lims_sample_template_form" model="ir.ui.view">
+            <field name="name">lims.sample.template.form</field>
+            <field name="model">lims.sample.template</field>
+            <field name="arch" type="xml">
+                <form string="Plantilla de Muestra">
+                    <sheet>
+                        <group>
+                            <field name="name"/>
+                            <field name="cliente_id"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="sample_type_id"/>
+                            <field name="container_type_id"/>
+                            <field name="sample_description"/>
+                            <field name="sample_quantity"/>
+                        </group>
+                        <group>
+                            <field name="times_used" readonly="1"/>
+                            <field name="create_date" readonly="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acción para Plantillas -->
+        <record id="action_lims_sample_templates" model="ir.actions.act_window">
+            <field name="name">Plantillas de Muestras</field>
+            <field name="res_model">lims.sample.template</field>
+            <field name="view_mode">list,form</field>
+        </record>
+
+        <!-- Menú para Plantillas -->
+        <menuitem id="lims_sample_templates_menu" 
+                  name="Plantillas de Muestras"
+                  parent="lims_custody_menu_root"
+                  action="action_lims_sample_templates" 
+                  sequence="20"/>
+
+    </data>
+</odoo>
