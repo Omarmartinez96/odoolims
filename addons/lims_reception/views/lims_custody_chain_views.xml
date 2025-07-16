@@ -70,7 +70,8 @@
                                   <field name="sampling_technician" placeholder="Inserte técnico de muestreo"/>
                                   <field name="sampling_date" placeholder="Seleccione fecha de muestreo"/>
                                   <field name="sampling_temperature" placeholder="Temperatura de recolección en °C (vacío = N/A en reportes)"/>
-                                </group string="Pendientes por clasificar">
+                                </group>
+                                <group string="Pendientes por clasificar">
                                     <field name="field_results"/>
                                     <field name="instrument_used"/>
                                     <field name="attachment_ids" widget="many2many_binary"/>
