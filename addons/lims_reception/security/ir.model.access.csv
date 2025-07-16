@@ -3,3 +3,4 @@ access_lims_sample_user,access.lims.sample.user,model_lims_sample,base.group_use
 access_lims_custody_chain,access.lims.custody.chain,model_lims_custody_chain,base.group_user,1,1,1,1
 access_lims_container_type,Lims Container Type,model_lims_container_type,base.group_user,1,1,1,1
 access_lims_sample_type,Lims Sample Type,model_lims_sample_type,base.group_user,1,1,1,1
+access_lims_sample_template,Lims Sample Template,model_lims_sample_template,base.group_user,1,1,1,1
