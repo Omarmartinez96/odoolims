@@ -25,16 +25,8 @@
               <field name="chain_of_custody_state" widget="radio"/> 
             </group>
 
-            <group string="Plan de Muestreo (si aplica)">
-              <field name="sampling_plan"
-                     nolabel="1"
-                     placeholder="Describe el plan de muestreo si aplica"
-                     colspan="4"/>
-            </group>
-
             <group string="Datos de Recolección">
               <field name="collection_datetime" placerholder="Selecciona la fecha de recoleccion de las muestras geneneral"/>
-              <field name="collection_temperature" placeholder="Temperatura en °C (vacío = N/A en reportes)"/>
               <field name="collected_by" placeholder="Inserta nombre del personal de recolección"/>
             </group>
 
@@ -55,22 +47,32 @@
                         <form>
                             <sheet>
                                 <!-- 🆕 PLANTILLAS SIN ATTRS -->
-                                <group>
+                                <group string="Plantilla de Muestra">>
                                     <field name="sample_template_id" 
                                           placeholder="Usar plantilla"
                                           invisible="cliente_id == False"/>
                                 </group>
-                                <group>
-                                    <field name="sample_identifier"/>
-                                    <field name="sample_description"/>
-                                    <field name="sample_type_id"/>
-                                    <field name="sample_quantity"/>
-                                    <field name="container_type_id"/>
-                                    <field name="sampling_temperature"/>
-                                    <field name="sampling_date"/>
+                                <group string="Datos Generales de la Muestra">
+                                    <field name="sample_identifier" placeholder="Inserte identificación de la muestra"/>
+                                    <field name="sample_description" placeholder="Inserte descripción de la muestra si aplica"/>
+                                    <field name="sample_type_id" placeholder="Seleccione el tipo de muestra"/>
+                                    <field name="sample_quantity" placeholder="Inserte la cantidad de muestra"/>
+                                    <field name="container_type_id" placeholder="Seleccione el tipo de recipiente"/>
+                                </group>
+                                <group string="Datos de recolección">
+                                  <field name="collection_datetime" placeholder="Seleccione fecha de recolección"/>
+                                  <field name="collection_temperature" placeholder="Temperatura de recolección en °C (vacío = N/A en reportes)"/>
+                                  <field name="collection_temperature_display" placeholder="Temperatura de recolección en °C (vacío = N/A en reportes)" readonly="1"/>
+                                  <field name="collected_by" placeholder="Inserte nombre del personal de recolección"/>
+                                </group>
+                                <group string="Datos de Muestreo">
+                                  <field name="sampling_plan" nolabel="1" placeholder="Describe el plan de muestreo si aplica" colspan="4"/>
+                                  <field name="sampling_technician" placeholder="Inserte técnico de muestreo"/>
+                                  <field name="sampling_date" placeholder="Seleccione fecha de muestreo"/>
+                                  <field name="sampling_temperature" placeholder="Temperatura de recolección en °C (vacío = N/A en reportes)"/>
+                                </group string="Pendientes por clasificar">
                                     <field name="field_results"/>
                                     <field name="instrument_used"/>
-                                    <field name="sampling_technician"/>
                                     <field name="attachment_ids" widget="many2many_binary"/>
                                 </group>
                             </sheet>

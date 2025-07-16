@@ -24,6 +24,54 @@ class LimsSample(models.Model):
     sampling_temperature = fields.Char(string="Temperatura de muestreo")
     sampling_technician = fields.Char(string="Técnico de muestreo")
 
+    sampling_plan = fields.Text(string="Plan de muestreo")
+
+    # Recolección
+    collection_datetime = fields.Datetime(string="Fecha y Hora de Recolección")
+    collected_by = fields.Char(string="Recolectado por", help="Nombre del personal que realizó la recolección")
+      # Campo original para temperatura de recolección
+    collection_temperature = fields.Float(string="Temperatura de Recolección", help="Temperatura en grados Celsius al momento de la recolección")
+      # Campo de display 
+    collection_temperature_display = fields.Char(string="Temperatura de Recolección", compute='_compute_display_collection_temperature', store=False)
+
+    # Observaciones
+    sampling_observations = fields.Text(string="Observaciones de Muestreo")
+    internal_notes = fields.Text(string="Observaciones internas")
+
+    @api.depends('collection_temperature')
+    def _compute_display_collection_temperature(self):
+        for record in self:
+            field_config = {
+                'collection_temperature': ('°C', 'N/A'),
+                #Agregar mas campos si es necesario
+            }
+
+            for field_name, (suffix, default) in field_config.items():
+                value = getattr(record, field_name)
+                display_field = f"{field_name}_display"
+
+                if value:
+                    setattr(record, display_field, f"{value}{suffix}")
+                else:
+                    setattr(record, display_field, default)
+
+    def create(self, vals_list):
+        for vals in vals_list:
+            text_fields_na = ['sampling_plan', 'sampling_observations']
+            for field in text_fields_na:
+                if not vals.get (field) or (vals.get(field) and vals.get(field).strip() == ''):
+                    vals[field] = 'N/A'
+
+    def write(self, vals):
+        text_fields_na = ['sampling_plan', 'sampling_observations']
+
+        for field in text_fields_na:
+            if field in vals: 
+                if not vals.get(field) or vals.get(field).strip() == '':
+                    vals[field] = 'N/A'
+
+        return super(LimsSample, self).write(vals)
+
     # Plantilla de muestras
 
     sample_template_id = fields.Many2one('lims.sample.template', string="Plantilla", domain="[('cliente_id', '=', cliente_id), ('active', '=', True)]")

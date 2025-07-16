@@ -21,37 +21,7 @@ class LimsCustodyChain(models.Model):
     sample_ids = fields.One2many('lims.sample', 'custody_chain_id', string='Muestra')
     chain_of_custody_state = fields.Selection([('draft', 'Borrador'), ('in_progress', 'En Proceso'), ('done', 'Finalizado')], string="Estado de CC", default='draft',)
     quotation_id = fields.Many2one('sale.order', string ="Referencia de cotización")
-    sampling_plan = fields.Text(string="Plan de muestreo")
-
-    # Recolección
-    collection_datetime = fields.Datetime(string="Fecha y Hora de Recolección")
-    collected_by = fields.Char(string="Recolectado por", help="Nombre del personal que realizó la recolección")
-      # Campo original para temperatura de recolección
-    collection_temperature = fields.Float(string="Temperatura de Recolección", help="Temperatura en grados Celsius al momento de la recolección")
-      # Campo de display 
-    collection_temperature_display = fields.Char(string="Temperatura de Recolección", compute='_compute_display_collection_temperature', store=False)
-
-    # Observaciones
-    sampling_observations = fields.Text(string="Observaciones de Muestreo")
-    internal_notes = fields.Text(string="Observaciones internas")
-
-    @api.depends('collection_temperature')
-    def _compute_display_collection_temperature(self):
-        for record in self:
-            field_config = {
-                'collection_temperature': ('°C', 'N/A'),
-                #Agregar mas campos si es necesario
-            }
-
-            for field_name, (suffix, default) in field_config.items():
-                value = getattr(record, field_name)
-                display_field = f"{field_name}_display"
-
-                if value:
-                    setattr(record, display_field, f"{value}{suffix}")
-                else:
-                    setattr(record, display_field, default)
-
+    
     @api.model_create_multi
     def create(self, vals_list):
         year = str(datetime.today().year)
@@ -75,7 +45,7 @@ class LimsCustodyChain(models.Model):
                 next_num = str(max_num + 1).zfill(3)
                 vals['custody_chain_code'] = f'{next_num}/{year}'
 
-            text_fields_na = ['sampling_plan', 'sampling_observations', 'internal_notes', 'collected_by']
+            text_fields_na = ['internal_notes']
             for field in text_fields_na: 
                 if not vals.get (field) or (vals.get(field) and vals.get(field).strip() == ''):
                    vals[field] = 'N/A'
@@ -83,7 +53,7 @@ class LimsCustodyChain(models.Model):
         return super(LimsCustodyChain, self).create(vals_list)
     
     def write(self, vals):
-        text_fields_na = ['sampling_plan', 'sampling_observations', 'internal_notes']
+        text_fields_na = ['internal_notes']
 
         for field in text_fields_na:
             if field in vals: 
