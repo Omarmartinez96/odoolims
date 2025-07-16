@@ -21,6 +21,7 @@ class LimsCustodyChain(models.Model):
     sample_ids = fields.One2many('lims.sample', 'custody_chain_id', string='Muestra')
     chain_of_custody_state = fields.Selection([('draft', 'Borrador'), ('in_progress', 'En Proceso'), ('done', 'Finalizado')], string="Estado de CC", default='draft',)
     quotation_id = fields.Many2one('sale.order', string ="Referencia de cotización")
+    interal_notes = fields.Text(string="Notas Internas", help="Notas internas relacionadas con la cadena de custodia")
     
     @api.model_create_multi
     def create(self, vals_list):
@@ -37,8 +38,11 @@ class LimsCustodyChain(models.Model):
                 # Obtener el mayor consecutivo existente
                 def extract_number(code):
                     try:
-                        return int(code.split('/')[0])
-                    except Exception:
+                        parts = code.split('/')
+                        if len(parts) >= 1:
+                            return int(parts[0])
+                        return 0
+                    except (ValueError, IndexError):
                         return 0
 
                 max_num = max([extract_number(rec.custody_chain_code) for rec in existing], default=0)
@@ -47,7 +51,7 @@ class LimsCustodyChain(models.Model):
 
             text_fields_na = ['internal_notes']
             for field in text_fields_na: 
-                if not vals.get (field) or (vals.get(field) and vals.get(field).strip() == ''):
+                if not vals.get(field) or (isinstance(vals.get(field), str) and vals.get(field).strip() == ''):
                    vals[field] = 'N/A'
 
         return super(LimsCustodyChain, self).create(vals_list)
@@ -57,7 +61,7 @@ class LimsCustodyChain(models.Model):
 
         for field in text_fields_na:
             if field in vals: 
-                if not vals.get(field) or vals.get(field).strip() == '':
+                if not vals.get(field) or (isinstance(vals.get(field), str) and vals.get(field).strip() == ''):
                     vals[field] = 'N/A'
 
         return super(LimsCustodyChain, self).write(vals)
@@ -82,22 +86,27 @@ class LimsCustodyChain(models.Model):
         if not record.exists():
             raise UserError(_("No se encontró la cadena de custodia con ID: %s") % self.id)
 
-        # Render the PDF (pass list of IDs)
-        pdf_content, content_type = report._render_qweb_pdf(
-            'lims_reception.action_report_custody_chain',
-            res_ids=[self.id]
-        )
+        try:
+            # Render the PDF - método actualizado y más robusto
+            pdf_content, content_type = report._render_qweb_pdf(res_ids=[self.id])
+        except Exception as e:
+            raise UserError(_("Error al generar el PDF: %s") % str(e))
         
-        filename = '%s.pdf' % (self.custody_chain_code.replace('/', '_') if self.custody_chain_code else 'comprobante')
+        # Generar nombre de archivo más seguro
+        safe_code = self.custody_chain_code.replace('/', '_') if self.custody_chain_code else 'comprobante'
+        filename = f'{safe_code}.pdf'
 
-        attachment = self.env['ir.attachment'].create({
-            'name': filename,
-            'type': 'binary',
-            'datas': base64.b64encode(pdf_content),
-            'res_model': 'lims.custody_chain',
-            'res_id': self.id,
-            'mimetype': 'application/pdf',
-        })
+        try:
+            attachment = self.env['ir.attachment'].create({
+                'name': filename,
+                'type': 'binary',
+                'datas': base64.b64encode(pdf_content),
+                'res_model': 'lims.custody_chain',
+                'res_id': self.id,
+                'mimetype': 'application/pdf',
+            })
+        except Exception as e:
+            raise UserError(_("Error al crear el archivo adjunto: %s") % str(e))
 
         compose_form = self.env.ref('mail.email_compose_message_wizard_form')
 

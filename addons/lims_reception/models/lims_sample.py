@@ -46,21 +46,26 @@ class LimsSample(models.Model):
                 #Agregar mas campos si es necesario
             }
 
-            for field_name, (suffix, default) in field_config.items():
-                value = getattr(record, field_name)
+            for field_name, suffix in field_config.items():
+                value = getattr(record, field_name, None)
                 display_field = f"{field_name}_display"
-
+                
                 if value:
-                    setattr(record, display_field, f"{value}{suffix}")
+                    if suffix:
+                        record[display_field] = f"{value}{suffix}"
+                    else:
+                        record[display_field] = str(value)
                 else:
-                    setattr(record, display_field, default)
+                    record[display_field] = 'N/A'
 
     def create(self, vals_list):
         for vals in vals_list:
             text_fields_na = ['sampling_plan', 'sampling_observations']
             for field in text_fields_na:
-                if not vals.get (field) or (vals.get(field) and vals.get(field).strip() == ''):
+                if not vals.get(field) or (isinstance(vals.get(field), str) and vals.get(field).strip() == ''):
                     vals[field] = 'N/A'
+
+        return super(LimsSample, self).create(vals_list)
 
     def write(self, vals):
         text_fields_na = ['sampling_plan', 'sampling_observations']

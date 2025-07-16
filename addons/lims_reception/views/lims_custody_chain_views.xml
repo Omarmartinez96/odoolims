@@ -26,7 +26,6 @@
             </group>
 
             <group string="Observaciones">
-              <field name="sampling_observations" placeholder="Inserta observaciones generales de muestreo (si aplica)"/>
               <field name="internal_notes"/>
             </group>
 
@@ -65,6 +64,7 @@
                                   <field name="sampling_technician" placeholder="Inserte técnico de muestreo"/>
                                   <field name="sampling_date" placeholder="Seleccione fecha de muestreo"/>
                                   <field name="sampling_temperature" placeholder="Temperatura de recolección en °C (vacío = N/A en reportes)"/>
+                                  <field name="sampling_observations" placeholder="Inserta observaciones generales de muestreo (si aplica)"/>
                                 </group>
                                 <group string="Pendientes por clasificar">
                                     <field name="field_results"/>
