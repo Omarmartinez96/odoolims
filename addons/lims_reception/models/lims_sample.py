@@ -22,7 +22,7 @@ class LimsSample(models.Model):
     field_results = fields.Char(string="Resultados en campo")
     
     # Recolección
-    collection_date = fields.Char(string="Fecha de Recolección")
+    collection_date = fields.Date(string="Fecha de Recolección")
     collection_time = fields.Char(string="Hora de Recolección", help="Hora en que se realizó la recolección")
     collection_temperature = fields.Char(string="Temperatura de Recolección", help="Temperatura en grados Celsius al momento de la recolección")    
     collected_by = fields.Char(string="Recolectado por", help="Nombre del personal que realizó la recolección")
@@ -30,7 +30,7 @@ class LimsSample(models.Model):
 
     # Muestreo
     sampling_plan = fields.Text(string="Plan de muestreo")    
-    sampling_date = fields.Char(string="Fecha de Muestreo")
+    sampling_date = fields.Date(string="Fecha de Muestreo")
     sampling_time = fields.Char(string="Hora de Muestreo", help="Hora en que se realizó el muestreo")
     sampling_temperature = fields.Char(string="Temperatura de muestreo")
     sampling_technician = fields.Char(string="Técnico de muestreo")
