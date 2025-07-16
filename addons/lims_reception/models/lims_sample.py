@@ -23,7 +23,6 @@ class LimsSample(models.Model):
     sampling_date = fields.Char(string="Fecha de Muestreo")
     sampling_temperature = fields.Char(string="Temperatura de muestreo")
     sampling_technician = fields.Char(string="Técnico de muestreo")
-
     sampling_plan = fields.Text(string="Plan de muestreo")
 
     # Recolección
@@ -36,7 +35,6 @@ class LimsSample(models.Model):
 
     # Observaciones
     sampling_observations = fields.Text(string="Observaciones de Muestreo")
-    internal_notes = fields.Text(string="Observaciones internas")
 
     @api.depends('collection_temperature')
     def _compute_display_collection_temperature(self):

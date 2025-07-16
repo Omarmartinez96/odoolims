@@ -21,7 +21,7 @@ class LimsCustodyChain(models.Model):
     sample_ids = fields.One2many('lims.sample', 'custody_chain_id', string='Muestra')
     chain_of_custody_state = fields.Selection([('draft', 'Borrador'), ('in_progress', 'En Proceso'), ('done', 'Finalizado')], string="Estado de CC", default='draft',)
     quotation_id = fields.Many2one('sale.order', string ="Referencia de cotización")
-    interal_notes = fields.Text(string="Notas Internas", help="Notas internas relacionadas con la cadena de custodia")
+    internal_notes = fields.Text(string="Notas Internas", help="Notas internas relacionadas con la cadena de custodia")
     
     @api.model_create_multi
     def create(self, vals_list):
