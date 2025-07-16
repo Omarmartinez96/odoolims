@@ -74,8 +74,23 @@ class LimsCustodyChain(models.Model):
                 max_num = max([extract_number(rec.custody_chain_code) for rec in existing], default=0)
                 next_num = str(max_num + 1).zfill(3)
                 vals['custody_chain_code'] = f'{next_num}/{year}'
-            
+
+            text_fields_na = ['sampling_plan', 'sampling_observations', 'internal_notes']
+            for field in text_fields_na: 
+                if not vals.get (field) or (vals.get(field) and vals.get(field).strip() == ''):
+                   vals[field] = 'N/A'
+
         return super(LimsCustodyChain, self).create(vals_list)
+    
+    def write(self, vals):
+        text_fields_na = ['sampling_plan', 'sampling_observations', 'internal_notes']
+
+        for field in text_fields_na:
+            if field in vals: 
+                if not vals.get(field) or vals.get(field).strip() == '':
+                    vals[field] = 'N/A'
+
+        return super(LimsCustodyChain, self).write(vals)
 
     def action_send_comprobante_email(self):
         self.ensure_one()
