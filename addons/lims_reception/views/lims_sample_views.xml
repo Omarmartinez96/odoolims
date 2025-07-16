@@ -14,7 +14,7 @@
                                     string="💾 Guardar como Plantilla" 
                                     type="object" 
                                     class="btn-secondary"
-                                    attrs="{'invisible': [('id', '=', False)]}"/>
+                                    invisible="id == False"/>
                         </header>
 
                         <group>
@@ -29,7 +29,7 @@
                             <separator string="PLANTILLAS RÁPIDAS" colspan="4"/>
                             <field name="sample_template_id" 
                                    placeholder="Selecciona una plantilla para cargar datos automáticamente"
-                                   attrs="{'invisible': [('cliente_id', '=', False)]}"/>
+                                   invisible="cliente_id == False"/>
                         </group>
 
                         <group>
@@ -37,8 +37,8 @@
                             <field name="sample_identifier" required="1"/>
                             <field name="sample_description"/>
                             <field name="sample_type_id"/>
-                            <field name="sample_quantity"/>  <!-- 🆕 AGREGAR -->
-                            <field name="container_type_id"/>  <!-- 🆕 AGREGAR -->
+                            <field name="sample_quantity"/>
+                            <field name="container_type_id"/>
                             <field name="date_received"/>
                             <field name="sample_state"/>
                         </group>
@@ -72,7 +72,7 @@
             </field>
         </record>
 
-        <!-- Acción (sin cambios) -->
+        <!-- Acción -->
         <record id="action_lims_samples" model="ir.actions.act_window">
             <field name="name">Recepción de Muestras</field>
             <field name="res_model">lims.sample</field>

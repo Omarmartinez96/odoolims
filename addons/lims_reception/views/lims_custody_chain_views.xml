@@ -54,11 +54,11 @@
                         </list>
                         <form>
                             <sheet>
-                                <!-- 🆕 AGREGAR PLANTILLAS EN LA VISTA EMBEBIDA -->
+                                <!-- 🆕 PLANTILLAS SIN ATTRS -->
                                 <group>
                                     <field name="sample_template_id" 
                                           placeholder="Usar plantilla"
-                                          attrs="{'invisible': [('cliente_id', '=', False)]}"/>
+                                          invisible="cliente_id == False"/>
                                 </group>
                                 <group>
                                     <field name="sample_identifier"/>
