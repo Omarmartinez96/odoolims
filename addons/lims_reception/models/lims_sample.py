@@ -30,7 +30,7 @@ class LimsSample(models.Model):
 
     # Muestreo
     sampling_plan = fields.Text(string="Plan de muestreo")    
-    sampling_date = fields.Date(string="Fecha de Muestreo")
+    sampling_date = fields.Char(string="Fecha de Muestreo")
     sampling_time = fields.Char(string="Hora de Muestreo", help="Hora en que se realizó el muestreo")
     sampling_temperature = fields.Char(string="Temperatura de muestreo")
     sampling_technician = fields.Char(string="Técnico de muestreo")
