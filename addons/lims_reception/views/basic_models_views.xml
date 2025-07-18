@@ -74,35 +74,6 @@
       </field>
     </record>
 
-    <!-- ACCIONES -->
-    <record id="action_lims_sample_types" model="ir.actions.act_window">
-      <field name="name">Tipos de Muestra</field>
-      <field name="res_model">lims.sample.type</field>
-      <field name="view_mode">list,form</field>
-      <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
-          Crear el primer tipo de muestra
-        </p>
-        <p>
-          Defina los tipos de muestra que maneja su laboratorio (agua, alimentos, etc.)
-        </p>
-      </field>
-    </record>
-
-    <record id="action_lims_container_types" model="ir.actions.act_window">
-      <field name="name">Tipos de Recipiente</field>
-      <field name="res_model">lims.container.type</field>
-      <field name="view_mode">list,form</field>
-      <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
-          Crear el primer tipo de recipiente
-        </p>
-        <p>
-          Defina los tipos de recipiente utilizados para las muestras (frascos, bolsas, etc.)
-        </p>
-      </field>
-    </record>
-
     <!-- VISTA DE FORMULARIO COMPLETA PARA PLANTILLAS DE PARÁMETROS -->
     <record id="view_lims_parameter_template_form" model="ir.ui.view">
       <field name="name">lims.parameter.template.form</field>
@@ -157,6 +128,51 @@
 
           </sheet>
         </form>
+      </field>
+    </record>
+
+    <!-- ACCIONES -->
+    <record id="action_lims_sample_types" model="ir.actions.act_window">
+      <field name="name">Tipos de Muestra</field>
+      <field name="res_model">lims.sample.type</field>
+      <field name="view_mode">list,form</field>
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+          Crear el primer tipo de muestra
+        </p>
+        <p>
+          Defina los tipos de muestra que maneja su laboratorio (agua, alimentos, etc.)
+        </p>
+      </field>
+    </record>
+
+    <record id="action_lims_container_types" model="ir.actions.act_window">
+      <field name="name">Tipos de Recipiente</field>
+      <field name="res_model">lims.container.type</field>
+      <field name="view_mode">list,form</field>
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+          Crear el primer tipo de recipiente
+        </p>
+        <p>
+          Defina los tipos de recipiente utilizados para las muestras (frascos, bolsas, etc.)
+        </p>
+      </field>
+    </record>
+
+    <record id="action_lims_parameter_templates" model="ir.actions.act_window">
+      <field name="name">Plantillas de Parámetros</field>
+      <field name="res_model">lims.parameter.template</field>
+      <field name="view_mode">list,form</field>
+      <field name="view_id" ref="view_lims_parameter_template_list"/>
+      <field name="form_view_id" ref="view_lims_parameter_template_form"/>  <!-- ← AGREGAR -->
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+          Crear la primera plantilla de parámetro
+        </p>
+        <p>
+          Defina los parámetros que se analizan frecuentemente
+        </p>
       </field>
     </record>
 
