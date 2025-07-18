@@ -103,36 +103,60 @@
       </field>
     </record>
 
-    <!-- VISTAS PARA PLANTILLAS DE PARÁMETROS -->
-    <record id="view_lims_parameter_template_list" model="ir.ui.view">
-      <field name="name">lims.parameter.template.list</field>
+    <!-- VISTA DE FORMULARIO COMPLETA PARA PLANTILLAS DE PARÁMETROS -->
+    <record id="view_lims_parameter_template_form" model="ir.ui.view">
+      <field name="name">lims.parameter.template.form</field>
       <field name="model">lims.parameter.template</field>
       <field name="arch" type="xml">
-        <list string="Plantillas de Parámetros" editable="top">
-          <field name="name"/>
-          <field name="unit"/>
-          <field name="method"/>
-          <field name="category"/>
-          <field name="active"/>
-        </list>
-      </field>
-    </record>
+        <form string="Plantilla de Parámetro">
+          <sheet>
+            <div class="oe_title">
+              <h1>
+                <field name="name" placeholder="Ej: Coliformes totales en alimento (NOM-113)" required="1"/>
+              </h1>
+            </div>
 
-    <record id="action_lims_parameter_templates" model="ir.actions.act_window">
-      <field name="name">Plantillas de Parámetros</field>
-      <field name="res_model">lims.parameter.template</field>
-      <field name="view_mode">list,form</field>
-      <field name="view_id" ref="view_lims_parameter_template_list"/>  <!-- ← AGREGAR -->
-      <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
-          Crear la primera plantilla de parámetro
-        </p>
-        <p>
-          Defina los parámetros que se analizan frecuentemente:<br/>
-          • Coliformes totales en alimento (NOM-113)<br/>
-          • pH en agua (ASTM D1293)<br/>
-          • E. coli en agua (EPA 1603)
-        </p>
+            <!-- Información básica -->
+            <group>
+              <group string="📋 Información General">
+                <field name="category" required="1"/>
+                <field name="microorganism" placeholder="Ej: Coliformes totales, E. coli"/>
+                <field name="active"/>
+              </group>
+              <group string="🔬 Método y Unidades">
+                <field name="method" placeholder="Ej: NOM-113, ASTM D1293, EPA 200.8"/>
+                <field name="unit" placeholder="Ej: UFC/g, mg/L, µg/g"/>
+              </group>
+            </group>
+
+            <!-- Descripción completa -->
+            <group string="📝 Descripción del Análisis">
+              <field name="description" nolabel="1" 
+                    placeholder="Descripción detallada del procedimiento, condiciones especiales, materiales necesarios, etc..."/>
+            </group>
+
+            <!-- Aquí puedes agregar más campos según necesites -->
+            <notebook>
+              <page string="🧪 Condiciones Técnicas">
+                <group>
+                  <group string="Condiciones de Incubación">
+                    <!-- Agrega campos adicionales aquí si los necesitas -->
+                  </group>
+                  <group string="Condiciones de Preservación">
+                    <!-- Agrega campos adicionales aquí si los necesitas -->
+                  </group>
+                </group>
+              </page>
+              
+              <page string="📋 Información Adicional">
+                <group>
+                  <!-- Agrega todos los campos técnicos que necesites aquí -->
+                </group>
+              </page>
+            </notebook>
+
+          </sheet>
+        </form>
       </field>
     </record>
 
