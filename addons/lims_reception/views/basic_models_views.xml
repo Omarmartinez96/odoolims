@@ -144,6 +144,12 @@
               action="action_lims_sample_types" 
               sequence="10"/>
 
+    <menuitem id="menu_lims_container_types" 
+              name="Tipos de Recipiente" 
+              parent="menu_lims_configuration" 
+              action="action_lims_container_types" 
+              sequence="20"/>
+
     <menuitem id="menu_lims_parameter_templates" 
               name="Plantillas de Parámetros" 
               parent="menu_lims_configuration" 
