@@ -74,7 +74,23 @@
       </field>
     </record>
 
-    <!-- VISTA DE FORMULARIO COMPLETA PARA PLANTILLAS DE PARÁMETROS -->
+    <!-- VISTA DE LISTA PARA PLANTILLAS DE PARÁMETROS -->
+    <record id="view_lims_parameter_template_list" model="ir.ui.view">
+      <field name="name">lims.parameter.template.list</field>
+      <field name="model">lims.parameter.template</field>
+      <field name="arch" type="xml">
+        <list string="Plantillas de Parámetros" editable="top">
+          <field name="name"/>
+          <field name="category"/>
+          <field name="method"/>
+          <field name="unit"/>
+          <field name="microorganism"/>
+          <field name="active"/>
+        </list>
+      </field>
+    </record>
+
+    <!-- VISTA DE FORMULARIO CORREGIDA PARA PLANTILLAS DE PARÁMETROS -->
     <record id="view_lims_parameter_template_form" model="ir.ui.view">
       <field name="name">lims.parameter.template.form</field>
       <field name="model">lims.parameter.template</field>
@@ -83,48 +99,26 @@
           <sheet>
             <div class="oe_title">
               <h1>
-                <field name="name" placeholder="Ej: Coliformes totales en alimento (NOM-113)" required="1"/>
+                <field name="name" placeholder="Ej: Coliformes totales" required="1"/>
               </h1>
             </div>
 
-            <!-- Información básica -->
             <group>
-              <group string="📋 Información General">
-                <field name="category" required="1"/>
+              <group string="Información General">
+                <field name="category"/>
                 <field name="microorganism" placeholder="Ej: Coliformes totales, E. coli"/>
                 <field name="active"/>
               </group>
-              <group string="🔬 Método y Unidades">
-                <field name="method" placeholder="Ej: NOM-113, ASTM D1293, EPA 200.8"/>
+              <group string="Método y Unidades">
+                <field name="method" placeholder="Ej: NOM-113, ASTM D1293"/>
                 <field name="unit" placeholder="Ej: UFC/g, mg/L, µg/g"/>
               </group>
             </group>
 
-            <!-- Descripción completa -->
-            <group string="📝 Descripción del Análisis">
+            <group string="Descripción">
               <field name="description" nolabel="1" 
-                    placeholder="Descripción detallada del procedimiento, condiciones especiales, materiales necesarios, etc..."/>
+                    placeholder="Descripción detallada del procedimiento..."/>
             </group>
-
-            <!-- Aquí puedes agregar más campos según necesites -->
-            <notebook>
-              <page string="🧪 Condiciones Técnicas">
-                <group>
-                  <group string="Condiciones de Incubación">
-                    <!-- Agrega campos adicionales aquí si los necesitas -->
-                  </group>
-                  <group string="Condiciones de Preservación">
-                    <!-- Agrega campos adicionales aquí si los necesitas -->
-                  </group>
-                </group>
-              </page>
-              
-              <page string="📋 Información Adicional">
-                <group>
-                  <!-- Agrega todos los campos técnicos que necesites aquí -->
-                </group>
-              </page>
-            </notebook>
 
           </sheet>
         </form>
