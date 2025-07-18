@@ -73,6 +73,21 @@
                                     <field name="instrument_used"/>
                                     <field name="attachment_ids" widget="many2many_binary"/>
                                 </group>
+
+                                <notebook>
+                                    <page string="📦 Parámetros de Análisis">
+                                        <field name="parameter_ids" context="{'default_sample_id': id}" nolabel="1">
+                                            <list>
+                                                <field name="name"/>
+                                                <field name="category"/>
+                                                <field name="method"/>
+                                                <field name="unit"/>
+                                            </list>
+                                            <!-- SIN formulario inline, solo selección desde plantillas -->
+                                        </field>
+                                    </page>
+                                </notebook>
+
                             </sheet>
                         </form>
                     </field>
