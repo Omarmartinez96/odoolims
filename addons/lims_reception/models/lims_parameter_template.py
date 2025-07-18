@@ -32,6 +32,11 @@ class LimsSampleParameter(models.Model):
         ('microbiological', 'Microbiológico'),
         ('other', 'Otro')
     ], string='Categoría')
+
+    microorganism = fields.Char(
+        string='Microorganismo', 
+        help='Ej: Coliformes totales, E. coli'
+    )
     
     # Información del método
     method = fields.Char(
