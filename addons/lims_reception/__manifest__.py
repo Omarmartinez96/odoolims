@@ -25,6 +25,7 @@
         'data/email_templates.xml',
         'views/lims_custody_chain_views.xml',
         'views/lims_sample_template_views.xml',
+        'views/basic_models_views.xml',
     ],
 
     'installable': True,
