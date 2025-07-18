@@ -169,7 +169,7 @@
                   <tr>
                     <td style="padding:4px 2px; vertical-align:top;">
                       <strong><span t-esc="line.product_id.display_name"/></strong>
-                      <t t-foreach="line.product_id.description_sale.split('\n')" t-as="ln">
+                      <t t-foreach="(line.product_id.description_sale or line.product_id.name or '').split('\n')" t-as="ln"/>
                         <t t-if="ln.strip()">
                           <div style="font-size:14px; margin:0;">
                             <span t-esc="ln.strip()"/>
