@@ -1,6 +1,8 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_lims_sample_user,access.lims.sample.user,model_lims_sample,base.group_user,1,1,1,1
-access_lims_custody_chain,access.lims.custody.chain,model_lims_custody_chain,base.group_user,1,1,1,1
-access_lims_container_type,Lims Container Type,model_lims_container_type,base.group_user,1,1,1,1
-access_lims_sample_type,Lims Sample Type,model_lims_sample_type,base.group_user,1,1,1,1
-access_lims_sample_template,Lims Sample Template,model_lims_sample_template,base.group_user,1,1,1,1
+access_lims_custody_chain,lims.custody_chain,model_lims_custody_chain,base.group_user,1,1,1,1
+access_lims_sample,lims.sample,model_lims_sample,base.group_user,1,1,1,1
+access_lims_sample_type,lims.sample.type,model_lims_sample_type,base.group_user,1,1,1,1
+access_lims_container_type,lims.container.type,model_lims_container_type,base.group_user,1,1,1,1
+access_lims_sample_template,lims.sample.template,model_lims_sample_template,base.group_user,1,1,1,1
+access_lims_parameter_template,lims.parameter.template,model_lims_parameter_template,base.group_user,1,1,1,1
+access_lims_sample_parameter,lims.sample.parameter,model_lims_sample_parameter,base.group_user,1,1,1,1
