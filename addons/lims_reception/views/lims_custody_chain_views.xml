@@ -41,7 +41,7 @@
                         <form>
                             <sheet>
                                 <!-- 🆕 PLANTILLAS SIN ATTRS -->
-                                <group string="Plantilla de Muestra">>
+                                <group string="Plantilla de Muestra">
                                     <field name="sample_template_id" 
                                           placeholder="Usar plantilla"
                                           invisible="cliente_id == False"/>
