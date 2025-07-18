@@ -119,12 +119,14 @@ class LimsSampleParameter(models.Model):
     @api.depends('name', 'method', 'unit')
     def _compute_parameter_info(self):
         for record in self:
-            parts = [record.name]
+            parts = []
+            if record.name:
+                parts.append(record.name)
             if record.method:
                 parts.append(f"({record.method})")
             if record.unit:
                 parts.append(f"[{record.unit}]")
-            record.parameter_info = " ".join(parts)
+            record.parameter_info = " ".join(parts) if parts else ""
     
     @api.model
     def create_from_template(self, sample_id, template_id):
