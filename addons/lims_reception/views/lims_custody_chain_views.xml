@@ -77,13 +77,23 @@
                                 <notebook>
                                     <page string="📦 Parámetros de Análisis">
                                         <field name="parameter_ids" context="{'default_sample_id': id}" nolabel="1">
-                                            <list>
-                                                <field name="name"/>
-                                                <field name="category"/>
-                                                <field name="method"/>
-                                                <field name="unit"/>
+                                            <list string="Parámetros Seleccionados" create="false" edit="false" delete="true">
+                                                <field name="name" readonly="1"/>
+                                                <field name="category" readonly="1"/>
+                                                <field name="method" readonly="1"/>
+                                                <field name="unit" readonly="1"/>
+                                                <field name="template_id" readonly="1"/>
                                             </list>
-                                            <!-- SIN formulario inline, solo selección desde plantillas -->
+                                            
+                                            <!-- Formulario SOLO para seleccionar plantilla -->
+                                            <form string="Seleccionar Parámetro">
+                                                <group>
+                                                    <field name="template_id" string="Seleccionar Plantilla" 
+                                                          placeholder="Elegir parámetro desde configuración"
+                                                          options="{'no_create': True, 'no_open': True}"
+                                                          required="1"/>
+                                                </group>
+                                            </form>
                                         </field>
                                     </page>
                                 </notebook>

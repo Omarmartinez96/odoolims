@@ -156,3 +156,13 @@ class LimsSampleParameter(models.Model):
                 name += f" - {record.method}"
             result.append((record.id, name))
         return result
+    
+    @api.onchange('template_id')
+    def _onchange_template_id(self):
+        if self.template_id:
+            self.name = self.template_id.name
+            self.category = self.template_id.category
+            self.method = self.template_id.method
+            self.unit = self.template_id.unit
+            self.description = self.template_id.description
+            self.microorganism = self.template_id.microorganism
