@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+    
+    <!-- MENÚ PRINCIPAL PRIMERO -->
+    <menuitem id="lims_custody_menu_root" name="📋 Cadenas de Custodia" sequence="10"/>
+    
+    <!-- VISTAS PARA TIPOS DE MUESTRA -->
+    <record id="view_lims_sample_type_list" model="ir.ui.view">
+      <field name="name">lims.sample.type.list</field>
+      <field name="model">lims.sample.type</field>
+      <field name="arch" type="xml">
+        <list string="Tipos de Muestra" editable="top">
+          <field name="name"/>
+          <field name="description"/>
+          <field name="active"/>
+        </list>
+      </field>
+    </record>
+
+    <record id="view_lims_sample_type_form" model="ir.ui.view">
+      <field name="name">lims.sample.type.form</field>
+      <field name="model">lims.sample.type</field>
+      <field name="arch" type="xml">
+        <form string="Tipo de Muestra">
+          <sheet>
+            <group>
+              <field name="name"/>
+              <field name="active"/>
+            </group>
+            <group string="Descripción">
+              <field name="description" nolabel="1"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- VISTAS PARA TIPOS DE RECIPIENTE -->
+    <record id="view_lims_container_type_list" model="ir.ui.view">
+      <field name="name">lims.container.type.list</field>
+      <field name="model">lims.container.type</field>
+      <field name="arch" type="xml">
+        <list string="Tipos de Recipiente" editable="top">
+          <field name="name"/>
+          <field name="capacity"/>
+          <field name="material"/>
+          <field name="active"/>
+        </list>
+      </field>
+    </record>
+
+    <record id="view_lims_container_type_form" model="ir.ui.view">
+      <field name="name">lims.container.type.form</field>
+      <field name="model">lims.container.type</field>
+      <field name="arch" type="xml">
+        <form string="Tipo de Recipiente">
+          <sheet>
+            <group>
+              <group>
+                <field name="name"/>
+                <field name="capacity"/>
+              </group>
+              <group>
+                <field name="material"/>
+                <field name="active"/>
+              </group>
+            </group>
+            <group string="Descripción">
+              <field name="description" nolabel="1"/>
+            </group>
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- ACCIONES -->
+    <record id="action_lims_sample_types" model="ir.actions.act_window">
+      <field name="name">Tipos de Muestra</field>
+      <field name="res_model">lims.sample.type</field>
+      <field name="view_mode">list,form</field>
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+          Crear el primer tipo de muestra
+        </p>
+        <p>
+          Defina los tipos de muestra que maneja su laboratorio (agua, alimentos, etc.)
+        </p>
+      </field>
+    </record>
+
+    <record id="action_lims_container_types" model="ir.actions.act_window">
+      <field name="name">Tipos de Recipiente</field>
+      <field name="res_model">lims.container.type</field>
+      <field name="view_mode">list,form</field>
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+          Crear el primer tipo de recipiente
+        </p>
+        <p>
+          Defina los tipos de recipiente utilizados para las muestras (frascos, bolsas, etc.)
+        </p>
+      </field>
+    </record>
+
+    <!-- MENÚS DE CONFIGURACIÓN -->
+    <menuitem id="menu_lims_configuration" 
+              name="⚙️ Configuración" 
+              parent="lims_custody_menu_root" 
+              sequence="90"/>
+
+    <menuitem id="menu_lims_sample_types" 
+              name="Tipos de Muestra" 
+              parent="menu_lims_configuration" 
+              action="action_lims_sample_types" 
+              sequence="10"/>
+
+    <menuitem id="menu_lims_container_types" 
+              name="Tipos de Recipiente" 
+              parent="menu_lims_configuration" 
+              action="action_lims_container_types" 
+              sequence="20"/>
+
+  </data>
+</odoo>
