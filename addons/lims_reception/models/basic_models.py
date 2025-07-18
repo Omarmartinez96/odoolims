@@ -56,6 +56,7 @@ class LimsParameterTemplate(models.Model):
     description = fields.Text(string='Descripción')
     unit = fields.Char(string='Unidad', help='Ej: mg/L, µg/g, UFC/mL')
     method = fields.Char(string='Método', help='Método de análisis')
+    microorganism = fields.Char(string='Microorganismo', help='Ej: Coliformes totales, E. coli')
     category = fields.Selection([
         ('physical', 'Físico'),
         ('chemical', 'Químico'),
