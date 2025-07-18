@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+
+    <!-- VISTA DE LISTA DE PARÁMETROS -->
+    <record id="view_lims_sample_parameter_list" model="ir.ui.view">
+      <field name="name">lims.sample.parameter.list</field>
+      <field name="model">lims.sample.parameter</field>
+      <field name="arch" type="xml">
+        <list string="Parámetros de Análisis" default_order="sequence, name">
+          <field name="sequence" widget="handle"/>
+          <field name="name"/>
+          <field name="sample_id"/>
+          <field name="category"/>
+          <field name="unit"/>
+          <field name="method"/>
+          <field name="state" widget="badge" 
+                 decoration-info="state == 'pending'" 
+                 decoration-warning="state == 'in_progress'" 
+                 decoration-success="state == 'completed'"
+                 decoration-muted="state == 'cancelled'"/>
+          <field name="result"/>
+        </list>
+      </field>
+    </record>
+
+    <!-- VISTA DE FORMULARIO DE PARÁMETROS -->
+    <record id="view_lims_sample_parameter_form" model="ir.ui.view">
+      <field name="name">lims.sample.parameter.form</field>
+      <field name="model">lims.sample.parameter</field>
+      <field name="arch" type="xml">
+        <form string="Parámetro de Análisis">
+          <header>
+            <field name="state" widget="statusbar" 
+                   statusbar_visible="pending,in_progress,completed"/>
+          </header>
+          
+          <sheet>
+            <div class="oe_title">
+              <h1>
+                <field name="name" placeholder="Nombre del parámetro" required="1"/>
+              </h1>
+            </div>
+
+            <!-- Información básica -->
+            <group>
+              <group string="📋 Información General">
+                <field name="sample_id" readonly="1" 
+                       options="{'no_create': True, 'no_open': True}"/>
+                <field name="category"/>
+                <field name="unit" placeholder="Ej: mg/L, µg/g, UFC/mL"/>
+                <field name="sequence"/>
+              </group>
+              <group string="🔬 Método de Análisis">
+                <field name="method" placeholder="Método de análisis"/>
+                <field name="method_reference" placeholder="Ej: ASTM D1293, EPA 200.8"/>
+                <field name="template_id" readonly="1"/>
+              </group>
+            </group>
+
+            <!-- Descripción -->
+            <group string="📝 Descripción">
+              <field name="description" nolabel="1" 
+                     placeholder="Descripción del parámetro y procedimiento..."/>
+            </group>
+
+            <!-- Notebook con pestañas -->
+            <notebook>
+              <!-- Condiciones de análisis -->
+              <page string="🧪 Condiciones de Análisis">
+                <group>
+                  <group string="Condiciones de Incubación">
+                    <field name="incubation_temperature" placeholder="Ej: 37°C, 25±2°C"/>
+                    <field name="incubation_time" placeholder="Ej: 24h, 48-72h"/>
+                    <field name="culture_medium" placeholder="Para análisis microbiológicos"/>
+                  </group>
+                  <group string="Otras Condiciones">
+                    <field name="ph_conditions" placeholder="Condiciones de pH"/>
+                  </group>
+                </group>
+                
+                <group string="Condiciones de Preservación">
+                  <field name="preservation_conditions" nolabel="1" 
+                         placeholder="Refrigeración, conservantes, tiempo máximo de almacenamiento..."/>
+                </group>
+                
+                <group string="Preparación de Muestra">
+                  <field name="sample_preparation" nolabel="1" 
+                         placeholder="Pasos previos al análisis, diluciones, filtrados..."/>
+                </group>
+              </page>
+
+              <!-- Resultados -->
+              <page string="📊 Resultados y Límites">
+                <group>
+                  <group string="Resultado">
+                    <field name="result" placeholder="Resultado del análisis"/>
+                  </group>
+                  <group string="Límites de Detección">
+                    <field name="detection_limit" placeholder="Límite de detección"/>
+                    <field name="quantification_limit" placeholder="Límite de cuantificación"/>
+                  </group>
+                </group>
+              </page>
+
+              <!-- Observaciones -->
+              <page string="📝 Notas y Observaciones">
+                <group string="Notas del Analista">
+                  <field name="analyst_notes" nolabel="1" 
+                         placeholder="Notas técnicas, desviaciones del método, problemas encontrados..."/>
+                </group>
+                
+                <group string="Observaciones Generales">
+                  <field name="observations" nolabel="1" 
+                         placeholder="Observaciones adicionales sobre el análisis..."/>
+                </group>
+              </page>
+            </notebook>
+
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+    <!-- VISTA DE BÚSQUEDA/FILTROS -->
+    <record id="view_lims_sample_parameter_search" model="ir.ui.view">
+      <field name="name">lims.sample.parameter.search</field>
+      <field name="model">lims.sample.parameter</field>
+      <field name="arch" type="xml">
+        <search string="Buscar Parámetros">
+          <field name="name" string="Parámetro"/>
+          <field name="sample_id" string="Muestra"/>
+          <field name="method" string="Método"/>
+          
+          <filter string="Pendientes" name="pending" domain="[('state','=','pending')]"/>
+          <filter string="En Análisis" name="in_progress" domain="[('state','=','in_progress')]"/>
+          <filter string="Completados" name="completed" domain="[('state','=','completed')]"/>
+          <filter string="Cancelados" name="cancelled" domain="[('state','=','cancelled')]"/>
+          
+          <separator/>
+          <filter string="Físicos" name="physical" domain="[('category','=','physical')]"/>
+          <filter string="Químicos" name="chemical" domain="[('category','=','chemical')]"/>
+          <filter string="Microbiológicos" name="microbiological" domain="[('category','=','microbiological')]"/>
+          
+          <group expand="0" string="Agrupar Por">
+            <filter string="Estado" name="group_state" domain="[]" context="{'group_by':'state'}"/>
+            <filter string="Categoría" name="group_category" domain="[]" context="{'group_by':'category'}"/>
+            <filter string="Muestra" name="group_sample" domain="[]" context="{'group_by':'sample_id'}"/>
+            <filter string="Método" name="group_method" domain="[]" context="{'group_by':'method'}"/>
+          </group>
+        </search>
+      </field>
+    </record>
+
+    <!-- ACCIÓN PARA PARÁMETROS -->
+    <record id="action_lims_sample_parameters" model="ir.actions.act_window">
+      <field name="name">Parámetros de Análisis</field>
+      <field name="res_model">lims.sample.parameter</field>
+      <field name="view_mode">list,form</field>
+      <field name="view_id" ref="view_lims_sample_parameter_list"/>
+      <field name="search_view_id" ref="view_lims_sample_parameter_search"/>
+      <field name="context">{
+        'search_default_pending': 1,
+      }</field>
+      <field name="help" type="html">
+        <p class="o_view_nocontent_smiling_face">
+          No hay parámetros registrados
+        </p>
+        <p>
+          Los parámetros se crean desde las muestras o se pueden crear manualmente aquí.
+        </p>
+      </field>
+    </record>
+
+    <!-- MENÚ PARA PARÁMETROS (OPCIONAL) -->
+    <menuitem id="lims_sample_parameters_menu" 
+              name="Parámetros de Análisis"
+              parent="lims_custody_menu_root"
+              action="action_lims_sample_parameters" 
+              sequence="25"/>
+
+  </data>
+</odoo>
