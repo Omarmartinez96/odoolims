@@ -154,21 +154,6 @@
       </field>
     </record>
 
-    <record id="action_lims_parameter_templates" model="ir.actions.act_window">
-      <field name="name">Plantillas de Parámetros</field>
-      <field name="res_model">lims.parameter.template</field>
-      <field name="view_mode">list,form</field>
-      <field name="view_id" ref="view_lims_parameter_template_list"/>
-      <field name="help" type="html">
-        <p class="o_view_nocontent_smiling_face">
-          Crear la primera plantilla de parámetro
-        </p>
-        <p>
-          Defina los parámetros que se analizan frecuentemente
-        </p>
-      </field>
-    </record>
-
     <!-- MENÚS REORGANIZADOS PARA MEJOR ACCESO -->
     <menuitem id="menu_lims_configuration" 
               name="⚙️ Configuración" 
@@ -187,11 +172,6 @@
               action="action_lims_container_types" 
               sequence="20"/>
 
-    <menuitem id="menu_lims_parameter_templates" 
-              name="Plantillas de Parámetros" 
-              parent="menu_lims_configuration" 
-              action="action_lims_parameter_templates" 
-              sequence="30"/>
 
   </data>
 </odoo>
