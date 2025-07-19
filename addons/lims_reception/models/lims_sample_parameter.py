@@ -111,7 +111,6 @@ class LimsSampleParameter(models.Model):
     template_id = fields.Many2one(
         'lims.parameter.template',
         string='Plantilla de Origen',
-        readonly=True
     )
     
     # Campos computados
