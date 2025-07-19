@@ -4,7 +4,7 @@
         
         <!-- Vista Lista de Parámetros de Muestra -->
         <record id="view_lims_sample_parameter_form" model="ir.ui.view">
-            <field name="name">lims.sample.parameter.list</field>
+            <field name="name">lims.sample.parameter.form</field>
             <field name="model">lims.sample.parameter</field>
             <field name="arch" type="xml">
                 <list string="Parámetros de Análisis">
