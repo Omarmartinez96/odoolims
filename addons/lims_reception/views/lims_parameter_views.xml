@@ -2,12 +2,12 @@
 <odoo>
     <data>
         
-        <!-- ========== PLANTILLAS DE PARÁMETROS (CONFIGURACIÓN) ========== -->
+        <!-- ========== PLANTILLAS (parámetros con is_template=True) ========== -->
         
         <!-- Vista Lista de Plantillas -->
-        <record id="view_lims_parameter_template_list" model="ir.ui.view">
-            <field name="name">lims.parameter.template.list</field>
-            <field name="model">lims.parameter.template</field>
+        <record id="view_parameter_template_list" model="ir.ui.view">
+            <field name="name">lims.sample.parameter.template.list</field>
+            <field name="model">lims.sample.parameter</field>
             <field name="arch" type="xml">
                 <list string="Plantillas de Parámetros" create="true" edit="false">
                     <field name="name"/>
@@ -15,15 +15,16 @@
                     <field name="method"/>
                     <field name="unit"/>
                     <field name="microorganism"/>
+                    <field name="times_used"/>
                     <field name="active"/>
                 </list>
             </field>
         </record>
 
         <!-- Vista Formulario de Plantillas -->
-        <record id="view_lims_parameter_template_form" model="ir.ui.view">
-            <field name="name">lims.parameter.template.form</field>
-            <field name="model">lims.parameter.template</field>
+        <record id="view_parameter_template_form" model="ir.ui.view">
+            <field name="name">lims.sample.parameter.template.form</field>
+            <field name="model">lims.sample.parameter</field>
             <field name="arch" type="xml">
                 <form string="Plantilla de Parámetro">
                     <sheet>
@@ -33,16 +34,22 @@
                             </h1>
                         </div>
 
+                        <!-- Campo oculto para marcar como plantilla -->
+                        <field name="is_template" invisible="1"/>
+                        <field name="sample_id" invisible="1"/>
+
                         <!-- Información básica -->
                         <group>
                             <group string="📋 Información General">
                                 <field name="category"/>
                                 <field name="microorganism" placeholder="Ej: Coliformes totales, E. coli"/>
                                 <field name="active"/>
+                                <field name="times_used" readonly="1"/>
                             </group>
                             <group string="🔬 Método y Unidades">
                                 <field name="method" placeholder="Ej: NOM-113, ASTM D1293"/>
                                 <field name="unit" placeholder="Ej: UFC/g, mg/L, µg/g"/>
+                                <field name="method_reference" placeholder="Referencia completa"/>
                             </group>
                         </group>
 
@@ -52,17 +59,42 @@
                                   placeholder="Descripción detallada del procedimiento..."/>
                         </group>
 
+                        <!-- Notebook para campos adicionales -->
+                        <notebook>
+                            <page string="🧪 Condiciones de Análisis">
+                                <group>
+                                    <group>
+                                        <field name="incubation_temperature"/>
+                                        <field name="incubation_time"/>
+                                        <field name="culture_medium"/>
+                                    </group>
+                                    <group>
+                                        <field name="ph_conditions"/>
+                                        <field name="detection_limit"/>
+                                        <field name="quantification_limit"/>
+                                    </group>
+                                </group>
+                                
+                                <group>
+                                    <field name="sample_preparation" nolabel="1"/>
+                                    <field name="preservation_conditions" nolabel="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+
                     </sheet>
                 </form>
             </field>
         </record>
 
         <!-- Acción para Plantillas -->
-        <record id="action_lims_parameter_templates" model="ir.actions.act_window">
+        <record id="action_parameter_templates" model="ir.actions.act_window">
             <field name="name">Plantillas de Parámetros</field>
-            <field name="res_model">lims.parameter.template</field>
+            <field name="res_model">lims.sample.parameter</field>
+            <field name="domain">[('is_template', '=', True)]</field>
+            <field name="context">{'default_is_template': True}</field>
             <field name="view_mode">list,form</field>
-            <field name="view_id" ref="view_lims_parameter_template_list"/>
+            <field name="view_id" ref="view_parameter_template_list"/>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     Crear la primera plantilla de parámetro
@@ -164,16 +196,25 @@
                             </page>
                         </notebook>
 
+                        <!-- Botón para crear plantilla -->
+                        <div class="oe_chatter">
+                            <button name="action_save_as_template" 
+                                    type="object" 
+                                    string="💾 Guardar como Plantilla"
+                                    class="btn-secondary"
+                                    invisible="is_template == True"/>
+                        </div>
+
                     </sheet>
                 </form>
             </field>
         </record>
 
-        <!-- Menú para Plantillas de Parámetros -->
-        <menuitem id="menu_lims_parameter_templates" 
+        <!-- Menú para Plantillas -->
+        <menuitem id="menu_parameter_templates" 
                   name="Plantillas de Parámetros" 
                   parent="lims_custody_menu_root" 
-                  action="action_lims_parameter_templates" 
+                  action="action_parameter_templates" 
                   sequence="25"/>
 
     </data>
