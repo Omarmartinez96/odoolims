@@ -2,8 +2,81 @@
 <odoo>
     <data>
         
+        <!-- ========== PLANTILLAS DE PARÁMETROS (CONFIGURACIÓN) ========== -->
+        
+        <!-- Vista Lista de Plantillas -->
+        <record id="view_lims_parameter_template_list" model="ir.ui.view">
+            <field name="name">lims.parameter.template.list</field>
+            <field name="model">lims.parameter.template</field>
+            <field name="arch" type="xml">
+                <list string="Plantillas de Parámetros" create="true" edit="false">
+                    <field name="name"/>
+                    <field name="category"/>
+                    <field name="method"/>
+                    <field name="unit"/>
+                    <field name="microorganism"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Formulario de Plantillas -->
+        <record id="view_lims_parameter_template_form" model="ir.ui.view">
+            <field name="name">lims.parameter.template.form</field>
+            <field name="model">lims.parameter.template</field>
+            <field name="arch" type="xml">
+                <form string="Plantilla de Parámetro">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Ej: Coliformes totales" required="1"/>
+                            </h1>
+                        </div>
+
+                        <!-- Información básica -->
+                        <group>
+                            <group string="📋 Información General">
+                                <field name="category"/>
+                                <field name="microorganism" placeholder="Ej: Coliformes totales, E. coli"/>
+                                <field name="active"/>
+                            </group>
+                            <group string="🔬 Método y Unidades">
+                                <field name="method" placeholder="Ej: NOM-113, ASTM D1293"/>
+                                <field name="unit" placeholder="Ej: UFC/g, mg/L, µg/g"/>
+                            </group>
+                        </group>
+
+                        <!-- Descripción -->
+                        <group string="📝 Descripción">
+                            <field name="description" nolabel="1" 
+                                  placeholder="Descripción detallada del procedimiento..."/>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acción para Plantillas -->
+        <record id="action_lims_parameter_templates" model="ir.actions.act_window">
+            <field name="name">Plantillas de Parámetros</field>
+            <field name="res_model">lims.parameter.template</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="view_lims_parameter_template_list"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crear la primera plantilla de parámetro
+                </p>
+                <p>
+                    Defina los parámetros que se analizan frecuentemente
+                </p>
+            </field>
+        </record>
+
+        <!-- ========== PARÁMETROS DE MUESTRA ========== -->
+        
         <!-- Vista Lista de Parámetros de Muestra -->
-        <record id="view_lims_sample_parameter_list]" model="ir.ui.view">
+        <record id="view_lims_sample_parameter_list" model="ir.ui.view">
             <field name="name">lims.sample.parameter.list</field>
             <field name="model">lims.sample.parameter</field>
             <field name="arch" type="xml">
@@ -20,7 +93,7 @@
             </field>
         </record>
 
-        <!-- Vista Formulario Completo de Parámetros -->
+        <!-- Vista Formulario de Parámetros de Muestra -->
         <record id="view_lims_sample_parameter_form" model="ir.ui.view">
             <field name="name">lims.sample.parameter.form</field>
             <field name="model">lims.sample.parameter</field>
@@ -96,28 +169,12 @@
             </field>
         </record>
 
-        <!-- Acción para Parámetros de Muestra -->
-        <record id="action_lims_parameter_templates" model="ir.actions.act_window">
-        <field name="name">Plantillas de Parámetros</field>
-        <field name="res_model">lims.parameter.template</field>
-        <field name="view_mode">list,form</field>
-        <field name="view_id" ref="view_lims_parameter_template_list"/>
-        <field name="help" type="html">
-            <p class="o_view_nocontent_smiling_face">
-            Crear la primera plantilla de parámetro
-            </p>
-            <p>
-            Defina los parámetros que se analizan frecuentemente
-            </p>
-        </field>
-        </record>
-
-        <!-- Vista de menu  -->
+        <!-- Menú para Plantillas de Parámetros -->
         <menuitem id="menu_lims_parameter_templates" 
-                name="Plantillas de Parámetros" 
-                parent="menu_lims_configuration" 
-                action="action_lims_parameter_templates" 
-                sequence="30"/>
+                  name="Plantillas de Parámetros" 
+                  parent="lims_custody_menu_root" 
+                  action="action_lims_parameter_templates" 
+                  sequence="25"/>
 
     </data>
 </odoo>
