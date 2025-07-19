@@ -90,7 +90,7 @@
       </field>
     </record>
 
-    <!-- VISTA DE FORMULARIO CORREGIDA PARA PLANTILLAS DE PARÁMETROS -->
+    <!-- VISTA DE FORMULARIO PARA PLANTILLAS DE PARÁMETROS -->
     <record id="view_lims_parameter_template_form" model="ir.ui.view">
       <field name="name">lims.parameter.template.form</field>
       <field name="model">lims.parameter.template</field>
@@ -118,65 +118,6 @@
             <group string="Descripción">
               <field name="description" nolabel="1" 
                     placeholder="Descripción detallada del procedimiento..."/>
-            </group>
-
-          </sheet>
-        </form>
-      </field>
-    </record>
-
-    <!-- 🆕 VISTA DE FORMULARIO COMPLETA PARA PARÁMETROS DE MUESTRA -->
-    <record id="view_lims_sample_parameter_form" model="ir.ui.view">
-      <field name="name">lims.sample.parameter.form</field>
-      <field name="model">lims.sample.parameter</field>
-      <field name="arch" type="xml">
-        <form string="Parámetro de Análisis">
-          <sheet>
-            <div class="oe_title">
-              <h1>
-                <field name="name" placeholder="Nombre del parámetro" required="1"/>
-              </h1>
-            </div>
-
-            <!-- Plantilla -->
-            <group string="Plantilla de Origen">
-              <field name="template_id" 
-                     placeholder="Seleccionar plantilla para autocompletar..."
-                     options="{'no_create': True, 'no_open': True}"/>
-            </group>
-
-            <!-- Información básica -->
-            <group>
-              <group string="Información General">
-                <field name="category"/>
-                <field name="microorganism" placeholder="Ej: Coliformes totales, E. coli"/>
-                <field name="sequence"/>
-                <field name="state"/>
-              </group>
-              <group string="Método y Unidades">
-                <field name="method" placeholder="Ej: NOM-113, ASTM D1293"/>
-                <field name="unit" placeholder="Ej: UFC/g, mg/L, µg/g"/>
-                <field name="result" placeholder="Resultado del análisis"/>
-              </group>
-            </group>
-
-            <!-- Descripción -->
-            <group string="Descripción">
-              <field name="description" nolabel="1" 
-                    placeholder="Descripción detallada del procedimiento..."/>
-            </group>
-
-            <!-- Condiciones básicas -->
-            <group>
-              <group string="Condiciones de Análisis">
-                <field name="incubation_temperature" placeholder="Ej: 37°C"/>
-                <field name="incubation_time" placeholder="Ej: 24h"/>
-                <field name="culture_medium" placeholder="Medio de cultivo"/>
-              </group>
-              <group string="Observaciones">
-                <field name="analyst_notes" placeholder="Notas del analista"/>
-                <field name="observations" placeholder="Observaciones generales"/>
-              </group>
             </group>
 
           </sheet>

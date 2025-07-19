@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vista Lista de Parámetros de Muestra -->
+        <record id="view_lims_sample_parameter_list" model="ir.ui.view">
+            <field name="name">lims.sample.parameter.list</field>
+            <field name="model">lims.sample.parameter</field>
+            <field name="arch" type="xml">
+                <list string="Parámetros de Análisis">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="category"/>
+                    <field name="method"/>
+                    <field name="unit"/>
+                    <field name="microorganism"/>
+                    <field name="state" widget="badge"/>
+                    <field name="result"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Formulario Completo de Parámetros -->
+        <record id="view_lims_sample_parameter_form" model="ir.ui.view">
+            <field name="name">lims.sample.parameter.form</field>
+            <field name="model">lims.sample.parameter</field>
+            <field name="arch" type="xml">
+                <form string="Parámetro de Análisis">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Nombre del parámetro" required="1"/>
+                            </h1>
+                        </div>
+
+                        <!-- Plantilla -->
+                        <group string="🔧 Desde Plantilla">
+                            <field name="template_id" 
+                                   placeholder="Seleccionar plantilla para autocompletar..."
+                                   options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+
+                        <!-- Información básica -->
+                        <group>
+                            <group string="📋 Información General">
+                                <field name="category"/>
+                                <field name="microorganism"/>
+                                <field name="sequence"/>
+                                <field name="state"/>
+                            </group>
+                            <group string="🔬 Método y Unidades">
+                                <field name="method"/>
+                                <field name="unit"/>
+                                <field name="result"/>
+                            </group>
+                        </group>
+
+                        <!-- Descripción -->
+                        <group string="📝 Descripción">
+                            <field name="description" nolabel="1"/>
+                        </group>
+
+                        <!-- Condiciones de análisis -->
+                        <notebook>
+                            <page string="🧪 Condiciones">
+                                <group>
+                                    <group>
+                                        <field name="incubation_temperature"/>
+                                        <field name="incubation_time"/>
+                                        <field name="culture_medium"/>
+                                    </group>
+                                    <group>
+                                        <field name="ph_conditions"/>
+                                        <field name="method_reference"/>
+                                        <field name="detection_limit"/>
+                                        <field name="quantification_limit"/>
+                                    </group>
+                                </group>
+                                
+                                <group>
+                                    <field name="sample_preparation" nolabel="1"/>
+                                    <field name="preservation_conditions" nolabel="1"/>
+                                </group>
+                            </page>
+
+                            <page string="📝 Observaciones">
+                                <group>
+                                    <field name="analyst_notes" nolabel="1"/>
+                                    <field name="observations" nolabel="1"/>
+                                </group>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>
