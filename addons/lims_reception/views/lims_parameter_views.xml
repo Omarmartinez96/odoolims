@@ -96,7 +96,6 @@
             </field>
         </record>
 
-
         <!-- Acción para Parámetros de Muestra -->
         <record id="action_lims_parameter_templates" model="ir.actions.act_window">
         <field name="name">Plantillas de Parámetros</field>

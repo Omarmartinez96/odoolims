@@ -47,23 +47,5 @@ class LimsContainerType(models.Model):
         default=True
     )
 
-class LimsParameterTemplate(models.Model):
-    _name = 'lims.parameter.template'
-    _description = 'Plantilla de Parámetros'
-    _order = 'name'
-    
-    name = fields.Char(string='Nombre del Parámetro', required=True)
-    description = fields.Text(string='Descripción')
-    unit = fields.Char(string='Unidad', help='Ej: mg/L, µg/g, UFC/mL')
-    method = fields.Char(string='Método', help='Método de análisis')
-    microorganism = fields.Char(string='Microorganismo', help='Ej: Coliformes totales, E. coli')
-    category = fields.Selection([
-        ('physical', 'Físico'),
-        ('chemical', 'Químico'),
-        ('microbiological', 'Microbiológico'),
-        ('other', 'Otro')
-    ], string='Categoría')
-    active = fields.Boolean(string='Activo', default=True)
-
 # NOTA: Los modelos lims.branch, lims.department, lims.contact 
 # ya existen en el módulo 'lims_customer', no los creamos aquí
