@@ -9,9 +9,6 @@
       <field name="report_file">lims_reception.report_custody_chain_document</field>
       <field name="print_report_name">${object.custody_chain_code}.pdf</field>
       <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
-      <field name="attachment_use" eval="False"/>
-      <field name="auto_send_email" eval="True"/>
-      <field name="email_template_id" ref="lims_reception.email_template_comprobante"/>
     </record>
   </data>
 </odoo>
