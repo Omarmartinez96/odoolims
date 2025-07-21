@@ -82,6 +82,11 @@
               <h1 style="font-size: 24px; font-weight: bold; margin: 0; color: #333;">COMPROBANTE DE CADENA DE CUSTODIA</h1>
             </div>
 
+            <!-- Total de muestras -->
+            <div style="text-align: center; margin-bottom: 20px; font-size: 16px; font-weight: bold; color: #2c5aa0;">
+              Total de muestras recolectadas: <span t-esc="len(doc.sample_ids)"/>
+            </div>
+
             <!-- Información de la cadena de custodia -->
             <table class="table table-borderless mt-1"
                   style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0;">
@@ -129,7 +134,7 @@
             <hr style="margin: 20px 0; border: 1px solid #333;"/>
 
             <!-- Muestras -->
-            <h3 style="font-size: 18px; margin-bottom: 15px; color: #333;">Muestras Recepcionadas</h3>
+            <h3 style="font-size: 18px; margin-bottom: 15px; color: #333;">Muestras Recolectadas</h3>
 
             <t t-foreach="doc.sample_ids" t-as="sample">
               <div class="sample-section">
@@ -193,10 +198,16 @@
                         <!-- Espacio para balance visual -->
                       </td>
                     </tr>
-                    <!-- Fila 5: Observaciones -->
+                    <!-- Fila 5: Observaciones de muestreo -->
                     <tr t-if="sample.sampling_observations and sample.sampling_observations != 'N/A'">
                       <td colspan="2" style="padding:3px;">
                         <strong>Observaciones de muestreo:</strong> <span t-esc="sample.sampling_observations"/>
+                      </td>
+                    </tr>
+                    <!-- Fila 6: Observaciones de recolección -->
+                    <tr t-if="sample.collection_observations and sample.collection_observations != 'N/A'">
+                      <td colspan="2" style="padding:3px;">
+                        <strong>Observaciones de recolección:</strong> <span t-esc="sample.collection_observations"/>
                       </td>
                     </tr>
                   </tbody>
@@ -217,7 +228,13 @@
                       <t t-foreach="sample.parameter_ids" t-as="parameter">
                         <tr class="parameter-row">
                           <td style="padding:6px;">
-                            <span t-esc="parameter.name or 'Sin nombre'"/>
+                            <!-- Mostrar microorganismo/analito si existe, sino el nombre del parámetro -->
+                            <t t-if="parameter.microorganism">
+                              <span t-esc="parameter.microorganism"/>
+                            </t>
+                            <t t-else="">
+                              <span t-esc="parameter.name or 'Sin nombre'"/>
+                            </t>
                             <t t-if="parameter.unit">
                               <span style="color: #666;"> (<span t-esc="parameter.unit"/>)</span>
                             </t>
@@ -236,6 +253,7 @@
               </div>
             </t>
 
+            <!-- Mensaje si no hay muestras -->
             <t t-if="not doc.sample_ids">
               <div style="text-align: center; padding: 40px; background-color: #f8f9fa; border: 1px solid #dee2e6;">
                 <p style="font-size: 16px; color: #6c757d; margin: 0;">No se han registrado muestras en esta cadena de custodia.</p>
@@ -244,9 +262,8 @@
 
             <!-- Información adicional -->
             <div style="margin-top: 30px; font-size: 12px; color: #666;">
-              <p><strong>Notas internas:</strong> <span t-esc="doc.internal_notes or 'Sin notas'"/></p>
               <p style="margin-top: 15px;">
-                <em>Este comprobante certifica la recepción de las muestras indicadas en la fecha especificada. 
+                <em>Este comprobante certifica la recolección de las muestras indicadas en la fecha especificada. 
                 Los análisis se realizarán conforme a los métodos indicados y las condiciones acordadas.</em>
               </p>
             </div>
