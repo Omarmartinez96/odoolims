@@ -66,8 +66,7 @@
                        widget="signature" 
                        placeholder="Haga clic aquí para firmar"
                        string="Firme en el recuadro"
-                       nolabel="1"
-                       options="{'full_name': signature_name}"/>
+                       nolabel="1"/>
               </group>
 
               <!-- Información de firma existente -->
