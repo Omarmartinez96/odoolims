@@ -2,7 +2,7 @@
 <odoo>
   <data>
 
-    <!-- Formulario de Cadena de Custodia ACTUALIZADO -->
+    <!-- Formulario de Cadena de Custodia ACTUALIZADO PARA ODOO 17 -->
     <record id="view_lims_custody_chain_form" model="ir.ui.view">
       <field name="name">lims.custody_chain.form</field>
       <field name="model">lims.custody_chain</field>
@@ -18,7 +18,7 @@
               <field name="contact_ids"
                      widget="many2many_tags"
                      domain="[('department_id','=',departamento_id)]"
-                     modifiers="{'invisible': [['departamento_id','=', False]]}"
+                     invisible="departamento_id == False"
                      placerholder="Selecciona los contactos relacionados a este servicio"/>
               <field name="quotation_id" placeholder="Selecciona la cotizacion relacionada a este servicio"/>
               <field name="date_created" widget="datetime" placeholder="Inserta la fecha de creacion de registro"/>
@@ -26,10 +26,10 @@
             </group>
 
             <!-- 🆕 NUEVA SECCIÓN DE FIRMA -->
-            <group string="📋 Estado del Documento" attrs="{'invisible': [('chain_of_custody_state', '!=', 'done')]}">
+            <group string="📋 Estado del Documento" invisible="chain_of_custody_state != 'done'">
               <field name="is_signed" readonly="1"/>
-              <field name="signature_name" readonly="1" attrs="{'invisible': [('is_signed', '=', False)]}"/>
-              <field name="signature_date" readonly="1" attrs="{'invisible': [('is_signed', '=', False)]}"/>
+              <field name="signature_name" readonly="1" invisible="is_signed == False"/>
+              <field name="signature_date" readonly="1" invisible="is_signed == False"/>
             </group>
 
             <group string="Observaciones">
@@ -110,7 +110,7 @@
                 </page>
             </notebook>
 
-            <!-- 🆕 BOTONES ACTUALIZADOS -->
+            <!-- 🆕 BOTONES ACTUALIZADOS PARA ODOO 17 -->
             <div style="margin-top: 20px;">
               <div class="oe_button_box" style="display: flex; gap: 10px; justify-content: center;">
                 
@@ -119,7 +119,7 @@
                         type="object"
                         string="✍️ Vista Previa y Firma"
                         class="btn-warning"
-                        attrs="{'invisible': ['|', ('chain_of_custody_state','!=','done'), ('is_signed','=',True)]}"
+                        invisible="chain_of_custody_state != 'done' or is_signed == True"
                         help="Ver el documento y solicitar firma del cliente"/>
 
                 <!-- Botón Ver Documento Firmado -->
@@ -128,7 +128,7 @@
                         string="📄 Ver Documento Firmado"
                         class="btn-info"
                         target="_blank"
-                        attrs="{'invisible': [('is_signed','=',False)]}"
+                        invisible="is_signed == False"
                         help="Ver el documento con la firma incluida"/>
 
                 <!-- Botón Enviar Email -->
@@ -136,7 +136,7 @@
                         type="object"
                         string="📧 Enviar Comprobante"
                         class="btn-primary"
-                        attrs="{'invisible': [('chain_of_custody_state','!=','done')]}"
+                        invisible="chain_of_custody_state != 'done'"
                         help="Enviar el comprobante por correo electrónico"/>
 
               </div>
@@ -147,7 +147,7 @@
       </field>
     </record>
 
-    <!-- Vista de lista de Cadenas de Custodia ACTUALIZADA -->
+    <!-- Vista de lista de Cadenas de Custodia -->
     <record id="view_lims_custody_chain_list" model="ir.ui.view">
       <field name="name">lims.custody_chain.list</field>
       <field name="model">lims.custody_chain</field>

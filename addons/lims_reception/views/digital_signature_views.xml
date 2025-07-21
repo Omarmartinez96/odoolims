@@ -13,7 +13,7 @@
                     type="object" 
                     string="💾 Guardar Firma" 
                     class="btn-primary"
-                    attrs="{'invisible': [('customer_signature', '=', False)]}"/>
+                    invisible="customer_signature == False"/>
             <field name="is_signed" invisible="1"/>
           </header>
           
@@ -71,7 +71,7 @@
               </group>
 
               <!-- Información de firma existente -->
-              <group string="Estado de la Firma" attrs="{'invisible': [('is_signed', '=', False)]}">
+              <group string="Estado de la Firma" invisible="is_signed == False">
                 <field name="signature_date" readonly="1"/>
                 <field name="is_signed" readonly="1"/>
               </group>
