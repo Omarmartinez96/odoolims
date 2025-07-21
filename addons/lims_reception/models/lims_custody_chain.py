@@ -147,6 +147,22 @@ class LimsCustodyChain(models.Model):
         if self.chain_of_custody_state != 'done':
             raise UserError(_('La cadena de custodia debe estar finalizada para enviar el comprobante.'))
 
+        # 🔧 CONSTRUIR LISTA DE EMAILS EN PYTHON
+        email_list = []
+        
+        # Agregar email del cliente principal
+        if self.cliente_id and self.cliente_id.email:
+            email_list.append(self.cliente_id.email)
+        
+        # Agregar emails de contactos del departamento
+        if self.contact_ids:
+            for contact in self.contact_ids:
+                if contact.email and contact.email not in email_list:
+                    email_list.append(contact.email)
+        
+        if not email_list:
+            raise UserError(_('No se encontraron direcciones de email válidas para enviar el comprobante.'))
+
         template = self.env.ref('lims_reception.email_template_comprobante', raise_if_not_found=False)
         if not template:
             raise UserError(_('No se encontró la plantilla de correo electrónico.'))
@@ -155,12 +171,7 @@ class LimsCustodyChain(models.Model):
         if not report:
             raise UserError(_('No se encontró el reporte de comprobante.'))
 
-        record = self.env['lims.custody_chain'].browse(self.id)
-        if not record.exists():
-            raise UserError(_("No se encontró la cadena de custodia con ID: %s") % self.id)
-
         try:
-            # 🆕 EL PDF AHORA INCLUIRÁ LA FIRMA AUTOMÁTICAMENTE
             pdf_content, content_type = report._render_qweb_pdf(
                 report_ref='lims_reception.action_report_custody_chain',
                 res_ids=[self.id]
@@ -183,15 +194,35 @@ class LimsCustodyChain(models.Model):
         except Exception as e:
             raise UserError(_("Error al crear el archivo adjunto: %s") % str(e))
 
+        # 🔧 CREAR EMAIL DIRECTAMENTE CON VALORES PYTHON
+        email_values = {
+            'subject': f'Comprobante de Cadena de Custodia - {self.custody_chain_code}',
+            'body_html': f'''
+                <p>Estimado/a Cliente,</p>
+                <p>Adjunto el comprobante correspondiente a la siguiente Cadena de Custodia:</p>
+                <p><strong>Código:</strong> {self.custody_chain_code}</p>
+                <p>Gracias por su confianza.</p>
+                <br/>
+                <p>Atentamente,<br/>El equipo de {self.env.company.name}</p>
+            ''',
+            'email_from': self.env.user.email,
+            'email_to': ','.join(email_list),
+            'attachment_ids': [(6, 0, [attachment.id])],
+        }
+
         compose_form = self.env.ref('mail.email_compose_message_wizard_form')
 
         ctx = {
             'default_model': 'lims.custody_chain',
             'default_res_ids': [self.id],
-            'default_use_template': True,
-            'default_template_id': template.id,
             'default_composition_mode': 'comment',
+            'default_subject': email_values['subject'],
+            'default_body': email_values['body_html'],
+            'default_email_from': email_values['email_from'],
+            'default_partner_ids': [],
             'default_attachment_ids': [(6, 0, [attachment.id])],
+            # 🔧 FORZAR LOS EMAILS EN EL CONTEXTO
+            'default_email_to': email_values['email_to'],
         }
 
         return {

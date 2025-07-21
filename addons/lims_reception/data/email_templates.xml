@@ -6,28 +6,17 @@
       <field name="model_id" model="ir.model" search="[('model','=','lims.custody_chain')]"/>
       <field name="email_from">${(user.email or '')|safe}</field>
       
-      <!-- 🔧 EMAIL_TO SIMPLIFICADO -->
-      <field name="email_to">
-% set emails = []
-% if object.cliente_id and object.cliente_id.email:
-  % do emails.append(object.cliente_id.email)
-% endif
-% for contact in object.contact_ids:
-  % if contact.email:
-    % do emails.append(contact.email)
-  % endif
-% endfor
-${','.join(emails)}
-      </field>
+      <!-- 🔧 TEMPLATE SIMPLIFICADO - Solo fallback, Python manejará los emails -->
+      <field name="email_to">${object.cliente_id.email or ''}</field>
 
-      <field name="subject">Comprobante de Cadena de Custodia</field>
+      <field name="subject">Comprobante de Cadena de Custodia - ${object.custody_chain_code}</field>
       <field name="body_html"><![CDATA[
         <p>Estimado/a Cliente,</p>
         <p>Adjunto el comprobante correspondiente a la siguiente Cadena de Custodia:</p>
-        <p><strong>Código:</strong> {object.custody_chain_code}</p>
+        <p><strong>Código:</strong> ${object.custody_chain_code}</p>
         <p>Gracias por su confianza.</p>
         <br/>
-        <p>Atentamente,<br/>El equipo de {user.company_id.name}</p>
+        <p>Atentamente,<br/>El equipo de ${user.company_id.name}</p>
       ]]></field>
     </record>
   </data>
