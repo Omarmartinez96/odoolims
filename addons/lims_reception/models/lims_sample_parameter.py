@@ -4,7 +4,7 @@ from odoo import models, fields, api
 class LimsSampleParameter(models.Model):
     _name = 'lims.sample.parameter'
     _description = 'Parámetros de Muestra'
-    _order = 'sequence, name'
+    _order = 'name'
 
     # Relación con la muestra (OPCIONAL ahora)
     sample_id = fields.Many2one(
@@ -40,14 +40,36 @@ class LimsSampleParameter(models.Model):
     ], string='Categoría')
 
     microorganism = fields.Char(
-        string='Microorganismo', 
-        help='Ej: Coliformes totales, E. coli'
+        string='Microorganismo/Analito', 
+        help='⚠️ NOTA: Esto es lo que se mostrará al cliente en los informes de ensayo'
     )
     
+    # Acreditaciones
+    accreditation_iso = fields.Boolean(string='Acreditado ISO/IEC 17025', default=False)
+    authorized_cofepris = fields.Boolean(string='Autorizado por COFEPRIS', default=False)
+    accredited_ema = fields.Boolean(string='Acreditado EMA', default=False)
+    other_accreditation = fields.Boolean(string='Otra Acreditación', default=False)
+    other_accreditation_detail = fields.Char(string='Especifique Otra Acreditación')
+
+    # Tipo de análisis
+    analysis_internal = fields.Boolean(string='Análisis Interno', default=True)
+    analysis_external = fields.Boolean(string='Laboratorio Externo/Subrogado', default=False)
+    external_lab_name = fields.Char(string='Nombre del Laboratorio Externo')
+
+    # Tipos de muestra aplicables
+    applicable_sample_types = fields.Many2many('lims.sample.type', string='Tipos de Muestra Aplicables')
+
+    # Control de calidad
+    quality_control_procedure = fields.Text(string='Procedimiento de Control de Calidad')
+    quality_control_frequency = fields.Char(string='Frecuencia de Control de Calidad')
+    quality_control_acceptance = fields.Text(string='Criterios de Aceptación')
+
+
+
     # Información del método
     method = fields.Char(
         string='Método de Análisis',
-        help='Método o norma utilizada'
+        help='⚠️ NOTA: Esto es lo que el cliente verá en su informe final. Cuidar ortografía.'
     )
     method_reference = fields.Char(
         string='Referencia del Método',
@@ -81,29 +103,12 @@ class LimsSampleParameter(models.Model):
         help='Pasos previos al análisis'
     )
     
-    # Resultados y control (SOLO para parámetros de muestra, no plantillas)
-    result = fields.Char(
-        string='Resultado'
-    )
     detection_limit = fields.Char(
         string='Límite de Detección'
     )
     quantification_limit = fields.Char(
         string='Límite de Cuantificación'
     )
-    
-    # Estado y control
-    sequence = fields.Integer(
-        string='Secuencia',
-        default=10,
-        help='Orden de los parámetros'
-    )
-    state = fields.Selection([
-        ('pending', 'Pendiente'),
-        ('in_progress', 'En Análisis'),
-        ('completed', 'Completado'),
-        ('cancelled', 'Cancelado')
-    ], string='Estado', default='pending')
     
     # Observaciones
     analyst_notes = fields.Text(
@@ -240,8 +245,6 @@ class LimsSampleParameter(models.Model):
         template = self.copy({
             'is_template': True,
             'sample_id': False,  # Las plantillas no tienen muestra
-            'result': False,     # Las plantillas no tienen resultados
-            'state': 'pending',
             'times_used': 0,
         })
         

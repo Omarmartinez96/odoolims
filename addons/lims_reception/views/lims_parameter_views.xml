@@ -113,14 +113,11 @@
             <field name="model">lims.sample.parameter</field>
             <field name="arch" type="xml">
                 <list string="Parámetros de Análisis">
-                    <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <field name="category"/>
                     <field name="method"/>
                     <field name="unit"/>
                     <field name="microorganism"/>
-                    <field name="state" widget="badge"/>
-                    <field name="result"/>
                 </list>
             </field>
         </record>
@@ -150,14 +147,32 @@
                             <group string="📋 Información General">
                                 <field name="category"/>
                                 <field name="microorganism"/>
-                                <field name="sequence"/>
-                                <field name="state"/>
                             </group>
                             <group string="🔬 Método y Unidades">
                                 <field name="method"/>
                                 <field name="unit"/>
-                                <field name="result"/>
                             </group>
+                        </group>
+
+                        <!-- Acreditaciones -->
+                        <group string="🏆 Acreditaciones y Autorizaciones">
+                            <group>
+                                <field name="accreditation_iso"/>
+                                <field name="authorized_cofepris"/>
+                                <field name="accredited_ema"/>
+                                <field name="other_accreditation"/>
+                                <field name="other_accreditation_detail" invisible="other_accreditation == False"/>
+                            </group>
+                            <group>
+                                <field name="analysis_internal"/>
+                                <field name="analysis_external"/>
+                                <field name="external_lab_name" invisible="analysis_external == False"/>
+                            </group>
+                        </group>
+
+                        <!-- Tipos de muestra -->
+                        <group string="🧪 Tipos de Muestra Aplicables">
+                            <field name="applicable_sample_types" widget="many2many_tags" nolabel="1"/>
                         </group>
 
                         <!-- Descripción -->
@@ -187,6 +202,14 @@
                                     <field name="preservation_conditions" nolabel="1"/>
                                 </group>
                             </page>
+
+                            <page string="🔍 Control de Calidad">
+                                <group>
+                                    <field name="quality_control_procedure" nolabel="1"/>
+                                    <field name="quality_control_frequency"/>
+                                    <field name="quality_control_acceptance" nolabel="1"/>
+                                </group>
+                            </page>       
 
                             <page string="📝 Observaciones">
                                 <group>
