@@ -229,12 +229,14 @@
                         <tr class="parameter-row">
                           <td style="padding:6px;">
                             <!-- Mostrar microorganismo/analito si existe, sino el nombre del parámetro -->
-                            <t t-if="parameter.microorganism">
-                              <span t-esc="parameter.microorganism"/>
+                            <t t-set="microorg_clean" t-value="(parameter.microorganism or '').strip()"/>
+                            <t t-if="microorg_clean">
+                              <span t-esc="microorg_clean"/>
                             </t>
                             <t t-else="">
                               <span t-esc="parameter.name or 'Sin nombre'"/>
                             </t>
+                            
                             <t t-if="parameter.unit">
                               <span style="color: #666;"> (<span t-esc="parameter.unit"/>)</span>
                             </t>
