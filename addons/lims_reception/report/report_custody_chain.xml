@@ -230,13 +230,12 @@
                     </tbody>
                   </table>
                 </t>
-                <t t-else>
+                <t t-else="">
                   <p style="font-style: italic; color: #666; font-size: 12px;">No se han especificado parámetros para esta muestra.</p>
                 </t>
               </div>
             </t>
 
-            <!-- Mensaje si no hay muestras -->
             <t t-if="not doc.sample_ids">
               <div style="text-align: center; padding: 40px; background-color: #f8f9fa; border: 1px solid #dee2e6;">
                 <p style="font-size: 16px; color: #6c757d; margin: 0;">No se han registrado muestras en esta cadena de custodia.</p>
