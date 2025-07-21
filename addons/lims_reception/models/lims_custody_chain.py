@@ -90,6 +90,12 @@ class LimsCustodyChain(models.Model):
 
         return super(LimsCustodyChain, self).write(vals)
 
+    @api.depends('customer_signature')
+    def _compute_is_signed(self):
+        """Calcula si el documento está firmado basándose en la existencia de la firma"""
+        for record in self:
+            record.is_signed = bool(record.customer_signature)
+
     def action_save_signature(self):
         """Guardar la firma y actualizar fechas"""
         self.ensure_one()
