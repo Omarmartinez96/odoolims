@@ -135,13 +135,6 @@
                             </h1>
                         </div>
 
-                        <!-- Plantilla -->
-                        <group string="🔧 Desde Plantilla">
-                            <field name="template_id" 
-                                   placeholder="Seleccionar plantilla para autocompletar..."
-                                   options="{'no_create': True, 'no_open': True}"/>
-                        </group>
-
                         <!-- Información básica -->
                         <group>
                             <group string="📋 Información General">
