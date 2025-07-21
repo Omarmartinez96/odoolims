@@ -147,32 +147,32 @@ class LimsCustodyChain(models.Model):
         if self.chain_of_custody_state != 'done':
             raise UserError(_('La cadena de custodia debe estar finalizada para enviar el comprobante.'))
 
-        # 🔧 CONSTRUIR LISTA DE EMAILS ESPECÍFICOS DEL DEPARTAMENTO
         email_list = []
         
         # Agregar email del cliente principal
         if self.cliente_id and self.cliente_id.email:
             email_list.append(self.cliente_id.email)
         
-        # 🆕 SOLO CONTACTOS DEL DEPARTAMENTO ESPECÍFICO DE ESTA CADENA DE CUSTODIA
-        if self.departamento_id and self.contact_ids:
-            # Filtrar solo contactos que pertenecen al departamento de esta cadena
-            department_contacts = self.contact_ids.filtered(
-                lambda c: c.department_id.id == self.departamento_id.id
-            )
+        # 🎯 FILTRAR TODOS LOS CONTACTOS DEL MISMO CLIENTE
+        # Incluye contactos de todas las sucursales y departamentos del cliente
+        # (perfecto para compras, facturación, laboratorio, etc.)
+        if self.cliente_id:
+            client_contacts = self.env['lims.contact'].search([
+                ('department_id.branch_id.customer_id', '=', self.cliente_id.id)
+            ])
             
-            for contact in department_contacts:
+            for contact in client_contacts:
                 if contact.email and contact.email not in email_list:
                     email_list.append(contact.email)
         
-        # Si no hay departamento, usar todos los contactos asignados
+        # 🔄 FALLBACK: Si no hay cliente definido, usar contactos seleccionados
         elif self.contact_ids:
             for contact in self.contact_ids:
                 if contact.email and contact.email not in email_list:
                     email_list.append(contact.email)
         
         if not email_list:
-            raise UserError(_('No se encontraron direcciones de email válidas para enviar el comprobante.'))
+            raise UserError(_('No se encontraron direcciones de email válidas para enviar el comprobante. Verifique que el cliente y sus contactos tengan emails configurados.'))
 
         template = self.env.ref('lims_reception.email_template_comprobante', raise_if_not_found=False)
         if not template:
@@ -205,13 +205,17 @@ class LimsCustodyChain(models.Model):
         except Exception as e:
             raise UserError(_("Error al crear el archivo adjunto: %s") % str(e))
 
-        # 🔧 CREAR EMAIL DIRECTAMENTE CON VALORES PYTHON
+        # Crear email con información completa del cliente
         email_values = {
             'subject': f'Comprobante de Cadena de Custodia - {self.custody_chain_code}',
             'body_html': f'''
                 <p>Estimado/a Cliente,</p>
                 <p>Adjunto el comprobante correspondiente a la siguiente Cadena de Custodia:</p>
                 <p><strong>Código:</strong> {self.custody_chain_code}</p>
+                <p><strong>Cliente:</strong> {self.cliente_id.name if self.cliente_id else 'No especificado'}</p>
+                <p><strong>Sucursal:</strong> {self.sucursal_id.name if self.sucursal_id else 'No especificada'}</p>
+                <p><strong>Departamento:</strong> {self.departamento_id.name if self.departamento_id else 'No especificado'}</p>
+                <p><strong>Total de muestras:</strong> {len(self.sample_ids)}</p>
                 <p>Gracias por su confianza.</p>
                 <br/>
                 <p>Atentamente,<br/>El equipo de {self.env.company.name}</p>
@@ -232,7 +236,6 @@ class LimsCustodyChain(models.Model):
             'default_email_from': email_values['email_from'],
             'default_partner_ids': [],
             'default_attachment_ids': [(6, 0, [attachment.id])],
-            # 🔧 FORZAR LOS EMAILS EN EL CONTEXTO
             'default_email_to': email_values['email_to'],
         }
 
