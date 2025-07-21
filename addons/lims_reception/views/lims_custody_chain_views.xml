@@ -122,14 +122,13 @@
                         invisible="chain_of_custody_state != 'done' or is_signed == True"
                         help="Ver el documento y solicitar firma del cliente"/>
 
-                <!-- Botón Ver Documento Firmado -->
-                <button name="%(action_report_custody_chain)d"
-                        type="action"
-                        string="📄 Ver Documento Firmado"
+                <!-- Botón Ver Documento - MÉTODO DIRECTO -->
+                <button name="action_view_signed_document"
+                        type="object"
+                        string="📄 Ver Documento"
                         class="btn-info"
-                        target="_blank"
-                        invisible="is_signed == False"
-                        help="Ver el documento con la firma incluida"/>
+                        invisible="chain_of_custody_state != 'done'"
+                        help="Ver o descargar el documento PDF"/>
 
                 <!-- Botón Enviar Email -->
                 <button name="action_send_comprobante_email"
