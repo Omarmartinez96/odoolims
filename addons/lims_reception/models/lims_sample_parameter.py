@@ -64,8 +64,6 @@ class LimsSampleParameter(models.Model):
     quality_control_frequency = fields.Char(string='Frecuencia de Control de Calidad')
     quality_control_acceptance = fields.Text(string='Criterios de Aceptación')
 
-
-
     # Información del método
     method = fields.Char(
         string='Método de Análisis',

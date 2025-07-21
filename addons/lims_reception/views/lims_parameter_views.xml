@@ -55,7 +55,7 @@
 
                         <!-- Descripción -->
                         <group string="📝 Descripción">
-                            <field name="description" nolabel="1" 
+                            <field name="description" 
                                   placeholder="Descripción detallada del procedimiento..."/>
                         </group>
 
@@ -76,8 +76,8 @@
                                 </group>
                                 
                                 <group>
-                                    <field name="sample_preparation" nolabel="1"/>
-                                    <field name="preservation_conditions" nolabel="1"/>
+                                    <field name="sample_preparation">
+                                    <field name="preservation_conditions"/>
                                 </group>
                             </page>
                         </notebook>
@@ -198,23 +198,23 @@
                                 </group>
                                 
                                 <group>
-                                    <field name="sample_preparation" nolabel="1"/>
-                                    <field name="preservation_conditions" nolabel="1"/>
+                                    <field name="sample_preparation"/>
+                                    <field name="preservation_conditions"/>
                                 </group>
                             </page>
 
                             <page string="🔍 Control de Calidad">
                                 <group>
-                                    <field name="quality_control_procedure" nolabel="1"/>
+                                    <field name="quality_control_procedure"/>
                                     <field name="quality_control_frequency"/>
-                                    <field name="quality_control_acceptance" nolabel="1"/>
+                                    <field name="quality_control_acceptance"/>
                                 </group>
                             </page>       
 
                             <page string="📝 Observaciones">
                                 <group>
-                                    <field name="analyst_notes" nolabel="1"/>
-                                    <field name="observations" nolabel="1"/>
+                                    <field name="analyst_notes"/>
+                                    <field name="observations"/>
                                 </group>
                             </page>
                         </notebook>
