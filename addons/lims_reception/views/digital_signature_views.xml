@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+  <data>
+    
+    <!-- Vista de Firma Digital -->
+    <record id="view_custody_chain_signature_form" model="ir.ui.view">
+      <field name="name">lims.custody_chain.signature.form</field>
+      <field name="model">lims.custody_chain</field>
+      <field name="arch" type="xml">
+        <form string="Vista Previa y Firma del Comprobante">
+          <header>
+            <button name="action_save_signature" 
+                    type="object" 
+                    string="💾 Guardar Firma" 
+                    class="btn-primary"
+                    attrs="{'invisible': [('customer_signature', '=', False)]}"/>
+            <field name="is_signed" invisible="1"/>
+          </header>
+          
+          <sheet>
+            
+            <!-- Información del documento -->
+            <div class="oe_title">
+              <h1>
+                <span>Comprobante: </span>
+                <field name="custody_chain_code" readonly="1"/>
+              </h1>
+              <h3>
+                <span>Cliente: </span>
+                <field name="cliente_id" readonly="1"/>
+              </h3>
+            </div>
+
+            <!-- Vista previa del PDF -->
+            <group string="📄 Vista Previa del Documento">
+              <div style="text-align: center; padding: 20px; background-color: #f8f9fa; border: 1px solid #dee2e6; margin: 10px 0;">
+                <p style="font-size: 16px; margin-bottom: 15px;">
+                  <strong>Vista Previa del Comprobante de Cadena de Custodia</strong>
+                </p>
+                <button name="%(action_report_custody_chain)d" 
+                        type="action" 
+                        string="🔍 Ver PDF Completo" 
+                        class="btn-info"
+                        target="new"/>
+                <p style="margin-top: 10px; font-size: 12px; color: #666;">
+                  Haga clic para ver el documento completo antes de firmar
+                </p>
+              </div>
+            </group>
+
+            <!-- Sección de Firma -->
+            <group string="✍️ Firma Digital">
+              
+              <!-- Información del firmante -->
+              <group string="Datos del Firmante">
+                <field name="signature_name" 
+                       placeholder="Nombre completo del firmante"
+                       required="1"/>
+                <field name="signature_position" 
+                       placeholder="Cargo o posición"/>
+              </group>
+
+              <!-- Widget de firma -->
+              <group string="Firma">
+                <field name="customer_signature" 
+                       widget="signature" 
+                       placeholder="Haga clic aquí para firmar"
+                       string="Firme en el recuadro"
+                       nolabel="1"
+                       options="{'full_name': signature_name}"/>
+              </group>
+
+              <!-- Información de firma existente -->
+              <group string="Estado de la Firma" attrs="{'invisible': [('is_signed', '=', False)]}">
+                <field name="signature_date" readonly="1"/>
+                <field name="is_signed" readonly="1"/>
+              </group>
+
+            </group>
+
+            <!-- Instrucciones -->
+            <div style="background-color: #e3f2fd; padding: 15px; margin: 15px 0; border-left: 4px solid #2196f3;">
+              <h4 style="margin-top: 0; color: #1976d2;">📝 Instrucciones:</h4>
+              <ol style="margin: 10px 0;">
+                <li>Revise el documento completo haciendo clic en "Ver PDF Completo"</li>
+                <li>Complete sus datos personales</li>
+                <li>Firme en el recuadro usando su mouse, stylus o dedo (en dispositivos táctiles)</li>
+                <li>Haga clic en "Guardar Firma" para finalizar</li>
+              </ol>
+              <p style="margin-bottom: 0; font-style: italic; color: #666;">
+                Una vez firmado, se generará el PDF final con su firma incluida.
+              </p>
+            </div>
+
+          </sheet>
+        </form>
+      </field>
+    </record>
+
+  </data>
+</odoo>

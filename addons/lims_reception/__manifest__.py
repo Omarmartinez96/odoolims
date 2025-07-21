@@ -13,6 +13,7 @@
         'sale',
         'mail',
         'mass_mailing',
+        'web',
     ],
     
     'data': [
@@ -23,6 +24,7 @@
         'report/report_custody_chain.xml',
         'report/report_custody_chain_action.xml',
         'data/email_templates.xml',
+        'views/digital_signature_views.xml',
         'views/lims_custody_chain_views.xml',
         'views/lims_sample_template_views.xml',
         'views/lims_parameter_views.xml',

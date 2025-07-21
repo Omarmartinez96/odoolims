@@ -102,7 +102,7 @@
                     <strong>Cadena de Custodia:</strong> <span t-esc="doc.custody_chain_code"/>
                   </td>
                   <td style="width:50%; padding:4px; text-align:right;">
-                    <strong>Fecha del Reporte:</strong>
+                    <strong>Fecha de emisión:</strong>
                     <t t-set="today" t-value="datetime.datetime.now()"/>
                     <t t-set="d_today" t-value="today.strftime('%d')"/>
                     <t t-set="m_today" t-value="today.strftime('%m')"/>
@@ -220,8 +220,8 @@
                         style="width:100%; font-size:12px; border-collapse:collapse;">
                     <thead>
                       <tr style="background-color:#2c5aa0; color: white;">
-                        <th style="padding:6px; text-align:left; width:70%;">Parámetro</th>
-                        <th style="padding:6px; text-align:left; width:30%;">Método</th>
+                        <th style="padding:6px; text-align:left; width:50%;">Parámetro</th>
+                        <th style="padding:6px; text-align:left; width:50%;">Método</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -257,6 +257,49 @@
             <t t-if="not doc.sample_ids">
               <div style="text-align: center; padding: 40px; background-color: #f8f9fa; border: 1px solid #dee2e6;">
                 <p style="font-size: 16px; color: #6c757d; margin: 0;">No se han registrado muestras en esta cadena de custodia.</p>
+              </div>
+            </t>
+
+            <!-- 🆕 SECCIÓN DE FIRMA DIGITAL -->
+            <t t-if="doc.customer_signature">
+              <div class="signature-section">
+                <h3 style="font-size: 16px; margin: 0 0 15px 0; color: #2c5aa0; text-align: center;">
+                  ✍️ FIRMA DE CONFORMIDAD DEL CLIENTE
+                </h3>
+                
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="width: 50%; vertical-align: top; padding: 10px;">
+                      <div style="text-align: center;">
+                        <img t-att-src="image_data_uri(doc.customer_signature)" 
+                             style="max-width: 200px; max-height: 100px; border: 1px solid #ddd; padding: 5px;"/>
+                        <div style="margin-top: 10px; border-top: 1px solid #333; padding-top: 5px;">
+                          <strong>Firma del Cliente</strong>
+                        </div>
+                      </div>
+                    </td>
+                    <td style="width: 50%; vertical-align: top; padding: 10px;">
+                      <div style="font-size: 12px; line-height: 1.5;">
+                        <p><strong>Nombre:</strong> <span t-esc="doc.signature_name or 'No especificado'"/></p>
+                        <p><strong>Cargo:</strong> <span t-esc="doc.signature_position or 'No especificado'"/></p>
+                        <p><strong>Fecha de Firma:</strong> 
+                          <t t-if="doc.signature_date">
+                            <t t-set="sig_date" t-value="doc.signature_date"/>
+                            <t t-set="d_sig" t-value="sig_date.strftime('%d')"/>
+                            <t t-set="m_sig" t-value="sig_date.strftime('%m')"/>
+                            <t t-set="y_sig" t-value="sig_date.strftime('%Y')"/>
+                            <t t-set="h_sig" t-value="sig_date.strftime('%H:%M')"/>
+                            <span t-esc="d_sig + '/' + meses[m_sig] + '/' + y_sig + ' ' + h_sig"/>
+                          </t>
+                          <span t-else="">No especificada</span>
+                        </p>
+                        <div style="margin-top: 15px; font-style: italic; font-size: 11px; color: #666;">
+                          Con mi firma, confirmo haber recibido el comprobante de cadena de custodia y estar conforme con la información contenida en el mismo.
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
               </div>
             </t>
 

@@ -22,6 +22,30 @@ class LimsCustodyChain(models.Model):
     chain_of_custody_state = fields.Selection([('draft', 'Borrador'), ('in_progress', 'En Proceso'), ('done', 'Finalizado')], string="Estado de CC", default='draft',)
     quotation_id = fields.Many2one('sale.order', string ="Referencia de cotización")
     internal_notes = fields.Text(string="Notas Internas", help="Notas internas relacionadas con la cadena de custodia")
+
+    # Firma digital 
+
+    customer_signature = fields.Binary(
+        string='Firma del Cliente',
+        help='Firma digital del cliente'
+    )
+    signature_date = fields.Datetime(
+        string='Fecha de Firma',
+        help='Fecha y hora cuando se firmó el documento'
+    )
+    signature_name = fields.Char(
+        string='Nombre del Firmante',
+        help='Nombre de la persona que firmó'
+    )
+    signature_position = fields.Char(
+        string='Cargo del Firmante',
+        help='Cargo o posición de la persona que firmó'
+    )
+    is_signed = fields.Boolean(
+        string='Documento Firmado',
+        compute='_compute_is_signed',
+        store=True
+    )
     
     @api.model_create_multi
     def create(self, vals_list):
@@ -66,6 +90,26 @@ class LimsCustodyChain(models.Model):
 
         return super(LimsCustodyChain, self).write(vals)
 
+    def action_save_signature(self):
+        """Guardar la firma y actualizar fechas"""
+        self.ensure_one()
+        
+        if not self.customer_signature:
+            raise UserError(_('Debe proporcionar una firma antes de guardar.'))
+        
+        self.signature_date = fields.Datetime.now()
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Firma Guardada'),
+                'message': _('La firma se ha guardado correctamente.'),
+                'type': 'success',
+            }
+        }
+
+
     def action_send_comprobante_email(self):
         self.ensure_one()
         
@@ -76,18 +120,16 @@ class LimsCustodyChain(models.Model):
         if not template:
             raise UserError(_('No se encontró la plantilla de correo electrónico.'))
 
-        # Get and verify report
         report = self.env.ref('lims_reception.action_report_custody_chain', raise_if_not_found=False)
         if not report:
             raise UserError(_('No se encontró el reporte de comprobante.'))
 
-        # Optional but helpful: confirm the record exists
         record = self.env['lims.custody_chain'].browse(self.id)
         if not record.exists():
             raise UserError(_("No se encontró la cadena de custodia con ID: %s") % self.id)
 
         try:
-            # Render the PDF - método corregido con report_ref
+            # 🆕 EL PDF AHORA INCLUIRÁ LA FIRMA AUTOMÁTICAMENTE
             pdf_content, content_type = report._render_qweb_pdf(
                 report_ref='lims_reception.action_report_custody_chain',
                 res_ids=[self.id]
@@ -95,7 +137,6 @@ class LimsCustodyChain(models.Model):
         except Exception as e:
             raise UserError(_("Error al generar el PDF: %s") % str(e))
         
-        # Generar nombre de archivo más seguro
         safe_code = self.custody_chain_code.replace('/', '_') if self.custody_chain_code else 'comprobante'
         filename = f'{safe_code}.pdf'
 

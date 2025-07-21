@@ -2,7 +2,7 @@
 <odoo>
   <data>
 
-    <!-- Formulario de Cadena de Custodia -->
+    <!-- Formulario de Cadena de Custodia ACTUALIZADO -->
     <record id="view_lims_custody_chain_form" model="ir.ui.view">
       <field name="name">lims.custody_chain.form</field>
       <field name="model">lims.custody_chain</field>
@@ -25,6 +25,13 @@
               <field name="chain_of_custody_state" widget="radio"/> 
             </group>
 
+            <!-- 🆕 NUEVA SECCIÓN DE FIRMA -->
+            <group string="📋 Estado del Documento" attrs="{'invisible': [('chain_of_custody_state', '!=', 'done')]}">
+              <field name="is_signed" readonly="1"/>
+              <field name="signature_name" readonly="1" attrs="{'invisible': [('is_signed', '=', False)]}"/>
+              <field name="signature_date" readonly="1" attrs="{'invisible': [('is_signed', '=', False)]}"/>
+            </group>
+
             <group string="Observaciones">
               <field name="internal_notes"/>
             </group>
@@ -40,7 +47,7 @@
                         </list>
                         <form>
                             <sheet>
-                                <!-- 🆕 PLANTILLAS SIN ATTRS -->
+                                <!-- PLANTILLAS SIN ATTRS -->
                                 <group string="Plantilla de Muestra">
                                     <field name="sample_template_id" 
                                           placeholder="Usar plantilla"
@@ -103,20 +110,44 @@
                 </page>
             </notebook>
 
-            <group>
-              <button name="action_send_comprobante_email"
-                      type="object"
-                      string="Enviar Comprobante"
-                      class="btn-primary"
-                      modifiers="{'invisible': [['chain_of_custody_state','!=','done']]}"/>
-            </group>
+            <!-- 🆕 BOTONES ACTUALIZADOS -->
+            <div style="margin-top: 20px;">
+              <div class="oe_button_box" style="display: flex; gap: 10px; justify-content: center;">
+                
+                <!-- Botón Vista Previa y Firma -->
+                <button name="action_preview_and_sign"
+                        type="object"
+                        string="✍️ Vista Previa y Firma"
+                        class="btn-warning"
+                        attrs="{'invisible': ['|', ('chain_of_custody_state','!=','done'), ('is_signed','=',True)]}"
+                        help="Ver el documento y solicitar firma del cliente"/>
+
+                <!-- Botón Ver Documento Firmado -->
+                <button name="%(action_report_custody_chain)d"
+                        type="action"
+                        string="📄 Ver Documento Firmado"
+                        class="btn-info"
+                        target="_blank"
+                        attrs="{'invisible': [('is_signed','=',False)]}"
+                        help="Ver el documento con la firma incluida"/>
+
+                <!-- Botón Enviar Email -->
+                <button name="action_send_comprobante_email"
+                        type="object"
+                        string="📧 Enviar Comprobante"
+                        class="btn-primary"
+                        attrs="{'invisible': [('chain_of_custody_state','!=','done')]}"
+                        help="Enviar el comprobante por correo electrónico"/>
+
+              </div>
+            </div>
 
           </sheet>
         </form>
       </field>
     </record>
 
-    <!-- Vista de lista de Cadenas de Custodia -->
+    <!-- Vista de lista de Cadenas de Custodia ACTUALIZADA -->
     <record id="view_lims_custody_chain_list" model="ir.ui.view">
       <field name="name">lims.custody_chain.list</field>
       <field name="model">lims.custody_chain</field>
@@ -127,6 +158,7 @@
           <field name="sucursal_id"/>
           <field name="departamento_id"/>
           <field name="chain_of_custody_state"/>
+          <field name="is_signed"/>
           <field name="date_created"/>
         </list>
       </field>
