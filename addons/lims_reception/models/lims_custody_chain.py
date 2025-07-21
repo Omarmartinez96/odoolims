@@ -204,30 +204,41 @@ class LimsCustodyChain(models.Model):
             'context': ctx,
         }
     
+    # REEMPLAZAR EL MÉTODO action_view_signed_document EN lims_custody_chain.py
+
     def action_view_signed_document(self):
         """Acción para ver/descargar el documento firmado"""
         self.ensure_one()
         
-        # Generar el PDF
-        report = self.env.ref('lims_reception.action_report_custody_chain')
-        pdf_content, content_type = report._render_qweb_pdf([self.id])
-        
-        # Crear attachment temporal
-        safe_code = self.custody_chain_code.replace('/', '_') if self.custody_chain_code else 'comprobante'
-        filename = f'{safe_code}.pdf'
-        
-        attachment = self.env['ir.attachment'].create({
-            'name': filename,
-            'type': 'binary',
-            'datas': base64.b64encode(pdf_content),
-            'res_model': self._name,
-            'res_id': self.id,
-            'mimetype': 'application/pdf',
-        })
-        
-        # Retornar acción para abrir el PDF
-        return {
-            'type': 'ir.actions.act_url',
-            'url': f'/web/content/{attachment.id}?download=true',
-            'target': 'new',
-        }
+        try:
+            # Obtener la referencia del reporte correctamente
+            report = self.env.ref('lims_reception.action_report_custody_chain')
+            
+            # Generar el PDF con la sintaxis correcta
+            pdf_content, content_type = report._render_qweb_pdf(
+                report_ref='lims_reception.action_report_custody_chain',
+                res_ids=[self.id]
+            )
+            
+            # Crear attachment temporal
+            safe_code = self.custody_chain_code.replace('/', '_') if self.custody_chain_code else 'comprobante'
+            filename = f'{safe_code}.pdf'
+            
+            attachment = self.env['ir.attachment'].create({
+                'name': filename,
+                'type': 'binary',
+                'datas': base64.b64encode(pdf_content),
+                'res_model': self._name,
+                'res_id': self.id,
+                'mimetype': 'application/pdf',
+            })
+            
+            # Retornar acción para abrir el PDF
+            return {
+                'type': 'ir.actions.act_url',
+                'url': f'/web/content/{attachment.id}?download=true',
+                'target': 'new',
+            }
+            
+        except Exception as e:
+            raise UserError(_("Error al generar el documento: %s") % str(e))
