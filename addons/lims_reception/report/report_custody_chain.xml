@@ -170,7 +170,7 @@
                           <span t-esc="d_samp + '/' + meses[m_samp] + '/' + y_samp"/>
                           <t t-if="sample.sampling_time"> a las <span t-esc="sample.sampling_time"/></t>
                         </t>
-                        <t t-else>No especificado</t>
+                        <span t-else="">No especificado</span>
                       </td>
                       <td style="padding:3px;">
                         <strong>Temperatura de muestreo:</strong> <span t-esc="sample.sampling_temperature or 'No especificada'"/>
@@ -187,7 +187,7 @@
                           <span t-esc="d_coll + '/' + meses[m_coll] + '/' + y_coll"/>
                           <t t-if="sample.collection_time"> a las <span t-esc="sample.collection_time"/></t>
                         </t>
-                        <t t-else>No especificado</t>
+                        <span t-else="">No especificado</span>
                       </td>
                       <td style="padding:3px;">
                         <!-- Espacio para balance visual -->
