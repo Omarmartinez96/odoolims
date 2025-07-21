@@ -147,15 +147,26 @@ class LimsCustodyChain(models.Model):
         if self.chain_of_custody_state != 'done':
             raise UserError(_('La cadena de custodia debe estar finalizada para enviar el comprobante.'))
 
-        # 🔧 CONSTRUIR LISTA DE EMAILS EN PYTHON
+        # 🔧 CONSTRUIR LISTA DE EMAILS ESPECÍFICOS DEL DEPARTAMENTO
         email_list = []
         
         # Agregar email del cliente principal
         if self.cliente_id and self.cliente_id.email:
             email_list.append(self.cliente_id.email)
         
-        # Agregar emails de contactos del departamento
-        if self.contact_ids:
+        # 🆕 SOLO CONTACTOS DEL DEPARTAMENTO ESPECÍFICO DE ESTA CADENA DE CUSTODIA
+        if self.departamento_id and self.contact_ids:
+            # Filtrar solo contactos que pertenecen al departamento de esta cadena
+            department_contacts = self.contact_ids.filtered(
+                lambda c: c.department_id.id == self.departamento_id.id
+            )
+            
+            for contact in department_contacts:
+                if contact.email and contact.email not in email_list:
+                    email_list.append(contact.email)
+        
+        # Si no hay departamento, usar todos los contactos asignados
+        elif self.contact_ids:
             for contact in self.contact_ids:
                 if contact.email and contact.email not in email_list:
                     email_list.append(contact.email)
@@ -180,7 +191,7 @@ class LimsCustodyChain(models.Model):
             raise UserError(_("Error al generar el PDF: %s") % str(e))
         
         safe_code = self.custody_chain_code.replace('/', '_') if self.custody_chain_code else 'comprobante'
-        filename = f'{safe_code}.pdf'
+        filename = f'Cadena de custodia {safe_code}.pdf'
 
         try:
             attachment = self.env['ir.attachment'].create({
