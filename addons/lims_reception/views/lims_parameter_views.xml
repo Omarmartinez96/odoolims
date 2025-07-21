@@ -76,7 +76,7 @@
                                 </group>
                                 
                                 <group>
-                                    <field name="sample_preparation">
+                                    <field name="sample_preparation"/>
                                     <field name="preservation_conditions"/>
                                 </group>
                             </page>
