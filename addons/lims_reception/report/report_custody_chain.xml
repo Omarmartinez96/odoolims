@@ -229,17 +229,15 @@
                         <tr class="parameter-row">
                           <td style="padding:6px;">
                             <!-- Mostrar microorganismo/analito si existe, sino el nombre del parámetro -->
-                            <t t-set="microorg_clean" t-value="(parameter.microorganism or '').strip()"/>
-                            <t t-if="microorg_clean">
-                              <span t-esc="microorg_clean"/>
-                            </t>
-                            <t t-else="">
-                              <span t-esc="parameter.name or 'Sin nombre'"/>
-                            </t>
+                            <div style="background: yellow; border: 2px solid red; padding: 10px; font-size: 12px;">
+                              <strong>MICROORGANISM DIRECTO:</strong><br/>
+                              "<span t-esc="parameter.microorganism"/>"
+                            </div>
                             
-                            <t t-if="parameter.unit">
-                              <span style="color: #666;"> (<span t-esc="parameter.unit"/>)</span>
-                            </t>
+                            <div style="background: lightblue; border: 2px solid blue; padding: 10px; font-size: 12px; margin-top: 5px;">
+                              <strong>NAME PARA COMPARAR:</strong><br/>
+                              "<span t-esc="parameter.name"/>"
+                            </div>
                           </td>
                           <td style="padding:6px;">
                             <span t-esc="parameter.method or 'No especificado'"/>
