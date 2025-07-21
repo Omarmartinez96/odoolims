@@ -23,8 +23,7 @@ class LimsCustodyChain(models.Model):
     quotation_id = fields.Many2one('sale.order', string ="Referencia de cotización")
     internal_notes = fields.Text(string="Notas Internas", help="Notas internas relacionadas con la cadena de custodia")
 
-    # Firma digital 
-
+    # 🆕 CAMPOS PARA FIRMA DIGITAL
     customer_signature = fields.Binary(
         string='Firma del Cliente',
         help='Firma digital del cliente'
@@ -46,6 +45,8 @@ class LimsCustodyChain(models.Model):
         compute='_compute_is_signed',
         store=True
     )
+    
+    # ========== MÉTODOS EXISTENTES ==========
     
     @api.model_create_multi
     def create(self, vals_list):
@@ -90,11 +91,34 @@ class LimsCustodyChain(models.Model):
 
         return super(LimsCustodyChain, self).write(vals)
 
+    # ========== MÉTODOS DE FIRMA DIGITAL ==========
+    
     @api.depends('customer_signature')
     def _compute_is_signed(self):
         """Calcula si el documento está firmado basándose en la existencia de la firma"""
         for record in self:
             record.is_signed = bool(record.customer_signature)
+
+    def action_preview_and_sign(self):
+        """Acción para vista previa del PDF y solicitar firma"""
+        self.ensure_one()
+        
+        if self.chain_of_custody_state != 'done':
+            raise UserError(_('La cadena de custodia debe estar finalizada para firmar.'))
+        
+        return {
+            'name': _('Vista Previa y Firma'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'lims.custody_chain',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'view_id': self.env.ref('lims_reception.view_custody_chain_signature_form').id,
+            'target': 'new',
+            'context': {
+                'form_view_initial_mode': 'edit',
+                'signature_mode': True,
+            }
+        }
 
     def action_save_signature(self):
         """Guardar la firma y actualizar fechas"""
@@ -115,7 +139,8 @@ class LimsCustodyChain(models.Model):
             }
         }
 
-
+    # ========== MÉTODO EXISTENTE DE EMAIL ==========
+    
     def action_send_comprobante_email(self):
         self.ensure_one()
         
