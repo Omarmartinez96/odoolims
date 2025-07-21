@@ -79,9 +79,9 @@
                                         <field name="parameter_ids" context="{'default_sample_id': id}" nolabel="1">
                                             <list string="Parámetros Seleccionados" create="true" edit="false" delete="true">
                                                 <field name="name"/>
+                                                <field name="microorganism"/>
                                                 <field name="category"/>
                                                 <field name="method"/>
-                                                <field name="unit"/>
                                             </list>
                                             
                                             <!-- Formulario SOLO para seleccionar plantilla -->
