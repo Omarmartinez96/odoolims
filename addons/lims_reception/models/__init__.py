@@ -4,3 +4,4 @@ from . import lims_sample
 from . import lims_sample_template
 from . import basic_models
 from . import lims_sample_parameter
+from . import lims_field_result

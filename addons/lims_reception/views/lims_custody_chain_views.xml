@@ -74,8 +74,19 @@
                                   <field name="sampling_technician" placeholder="Inserte técnico de muestreo"/>
                                   <field name="sampling_observations" placeholder="Inserta observaciones generales de muestreo (si aplica)"/>
                                 </group>
-                                <group string="Pendientes por clasificar">
-                                    <field name="field_results"/>
+                                <group string="Resultados de Campo">
+                                    <field name="field_result_ids" nolabel="1">
+                                        <list string="Resultados" editable="bottom">
+                                            <field name="sequence" widget="handle"/>
+                                            <field name="parameter_name" placeholder="Parámetro"/>
+                                            <field name="result_value" placeholder="Resultado"/>
+                                            <field name="unit" placeholder="Unidad"/>
+                                            <field name="notes" placeholder="Notas opcionales"/>
+                                        </list>
+                                    </field>
+                                </group>
+
+                                <group string="Otros Datos">
                                     <field name="instrument_used"/>
                                     <field name="attachment_ids" widget="many2many_binary"/>
                                 </group>

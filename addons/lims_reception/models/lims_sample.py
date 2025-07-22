@@ -19,7 +19,11 @@ class LimsSample(models.Model):
     sample_quantity = fields.Char(string="Cantidad de muestra")
     container_type_id = fields.Many2one('lims.container.type', string='Tipo de recipiente', help='Selecciona o crea el tipo de recipiente utilizado')
     instrument_used = fields.Char(string="Instrumento utilizado")
-    field_results = fields.Char(string="Resultados en campo")
+    field_result_ids = fields.One2many(
+        'lims.field.result',
+        'sample_id',
+        string='Resultados de Campo'
+    )
     parameter_ids = fields.One2many(
         'lims.sample.parameter',
         'sample_id',
