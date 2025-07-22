@@ -35,7 +35,7 @@
                         <group>
                             <group>
                                 <field name="category"/>
-                                <field name="sequence"/>
+                                <field name="sequence" invisible="1"/>
                                 <field name="active"/>
                             </group>
                             <group>
@@ -69,7 +69,7 @@
         <!-- Menú para Tipos de Control -->
         <menuitem id="menu_quality_control_types" 
                   name="Tipos de Control de Calidad" 
-                  parent="lims_custody_menu_root" 
+                  parent="menu_lims_configuration" 
                   action="action_quality_control_types" 
                   sequence="30"/>
 
