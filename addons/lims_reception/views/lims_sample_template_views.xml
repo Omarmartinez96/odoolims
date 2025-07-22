@@ -35,6 +35,11 @@
                             <field name="sample_description"/>
                             <field name="sample_quantity"/>
                         </group>
+                        <group string="🧪 Parámetros Predefinidos">
+                            <field name="parameter_template_ids" 
+                                widget="many2many_tags"
+                                placeholder="Seleccionar parámetros que se incluirán automáticamente"/>
+                        </group>
                         <group>
                             <field name="times_used" readonly="1"/>
                             <field name="create_date" readonly="1"/>
