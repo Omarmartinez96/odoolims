@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- ========== TIPOS DE CONTROL DE CALIDAD ========== -->
+        
+        <!-- Vista Lista de Tipos de Control -->
+        <record id="view_quality_control_type_list" model="ir.ui.view">
+            <field name="name">lims.quality.control.type.list</field>
+            <field name="model">lims.quality.control.type</field>
+            <field name="arch" type="xml">
+                <list string="Tipos de Control de Calidad" create="true" edit="false">
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="category"/>
+                    <field name="default_expected_result"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Formulario de Tipos de Control -->
+        <record id="view_quality_control_type_form" model="ir.ui.view">
+            <field name="name">lims.quality.control.type.form</field>
+            <field name="model">lims.quality.control.type</field>
+            <field name="arch" type="xml">
+                <form string="Tipo de Control de Calidad">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Ej: Esterilidad de ronda de muestras" required="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group>
+                                <field name="category"/>
+                                <field name="sequence"/>
+                                <field name="active"/>
+                            </group>
+                            <group>
+                                <field name="default_expected_result" placeholder="Ej: Estéril, Positivo"/>
+                            </group>
+                        </group>
+
+                        <group string="Descripción">
+                            <field name="description" nolabel="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acción para Tipos de Control -->
+        <record id="action_quality_control_types" model="ir.actions.act_window">
+            <field name="name">Tipos de Control de Calidad</field>
+            <field name="res_model">lims.quality.control.type</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crear el primer tipo de control de calidad
+                </p>
+                <p>
+                    Defina los tipos de controles que utilizará en sus análisis
+                </p>
+            </field>
+        </record>
+
+        <!-- Menú para Tipos de Control -->
+        <menuitem id="menu_quality_control_types" 
+                  name="Tipos de Control de Calidad" 
+                  parent="lims_custody_menu_root" 
+                  action="action_quality_control_types" 
+                  sequence="30"/>
+
+    </data>
+</odoo>

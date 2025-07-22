@@ -196,13 +196,16 @@
                                 </group>
                             </page>
 
-                            <page string="🔍 Control de Calidad">
-                                <group>
-                                    <field name="quality_control_procedure"/>
-                                    <field name="quality_control_frequency"/>
-                                    <field name="quality_control_acceptance"/>
-                                </group>
-                            </page>       
+                            <page string="🎯 Controles de Calidad Específicos">
+                                <field name="quality_control_ids">
+                                    <list editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="control_type_id" options="{'no_create': True}"/>
+                                        <field name="expected_result"/>
+                                        <field name="notes"/>
+                                    </list>
+                                </field>
+                            </page>   
 
                             <page string="📝 Observaciones">
                                 <group>
