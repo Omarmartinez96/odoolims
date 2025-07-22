@@ -148,14 +148,14 @@ class LimsCustodyChain(models.Model):
             raise UserError(_('La cadena de custodia debe estar finalizada para enviar el comprobante.'))
 
         email_list = []
+        partner_list = []  # Para filtrar contactos en el wizard
         
         # Agregar email del cliente principal
         if self.cliente_id and self.cliente_id.email:
             email_list.append(self.cliente_id.email)
+            partner_list.append(self.cliente_id.id)
         
-        # 🎯 FILTRAR TODOS LOS CONTACTOS DEL MISMO CLIENTE
-        # Incluye contactos de todas las sucursales y departamentos del cliente
-        # (perfecto para compras, facturación, laboratorio, etc.)
+        # Filtrar todos los contactos del mismo cliente
         if self.cliente_id:
             client_contacts = self.env['lims.contact'].search([
                 ('department_id.branch_id.customer_id', '=', self.cliente_id.id)
@@ -164,15 +164,20 @@ class LimsCustodyChain(models.Model):
             for contact in client_contacts:
                 if contact.email and contact.email not in email_list:
                     email_list.append(contact.email)
+                    # Agregar partner_id si existe para filtrado en wizard
+                    if contact.partner_id:
+                        partner_list.append(contact.partner_id.id)
         
-        # 🔄 FALLBACK: Si no hay cliente definido, usar contactos seleccionados
+        # Fallback: Si no hay cliente definido, usar contactos seleccionados
         elif self.contact_ids:
             for contact in self.contact_ids:
                 if contact.email and contact.email not in email_list:
                     email_list.append(contact.email)
+                    if contact.partner_id:
+                        partner_list.append(contact.partner_id.id)
         
         if not email_list:
-            raise UserError(_('No se encontraron direcciones de email válidas para enviar el comprobante. Verifique que el cliente y sus contactos tengan emails configurados.'))
+            raise UserError(_('No se encontraron direcciones de email válidas para enviar el comprobante.'))
 
         template = self.env.ref('lims_reception.email_template_comprobante', raise_if_not_found=False)
         if not template:
@@ -205,17 +210,13 @@ class LimsCustodyChain(models.Model):
         except Exception as e:
             raise UserError(_("Error al crear el archivo adjunto: %s") % str(e))
 
-        # Crear email con información completa del cliente
+        # EMAIL SIMPLIFICADO DESDE PYTHON
         email_values = {
             'subject': f'Comprobante de Cadena de Custodia - {self.custody_chain_code}',
             'body_html': f'''
                 <p>Estimado/a Cliente,</p>
                 <p>Adjunto el comprobante correspondiente a la siguiente Cadena de Custodia:</p>
                 <p><strong>Código:</strong> {self.custody_chain_code}</p>
-                <p><strong>Cliente:</strong> {self.cliente_id.name if self.cliente_id else 'No especificado'}</p>
-                <p><strong>Sucursal:</strong> {self.sucursal_id.name if self.sucursal_id else 'No especificada'}</p>
-                <p><strong>Departamento:</strong> {self.departamento_id.name if self.departamento_id else 'No especificado'}</p>
-                <p><strong>Total de muestras:</strong> {len(self.sample_ids)}</p>
                 <p>Gracias por su confianza.</p>
                 <br/>
                 <p>Atentamente,<br/>El equipo de {self.env.company.name}</p>
@@ -227,6 +228,7 @@ class LimsCustodyChain(models.Model):
 
         compose_form = self.env.ref('mail.email_compose_message_wizard_form')
 
+        # Contexto con filtrado de partners
         ctx = {
             'default_model': 'lims.custody_chain',
             'default_res_ids': [self.id],
@@ -234,9 +236,11 @@ class LimsCustodyChain(models.Model):
             'default_subject': email_values['subject'],
             'default_body': email_values['body_html'],
             'default_email_from': email_values['email_from'],
-            'default_partner_ids': [],
             'default_attachment_ids': [(6, 0, [attachment.id])],
             'default_email_to': email_values['email_to'],
+            # Filtrar solo partners del cliente
+            'default_partner_ids': [(6, 0, partner_list)],
+            'active_domain': [('id', 'in', partner_list)] if partner_list else [],
         }
 
         return {
