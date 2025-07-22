@@ -5,3 +5,4 @@ access_lims_sample_type,lims.sample.type,model_lims_sample_type,base.group_user,
 access_lims_container_type,lims.container.type,model_lims_container_type,base.group_user,1,1,1,1
 access_lims_sample_template,lims.sample.template,model_lims_sample_template,base.group_user,1,1,1,1
 access_lims_sample_parameter,lims.sample.parameter,model_lims_sample_parameter,base.group_user,1,1,1,1
+access_lims_field_result_user,access_lims_field_result_user,model_lims_field_result,base.group_user,1,1,1,1
