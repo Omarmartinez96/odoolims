@@ -75,16 +75,16 @@
                                   <field name="sampling_observations" placeholder="Inserta observaciones generales de muestreo (si aplica)"/>
                                 </group>
                                 <group string="Resultados de Campo">
-                                  <field name="field_result_ids" nolabel="1">
+                                  <field name="field_result_ids" 
+                                        context="{'default_sample_id': active_id}" 
+                                        nolabel="1">
                                       <list string="Resultados">
-                                          <field name="sequence" widget="handle"/>
                                           <field name="parameter_name"/>
                                           <field name="result_value"/>
                                           <field name="unit"/>
                                           <field name="notes"/>
                                       </list>
                                       
-                                      <!-- Formulario popup para editar -->
                                       <form string="Resultado de Campo">
                                           <group>
                                               <field name="parameter_name"/>
