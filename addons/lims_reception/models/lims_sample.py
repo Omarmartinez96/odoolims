@@ -78,9 +78,9 @@ class LimsSample(models.Model):
 
             template.increment_usage()
 
-        # Crear parametros automaticamente
-        if template.parameter_template_ids:
-            template.create_parameters_for_sample(self.id)
+            # Crear parametros automaticamente
+            if template.parameter_template_ids:
+                template.create_parameters_for_sample(self.id)
 
     @api.onchange('cliente_id', 'sample_type_id')
     def _onchange_sample_suggestion(self):
