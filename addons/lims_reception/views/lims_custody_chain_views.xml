@@ -82,7 +82,7 @@
                                 </group>
 
                                 <notebook>
-                                    <page string="📦 Parámetros de Análisis">
+                                    <page string="Parámetros de Análisis">
                                         <field name="parameter_ids" context="{'default_sample_id': id}" nolabel="1">
                                             <list string="Parámetros Seleccionados" create="true" edit="false" delete="true">
                                                 <field name="name"/>

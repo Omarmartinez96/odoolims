@@ -3,7 +3,7 @@
   <data>
     
     <!-- MENÚ PRINCIPAL PRIMERO -->
-    <menuitem id="lims_custody_menu_root" name="📋 Cadenas de Custodia" sequence="10"/>
+    <menuitem id="lims_custody_menu_root" name="Cadenas de Custodia" sequence="10"/>
     
     <!-- VISTAS PARA TIPOS DE MUESTRA -->
     <record id="view_lims_sample_type_list" model="ir.ui.view">
