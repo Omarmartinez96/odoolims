@@ -61,7 +61,6 @@ class LimsSample(models.Model):
         return super(LimsSample, self).write(vals)
 
     # Plantilla de muestras
-
     sample_template_id = fields.Many2one('lims.sample.template', string="Plantilla", domain="[('active', '=', True)]")
 
     @api.onchange('sample_template_id')
@@ -78,16 +77,15 @@ class LimsSample(models.Model):
 
             template.increment_usage()
 
-            # Crear parametros automaticamente
-            if template.parameter_template_ids:
+            # Crear parámetros automáticamente
+            if hasattr(template, 'parameter_template_ids') and template.parameter_template_ids:
                 template.create_parameters_for_sample(self.id)
 
-    @api.onchange('cliente_id', 'sample_type_id')
+    @api.onchange('sample_type_id')
     def _onchange_sample_suggestion(self):
-        if self.cliente_id and self.sample_type_id and not self.sample_template_id:
-            # Buscar muestras recientes de este cliente y tipo 
+        if self.sample_type_id and not self.sample_template_id:
+            # Buscar muestras recientes de este tipo 
             recent_samples = self.search([
-                ('cliente_id', '=', self.cliente_id.id),
                 ('sample_type_id', '=', self.sample_type_id.id)
             ], limit=1, order='create_date desc')
         
@@ -104,16 +102,15 @@ class LimsSample(models.Model):
         """Acción para guardar la muestra actual como plantilla"""
         self.ensure_one()
         
-        if not self.cliente_id or not self.sample_type_id:
-            raise UserError("Necesitas seleccionar cliente y tipo de muestra para crear una plantilla")
+        if not self.sample_type_id:
+            raise UserError("Necesitas seleccionar tipo de muestra para crear una plantilla")
         
         # Generar nombre automático para la plantilla
-        template_name = f"{self.sample_type_id.name} - {self.cliente_id.name}"
+        template_name = f"{self.sample_type_id.name}"
         
         # Verificar si ya existe
         existing = self.env['lims.sample.template'].search([
-            ('name', '=', template_name),
-            ('cliente_id', '=', self.cliente_id.id)
+            ('name', '=', template_name)
         ])
         
         if existing:
@@ -122,7 +119,6 @@ class LimsSample(models.Model):
         # Crear la plantilla
         template = self.env['lims.sample.template'].create({
             'name': template_name,
-            'cliente_id': self.cliente_id.id,
             'sample_type_id': self.sample_type_id.id,
             'container_type_id': self.container_type_id.id if self.container_type_id else False,
             'sample_description': self.sample_description,
