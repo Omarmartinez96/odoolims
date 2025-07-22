@@ -50,8 +50,7 @@
                                 <!-- PLANTILLAS SIN ATTRS -->
                                 <group string="Plantilla de Muestra">
                                     <field name="sample_template_id" 
-                                          placeholder="Usar plantilla"
-                                          invisible="cliente_id == False"/>
+                                          placeholder="Usar plantilla"/>
                                 </group>
                                 <group string="Datos Generales de la Muestra">
                                     <field name="sample_identifier" placeholder="Inserte identificación de la muestra"/>

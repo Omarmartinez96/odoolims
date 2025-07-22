@@ -9,7 +9,6 @@
             <field name="arch" type="xml">
                 <list string="Plantillas de Muestras">
                     <field name="name"/>
-                    <field name="cliente_id"/>
                     <field name="sample_type_id"/>
                     <field name="times_used"/>
                     <field name="active"/>
@@ -26,7 +25,6 @@
                     <sheet>
                         <group>
                             <field name="name"/>
-                            <field name="cliente_id"/>
                             <field name="active"/>
                         </group>
                         <group>

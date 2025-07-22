@@ -6,7 +6,6 @@ class LimsSampleTemplate(models.Model):
     _order = 'times_used desc, name'
 
     name = fields.Char(string="Nombre de la Plantilla", required=True, help="Ej: Agua Potable - Restaurante XYZ")
-    cliente_id = fields.Many2one('res.partner', string="Cliente", domain=[('is_lims_customer', '=', True)], required=True)
     sample_type_id = fields.Many2one('lims.sample.type', string="Tipo de Muestra", required=True)
     container_type_id = fields.Many2one('lims.container.type', string="Tipo de Recipiente")
     sample_description = fields.Char(string="Descripción Estándar", help="Descripción que se copiará a nuevas muestras")
@@ -37,9 +36,9 @@ class LimsSampleTemplate(models.Model):
         readonly=True
     )
     _sql_constraints = [
-        ('unique_template_name_client', 
-         'unique(name, cliente_id)', 
-         'Ya existe una plantilla con este nombre para este cliente')
+        ('unique_template_name_', 
+         'unique(name)', 
+         'Ya existe una plantilla con este nombre')
     ]
     def increment_usage(self):
         """Incrementa el contador de uso de la plantilla"""

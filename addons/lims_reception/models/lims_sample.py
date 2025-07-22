@@ -62,7 +62,7 @@ class LimsSample(models.Model):
 
     # Plantilla de muestras
 
-    sample_template_id = fields.Many2one('lims.sample.template', string="Plantilla", domain="[('cliente_id', '=', cliente_id), ('active', '=', True)]")
+    sample_template_id = fields.Many2one('lims.sample.template', string="Plantilla", domain="[('active', '=', True)]")
 
     @api.onchange('sample_template_id')
     def _onchange_sample_template_id(self):
