@@ -6,7 +6,7 @@ class LimsSampleTemplate(models.Model):
     _order = 'times_used desc, name'
 
     name = fields.Char(string="Nombre de la Plantilla", required=True, help="Ej: Agua Potable - Restaurante XYZ")
-    sample_type_id = fields.Many2one('lims.sample.type', string="Tipo de Muestra", required=True)
+    sample_type_id = fields.Many2one('lims.sample.type', string="Tipo de Muestra")
     container_type_id = fields.Many2one('lims.container.type', string="Tipo de Recipiente")
     sample_description = fields.Char(string="Descripción Estándar", help="Descripción que se copiará a nuevas muestras")
     sample_quantity = fields.Char(string="Cantidad Típica", help="Ej: 500ml, 100g, etc.")
