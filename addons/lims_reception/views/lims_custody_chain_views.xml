@@ -75,15 +75,14 @@
                                   <field name="sampling_observations" placeholder="Inserta observaciones generales de muestreo (si aplica)"/>
                                 </group>
                                 <group string="Resultados de Campo">
-                                    <field name="field_result_ids" nolabel="1">
-                                        <list string="Resultados">
-                                            <field name="sequence" widget="handle"/>
-                                            <field name="parameter_name" placeholder="Parámetro"/>
-                                            <field name="result_value" placeholder="Resultado"/>
-                                            <field name="unit" placeholder="Unidad"/>
-                                            <field name="notes" placeholder="Notas opcionales"/>
-                                        </list>
-                                    </field>
+                                  <field name="field_result_ids" nolabel="1">
+                                      <list string="Resultados" editable="bottom">
+                                          <field name="parameter_name" placeholder="Parámetro"/>
+                                          <field name="result_value" placeholder="Resultado"/>
+                                          <field name="unit" placeholder="Unidad"/>
+                                          <field name="notes" placeholder="Notas opcionales"/>
+                                      </list>
+                                  </field>
                                 </group>
 
                                 <group string="Otros Datos">
