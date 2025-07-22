@@ -11,17 +11,60 @@ class LimsCustodyChain(models.Model):
     _rec_name = 'custody_chain_code'
 
     # Campos de la Cadena de Custodia
-    contact_ids = fields.Many2many('lims.contact', string='Contactos Relacionados', domain="[('department_id', '=', departamento_id)]")
-    custody_chain_code = fields.Char(string="Código de Cadena de Custodia", copy=False, default='/', help="Se genera automaticamente al crear la cadena de custodia")
-    cliente_id = fields.Many2one('res.partner', string="Cliente", domain=[('is_lims_customer', '=', True)])
-    client_code = fields.Char(string="Código de Cliente", related='cliente_id.client_code', readonly=True, store=False,)
-    sucursal_id = fields.Many2one('lims.branch', string="Sucursal", domain="[('customer_id', '=', cliente_id)]")
-    departamento_id = fields.Many2one('lims.department', string="Departamento", domain="[('branch_id', '=', sucursal_id)]")
-    date_created = fields.Datetime(string="Fecha de Creación", default=fields.Datetime.now)
-    sample_ids = fields.One2many('lims.sample', 'custody_chain_id', string='Muestra')
-    chain_of_custody_state = fields.Selection([('draft', 'Borrador'), ('in_progress', 'En Proceso'), ('done', 'Finalizado')], string="Estado de CC", default='draft',)
-    quotation_id = fields.Many2one('sale.order', string ="Referencia de cotización")
-    internal_notes = fields.Text(string="Notas Internas", help="Notas internas relacionadas con la cadena de custodia")
+    contact_ids = fields.Many2many(
+        'lims.contact', 
+        string='Contactos Relacionados', 
+        domain="[('department_id', '=', departamento_id)]"
+    )
+    custody_chain_code = fields.Char(
+        string="Código de Cadena de Custodia", 
+        copy=False, 
+        default='/', 
+        help="Se genera automaticamente al crear la cadena de custodia"
+    )
+    cliente_id = fields.Many2one(
+        'res.partner', 
+        string="Cliente", 
+        domain=[('is_lims_customer', '=', True)]
+    )
+    client_code = fields.Char(
+        string="Código de Cliente", 
+        related='cliente_id.client_code', 
+        readonly=True, store=False,
+    )
+    sucursal_id = fields.Many2one(
+        'lims.branch', 
+        string="Sucursal", 
+        domain="[('customer_id', '=', cliente_id)]"
+    )
+    departamento_id = fields.Many2one(
+        'lims.department', 
+        string="Departamento", 
+        domain="[('branch_id', '=', sucursal_id)]"
+    )
+    date_created = fields.Datetime(
+        string="Fecha de Creación", 
+        default=fields.Datetime.now
+    )
+    sample_ids = fields.One2many(
+        'lims.sample', 
+        'custody_chain_id', 
+        string='Muestra'
+    )
+    chain_of_custody_state = fields.Selection(
+        [('draft', 'Borrador'), ('in_progress', 'En Proceso'), 
+         ('done', 'Finalizado')], 
+        string="Estado de CC", 
+        default='draft',
+    )
+    quotation_id = fields.Many2one(
+        'sale.order', 
+        string ="Referencia de cotización"
+    )
+    internal_notes = fields.Text(
+        string="Notas Internas", 
+        help="Notas internas relacionadas con la cadena de custodia"
+    )
 
     # 🆕 CAMPOS PARA FIRMA DIGITAL
     customer_signature = fields.Binary(

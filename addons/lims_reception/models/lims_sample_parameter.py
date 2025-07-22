@@ -12,17 +12,16 @@ class LimsSampleParameter(models.Model):
         string='Muestra',
         ondelete='cascade'
     )
-    
-    # 🆕 CAMPO PARA INDICAR SI ES PLANTILLA
+        # 🆕 CAMPO PARA INDICAR SI ES PLANTILLA
     is_template = fields.Boolean(
         string='Es Plantilla',
         default=False,
         help='Marcar si este parámetro es una plantilla reutilizable'
     )
-    
     # Información básica del parámetro
     name = fields.Char(
         string='Nombre del Parámetro',
+        translate=True,
         required=True
     )
     description = fields.Text(
@@ -30,6 +29,7 @@ class LimsSampleParameter(models.Model):
     )
     unit = fields.Char(
         string='Unidad',
+        translate=True,
         help='Ej: mg/L, µg/g, UFC/mL'
     )
     category = fields.Selection([
@@ -37,32 +37,66 @@ class LimsSampleParameter(models.Model):
         ('chemical', 'Químico'),
         ('microbiological', 'Microbiológico'),
         ('other', 'Otro')
-    ], string='Categoría')
+    ], 
+        string='Categoría'
+    )
 
     microorganism = fields.Char(
         string='Microorganismo/Analito', 
+        translate=True,
         help='⚠️ NOTA: Esto es lo que se mostrará al cliente en los informes de ensayo'
     )
     
     # Acreditaciones
-    accreditation_iso = fields.Boolean(string='Acreditado ISO/IEC 17025', default=False)
-    authorized_cofepris = fields.Boolean(string='Autorizado por COFEPRIS', default=False)
-    accredited_ema = fields.Boolean(string='Acreditado EMA', default=False)
-    other_accreditation = fields.Boolean(string='Otra Acreditación', default=False)
-    other_accreditation_detail = fields.Char(string='Especifique Otra Acreditación')
+    accreditation_iso = fields.Boolean(
+        string='Acreditado ISO/IEC 17025',
+        default=False
+    )
+    authorized_cofepris = fields.Boolean(
+        string='Autorizado por COFEPRIS',
+        default=False
+    )
+    accredited_ema = fields.Boolean(
+        string='Acreditado EMA', 
+        default=False
+    )
+    other_accreditation = fields.Boolean(
+        string='Otra Acreditación',
+        default=False
+    )
+    other_accreditation_detail = fields.Char(
+        string='Especifique Otra Acreditación'
+    )
 
     # Tipo de análisis
-    analysis_internal = fields.Boolean(string='Análisis Interno', default=True)
-    analysis_external = fields.Boolean(string='Laboratorio Externo/Subrogado', default=False)
-    external_lab_name = fields.Char(string='Nombre del Laboratorio Externo')
+    analysis_internal = fields.Boolean(
+        string='Análisis Interno',
+        default=True
+    )
+    analysis_external = fields.Boolean(
+        string='Laboratorio Externo/Subrogado',
+        default=False
+    )
+    external_lab_name = fields.Char(
+        string='Nombre del Laboratorio Externo'
+    )
 
     # Tipos de muestra aplicables
-    applicable_sample_types = fields.Many2many('lims.sample.type', string='Tipos de Muestra Aplicables')
+    applicable_sample_types = fields.Many2many(
+        'lims.sample.type', 
+        string='Tipos de Muestra Aplicables'
+    )
 
     # Control de calidad
-    quality_control_procedure = fields.Text(string='Procedimiento de Control de Calidad')
-    quality_control_frequency = fields.Char(string='Frecuencia de Control de Calidad')
-    quality_control_acceptance = fields.Text(string='Criterios de Aceptación')
+    quality_control_procedure = fields.Text(
+        string='Procedimiento de Control de Calidad'
+    )
+    quality_control_frequency = fields.Char(
+        string='Frecuencia de Control de Calidad'
+    )
+    quality_control_acceptance = fields.Text(
+        string='Criterios de Aceptación'
+    )
 
     # Información del método
     method = fields.Char(
@@ -110,7 +144,7 @@ class LimsSampleParameter(models.Model):
     
     # Observaciones
     analyst_notes = fields.Text(
-        string='Notas del Analista'
+        string='Notas para el Analista',
     )
     observations = fields.Text(
         string='Observaciones Generales'

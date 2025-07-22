@@ -21,6 +21,7 @@ class LimsFieldResult(models.Model):
     parameter_name = fields.Char(
         string='Parámetro',
         required=True,
+        translate=True,
         placeholder='Ej: pH, Temperatura, Cloro residual'
     )
     
@@ -31,10 +32,12 @@ class LimsFieldResult(models.Model):
     
     unit = fields.Char(
         string='Unidad',
+        translate=True,
         placeholder='Ej: pH, °C, mg/L'
     )
     
     notes = fields.Text(
         string='Notas',
+        translate=True,
         placeholder='Observaciones adicionales...'
     )
