@@ -76,12 +76,25 @@
                                 </group>
                                 <group string="Resultados de Campo">
                                   <field name="field_result_ids" nolabel="1">
-                                      <list string="Resultados" editable="bottom">
-                                          <field name="parameter_name" placeholder="Parámetro"/>
-                                          <field name="result_value" placeholder="Resultado"/>
-                                          <field name="unit" placeholder="Unidad"/>
-                                          <field name="notes" placeholder="Notas opcionales"/>
+                                      <list string="Resultados">
+                                          <field name="sequence" widget="handle"/>
+                                          <field name="parameter_name"/>
+                                          <field name="result_value"/>
+                                          <field name="unit"/>
+                                          <field name="notes"/>
                                       </list>
+                                      
+                                      <!-- Formulario popup para editar -->
+                                      <form string="Resultado de Campo">
+                                          <group>
+                                              <field name="parameter_name"/>
+                                              <field name="result_value"/>
+                                              <field name="unit"/>
+                                          </group>
+                                          <group>
+                                              <field name="notes"/>
+                                          </group>
+                                      </form>
                                   </field>
                                 </group>
 
