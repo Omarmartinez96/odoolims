@@ -77,9 +77,36 @@ class LimsSample(models.Model):
 
             template.increment_usage()
 
-            # Crear parámetros automáticamente
+            # NUEVA LÓGICA PARA PARÁMETROS
             if hasattr(template, 'parameter_template_ids') and template.parameter_template_ids:
-                template.create_parameters_for_sample(self.id)
+                # Limpiar parámetros existentes
+                self.parameter_ids = [(5, 0, 0)]
+                
+                # Crear nuevos parámetros desde plantillas
+                new_params = []
+                for param_template in template.parameter_template_ids:
+                    param_vals = {
+                        'template_id': param_template.id,
+                        'name': param_template.name,
+                        'description': param_template.description,
+                        'unit': param_template.unit,
+                        'method': param_template.method,
+                        'category': param_template.category,
+                        'microorganism': param_template.microorganism,
+                        'method_reference': param_template.method_reference,
+                        'incubation_temperature': param_template.incubation_temperature,
+                        'incubation_time': param_template.incubation_time,
+                        'culture_medium': param_template.culture_medium,
+                        'ph_conditions': param_template.ph_conditions,
+                        'preservation_conditions': param_template.preservation_conditions,
+                        'sample_preparation': param_template.sample_preparation,
+                        'detection_limit': param_template.detection_limit,
+                        'quantification_limit': param_template.quantification_limit,
+                        'is_template': False,
+                    }
+                    new_params.append((0, 0, param_vals))
+                
+                self.parameter_ids = new_params
 
     @api.onchange('sample_type_id')
     def _onchange_sample_suggestion(self):

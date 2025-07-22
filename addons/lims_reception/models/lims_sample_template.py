@@ -13,6 +13,16 @@ class LimsSampleTemplate(models.Model):
     
     parameter_template_ids = fields.Many2many(
         'lims.sample.parameter',
+        'sample_template_parameter_rel',
+        'template_id',
+        'parameter_id',
+        string="Parámetros Incluidos",
+        domain=[('is_template', '=', True)],
+        help="Parámetros que se crearán automáticamente con esta plantilla"
+    )
+
+    parameter_template_ids = fields.Many2many(
+        'lims.sample.parameter',
         'sample_template_parameter_rel',  # tabla intermedia
         'template_id',
         'parameter_id',
@@ -43,6 +53,39 @@ class LimsSampleTemplate(models.Model):
     def increment_usage(self):
         """Incrementa el contador de uso de la plantilla"""
         self.times_used += 1
+
+    def create_parameters_for_sample(self, sample_record):
+        """Crear parámetros desde las plantillas asociadas"""
+        if not self.parameter_template_ids:
+            return []
+        
+        created_params = []
+        for param_template in self.parameter_template_ids:
+            new_param = self.env['lims.sample.parameter'].create({
+                'sample_id': sample_record.id,
+                'template_id': param_template.id,
+                'name': param_template.name,
+                'description': param_template.description,
+                'unit': param_template.unit,
+                'method': param_template.method,
+                'category': param_template.category,
+                'microorganism': param_template.microorganism,
+                'method_reference': param_template.method_reference,
+                'incubation_temperature': param_template.incubation_temperature,
+                'incubation_time': param_template.incubation_time,
+                'culture_medium': param_template.culture_medium,
+                'ph_conditions': param_template.ph_conditions,
+                'preservation_conditions': param_template.preservation_conditions,
+                'sample_preparation': param_template.sample_preparation,
+                'detection_limit': param_template.detection_limit,
+                'quantification_limit': param_template.quantification_limit,
+                'is_template': False,
+            })
+            created_params.append(new_param)
+            # Incrementar contador de uso de la plantilla
+            param_template.times_used += 1
+        
+        return created_params
 
     def create_parameters_for_sample(self, sample_id):
         """Crear parámetros desde las plantillas asociadas"""

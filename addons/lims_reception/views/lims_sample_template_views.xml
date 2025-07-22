@@ -33,6 +33,7 @@
                             <field name="sample_description"/>
                             <field name="sample_quantity"/>
                         </group>
+                        <!-- DESPUÉS del grupo con sample_quantity, AÑADIR: -->
                         <group string="🧪 Parámetros Predefinidos">
                             <field name="parameter_template_ids" 
                                 widget="many2many_tags"
