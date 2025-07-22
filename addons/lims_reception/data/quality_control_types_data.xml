@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        
+        <!-- Tipos de Control de Calidad Predefinidos -->
+        <record id="qc_type_sterility" model="lims.quality.control.type">
+            <field name="name">Esterilidad de ronda de muestras</field>
+            <field name="description">Control de esterilidad para verificar ausencia de contaminación</field>
+            <field name="default_expected_result">Estéril</field>
+            <field name="category">sterility</field>
+            <field name="sequence">10</field>
+        </record>
+        
+        <record id="qc_type_positive_control" model="lims.quality.control.type">
+            <field name="name">Control positivo de ronda de muestras con cepa ATCC</field>
+            <field name="description">Control positivo usando cepa de referencia ATCC</field>
+            <field name="default_expected_result">Positivo</field>
+            <field name="category">positive_control</field>
+            <field name="sequence">20</field>
+        </record>
+        
+    </data>
+</odoo>

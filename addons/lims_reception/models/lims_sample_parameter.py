@@ -4,6 +4,12 @@ from odoo import models, fields, api
 class LimsSampleParameter(models.Model):
     _name = 'lims.sample.parameter'
     _description = 'Parámetros de Muestra'
+    # Relación con controles de calidad
+    quality_control_ids = fields.One2many(
+        'lims.quality.control',
+        'parameter_id',
+        string='Controles de Calidad'
+    )
     _order = 'name'
 
     # Relación con la muestra (OPCIONAL ahora)
@@ -289,3 +295,29 @@ class LimsSampleParameter(models.Model):
                 'type': 'success',
             }
         }
+    
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create para añadir controles de calidad por defecto"""
+        records = super().create(vals_list)
+        for record in records:
+            if not record.is_template and not record.quality_control_ids:
+                # Añadir control de esterilidad por defecto si es microbiológico
+                if record.category == 'microbiological':
+                    self._create_default_quality_controls(record)
+        return records
+    
+    def _create_default_quality_controls(self, parameter):
+        """Crear controles de calidad por defecto"""
+        # Buscar tipo de control de esterilidad
+        sterility_type = self.env['lims.quality.control.type'].search([
+            ('category', '=', 'sterility')
+        ], limit=1)
+        
+        if sterility_type:
+            self.env['lims.quality.control'].create({
+                'parameter_id': parameter.id,
+                'control_type_id': sterility_type.id,
+                'expected_result': 'Estéril',
+                'sequence': 10
+            })

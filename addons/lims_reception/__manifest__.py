@@ -29,6 +29,7 @@
         'views/lims_sample_template_views.xml',
         'views/lims_parameter_views.xml',
         'views/basic_models_views.xml',
+        'data/quality_control_types_data.xml',
     ],
 
     'installable': True,

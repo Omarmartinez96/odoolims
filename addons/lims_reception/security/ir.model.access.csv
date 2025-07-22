@@ -6,3 +6,5 @@ access_lims_container_type,lims.container.type,model_lims_container_type,base.gr
 access_lims_sample_template,lims.sample.template,model_lims_sample_template,base.group_user,1,1,1,1
 access_lims_sample_parameter,lims.sample.parameter,model_lims_sample_parameter,base.group_user,1,1,1,1
 access_lims_field_result_user,access_lims_field_result_user,model_lims_field_result,base.group_user,1,1,1,1
+access_lims_quality_control_type,lims.quality.control.type,model_lims_quality_control_type,base.group_user,1,1,1,1
+access_lims_quality_control,lims.quality.control,model_lims_quality_control,base.group_user,1,1,1,1
