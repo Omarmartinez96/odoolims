@@ -142,35 +142,53 @@ class LimsSampleReception(models.Model):
     
     @api.model_create_multi
     def create(self, vals_list):
-        """Generar código de muestra automáticamente SIEMPRE"""
+        """Generar código de muestra automáticamente o continuar secuencia"""
         for vals in vals_list:
             if not vals.get('sample_code') or vals.get('sample_code') == '/':
                 sample = self.env['lims.sample'].browse(vals.get('sample_id'))
                 if sample and sample.cliente_id:
                     client_code = sample.cliente_id.client_code or 'XXX'
+                    year = str(datetime.today().year)
                     
-                    # Buscar el último consecutivo para este cliente
+                    # Buscar TODOS los códigos existentes para este cliente y año
                     existing = self.search([
-                        ('sample_code', 'like', f'{client_code}/%'),
+                        ('sample_code', 'like', f'{client_code}-%/{year}'),
                         ('sample_code', '!=', '/')
                     ])
                     
-                    # Extraer el mayor consecutivo
+                    # Extraer el mayor número consecutivo existente
                     def extract_number(code):
                         try:
-                            # Formato: MAP/0001
+                            # Formato: ABC-001/2025
                             parts = code.split('/')
-                            if len(parts) == 2:
-                                return int(parts[1])
+                            if len(parts) == 2 and parts[1] == year:
+                                number_part = parts[0].split('-')[-1]
+                                return int(number_part)
                             return 0
                         except (ValueError, IndexError):
                             return 0
                     
-                    max_num = max([extract_number(rec.sample_code) for rec in existing], default=0)
-                    next_num = str(max_num + 1).zfill(4)  # 4 dígitos: 0001, 0002, etc.
-                    vals['sample_code'] = f'{client_code}/{next_num}'
+                    # Encontrar el número más alto (sin importar si hay huecos)
+                    all_numbers = [extract_number(rec.sample_code) for rec in existing]
+                    max_num = max(all_numbers) if all_numbers else 0
+                    
+                    # El siguiente consecutivo
+                    next_num = str(max_num + 1).zfill(3)
+                    vals['sample_code'] = f'{client_code}-{next_num}/{year}'
         
         return super().create(vals_list)
+    
+    @api.constrains('sample_code')
+    def _check_unique_sample_code(self):
+        """Validar que el código de muestra sea único"""
+        for record in self:
+            if record.sample_code and record.sample_code != '/':
+                duplicate = self.search([
+                    ('sample_code', '=', record.sample_code),
+                    ('id', '!=', record.id)
+                ])
+                if duplicate:
+                    raise UserError(f'El código de muestra "{record.sample_code}" ya existe. Debe ser único.')
 
 class LimsSample(models.Model):
     _inherit = 'lims.sample'
