@@ -252,13 +252,15 @@ class LimsSample(models.Model):
             }
         
     # Campo computado para mostrar estado de recepción
-    reception_status = fields.Char(
+# En models/lims_sample_reception.py, al final de la clase LimsSample:
+
+    sample_reception_state = fields.Char(
         string='Estado Recepción',
-        compute='_compute_reception_status'
+        compute='_compute_sample_reception_state'
     )
-    
-    def _compute_reception_status(self):
-        """Mostrar estado de recepción"""
+
+    def _compute_sample_reception_state(self):
+        """Mostrar estado de recepción de la muestra"""
         for record in self:
             reception = self.env['lims.sample.reception'].search([
                 ('sample_id', '=', record.id)
@@ -270,6 +272,6 @@ class LimsSample(models.Model):
                     'pending': 'Pendiente', 
                     'done': 'Finalizado'
                 }
-                record.reception_status = states.get(reception.reception_state, 'Sin estado')
+                record.sample_reception_state = states.get(reception.reception_state, 'Sin estado')
             else:
-                record.reception_status = 'No recibida'
+                record.sample_reception_state = 'No recibida'
