@@ -51,6 +51,13 @@
                                 <field name="can_change_state" invisible="1"/>
                             </group>
                         </group>
+                        <group string="📊 Estado de Recepción">
+                            <field name="reception_state" widget="radio" 
+                                invisible="can_change_state == False"/>
+                            <div invisible="can_change_state == True">
+                                <span style="color: orange;">⚠️ Complete TODOS los puntos del checklist para cambiar el estado</span>
+                            </div>
+                        </group>
 
                         <!-- Checklist de Recepción -->
                         <group string="✅ Checklist de Recepción">
@@ -64,17 +71,14 @@
 
                         <!-- Observaciones -->
                         <group string="📝 Observaciones">
-                            <field name="reception_notes" nolabel="1" placeholder="Observaciones adicionales sobre la recepción..."/>
+                            <field name="reception_notes" nolabel="1" 
+                                placeholder="Observaciones generales sobre la recepción (visible para el cliente)..."/>
                         </group>
 
-                        <!-- Indicador visual del estado del checklist -->
-                        <div class="alert alert-info" invisible="can_change_state == True">
-                            <strong>ℹ️ Información:</strong> Complete el checklist para poder cambiar el estado de recepción.
-                        </div>
-                        
-                        <div class="alert alert-success" invisible="can_change_state == False">
-                            <strong>✅ Listo:</strong> El checklist está completo. Puede proceder a cambiar el estado.
-                        </div>
+                        <group string="🔒 Observaciones Internas">
+                            <field name="internal_reception_notes" nolabel="1" 
+                                placeholder="Notas internas del laboratorio (solo para uso interno)..."/>
+                        </group>
 
                     </sheet>
                 </form>

@@ -110,7 +110,12 @@ class LimsSampleReception(models.Model):
     reception_notes = fields.Text(
         string='Observaciones de Recepción'
     )
-    
+    # Observaciones internas de recepción
+    internal_reception_notes = fields.Text(
+        string='Observaciones Internas de Recepción',
+        help='Notas internas del laboratorio sobre la recepción'
+    )
+
     # Técnico que recibe
     received_by = fields.Many2one(
         'res.users',
@@ -137,35 +142,33 @@ class LimsSampleReception(models.Model):
     
     @api.model_create_multi
     def create(self, vals_list):
-        """Generar código de muestra automáticamente"""
+        """Generar código de muestra automáticamente SIEMPRE"""
         for vals in vals_list:
             if not vals.get('sample_code') or vals.get('sample_code') == '/':
                 sample = self.env['lims.sample'].browse(vals.get('sample_id'))
                 if sample and sample.cliente_id:
                     client_code = sample.cliente_id.client_code or 'XXX'
-                    year = str(datetime.today().year)
                     
-                    # Buscar el último consecutivo para este cliente y año
+                    # Buscar el último consecutivo para este cliente
                     existing = self.search([
-                        ('sample_code', 'like', f'{client_code}-%/{year}'),
+                        ('sample_code', 'like', f'{client_code}/%'),
                         ('sample_code', '!=', '/')
                     ])
                     
                     # Extraer el mayor consecutivo
                     def extract_number(code):
                         try:
-                            # Formato: ABC-001/2025
+                            # Formato: MAP/0001
                             parts = code.split('/')
                             if len(parts) == 2:
-                                number_part = parts[0].split('-')[-1]
-                                return int(number_part)
+                                return int(parts[1])
                             return 0
                         except (ValueError, IndexError):
                             return 0
                     
                     max_num = max([extract_number(rec.sample_code) for rec in existing], default=0)
-                    next_num = str(max_num + 1).zfill(3)
-                    vals['sample_code'] = f'{client_code}-{next_num}/{year}'
+                    next_num = str(max_num + 1).zfill(4)  # 4 dígitos: 0001, 0002, etc.
+                    vals['sample_code'] = f'{client_code}/{next_num}'
         
         return super().create(vals_list)
 
