@@ -94,10 +94,10 @@ class LimsSampleReception(models.Model):
     
     # 🆕 ESTADOS DE RECEPCIÓN
     reception_state = fields.Selection([
-        ('draft', 'Borrador'),
-        ('pending', 'Pendiente'),
-        ('done', 'Finalizado')
-    ], string='Estado de Recepción', default='draft')
+        ('no_recibida', 'No Recibida'),
+        ('rechazada', 'Rechazada'),
+        ('recibida', 'Recibida')
+    ], string='Estado de Recepción', default='no_recibida')
     
     # Campo computado para habilitar cambio de estado
     can_change_state = fields.Boolean(
@@ -119,9 +119,9 @@ class LimsSampleReception(models.Model):
     )
     
     @api.depends('check_identification', 'check_conditions', 'check_temperature', 
-                 'check_container', 'check_volume', 'check_preservation')
+                'check_container', 'check_volume', 'check_preservation')
     def _compute_can_change_state(self):
-        """Permite cambiar estado solo si todos los checks están en 'si' o 'na'"""
+        """Permite cambiar estado solo si TODOS los checks están completados (no en 'na')"""
         for record in self:
             checks = [
                 record.check_identification,
@@ -131,11 +131,9 @@ class LimsSampleReception(models.Model):
                 record.check_volume,
                 record.check_preservation
             ]
-            # Puede cambiar estado si no hay ningún 'no' y al menos uno está en 'si'
-            has_no = 'no' in checks
-            has_si = 'si' in checks
-            
-            record.can_change_state = not has_no and has_si
+            # Todos los checks deben estar completados (no en 'na')
+            all_completed = all(check in ['si', 'no'] for check in checks)
+            record.can_change_state = all_completed
     
     @api.model_create_multi
     def create(self, vals_list):
@@ -170,26 +168,6 @@ class LimsSampleReception(models.Model):
                     vals['sample_code'] = f'{client_code}-{next_num}/{year}'
         
         return super().create(vals_list)
-    
-    def action_set_pending(self):
-        """Cambiar estado a Pendiente"""
-        if not self.can_change_state:
-            raise UserError(_('Complete correctamente el checklist antes de cambiar el estado.'))
-        self.reception_state = 'pending'
-    
-    def action_set_done(self):
-        """Cambiar estado a Finalizado"""
-        if not self.can_change_state:
-            raise UserError(_('Complete correctamente el checklist antes de finalizar.'))
-        self.reception_state = 'done'
-        # Actualizar estado de la muestra original
-        if self.sample_id:
-            self.sample_id.write({'sample_state': 'in_analysis'})
-    
-    def action_set_draft(self):
-        """Regresar a Borrador"""
-        self.reception_state = 'draft'
-
 
 class LimsSample(models.Model):
     _inherit = 'lims.sample'

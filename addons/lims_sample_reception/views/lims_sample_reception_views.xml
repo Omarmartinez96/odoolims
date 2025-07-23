@@ -58,7 +58,7 @@
                         <!-- Información básica -->
                         <group>
                             <group string="🧪 Información de la Muestra">
-                                <field name="sample_id" readonly="1"/>
+                                <field name="sample_id" invisible="1"/>
                                 <field name="sample_identifier" readonly="1"/>
                                 <field name="custody_chain_id" readonly="1"/>
                                 <field name="cliente_id" readonly="1"/>
