@@ -60,37 +60,37 @@ class LimsSampleReception(models.Model):
         ('si', 'Sí'),
         ('no', 'No'),
         ('na', 'N/A')
-    ], string='¿La muestra está identificada correctamente?', default='na')
+    ], string='¿La muestra está identificada correctamente?')
     
     check_conditions = fields.Selection([
         ('si', 'Sí'),
         ('no', 'No'),
         ('na', 'N/A')
-    ], string='¿La muestra está en buenas condiciones?', default='na')
+    ], string='¿La muestra está en buenas condiciones?')
     
     check_temperature = fields.Selection([
         ('si', 'Sí'),
         ('no', 'No'),
         ('na', 'N/A')
-    ], string='¿La temperatura de recepción es adecuada?', default='na')
+    ], string='¿La temperatura de recepción es adecuada?')
     
     check_container = fields.Selection([
         ('si', 'Sí'),
         ('no', 'No'),
         ('na', 'N/A')
-    ], string='¿El recipiente está íntegro y adecuado?', default='na')
+    ], string='¿El recipiente está íntegro y es el adecuado para el tipo de muestra?')
     
     check_volume = fields.Selection([
         ('si', 'Sí'),
         ('no', 'No'),
         ('na', 'N/A')
-    ], string='¿El volumen/cantidad es suficiente?', default='na')
+    ], string='¿El volumen/cantidad es suficiente?')
     
     check_preservation = fields.Selection([
         ('si', 'Sí'),
         ('no', 'No'),
         ('na', 'N/A')
-    ], string='¿Las condiciones de preservación son correctas?', default='na')
+    ], string='¿Las condiciones de preservación son correctas?')
     
     # 🆕 ESTADOS DE RECEPCIÓN
     reception_state = fields.Selection([
@@ -126,7 +126,7 @@ class LimsSampleReception(models.Model):
     @api.depends('check_identification', 'check_conditions', 'check_temperature', 
                 'check_container', 'check_volume', 'check_preservation')
     def _compute_can_change_state(self):
-        """Permite cambiar estado solo si TODOS los checks están completados (no en 'na')"""
+        """Permite cambiar estado solo si TODOS los checks están completados"""
         for record in self:
             checks = [
                 record.check_identification,
@@ -136,9 +136,9 @@ class LimsSampleReception(models.Model):
                 record.check_volume,
                 record.check_preservation
             ]
-            # Todos los checks deben estar completados (no en 'na')
-            all_completed = all(check in ['si', 'no'] for check in checks)
-            record.can_change_state = all_completed
+            # Todos los checks deben tener una respuesta (no estar vacíos)
+            all_answered = all(check for check in checks)
+            record.can_change_state = all_answered
     
     @api.model_create_multi
     def create(self, vals_list):

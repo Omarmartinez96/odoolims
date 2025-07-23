@@ -55,7 +55,7 @@
                             <field name="reception_state" widget="radio" 
                                 invisible="can_change_state == False"/>
                             <div invisible="can_change_state == True">
-                                <span style="color: orange;">⚠️ Complete TODOS los puntos del checklist para cambiar el estado</span>
+                                <span style="color: orange;">⚠️ Responda TODOS los puntos del checklist para cambiar el estado</span>
                             </div>
                         </group>
 
