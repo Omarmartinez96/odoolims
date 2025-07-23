@@ -224,35 +224,8 @@ class LimsSample(models.Model):
                 'view_mode': 'form',
                 'target': 'current',
             }
-
-    def action_create_reception(self):
-        """Crear recepción para esta muestra"""
-        if self.reception_id:
-            # Si ya existe, abrir la existente
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Recepción de Muestra',
-                'res_model': 'lims.sample.reception',
-                'res_id': self.reception_id.id,
-                'view_mode': 'form',
-                'target': 'current',
-            }
-        else:
-            # Crear nueva recepción
-            reception = self.env['lims.sample.reception'].create({
-                'sample_id': self.id,
-            })
-            return {
-                'type': 'ir.actions.act_window',
-                'name': 'Recepción de Muestra',
-                'res_model': 'lims.sample.reception',
-                'res_id': reception.id,
-                'view_mode': 'form',
-                'target': 'current',
-            }
         
-    # Campo computado para mostrar estado de recepción
-# En models/lims_sample_reception.py, al final de la clase LimsSample:
+    # En models/lims_sample_reception.py, al final de la clase LimsSample:
 
     sample_reception_state = fields.Char(
         string='Estado Recepción',
