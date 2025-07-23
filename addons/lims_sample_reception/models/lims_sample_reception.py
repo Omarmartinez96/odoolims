@@ -183,7 +183,8 @@ class LimsSampleReception(models.Model):
             raise UserError(_('Complete correctamente el checklist antes de finalizar.'))
         self.reception_state = 'done'
         # Actualizar estado de la muestra original
-        self.sample_id.sample_state = 'in_analysis'
+        if self.sample_id:
+            self.sample_id.write({'sample_state': 'in_analysis'})
     
     def action_set_draft(self):
         """Regresar a Borrador"""
@@ -193,20 +194,37 @@ class LimsSampleReception(models.Model):
 class LimsSample(models.Model):
     _inherit = 'lims.sample'
     
-    # Relación con recepción
-    reception_id = fields.One2one(
-        'lims.sample.reception',
-        'sample_id',
-        string='Recepción'
-    )
-    
-    # Campo computado para mostrar código de muestra
-    sample_code = fields.Char(
-        string='Código de Muestra',
-        related='reception_id.sample_code',
-        readonly=True
-    )
-    
+    def action_create_reception(self):
+        """Crear o abrir recepción para esta muestra"""
+        # Buscar si ya existe una recepción para esta muestra
+        reception = self.env['lims.sample.reception'].search([
+            ('sample_id', '=', self.id)
+        ], limit=1)
+        
+        if reception:
+            # Si ya existe, abrir la existente
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Recepción de Muestra',
+                'res_model': 'lims.sample.reception',
+                'res_id': reception.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+        else:
+            # Crear nueva recepción
+            new_reception = self.env['lims.sample.reception'].create({
+                'sample_id': self.id,
+            })
+            return {
+                'type': 'ir.actions.act_window',
+                'name': 'Recepción de Muestra',
+                'res_model': 'lims.sample.reception',
+                'res_id': new_reception.id,
+                'view_mode': 'form',
+                'target': 'current',
+            }
+
     def action_create_reception(self):
         """Crear recepción para esta muestra"""
         if self.reception_id:
@@ -232,3 +250,26 @@ class LimsSample(models.Model):
                 'view_mode': 'form',
                 'target': 'current',
             }
+        
+    # Campo computado para mostrar estado de recepción
+    reception_status = fields.Char(
+        string='Estado Recepción',
+        compute='_compute_reception_status'
+    )
+    
+    def _compute_reception_status(self):
+        """Mostrar estado de recepción"""
+        for record in self:
+            reception = self.env['lims.sample.reception'].search([
+                ('sample_id', '=', record.id)
+            ], limit=1)
+            
+            if reception:
+                states = {
+                    'draft': 'Borrador',
+                    'pending': 'Pendiente', 
+                    'done': 'Finalizado'
+                }
+                record.reception_status = states.get(reception.reception_state, 'Sin estado')
+            else:
+                record.reception_status = 'No recibida'
