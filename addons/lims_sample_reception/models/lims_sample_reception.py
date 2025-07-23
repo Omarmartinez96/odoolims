@@ -148,33 +148,31 @@ class LimsSampleReception(models.Model):
                 sample = self.env['lims.sample'].browse(vals.get('sample_id'))
                 if sample and sample.cliente_id:
                     client_code = sample.cliente_id.client_code or 'XXX'
-                    year = str(datetime.today().year)
                     
-                    # Buscar TODOS los códigos existentes para este cliente y año
+                    # Buscar TODOS los códigos existentes para este cliente
                     existing = self.search([
-                        ('sample_code', 'like', f'{client_code}-%/{year}'),
+                        ('sample_code', 'like', f'{client_code}/%'),
                         ('sample_code', '!=', '/')
                     ])
                     
                     # Extraer el mayor número consecutivo existente
                     def extract_number(code):
                         try:
-                            # Formato: ABC-001/2025
+                            # Formato: ABC/0001
                             parts = code.split('/')
-                            if len(parts) == 2 and parts[1] == year:
-                                number_part = parts[0].split('-')[-1]
-                                return int(number_part)
+                            if len(parts) == 2:
+                                return int(parts[1])
                             return 0
                         except (ValueError, IndexError):
                             return 0
                     
-                    # Encontrar el número más alto (sin importar si hay huecos)
+                    # Encontrar el número más alto
                     all_numbers = [extract_number(rec.sample_code) for rec in existing]
                     max_num = max(all_numbers) if all_numbers else 0
                     
-                    # El siguiente consecutivo
-                    next_num = str(max_num + 1).zfill(3)
-                    vals['sample_code'] = f'{client_code}-{next_num}/{year}'
+                    # El siguiente consecutivo con 4 dígitos
+                    next_num = str(max_num + 1).zfill(4)
+                    vals['sample_code'] = f'{client_code}/{next_num}'
         
         return super().create(vals_list)
     
