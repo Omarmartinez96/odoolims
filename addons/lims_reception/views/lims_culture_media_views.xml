@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- FUNCIÓN: Vista de lista para administrar el catálogo -->
+        <!-- PARA QUE: Ver todos los medios disponibles de forma rápida -->
+        <record id="view_lims_culture_media_list" model="ir.ui.view">
+            <field name="name">lims.culture.media.list</field>
+            <field name="model">lims.culture.media</field>
+            <field name="arch" type="xml">
+                <list string="Medios de Cultivo" editable="top">
+                    <field name="name"/>
+                    <field name="internal_id"/>
+                    <field name="description"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- FUNCIÓN: Vista de formulario para crear/editar medios -->
+        <!-- PARA QUE: Formulario completo para configurar cada medio -->
+        <record id="view_lims_culture_media_form" model="ir.ui.view">
+            <field name="name">lims.culture.media.form</field>
+            <field name="model">lims.culture.media</field>
+            <field name="arch" type="xml">
+                <form string="Medio de Cultivo">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Ej: Agar MacConkey" required="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <field name="internal_id" placeholder="Ej: MAC-001"/>
+                            <field name="active"/>
+                        </group>
+
+                        <group string="📝 Descripción">
+                            <field name="description" nolabel="1" 
+                                   placeholder="Descripción del medio, composición, uso, etc."/>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- FUNCIÓN: Acción para abrir el catálogo de medios -->
+        <record id="action_lims_culture_media" model="ir.actions.act_window">
+            <field name="name">Catálogo de Medios de Cultivo</field>
+            <field name="res_model">lims.culture.media</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crear el primer medio de cultivo
+                </p>
+                <p>
+                    Defina el catálogo de medios de cultivo utilizados en el laboratorio
+                </p>
+            </field>
+        </record>
+
+        <!-- FUNCIÓN: Menú para acceder al catálogo -->
+        <!-- PARA QUE: Los usuarios puedan administrar el catálogo desde el menú -->
+        <menuitem id="menu_lims_culture_media" 
+                  name="Medios de Cultivo" 
+                  parent="menu_lims_configuration" 
+                  action="action_lims_culture_media" 
+                  sequence="30"/>
+
+    </data>
+</odoo>

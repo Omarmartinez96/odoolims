@@ -123,9 +123,10 @@ class LimsSampleParameter(models.Model):
         string='Tiempo de Incubación',
         help='Ej: 24h, 48-72h'
     )
-    culture_medium = fields.Char(
-        string='Medio de Cultivo',
-        help='Para análisis microbiológicos'
+    culture_media_ids = fields.One2many(
+        'lims.parameter.culture.media',
+        'parameter_id',
+        string='Medios de Cultivo'
     )
     
     # Condiciones específicas adicionales
@@ -262,6 +263,16 @@ class LimsSampleParameter(models.Model):
             self.detection_limit = template.detection_limit
             self.quantification_limit = template.quantification_limit
             
+            if template.culture_media_ids:
+                culture_media_lines = []
+                for cm in template.culture_media_ids:
+                    culture_media_lines.append((0, 0, {
+                        'culture_media_id': cm.culture_media_id.id,
+                        'notes': cm.notes,
+                        'sequence': cm.sequence,
+                    }))
+                self.culture_media_ids = culture_media_lines
+
             # Incrementar contador
             template.times_used += 1
     
