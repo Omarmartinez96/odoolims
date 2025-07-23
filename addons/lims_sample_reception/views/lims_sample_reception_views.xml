@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vista Lista de Recepciones -->
+        <record id="view_sample_reception_list" model="ir.ui.view">
+            <field name="name">lims.sample.reception.list</field>
+            <field name="model">lims.sample.reception</field>
+            <field name="arch" type="xml">
+                <list string="Recepciones de Muestras">
+                    <field name="sample_code"/>
+                    <field name="sample_identifier"/>
+                    <field name="cliente_id"/>
+                    <field name="reception_date"/>
+                    <field name="reception_time"/>
+                    <field name="reception_state"/>
+                    <field name="received_by"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Formulario de Recepción -->
+        <record id="view_sample_reception_form" model="ir.ui.view">
+            <field name="name">lims.sample.reception.form</field>
+            <field name="model">lims.sample.reception</field>
+            <field name="arch" type="xml">
+                <form string="Recepción de Muestra">
+                    <header>
+                        <!-- Botones de cambio de estado -->
+                        <button name="action_set_pending" 
+                                type="object" 
+                                string="⏳ Marcar Pendiente"
+                                class="btn-warning"
+                                invisible="reception_state != 'draft' or can_change_state == False"/>
+                        
+                        <button name="action_set_done"
+                                type="object"
+                                string="✅ Finalizar Recepción"
+                                class="btn-success"
+                                invisible="reception_state == 'done' or can_change_state == False"/>
+                        
+                        <button name="action_set_draft"
+                                type="object"
+                                string="📝 Regresar a Borrador"
+                                class="btn-secondary"
+                                invisible="reception_state == 'draft'"/>
+                        
+                        <field name="reception_state" widget="statusbar" statusbar_visible="draft,pending,done"/>
+                    </header>
+                    
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="sample_code" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <!-- Información básica -->
+                        <group>
+                            <group string="🧪 Información de la Muestra">
+                                <field name="sample_id" readonly="1"/>
+                                <field name="sample_identifier" readonly="1"/>
+                                <field name="custody_chain_id" readonly="1"/>
+                                <field name="cliente_id" readonly="1"/>
+                            </group>
+                            <group string="📅 Datos de Recepción">
+                                <field name="reception_date"/>
+                                <field name="reception_time" placeholder="14:30"/>
+                                <field name="received_by"/>
+                                <field name="can_change_state" invisible="1"/>
+                            </group>
+                        </group>
+
+                        <!-- Checklist de Recepción -->
+                        <group string="✅ Checklist de Recepción">
+                            <field name="check_identification" widget="radio"/>
+                            <field name="check_conditions" widget="radio"/>
+                            <field name="check_temperature" widget="radio"/>
+                            <field name="check_container" widget="radio"/>
+                            <field name="check_volume" widget="radio"/>
+                            <field name="check_preservation" widget="radio"/>
+                        </group>
+
+                        <!-- Observaciones -->
+                        <group string="📝 Observaciones">
+                            <field name="reception_notes" nolabel="1" placeholder="Observaciones adicionales sobre la recepción..."/>
+                        </group>
+
+                        <!-- Indicador visual del estado del checklist -->
+                        <div class="alert alert-info" invisible="can_change_state == True">
+                            <strong>ℹ️ Información:</strong> Complete el checklist para poder cambiar el estado de recepción.
+                        </div>
+                        
+                        <div class="alert alert-success" invisible="can_change_state == False">
+                            <strong>✅ Listo:</strong> El checklist está completo. Puede proceder a cambiar el estado.
+                        </div>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acción principal -->
+        <record id="action_sample_receptions" model="ir.actions.act_window">
+            <field name="name">Recepciones de Muestras</field>
+            <field name="res_model">lims.sample.reception</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No hay recepciones registradas
+                </p>
+                <p>
+                    Las recepciones se crean desde las cadenas de custodia
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

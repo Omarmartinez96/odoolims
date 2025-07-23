@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+
+        <!-- Vista especializada para recepción -->
+        <record id="view_custody_chain_reception_list" model="ir.ui.view">
+            <field name="name">lims.custody_chain.reception.list</field>
+            <field name="model">lims.custody_chain</field>
+            <field name="arch" type="xml">
+                <list string="Cadenas de Custodia - Recepción">
+                    <field name="custody_chain_code"/>
+                    <field name="cliente_id"/>
+                    <field name="sucursal_id"/>
+                    <field name="departamento_id"/>
+                    <field name="chain_of_custody_state"/>
+                    <field name="date_created"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista formulario especializada para recepción -->
+        <record id="view_custody_chain_reception_form" model="ir.ui.view">
+            <field name="name">lims.custody_chain.reception.form</field>
+            <field name="model">lims.custody_chain</field>
+            <field name="arch" type="xml">
+                <form string="Cadena de Custodia - Recepción" create="false" edit="false">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="custody_chain_code" readonly="1"/>
+                            </h1>
+                        </div>
+
+                        <!-- Información básica (solo lectura) -->
+                        <group>
+                            <group string="📋 Información del Cliente">
+                                <field name="cliente_id" readonly="1"/>
+                                <field name="sucursal_id" readonly="1"/>
+                                <field name="departamento_id" readonly="1"/>
+                            </group>
+                            <group string="📅 Información de la Cadena">
+                                <field name="date_created" readonly="1"/>
+                                <field name="chain_of_custody_state" readonly="1"/>
+                                <field name="client_code" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <!-- Lista de muestras con acceso a recepción -->
+                        <notebook>
+                            <page string="🧪 Muestras para Recepción">
+                                <field name="sample_ids" readonly="1">
+                                    <list string="Muestras" create="false" edit="false">
+                                        <field name="sample_identifier"/>
+                                        <field name="sample_description"/>
+                                        <field name="sample_type_id"/>
+                                        <field name="sample_code"/>
+                                        <field name="sample_state"/>
+                                        <button name="action_create_reception"
+                                                type="object"
+                                                string="📥 Recibir"
+                                                class="btn-primary"
+                                                title="Crear o abrir recepción"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acción para cadenas de custodia en recepción -->
+        <record id="action_custody_chains_reception" model="ir.actions.act_window">
+            <field name="name">Cadenas de Custodia</field>
+            <field name="res_model">lims.custody_chain</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_custody_chain_reception_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_custody_chain_reception_form')})
+            ]"/>
+            <field name="domain">[('chain_of_custody_state', 'in', ['in_progress', 'done'])]</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No hay cadenas de custodia para recepción
+                </p>
+                <p>
+                    Aquí aparecerán las cadenas de custodia listas para recibir muestras
+                </p>
+            </field>
+        </record>
+
+        <!-- Menú principal del módulo -->
+        <menuitem id="lims_sample_reception_menu_root" 
+                  name="🧪 Recepción de Muestras" 
+                  sequence="15"/>
+
+        <!-- Submenú para cadenas de custodia -->
+        <menuitem id="menu_custody_chains_reception"
+                  name="Cadenas de Custodia"
+                  parent="lims_sample_reception_menu_root"
+                  action="action_custody_chains_reception"
+                  sequence="10"/>
+
+        <!-- Submenú para recepciones -->
+        <menuitem id="menu_sample_receptions"
+                  name="Recepciones"
+                  parent="lims_sample_reception_menu_root"
+                  action="action_sample_receptions"
+                  sequence="20"/>
+
+    </data>
+</odoo>
