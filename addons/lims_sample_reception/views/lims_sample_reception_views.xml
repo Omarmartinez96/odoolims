@@ -26,26 +26,7 @@
             <field name="arch" type="xml">
                 <form string="Recepción de Muestra">
                     <header>
-                        <!-- Botones de cambio de estado -->
-                        <button name="action_set_pending" 
-                                type="object" 
-                                string="⏳ Marcar Pendiente"
-                                class="btn-warning"
-                                invisible="reception_state != 'draft' or can_change_state == False"/>
-                        
-                        <button name="action_set_done"
-                                type="object"
-                                string="✅ Finalizar Recepción"
-                                class="btn-success"
-                                invisible="reception_state == 'done' or can_change_state == False"/>
-                        
-                        <button name="action_set_draft"
-                                type="object"
-                                string="📝 Regresar a Borrador"
-                                class="btn-secondary"
-                                invisible="reception_state == 'draft'"/>
-                        
-                        <field name="reception_state" widget="statusbar" statusbar_visible="draft,pending,done"/>
+                        <field name="reception_state" widget="statusbar" statusbar_visible="no_recibida,rechazada,recibida"/>               
                     </header>
                     
                     <sheet>
