@@ -178,9 +178,6 @@
                                                                         <t t-else="">
                                                                             <span t-esc="parameter.name or 'Sin nombre'"/>
                                                                         </t>
-                                                                        <t t-if="parameter.unit">
-                                                                            <span style="color: #666;"> (<span t-esc="parameter.unit"/>)</span>
-                                                                        </t>
                                                                     </td>
                                                                     <td style="padding: 4px; border: 1px solid #ddd;">
                                                                         <span t-esc="parameter.method or 'No especificado'"/>
