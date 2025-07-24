@@ -108,10 +108,13 @@
                         <group string="🔬 Parámetros de Análisis">
                             <field name="sample_id" invisible="1"/>
                             <field name="parameter_ids" 
-                                related="sample_id.parameter_ids" 
                                 context="{'default_sample_id': sample_id}"
                                 nolabel="1">
                                 <list string="Parámetros" editable="bottom" create="true" delete="true">
+                                    <field name="template_id" 
+                                        string="Plantilla"
+                                        domain="[('is_template', '=', True)]"
+                                        options="{'no_create': True, 'no_open': True}"/>
                                     <field name="name"/>
                                     <field name="microorganism"/>
                                     <field name="method"/>
@@ -122,8 +125,9 @@
                                 <form string="Parámetro">
                                     <group>
                                         <field name="template_id" 
-                                            string="Seleccionar desde Plantilla" 
-                                            placeholder="Elegir parámetro configurado"
+                                            string="Seleccionar Plantilla" 
+                                            domain="[('is_template', '=', True)]"
+                                            placeholder="Elegir parámetro desde configuración"
                                             options="{'no_create': True, 'no_open': True}"/>
                                     </group>
                                     <group>

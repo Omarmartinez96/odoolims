@@ -265,6 +265,17 @@ class LimsSampleReception(models.Model):
             self.preservation_notes = False
             self.can_process_preservation = False
 
+    @api.onchange('template_id')
+    def _onchange_template_id(self):
+        if self.template_id:
+            template = self.template_id
+            # SOLO campos esenciales para recepción
+            self.name = template.name
+            self.method = template.method
+            self.category = template.category
+            self.microorganism = template.microorganism
+            self.unit = template.unit
+
 class LimsSample(models.Model):
     _inherit = 'lims.sample'
     
