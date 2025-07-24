@@ -56,11 +56,6 @@ class LimsSampleReception(models.Model):
     )
     
     # 🆕 CHECKLIST DE RECEPCIÓN
-    check_identification = fields.Selection([
-        ('si', 'Sí'),
-        ('no', 'No'),
-        ('na', 'N/A')
-    ], string='¿La muestra está identificada correctamente?')
     
     check_conditions = fields.Selection([
         ('si', 'Sí'),
@@ -91,7 +86,53 @@ class LimsSampleReception(models.Model):
         ('no', 'No'),
         ('na', 'N/A')
     ], string='¿Las condiciones de preservación son correctas?')
-    
+        
+    # Campos de observaciones cuando la respuesta es NO
+    conditions_notes = fields.Text(
+        string='Observaciones - Condiciones',
+        invisible=True
+    )
+    can_process_conditions = fields.Boolean(
+        string='¿Se puede procesar?',
+        invisible=True
+    )
+
+    temperature_notes = fields.Text(
+        string='Observaciones - Temperatura',
+        invisible=True
+    )
+    can_process_temperature = fields.Boolean(
+        string='¿Se puede procesar?',
+        invisible=True
+    )
+
+    container_notes = fields.Text(
+        string='Observaciones - Recipiente',
+        invisible=True
+    )
+    can_process_container = fields.Boolean(
+        string='¿Se puede procesar?',
+        invisible=True
+    )
+
+    volume_notes = fields.Text(
+        string='Observaciones - Volumen',
+        invisible=True
+    )
+    can_process_volume = fields.Boolean(
+        string='¿Se puede procesar?',
+        invisible=True
+    )
+
+    preservation_notes = fields.Text(
+        string='Observaciones - Preservación',
+        invisible=True
+    )
+    can_process_preservation = fields.Boolean(
+        string='¿Se puede procesar?',
+        invisible=True
+    )
+
     # 🆕 ESTADOS DE RECEPCIÓN
     reception_state = fields.Selection([
         ('no_recibida', 'No Recibida'),
@@ -123,13 +164,12 @@ class LimsSampleReception(models.Model):
         default=lambda self: self.env.user
     )
     
-    @api.depends('check_identification', 'check_conditions', 'check_temperature', 
+    @api.depends('check_conditions', 'check_temperature', 
                 'check_container', 'check_volume', 'check_preservation')
     def _compute_can_change_state(self):
         """Permite cambiar estado solo si TODOS los checks están completados"""
         for record in self:
             checks = [
-                record.check_identification,
                 record.check_conditions,
                 record.check_temperature,
                 record.check_container,
@@ -187,6 +227,36 @@ class LimsSampleReception(models.Model):
                 ])
                 if duplicate:
                     raise UserError(f'El código de muestra "{record.sample_code}" ya existe. Debe ser único.')
+                
+    @api.onchange('check_conditions')
+    def _onchange_check_conditions(self):
+        if self.check_conditions != 'no':
+            self.conditions_notes = False
+            self.can_process_conditions = False
+
+    @api.onchange('check_temperature')
+    def _onchange_check_temperature(self):
+        if self.check_temperature != 'no':
+            self.temperature_notes = False
+            self.can_process_temperature = False
+
+    @api.onchange('check_container')
+    def _onchange_check_container(self):
+        if self.check_container != 'no':
+            self.container_notes = False
+            self.can_process_container = False
+
+    @api.onchange('check_volume')
+    def _onchange_check_volume(self):
+        if self.check_volume != 'no':
+            self.volume_notes = False
+            self.can_process_volume = False
+
+    @api.onchange('check_preservation')
+    def _onchange_check_preservation(self):
+        if self.check_preservation != 'no':
+            self.preservation_notes = False
+            self.can_process_preservation = False
 
 class LimsSample(models.Model):
     _inherit = 'lims.sample'

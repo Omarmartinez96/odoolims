@@ -61,12 +61,47 @@
 
                         <!-- Checklist de Recepción -->
                         <group string="✅ Checklist de Recepción">
-                            <field name="check_identification" widget="radio"/>
+                            
+                            <!-- Condiciones -->
                             <field name="check_conditions" widget="radio"/>
+                            <field name="conditions_notes" 
+                                placeholder="Especifique el problema..."
+                                invisible="check_conditions != 'no'"/>
+                            <field name="can_process_conditions" 
+                                invisible="check_conditions != 'no'"/>
+                            
+                            <!-- Temperatura -->
                             <field name="check_temperature" widget="radio"/>
+                            <field name="temperature_notes" 
+                                placeholder="Especifique el problema..."
+                                invisible="check_temperature != 'no'"/>
+                            <field name="can_process_temperature" 
+                                invisible="check_temperature != 'no'"/>
+                            
+                            <!-- Recipiente -->
                             <field name="check_container" widget="radio"/>
+                            <field name="container_notes" 
+                                placeholder="Especifique el problema..."
+                                invisible="check_container != 'no'"/>
+                            <field name="can_process_container" 
+                                invisible="check_container != 'no'"/>
+                            
+                            <!-- Volumen -->
                             <field name="check_volume" widget="radio"/>
+                            <field name="volume_notes" 
+                                placeholder="Especifique el problema..."
+                                invisible="check_volume != 'no'"/>
+                            <field name="can_process_volume" 
+                                invisible="check_volume != 'no'"/>
+                            
+                            <!-- Preservación -->
                             <field name="check_preservation" widget="radio"/>
+                            <field name="preservation_notes" 
+                                placeholder="Especifique el problema..."
+                                invisible="check_preservation != 'no'"/>
+                            <field name="can_process_preservation" 
+                                invisible="check_preservation != 'no'"/>
+                            
                         </group>
 
                         <!-- Observaciones -->
