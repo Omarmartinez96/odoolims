@@ -219,7 +219,7 @@ class LimsSampleParameter(models.Model):
             'method_reference': template.method_reference,
             'incubation_temperature': template.incubation_temperature,
             'incubation_time': template.incubation_time,
-            'culture_medium': template.culture_medium,
+            'culture_media_ids': template.culture_media_ids,
             'ph_conditions': template.ph_conditions,
             'preservation_conditions': template.preservation_conditions,
             'sample_preparation': template.sample_preparation,
@@ -256,7 +256,7 @@ class LimsSampleParameter(models.Model):
             self.method_reference = template.method_reference
             self.incubation_temperature = template.incubation_temperature
             self.incubation_time = template.incubation_time
-            self.culture_medium = template.culture_medium
+            self.culture_media_ids = template.culture_media_ids
             self.ph_conditions = template.ph_conditions
             self.preservation_conditions = template.preservation_conditions
             self.sample_preparation = template.sample_preparation
