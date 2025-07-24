@@ -11,7 +11,8 @@ class LimsSampleReception(models.Model):
     # En models/lims_sample_reception.py, después de los campos existentes:
     parameter_ids = fields.One2many(
         related='sample_id.parameter_ids',
-        string='Parámetros de la Muestra'
+        string='Parámetros de la Muestra',
+        readonly=False
 )
 
     # Relación con la muestra original
