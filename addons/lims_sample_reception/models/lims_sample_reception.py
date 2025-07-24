@@ -8,6 +8,12 @@ class LimsSampleReception(models.Model):
     _rec_name = 'sample_code'
     _order = 'reception_date desc, create_date desc'
 
+    # En models/lims_sample_reception.py, después de los campos existentes:
+    parameter_ids = fields.One2many(
+        related='sample_id.parameter_ids',
+        string='Parámetros de la Muestra'
+)
+
     # Relación con la muestra original
     sample_id = fields.Many2one(
         'lims.sample',
