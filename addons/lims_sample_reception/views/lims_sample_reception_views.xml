@@ -104,6 +104,41 @@
                             
                         </group>
 
+                        <!-- Parámetros de la Muestra -->
+                        <group string="🔬 Parámetros de Análisis">
+                            <field name="sample_id" invisible="1"/>
+                            <field name="parameter_ids" 
+                                related="sample_id.parameter_ids" 
+                                context="{'default_sample_id': sample_id}"
+                                nolabel="1">
+                                <list string="Parámetros" editable="bottom" create="true" delete="true">
+                                    <field name="name"/>
+                                    <field name="microorganism"/>
+                                    <field name="method"/>
+                                    <field name="category"/>
+                                    <field name="unit"/>
+                                </list>
+                                
+                                <form string="Parámetro">
+                                    <group>
+                                        <field name="template_id" 
+                                            string="Seleccionar desde Plantilla" 
+                                            placeholder="Elegir parámetro configurado"
+                                            options="{'no_create': True, 'no_open': True}"/>
+                                    </group>
+                                    <group>
+                                        <field name="name" required="1"/>
+                                        <field name="method"/>
+                                        <field name="category"/>
+                                    </group>
+                                    <group>
+                                        <field name="microorganism"/>
+                                        <field name="unit"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </group>
+
                         <!-- Observaciones -->
                         <group string="📝 Observaciones">
                             <field name="reception_notes" nolabel="1" 
