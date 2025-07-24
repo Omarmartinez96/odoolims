@@ -112,10 +112,9 @@
                                 nolabel="1">
                                 <list string="Parámetros" editable="bottom" create="true" delete="true">
                                     <field name="template_id" 
-                                        string="Plantilla"
+                                        string="Parámetro"
                                         domain="[('is_template', '=', True)]"
                                         options="{'no_create': True, 'no_open': True}"/>
-                                    <field name="name"/>
                                     <field name="microorganism"/>
                                     <field name="method"/>
                                     <field name="category"/>
