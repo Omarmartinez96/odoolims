@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <record id="action_report_sample_reception" model="ir.actions.report">
+            <field name="name">Informe de Recepción de Muestras</field>
+            <field name="model">lims.custody_chain</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">lims_sample_reception.report_sample_reception_document</field>
+            <field name="report_file">lims_sample_reception.report_sample_reception_document</field>
+            <field name="print_report_name">'Informe de Recepción - ' + (object.custody_chain_code or 'muestras') + '.pdf'</field>
+            <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
+        </record>
+    </data>
+</odoo>

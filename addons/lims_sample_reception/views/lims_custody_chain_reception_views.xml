@@ -64,6 +64,13 @@
                             </page>
                         </notebook>
 
+                        <!-- Botón Informe de Recepción -->
+                        <button name="%(action_report_sample_reception)d"
+                                type="action"
+                                string="📄 Informe de Recepción"
+                                class="btn-info"
+                                title="Generar informe de recepción de muestras"/>
+
                     </sheet>
                 </form>
             </field>

@@ -21,6 +21,8 @@
         'data/sequences.xml',
         'views/lims_sample_reception_views.xml',
         'views/lims_custody_chain_reception_views.xml',
+        'report/report_sample_reception_action.xml',
+        'report/report_sample_reception.xml',
     ],
     'installable': True,
     'application': True,
