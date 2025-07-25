@@ -23,6 +23,8 @@
         'views/lims_custody_chain_reception_views.xml',
         'report/report_sample_reception_action.xml',
         'report/report_sample_reception.xml',
+        'report/report_mass_reception_action.xml',
+        'report/report_mass_reception.xml',
     ],
     'installable': True,
     'application': True,

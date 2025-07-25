@@ -1,0 +1,258 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_mass_reception_document">
+        <t t-call="web.html_container">
+            <meta charset="UTF-8"/>
+            <t t-call-assets="web.report_assets_common" t-js="false"/>
+            <t t-set="company" t-value="env.company"/>
+
+            <!-- ESTILOS LOCALES -->
+            <t>
+                <style>
+                    body, .o_report_layout, table, td, th, span, div, p {
+                        font-family: "DejaVu Sans", sans-serif !important;
+                    }
+                    .consolidated-table {
+                        width: 100%;
+                        border-collapse: collapse;
+                        font-size: 10px;
+                        margin-top: 20px;
+                    }
+                    .consolidated-table th {
+                        background-color: #2c5aa0;
+                        color: white;
+                        padding: 8px 4px;
+                        border: 1px solid #333;
+                        text-align: left;
+                        font-weight: bold;
+                    }
+                    .consolidated-table td {
+                        padding: 6px 4px;
+                        border: 1px solid #ddd;
+                        vertical-align: top;
+                    }
+                    .status-recibida { color: #28a745; font-weight: bold; }
+                    .status-rechazada { color: #dc3545; font-weight: bold; }
+                    .status-no-recibida { color: #ffc107; font-weight: bold; }
+                </style>
+            </t>
+
+            <!-- HEADER SOLO CON LOGO -->
+            <div class="header" style="padding: 10px 20px;">
+                <img t-if="company.logo"
+                    t-att-src="image_data_uri(company.logo)"
+                    style="max-height: 120px; width: auto;"/>
+            </div>
+
+            <!-- FOOTER FIJO -->
+            <div class="footer">
+                <table class="table table-borderless" style="width: 100%; font-size: 10px; border-top: 1px solid #ddd; padding-top: 5px;">
+                    <tr>
+                        <td style="width: 33%; text-align: left; padding: 3px;">
+                            Teléfono: (664) 973-8185
+                        </td>
+                        <td style="width: 33%; text-align: center; padding: 3px;">
+                            FOR-021 Rev. 01 | PROC-005
+                        </td>
+                        <td style="width: 33%; text-align: right; padding: 3px;">
+                            contacto@proteuslaboratorio.com
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: center; font-size: 9px; padding: 2px;">
+                            <t t-if="company.partner_id">
+                                <t t-esc="company.partner_id.name"/>,
+                                <t t-if="company.partner_id.street" t-esc="company.partner_id.street"/>
+                                <t t-if="company.partner_id.street2">, <t t-esc="company.partner_id.street2"/></t>,
+                                <t t-if="company.partner_id.city" t-esc="company.partner_id.city"/>,
+                                <t t-if="company.partner_id.zip">C.P. <t t-esc="company.partner_id.zip"/></t>,
+                                <t t-if="company.partner_id.country_id" t-esc="company.partner_id.country_id.name"/>
+                            </t>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: center; font-size: 9px; padding: 2px;">
+                            Página <span class="page"/> / <span class="topage"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="page">
+                <div class="main-content">
+
+                    <!-- Título principal -->
+                    <div style="text-align: center; margin: 20px 0 30px 0;">
+                        <h1 style="font-size: 24px; font-weight: bold; margin: 0; color: #333;">INFORME CONSOLIDADO DE RECEPCIÓN</h1>
+                    </div>
+
+                    <!-- Información general -->
+                    <table class="table table-borderless" style="width: 100%; font-size: 14px; margin-bottom: 20px;">
+                        <t t-set="meses" t-value="{
+                            '01':'Ene','02':'Feb','03':'Mar','04':'Abr',
+                            '05':'May','06':'Jun','07':'Jul','08':'Ago',
+                            '09':'Sep','10':'Oct','11':'Nov','12':'Dic'
+                        }"/>
+                        <tr>
+                            <td style="width: 50%;">
+                                <strong>Fecha del reporte:</strong>
+                                <t t-set="today" t-value="datetime.datetime.now()"/>
+                                <t t-set="d_today" t-value="today.strftime('%d')"/>
+                                <t t-set="m_today" t-value="today.strftime('%m')"/>
+                                <t t-set="y_today" t-value="today.strftime('%Y')"/>
+                                <t t-set="h_today" t-value="today.strftime('%H:%M')"/>
+                                <span t-esc="d_today + '/' + meses[m_today] + '/' + y_today + ' ' + h_today"/>
+                            </td>
+                            <td style="width: 50%; text-align: right;">
+                                <strong>Cadenas procesadas:</strong> <span t-esc="len(docs)"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <strong>Cadenas incluidas:</strong> 
+                                <span t-esc="', '.join([doc.custody_chain_code for doc in docs])"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- Tabla consolidada -->
+                    <table class="consolidated-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 12%;">Cadena de Custodia</th>
+                                <th style="width: 12%;">Cliente</th>
+                                <th style="width: 15%;">Identificación de Muestra</th>
+                                <th style="width: 10%;">Sitio de Muestreo</th>
+                                <th style="width: 10%;">Código de Muestra</th>
+                                <th style="width: 8%;">Temp. Recepción</th>
+                                <th style="width: 8%;">Estado</th>
+                                <th style="width: 15%;">Parámetros y Métodos</th>
+                                <th style="width: 10%;">Observaciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="docs" t-as="doc">
+                                <t t-foreach="doc.sample_ids" t-as="sample">
+                                    <t t-set="reception" t-value="env['lims.sample.reception'].search([('sample_id', '=', sample.id)], limit=1)"/>
+                                    <tr>
+                                        <!-- Cadena de Custodia -->
+                                        <td><span t-esc="doc.custody_chain_code"/></td>
+                                        
+                                        <!-- Cliente -->
+                                        <td>
+                                            <span t-esc="doc.cliente_id.name"/>
+                                            <t t-if="doc.client_code">
+                                                <br/><small style="color: #666;">(<span t-esc="doc.client_code"/>)</small>
+                                            </t>
+                                        </td>
+                                        
+                                        <!-- Identificación de Muestra -->
+                                        <td><span t-esc="sample.sample_identifier"/></td>
+                                        
+                                        <!-- Sitio de Muestreo (usar sample_description como sitio) -->
+                                        <td><span t-esc="sample.sample_description or 'No especificado'"/></td>
+                                        
+                                        <!-- Código de Muestra -->
+                                        <td>
+                                            <t t-if="reception and reception.sample_code">
+                                                <span t-esc="reception.sample_code"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span style="color: #999;">Sin código</span>
+                                            </t>
+                                        </td>
+                                        
+                                        <!-- Temperatura de Recepción -->
+                                        <td>
+                                            <t t-if="sample.collection_temperature">
+                                                <span t-esc="sample.collection_temperature"/>°C
+                                            </t>
+                                            <t t-else="">
+                                                <span style="color: #999;">N/A</span>
+                                            </t>
+                                        </td>
+                                        
+                                        <!-- Estado de Recepción -->
+                                        <td>
+                                            <t t-if="reception">
+                                                <t t-if="reception.reception_state == 'recibida'">
+                                                    <span class="status-recibida">Recibida</span>
+                                                </t>
+                                                <t t-elif="reception.reception_state == 'rechazada'">
+                                                    <span class="status-rechazada">Rechazada</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="status-no-recibida">No Recibida</span>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="status-no-recibida">No Procesada</span>
+                                            </t>
+                                        </td>
+                                        
+                                        <!-- Parámetros y Métodos -->
+                                        <td>
+                                            <t t-if="sample.parameter_ids">
+                                                <t t-foreach="sample.parameter_ids" t-as="parameter">
+                                                    <div style="margin-bottom: 2px;">
+                                                        <strong>
+                                                            <t t-if="parameter.microorganism">
+                                                                <span t-esc="parameter.microorganism"/>
+                                                            </t>
+                                                            <t t-else="">
+                                                                <span t-esc="parameter.name"/>
+                                                            </t>
+                                                        </strong>
+                                                        <br/>
+                                                        <small style="color: #666;">
+                                                            <span t-esc="parameter.method or 'Sin método'"/>
+                                                        </small>
+                                                    </div>
+                                                    <hr t-if="not parameter_last" style="margin: 3px 0; border: none; border-top: 1px dashed #ccc;"/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span style="color: #999;">Sin parámetros</span>
+                                            </t>
+                                        </td>
+                                        
+                                        <!-- Observaciones -->
+                                        <td>
+                                            <t t-if="reception">
+                                                <t t-if="reception.reception_notes">
+                                                    <div style="margin-bottom: 3px;">
+                                                        <small><strong>General:</strong> <span t-esc="reception.reception_notes"/></small>
+                                                    </div>
+                                                </t>
+                                                <t t-if="reception.internal_reception_notes">
+                                                    <div>
+                                                        <small><strong>Interna:</strong> <span t-esc="reception.internal_reception_notes"/></small>
+                                                    </div>
+                                                </t>
+                                                <t t-if="not reception.reception_notes and not reception.internal_reception_notes">
+                                                    <span style="color: #999;">Sin observaciones</span>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span style="color: #999;">N/A</span>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <!-- Resumen final -->
+                    <div style="margin-top: 30px; text-align: center; border-top: 2px solid #2c5aa0; padding-top: 15px;">
+                        <t t-set="total_samples" t-value="sum([len(doc.sample_ids) for doc in docs])"/>
+                        <p style="font-size: 16px; font-weight: bold; color: #2c5aa0;">
+                            Total de muestras procesadas: <span t-esc="total_samples"/>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

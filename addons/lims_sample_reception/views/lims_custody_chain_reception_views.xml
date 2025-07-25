@@ -18,6 +18,18 @@
             </field>
         </record>
 
+        <!-- Acción para reporte masivo -->
+        <record id="action_mass_reception_report" model="ir.actions.server">
+            <field name="name">Generar Informe Consolidado</field>
+            <field name="model_id" ref="model_lims_custody_chain"/>
+            <field name="binding_model_id" ref="model_lims_custody_chain"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+               action = env.ref('lims_sample_reception.action_report_mass_reception').report_action(records)
+            </field>
+        </record>
+
         <!-- Vista formulario especializada para recepción -->
         <record id="view_custody_chain_reception_form" model="ir.ui.view">
             <field name="name">lims.custody_chain.reception.form</field>
