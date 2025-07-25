@@ -76,7 +76,19 @@
             <field name="name">Medios de Cultivo</field>
             <field name="res_model">lims.culture.media</field>
             <field name="view_mode">list,form</field>
-            <field name="view_id" ref="view_lims_culture_media_form_qc"/>
+            <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('lims_reception.view_lims_culture_media_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_lims_culture_media_form_qc')})
+            ]"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crear el primer medio de cultivo
+                </p>
+                <p>
+                    Gestione el catálogo de medios de cultivo y sus controles de calidad
+                </p>
+            </field>
         </record>
 
         <!-- ========== VISTA LISTA DE CONTROLES DE CALIDAD ========== -->
