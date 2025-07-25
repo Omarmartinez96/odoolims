@@ -97,7 +97,7 @@
                         <!-- Cliente(s) -->
                         <tr>
                             <td colspan="2" style="padding: 4px;">
-                                <strong>Cliente(s):</strong>
+                                <strong>Cliente:</strong>
                                 <t t-set="unique_clients" t-value="list(set([(doc.cliente_id.name, doc.client_code) for doc in docs if doc.cliente_id]))"/>
                                 <t t-foreach="unique_clients" t-as="client_info">
                                     <span t-esc="client_info[0]"/>
