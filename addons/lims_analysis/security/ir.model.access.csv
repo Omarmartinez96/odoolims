@@ -1,2 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_lims_culture_media_qc,lims.culture.media.qc,model_lims_culture_media_qc,base.group_user,1,1,1,1
+access_lims_culture_media_batch,lims.culture.media.batch,model_lims_culture_media_batch,base.group_user,1,1,1,1
