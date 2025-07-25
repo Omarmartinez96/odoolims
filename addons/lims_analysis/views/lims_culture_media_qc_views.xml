@@ -10,7 +10,7 @@
             <field name="arch" type="xml">
                 
                 <!-- Agregar después del grupo de descripción -->
-                <xpath expr="//group[@string='📝 Descripción']" position="after">
+                <xpath expr="//sheet/group[last()]" position="after">
                     <group string="🧪 Controles de Calidad del Medio">
                         <field name="media_qc_ids" nolabel="1">
                             <list editable="bottom">
