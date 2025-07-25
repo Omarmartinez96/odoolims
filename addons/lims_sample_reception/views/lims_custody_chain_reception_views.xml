@@ -47,7 +47,7 @@
 
                         <!-- Lista de muestras con acceso a recepción -->
                         <notebook>
-                            <page string="🧪 Muestras para Recepción">
+                            <page string="Muestras para Recepción">
                                 <field name="sample_ids" readonly="1">
                                     <list string="Muestras" create="false" edit="false">
                                         <field name="sample_identifier"/>
