@@ -107,9 +107,6 @@
                                         <strong>Cliente:</strong> <span t-esc="doc.cliente_id.name"/> 
                                         <span style="color: #666;">(<span t-esc="doc.client_code or 'Sin código'"/>)</span>
                                     </td>
-                                    <td style="padding:4px; text-align:right;">
-                                        <strong>Sucursal:</strong> <span t-esc="doc.sucursal_id.name or 'No especificada'"/>
-                                    </td>
                                 </tr>
                             </tbody>
                         </table>
@@ -157,7 +154,6 @@
                                             
                                             <!-- Parámetros de la muestra -->
                                             <div style="margin-top: 10px;">
-                                                <strong>Parámetros solicitados:</strong>
                                                 <t t-if="sample.parameter_ids">
                                                     <h5 style="font-size: 14px; margin: 10px 0 5px 0; color: #333;">Parámetros solicitados:</h5>
                                                     <table class="table table-bordered" 

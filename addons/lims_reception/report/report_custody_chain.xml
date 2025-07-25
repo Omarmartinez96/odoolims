@@ -110,14 +110,11 @@
                     <span t-esc="d_today + '/' + meses[m_today] + '/' + y_today"/>
                   </td>
                 </tr>
-                <!-- Fila 2: Cliente y código / Sucursal -->
+                <!-- Fila 2: Cliente y código  -->
                 <tr>
                   <td style="padding:4px;">
                     <strong>Cliente:</strong> <span t-esc="doc.cliente_id.name"/> 
                     <span style="color: #666;">(<span t-esc="doc.client_code or 'Sin código'"/>)</span>
-                  </td>
-                  <td style="padding:4px; text-align:right;">
-                    <strong>Sucursal:</strong> <span t-esc="doc.sucursal_id.name or 'No especificada'"/>
                   </td>
                 </tr>
                 <!-- Fila 3: Contactos -->
