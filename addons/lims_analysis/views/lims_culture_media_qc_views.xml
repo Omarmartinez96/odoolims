@@ -118,10 +118,10 @@
                   sequence="90"/>
 
         <menuitem id="menu_culture_media_with_qc" 
-                  name="Medios de Cultivo" 
-                  parent="menu_lims_analysis_config" 
-                  action="action_culture_media_with_qc" 
-                  sequence="5"/>
+                name="Medios de Cultivo" 
+                parent="menu_lims_analysis_config" 
+                action="lims_reception.action_lims_culture_media" 
+                sequence="5"/>
 
         <menuitem id="menu_culture_media_batches" 
                   name="Medios Preparados" 
