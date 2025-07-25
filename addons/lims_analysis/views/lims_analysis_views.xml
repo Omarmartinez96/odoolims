@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- ========== VISTA LISTA DE ANÁLISIS ========== -->
+        <record id="view_lims_analysis_list" model="ir.ui.view">
+            <field name="name">lims.analysis.list</field>
+            <field name="model">lims.analysis</field>
+            <field name="arch" type="xml">
+                <list string="Análisis de Muestras">
+                    <field name="analysis_code"/>
+                    <field name="sample_id"/>
+                    <field name="analyst_id"/>
+                    <field name="analysis_start_date"/>
+                    <field name="analysis_state"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ========== VISTA FORMULARIO DE ANÁLISIS ========== -->
+        <record id="view_lims_analysis_form" model="ir.ui.view">
+            <field name="name">lims.analysis.form</field>
+            <field name="model">lims.analysis</field>
+            <field name="arch" type="xml">
+                <form string="Análisis de Muestra">
+                    <header>
+                        <button name="action_start_analysis" 
+                                type="object" 
+                                string="🚀 Iniciar Análisis" 
+                                class="btn-primary"
+                                invisible="analysis_state != 'draft'"/>
+                        <button name="action_complete_analysis" 
+                                type="object" 
+                                string="✅ Completar Análisis" 
+                                class="btn-success"
+                                invisible="analysis_state != 'in_progress'"/>
+                        <field name="analysis_state" widget="statusbar" statusbar_visible="draft,in_progress,completed,validated"/>
+                    </header>
+                    
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="analysis_code" placeholder="Se genera automáticamente"/>
+                            </h1>
+                        </div>
+
+                        <!-- Información básica -->
+                        <group>
+                            <group string="🧪 Información de la Muestra">
+                                <field name="sample_id"/>
+                                <field name="analyst_id"/>
+                            </group>
+                            <group string="📅 Fechas">
+                                <field name="analysis_start_date"/>
+                                <field name="analysis_end_date"/>
+                            </group>
+                        </group>
+
+                        <!-- Observaciones -->
+                        <group string="📝 Observaciones">
+                            <field name="analysis_notes" nolabel="1" 
+                                   placeholder="Observaciones sobre el análisis..."/>
+                        </group>
+
+                        <group string="🔒 Notas Internas">
+                            <field name="internal_notes" nolabel="1" 
+                                   placeholder="Notas internas del laboratorio..."/>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ========== ACCIÓN PARA ANÁLISIS ========== -->
+        <record id="action_lims_analysis" model="ir.actions.act_window">
+            <field name="name">Análisis de Muestras</field>
+            <field name="res_model">lims.analysis</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crear el primer análisis
+                </p>
+                <p>
+                    Gestione los análisis de muestras del laboratorio
+                </p>
+            </field>
+        </record>
+
+        <!-- ========== MENÚ PARA ANÁLISIS ========== -->
+        <menuitem id="menu_lims_analysis" 
+                  name="Análisis" 
+                  parent="menu_lims_analysis_root" 
+                  action="action_lims_analysis" 
+                  sequence="10"/>
+
+    </data>
+</odoo>
