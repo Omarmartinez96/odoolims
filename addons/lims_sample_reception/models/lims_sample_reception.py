@@ -326,10 +326,22 @@ class LimsSample(models.Model):
             
             if reception:
                 states = {
-                    'draft': 'Borrador',
-                    'pending': 'Pendiente', 
-                    'done': 'Finalizado'
+                    'no_recibida': 'No Recibida',
+                    'rechazada': 'Rechazada', 
+                    'recibida': 'Recibida'
                 }
                 record.sample_reception_state = states.get(reception.reception_state, 'Sin estado')
             else:
                 record.sample_reception_state = 'No recibida'
+
+    def write(self, vals):
+        """Override write para actualizar estado en muestra"""
+        result = super().write(vals)
+        
+        # Si se cambió el estado de recepción, forzar recálculo en la muestra
+        if 'reception_state' in vals:
+            for record in self:
+                if record.sample_id:
+                    record.sample_id._compute_sample_reception_state()
+        
+        return result

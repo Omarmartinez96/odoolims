@@ -239,7 +239,7 @@
 
                     <!-- Total de muestras al final -->
                     <div style="text-align: center; margin: 30px 0 20px 0; font-size: 16px; font-weight: bold; border-top: 2px solid; padding-top: 15px;">
-                        Total de muestras procesadas en recepción: <span t-esc="len(doc.sample_ids)"/>
+                        Total de muestras recibidas: <span t-esc="len(doc.sample_ids)"/>
                     </div>
 
 
