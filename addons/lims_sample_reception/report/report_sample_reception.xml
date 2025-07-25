@@ -9,6 +9,10 @@
             <!-- ESTILOS LOCALES -->
             <t>
                 <style>
+                    .parameter-row {
+                    background-color: #e8f4fd;
+                    font-size: 12px;
+                    }
                     body, .o_report_layout, table, td, th, span, div, p {
                         font-family: "DejaVu Sans", sans-serif !important;
                     }
@@ -147,31 +151,28 @@
                                                 - <span t-esc="sample.sample_identifier"/>
                                             </h4>
                                             
-                                            <div style="margin-bottom: 5px;">
-                                                <strong>Tipo:</strong> <span t-esc="sample.sample_type_id.name or 'No especificado'"/>
-                                            </div>
-                                            <div style="margin-bottom: 5px;">
-                                                <strong>Cantidad:</strong> <span t-esc="sample.sample_quantity or 'No especificada'"/>
-                                            </div>
-                                            <div style="margin-bottom: 5px;">
-                                                <strong>Recipiente:</strong> <span t-esc="sample.container_type_id.name or 'No especificado'"/>
+                                            <div style="margin-bottom: 10px; color: #2c5aa0;">
+                                                <strong>Identificación de la muestra:</strong> <span t-esc="sample.sample_identifier"/>
                                             </div>
                                             
                                             <!-- Parámetros de la muestra -->
                                             <div style="margin-top: 10px;">
                                                 <strong>Parámetros solicitados:</strong>
                                                 <t t-if="sample.parameter_ids">
-                                                    <table style="width: 100%; margin-top: 5px; border-collapse: collapse; font-size: 11px;">
+                                                    <h5 style="font-size: 14px; margin: 10px 0 5px 0; color: #333;">Parámetros solicitados:</h5>
+                                                    <table class="table table-bordered" 
+                                                        style="width:100%; font-size:12px; border-collapse:collapse;">
                                                         <thead>
-                                                            <tr style="background-color: #e8f4fd;">
-                                                                <th style="padding: 4px; border: 1px solid #ddd; text-align: left;">Microorganismo/Analito</th>
-                                                                <th style="padding: 4px; border: 1px solid #ddd; text-align: left;">Método</th>
+                                                            <tr style="background-color:#2c5aa0; color: white;">
+                                                                <th style="padding:6px; text-align:left; width:50%;">Parámetro</th>
+                                                                <th style="padding:6px; text-align:left; width:50%;">Método</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
                                                             <t t-foreach="sample.parameter_ids" t-as="parameter">
-                                                                <tr>
-                                                                    <td style="padding: 4px; border: 1px solid #ddd;">
+                                                                <tr class="parameter-row">
+                                                                    <td style="padding:6px;">
+                                                                        <!-- Mostrar microorganismo/analito si existe, sino el nombre del parámetro -->
                                                                         <t t-if="parameter.microorganism">
                                                                             <span t-esc="parameter.microorganism"/>
                                                                         </t>
@@ -179,7 +180,7 @@
                                                                             <span t-esc="parameter.name or 'Sin nombre'"/>
                                                                         </t>
                                                                     </td>
-                                                                    <td style="padding: 4px; border: 1px solid #ddd;">
+                                                                    <td style="padding:6px;">
                                                                         <span t-esc="parameter.method or 'No especificado'"/>
                                                                     </td>
                                                                 </tr>
@@ -188,7 +189,7 @@
                                                     </table>
                                                 </t>
                                                 <t t-else="">
-                                                    <span style="color: #666; font-style: italic;">No se han especificado parámetros</span>
+                                                    <p style="font-style: italic; color: #666; font-size: 12px;">No se han especificado parámetros para esta muestra.</p>
                                                 </t>
                                             </div>
                                         </td>
@@ -239,6 +240,15 @@
                                 </t>
                             </div>
                         </t>
+
+
+                    <!-- Total de muestras al final -->
+                    <div style="text-align: center; margin: 30px 0 20px 0; font-size: 16px; font-weight: bold; color: #2c5aa0; border-top: 2px solid #2c5aa0; padding-top: 15px;">
+                        Total de muestras procesadas en recepción: <span t-esc="len(doc.sample_ids)"/>
+                    </div>
+
+                    <!-- Información adicional -->
+                    <div style="margin-top: 30px; font-size: 12px; color: #666;">
 
                     </div>
                 </div>

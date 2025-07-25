@@ -261,7 +261,7 @@
             <t t-if="doc.customer_signature">
               <div class="signature-section">
                 <h3 style="font-size: 16px; margin: 0 0 15px 0; color: #2c5aa0; text-align: center;">
-                  ✍️ FIRMA DE CONFORMIDAD DEL CLIENTE
+                  FIRMA DE CONFORMIDAD DEL CLIENTE
                 </h3>
                 
                 <table style="width: 100%; border-collapse: collapse;">
