@@ -108,6 +108,13 @@
                                         <span style="color: #666;">(<span t-esc="doc.client_code or 'Sin código'"/>)</span>
                                     </td>
                                 </tr>
+                                <!-- Fila 3: Contactos -->
+                                <tr t-if="doc.contact_ids">
+                                    <td colspan="2" style="padding:4px;">
+                                        <strong>Contactos:</strong>
+                                        <span t-esc="', '.join([c.name for c in doc.contact_ids])"/>
+                                    </td>
+                                </tr>
                             </tbody>
                         </table>
 
@@ -148,15 +155,11 @@
                                                 - <span t-esc="sample.sample_identifier"/>
                                             </h4>
                                             
-                                            <div style="margin-bottom: 10px; color: #2c5aa0;">
-                                                <strong>Identificación de la muestra:</strong> <span t-esc="sample.sample_identifier"/>
-                                            </div>
-                                            
                                             <!-- Parámetros de la muestra -->
                                             <div style="margin-top: 10px;">
                                                 <t t-if="sample.parameter_ids">
-                                                    <h5 style="font-size: 14px; margin: 10px 0 5px 0; color: #333;">Parámetros solicitados:</h5>
-                                                    <table class="table table-bordered" 
+                                                    <h5 style="font-size: 14px; margin: 10px 0 5px 0;">Parámetros solicitados:</h5>
+                                                    <table class="table table-borderless mt-1" 
                                                         style="width:100%; font-size:12px; border-collapse:collapse;">
                                                         <thead>
                                                             <tr style="background-color:#2c5aa0; color: white;">
@@ -227,11 +230,7 @@
                                                 <strong>Observaciones:</strong> <span t-esc="reception.reception_notes"/>
                                             </div>
                                         </t>
-                                        <t t-if="reception.internal_reception_notes">
-                                            <div>
-                                                <strong>Notas internas:</strong> <span t-esc="reception.internal_reception_notes"/>
-                                            </div>
-                                        </t>
+
                                     </div>
                                 </t>
                             </div>
@@ -239,7 +238,7 @@
 
 
                     <!-- Total de muestras al final -->
-                    <div style="text-align: center; margin: 30px 0 20px 0; font-size: 16px; font-weight: bold; color: #2c5aa0; border-top: 2px solid #2c5aa0; padding-top: 15px;">
+                    <div style="text-align: center; margin: 30px 0 20px 0; font-size: 16px; font-weight: bold; border-top: 2px solid #2c5aa0; padding-top: 15px;">
                         Total de muestras procesadas en recepción: <span t-esc="len(doc.sample_ids)"/>
                     </div>
 
