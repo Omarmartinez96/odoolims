@@ -93,6 +93,22 @@
                             '05':'May','06':'Jun','07':'Jul','08':'Ago',
                             '09':'Sep','10':'Oct','11':'Nov','12':'Dic'
                         }"/>
+
+                        <!-- Cliente(s) -->
+                        <tr>
+                            <td colspan="2" style="padding: 4px;">
+                                <strong>Cliente(s):</strong>
+                                <t t-set="unique_clients" t-value="list(set([(doc.cliente_id.name, doc.client_code) for doc in docs if doc.cliente_id]))"/>
+                                <t t-foreach="unique_clients" t-as="client_info">
+                                    <span t-esc="client_info[0]"/>
+                                    <t t-if="client_info[1]">
+                                        <span style="color: #666;"> (<span t-esc="client_info[1]"/>)</span>
+                                    </t>
+                                    <t t-if="not client_info_last">, </t>
+                                </t>
+                            </td>
+                        </tr>
+
                         <tr>
                             <td style="width: 50%;">
                                 <strong>Fecha del reporte:</strong>
@@ -115,18 +131,20 @@
                         </tr>
                     </table>
 
+                    <!-- Separador superior -->
+                    <div style="margin-top: 20px; text-align: center; border-top: 2px solid #2c5aa0; padding-top: 15px; margin-bottom: 20px;"></div>
+
                     <!-- Tabla consolidada -->
                     <table class="consolidated-table">
                         <thead>
                             <tr>
-                                <th style="width: 12%;">Cadena de Custodia</th>
-                                <th style="width: 12%;">Cliente</th>
-                                <th style="width: 15%;">Identificación de Muestra</th>
-                                <th style="width: 10%;">Sitio de Muestreo</th>
-                                <th style="width: 10%;">Código de Muestra</th>
-                                <th style="width: 8%;">Temp. Recepción</th>
-                                <th style="width: 8%;">Estado</th>
-                                <th style="width: 15%;">Parámetros y Métodos</th>
+                                <th style="width: 14%;">Cadena de Custodia</th>
+                                <th style="width: 16%;">Identificación de Muestra</th>
+                                <th style="width: 12%;">Sitio de Muestreo</th>
+                                <th style="width: 12%;">Código de Muestra</th>
+                                <th style="width: 10%;">Temp. Recepción</th>
+                                <th style="width: 10%;">Estado</th>
+                                <th style="width: 16%;">Parámetros y Métodos</th>
                                 <th style="width: 10%;">Observaciones</th>
                             </tr>
                         </thead>
@@ -137,14 +155,6 @@
                                     <tr>
                                         <!-- Cadena de Custodia -->
                                         <td><span t-esc="doc.custody_chain_code"/></td>
-                                        
-                                        <!-- Cliente -->
-                                        <td>
-                                            <span t-esc="doc.cliente_id.name"/>
-                                            <t t-if="doc.client_code">
-                                                <br/><small style="color: #666;">(<span t-esc="doc.client_code"/>)</small>
-                                            </t>
-                                        </td>
                                         
                                         <!-- Identificación de Muestra -->
                                         <td><span t-esc="sample.sample_identifier"/></td>
@@ -244,10 +254,10 @@
                     </table>
 
                     <!-- Resumen final -->
-                    <div style="margin-top: 30px; text-align: center; border-top: 2px solid #2c5aa0; padding-top: 15px;">
+                    <div style="margin-top: 30px; text-align: center; border-top: 2px solid; padding-top: 15px;">
                         <t t-set="total_samples" t-value="sum([len(doc.sample_ids) for doc in docs])"/>
-                        <p style="font-size: 16px; font-weight: bold; color: #2c5aa0;">
-                            Total de muestras procesadas: <span t-esc="total_samples"/>
+                        <p style="font-size: 16px; font-weight: bold;">
+                            Total de muestras recibidas: <span t-esc="total_samples"/>
                         </p>
                     </div>
 
