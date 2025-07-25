@@ -17,7 +17,7 @@
                         </div>
 
                         <group>
-                            <field name="internal_id" placeholder="Ej: MAC-001"/>
+                            <field name="internal_id" placeholder="Ej: TSA"/>
                             <field name="active"/>
                         </group>
 
