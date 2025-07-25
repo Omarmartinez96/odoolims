@@ -14,7 +14,7 @@
                     <group string="🧪 Controles de Calidad del Medio">
                         <field name="media_qc_ids" nolabel="1">
                             <list editable="bottom">
-                                <field name="sequence" widget="handle"/>
+                                <field name="sequence" invisible="1"/>
                                 <field name="qc_type_id" options="{'no_create': True}"/>
                                 <field name="expected_result"/>
                                 <field name="is_mandatory"/>
@@ -37,7 +37,6 @@
                     <field name="qc_type_id"/>
                     <field name="expected_result"/>
                     <field name="is_mandatory"/>
-                    <field name="sequence"/>
                 </list>
             </field>
         </record>
@@ -53,7 +52,7 @@
                             <group>
                                 <field name="culture_media_id"/>
                                 <field name="qc_type_id"/>
-                                <field name="sequence"/>
+                                <field name="sequence" invisible="1"/>
                             </group>
                             <group>
                                 <field name="expected_result"/>
