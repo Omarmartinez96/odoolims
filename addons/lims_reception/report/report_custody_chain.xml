@@ -79,7 +79,7 @@
 
             <!-- Título principal -->
             <div style="text-align: center; margin: 20px 0 30px 0;">
-              <h1 style="font-size: 24px; font-weight: bold; margin: 0; color: #333;">COMPROBANTE DE CADENA DE CUSTODIA</h1>
+              <h1 style="font-size: 24px; font-weight: bold; margin: 0;">COMPROBANTE DE CADENA DE CUSTODIA</h1>
             </div>
 
             <!-- Total de muestras -->
@@ -128,10 +128,10 @@
             </table>
 
             <!-- Separador -->
-            <hr style="margin: 20px 0; border: 1px solid #333;"/>
+            <hr style="margin: 20px 0; border: 1px solid;"/>
 
             <!-- Muestras -->
-            <h3 style="font-size: 18px; margin-bottom: 15px; color: #333;">Muestras Recolectadas</h3>
+            <h3 style="font-size: 18px; margin-bottom: 15px;">Muestras Recolectadas</h3>
 
             <t t-foreach="doc.sample_ids" t-as="sample">
               <div class="sample-section">
@@ -212,7 +212,7 @@
 
                 <!-- Parámetros de la muestra -->
                 <t t-if="sample.parameter_ids">
-                  <h5 style="font-size: 14px; margin: 10px 0 5px 0; color: #333;">Parámetros solicitados:</h5>
+                  <h5 style="font-size: 14px; margin: 10px 0 5px 0;">Parámetros solicitados:</h5>
                   <table class="table table-bordered" 
                         style="width:100%; font-size:12px; border-collapse:collapse;">
                     <thead>
