@@ -1,5 +1,6 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
+import base64
 from datetime import datetime
 
 class LimsSampleReception(models.Model):
@@ -345,3 +346,118 @@ class LimsSample(models.Model):
                     record.sample_id._compute_sample_reception_state()
         
         return result
+    
+class LimsCustodyChain(models.Model):
+    _inherit = 'lims.custody_chain'
+    
+    def action_send_reception_report_email(self):
+        """Enviar informe de recepción por correo electrónico"""
+        self.ensure_one()
+        
+        # Verificar que hay muestras procesadas
+        if not self.sample_ids:
+            raise UserError(_('No hay muestras para enviar en el informe.'))
+        
+        # Obtener direcciones de email (similar al método de cadena de custodia)
+        email_list = []
+        partner_list = []
+        
+        # Agregar email del cliente principal
+        if self.cliente_id and self.cliente_id.email:
+            email_list.append(self.cliente_id.email)
+            partner_list.append(self.cliente_id.id)
+        
+        # Agregar contactos del cliente
+        if self.cliente_id:
+            client_contacts = self.env['lims.contact'].search([
+                ('department_id.branch_id.customer_id', '=', self.cliente_id.id)
+            ])
+            
+            for contact in client_contacts:
+                if contact.email and contact.email not in email_list:
+                    email_list.append(contact.email)
+                    if contact.partner_id:
+                        partner_list.append(contact.partner_id.id)
+        
+        # Fallback: contactos seleccionados
+        elif self.contact_ids:
+            for contact in self.contact_ids:
+                if contact.email and contact.email not in email_list:
+                    email_list.append(contact.email)
+                    if contact.partner_id:
+                        partner_list.append(contact.partner_id.id)
+        
+        if not email_list:
+            raise UserError(_('No se encontraron direcciones de email válidas para enviar el informe.'))
+
+        # Generar el reporte PDF
+        report = self.env.ref('lims_sample_reception.action_report_sample_reception', raise_if_not_found=False)
+        if not report:
+            raise UserError(_('No se encontró el reporte de recepción de muestras.'))
+
+        try:
+            pdf_content, content_type = report._render_qweb_pdf(
+                report_ref='lims_sample_reception.action_report_sample_reception',
+                res_ids=[self.id]
+            )
+        except Exception as e:
+            raise UserError(_("Error al generar el PDF: %s") % str(e))
+        
+        # Crear nombre del archivo
+        safe_code = self.custody_chain_code.replace('/', '_') if self.custody_chain_code else 'recepcion'
+        filename = f'Informe de Recepción - {safe_code}.pdf'
+
+        # Crear attachment
+        try:
+            attachment = self.env['ir.attachment'].create({
+                'name': filename,
+                'type': 'binary',
+                'datas': base64.b64encode(pdf_content),
+                'res_model': 'lims.custody_chain',
+                'res_id': self.id,
+                'mimetype': 'application/pdf',
+            })
+        except Exception as e:
+            raise UserError(_("Error al crear el archivo adjunto: %s") % str(e))
+
+        # Preparar valores del email
+        email_values = {
+            'subject': f'Informe de Recepción de Muestras - {self.custody_chain_code}',
+            'body_html': f'''
+                <p>Estimado/a Cliente,</p>
+                <p>Adjunto el informe de recepción de muestras correspondiente a:</p>
+                <p><strong>Cadena de Custodia:</strong> {self.custody_chain_code}</p>
+                <p><strong>Cliente:</strong> {self.cliente_id.name}</p>
+                <p>Este informe detalla el estado de recepción de cada una de las muestras procesadas.</p>
+                <br/>
+                <p>Atentamente,<br/>El equipo de {self.env.company.name}</p>
+            ''',
+            'email_from': self.env.user.email,
+            'email_to': ','.join(email_list),
+            'attachment_ids': [(6, 0, [attachment.id])],
+        }
+
+        # Abrir wizard de envío
+        compose_form = self.env.ref('mail.email_compose_message_wizard_form')
+
+        ctx = {
+            'default_model': 'lims.custody_chain',
+            'default_res_ids': [self.id],
+            'default_composition_mode': 'comment',
+            'default_subject': email_values['subject'],
+            'default_body': email_values['body_html'],
+            'default_email_from': email_values['email_from'],
+            'default_attachment_ids': [(6, 0, [attachment.id])],
+            'default_email_to': email_values['email_to'],
+            'default_partner_ids': [(6, 0, partner_list)],
+        }
+
+        return {
+            'name': _('Enviar Informe de Recepción'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'mail.compose.message',
+            'view_mode': 'form',
+            'views': [(compose_form.id, 'form')],
+            'target': 'new',
+            'context': ctx,
+        }
