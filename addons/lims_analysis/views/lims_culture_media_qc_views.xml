@@ -116,7 +116,11 @@
                   action="action_culture_media_with_qc" 
                   sequence="5"/>
 
-
+        <menuitem id="menu_culture_media_batches" 
+                  name="Medios Preparados" 
+                  parent="menu_lims_analysis_config" 
+                  action="action_culture_media_batches" 
+                  sequence="10"/>
 
     </data>
 </odoo>
