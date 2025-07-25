@@ -2,56 +2,81 @@
 <odoo>
     <data>
         
-        <!-- ========== VISTA FORMULARIO EXTENDIDA PARA MEDIOS ========== -->
-        <record id="view_lims_culture_media_form_extended" model="ir.ui.view">
-            <field name="name">lims.culture.media.form.extended</field>
+        <!-- ========== VISTA FORMULARIO EXTENDIDA PARA MEDIOS (SIN HERENCIA) ========== -->
+        <record id="view_lims_culture_media_form_qc" model="ir.ui.view">
+            <field name="name">lims.culture.media.form.qc</field>
             <field name="model">lims.culture.media</field>
-            <field name="inherit_id" ref="lims_reception.view_lims_culture_media_form"/>
+            <field name="priority">20</field>
             <field name="arch" type="xml">
-                
-                <!-- Agregar después del grupo de descripción -->
-                <xpath expr="//sheet/group[last()]" position="after">
-                    <group string="🧪 Controles de Calidad del Medio">
-                        <field name="media_qc_ids" nolabel="1">
-                            <list string="Controles de Calidad" editable="bottom" create="true" delete="true">
-                                <field name="sequence" invisible="1"/>
-                                <field name="qc_type_id" 
-                                    string="Tipo de Control"
-                                    options="{'no_create': True, 'no_open': True}"
-                                    required="1"/>
-                                <field name="expected_result" 
-                                    string="Resultado Esperado"
-                                    required="1"/>
-                                <field name="is_mandatory" 
-                                    string="Obligatorio"/>
-                                <field name="notes" 
-                                    string="Notas"
-                                    optional="hide"/>
-                            </list>
-                            
-                            <!-- Formulario emergente para edición detallada -->
-                            <form string="Control de Calidad">
-                                <group>
+                <form string="Medio de Cultivo">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Ej: Agar MacConkey" required="1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <field name="internal_id" placeholder="Ej: MAC-001"/>
+                            <field name="active"/>
+                        </group>
+
+                        <group string="📝 Descripción">
+                            <field name="description" nolabel="1" 
+                                   placeholder="Descripción del medio, composición, uso, etc."/>
+                        </group>
+
+                        <!-- NUEVA SECCIÓN DE CONTROLES DE CALIDAD -->
+                        <group string="🧪 Controles de Calidad del Medio">
+                            <field name="media_qc_ids" nolabel="1">
+                                <list string="Controles de Calidad" editable="bottom" create="true" delete="true">
+                                    <field name="sequence" invisible="1"/>
+                                    <field name="qc_type_id" 
+                                           string="Tipo de Control"
+                                           options="{'no_create': True, 'no_open': True}"
+                                           required="1"/>
+                                    <field name="expected_result" 
+                                           string="Resultado Esperado"
+                                           required="1"/>
+                                    <field name="is_mandatory" 
+                                           string="Obligatorio"/>
+                                    <field name="notes" 
+                                           string="Notas"
+                                           optional="hide"/>
+                                </list>
+                                
+                                <form string="Control de Calidad">
                                     <group>
-                                        <field name="qc_type_id" 
-                                            options="{'no_create': True}"
-                                            required="1"/>
-                                        <field name="expected_result" required="1"/>
+                                        <group>
+                                            <field name="qc_type_id" 
+                                                   options="{'no_create': True}"
+                                                   required="1"/>
+                                            <field name="expected_result" required="1"/>
+                                        </group>
+                                        <group>
+                                            <field name="is_mandatory"/>
+                                            <field name="sequence" invisible="1"/>
+                                        </group>
                                     </group>
-                                    <group>
-                                        <field name="is_mandatory"/>
-                                        <field name="sequence" invisible="1"/>
+                                    <group string="📝 Notas">
+                                        <field name="notes" nolabel="1" 
+                                               placeholder="Notas adicionales sobre este control..."/>
                                     </group>
-                                </group>
-                                <group string="📝 Notas">
-                                    <field name="notes" nolabel="1" placeholder="Notas adicionales sobre este control..."/>
-                                </group>
-                            </form>
-                        </field>
-                    </group>
-                </xpath>
-                
+                                </form>
+                            </field>
+                        </group>
+
+                    </sheet>
+                </form>
             </field>
+        </record>
+
+        <!-- ========== ACCIÓN PARA MEDIOS CON CONTROLES ========== -->
+        <record id="action_culture_media_with_qc" model="ir.actions.act_window">
+            <field name="name">Medios de Cultivo</field>
+            <field name="res_model">lims.culture.media</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="view_lims_culture_media_form_qc"/>
         </record>
 
         <!-- ========== VISTA LISTA DE CONTROLES DE CALIDAD ========== -->
@@ -68,49 +93,14 @@
             </field>
         </record>
 
-        <!-- ========== VISTA FORMULARIO DE CONTROLES DE CALIDAD ========== -->
-        <record id="view_culture_media_qc_form" model="ir.ui.view">
-            <field name="name">lims.culture.media.qc.form</field>
-            <field name="model">lims.culture.media.qc</field>
-            <field name="arch" type="xml">
-                <form string="Control de Calidad de Medio">
-                    <sheet>
-                        <group>
-                            <group>
-                                <field name="culture_media_id"/>
-                                <field name="qc_type_id"/>
-                                <field name="sequence" invisible="1"/>
-                            </group>
-                            <group>
-                                <field name="expected_result"/>
-                                <field name="is_mandatory"/>
-                            </group>
-                        </group>
-                        
-                        <group string="📝 Notas">
-                            <field name="notes" nolabel="1"/>
-                        </group>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
         <!-- ========== ACCIÓN PARA CONTROLES DE MEDIOS ========== -->
         <record id="action_culture_media_qc" model="ir.actions.act_window">
             <field name="name">Controles de Calidad de Medios</field>
             <field name="res_model">lims.culture.media.qc</field>
             <field name="view_mode">list,form</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Crear el primer control de calidad
-                </p>
-                <p>
-                    Defina los controles de calidad que deben realizarse a cada medio de cultivo
-                </p>
-            </field>
         </record>
 
-        <!-- ========== MENÚ ========== -->
+        <!-- ========== MENÚS ========== -->
         <menuitem id="menu_lims_analysis_root" 
                   name="Análisis de Muestras" 
                   sequence="20"/>
@@ -119,6 +109,12 @@
                   name="⚙️ Configuración" 
                   parent="menu_lims_analysis_root" 
                   sequence="90"/>
+
+        <menuitem id="menu_culture_media_with_qc" 
+                  name="Medios de Cultivo" 
+                  parent="menu_lims_analysis_config" 
+                  action="action_culture_media_with_qc" 
+                  sequence="5"/>
 
         <menuitem id="menu_culture_media_qc" 
                   name="Controles de Medios" 
