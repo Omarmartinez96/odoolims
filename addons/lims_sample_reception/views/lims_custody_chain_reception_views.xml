@@ -106,7 +106,7 @@
 
         <!-- Menú principal del módulo -->
         <menuitem id="lims_sample_reception_menu_root" 
-                  name="🧪 Recepción de Muestras" 
+                  name="Recepción de Muestras" 
                   sequence="15"/>
 
         <!-- Submenú para cadenas de custodia -->
