@@ -75,20 +75,6 @@
                                         class="btn-info"
                                         title="Generar informe de recepción de muestras"/>
 
-                            </div>
-                        </div>
-
-                        <!-- Botones de acción -->
-                        <div style="margin-top: 20px;">
-                            <div class="oe_button_box" style="display: flex; gap: 10px; justify-content: center;">
-                                
-                                <!-- Botón Informe de Recepción -->
-                                <button name="%(action_report_sample_reception)d"
-                                        type="action"
-                                        string="📄 Informe de Recepción"
-                                        class="btn-info"
-                                        title="Generar informe de recepción de muestras"/>
-
                                 <!-- Botón Enviar por Email -->
                                 <button name="action_send_reception_report_email"
                                         type="object"
