@@ -132,7 +132,7 @@
                     </table>
 
                     <!-- Separador superior -->
-                    <div style="margin-top: 20px; text-align: center; border-top: 2px solid #2c5aa0; padding-top: 15px; margin-bottom: 20px;"></div>
+                    <div style="margin-top: 20px; text-align: center; border-top: 2px solid; padding-top: 15px; margin-bottom: 20px;"></div>
 
                     <!-- Tabla consolidada -->
                     <table class="consolidated-table">
