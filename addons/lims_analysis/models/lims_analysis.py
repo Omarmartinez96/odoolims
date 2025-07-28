@@ -19,7 +19,7 @@ class LimsAnalysis(models.Model):
         domain=[('reception_state', '=', 'recibida')]
     )
 
-    # Campos relacionados desde la recepción
+    # Campo relacionado para mostrar el código de muestra
     sample_code = fields.Char(
         string='Código de Muestra',
         related='sample_reception_id.sample_code',
@@ -27,6 +27,7 @@ class LimsAnalysis(models.Model):
         store=True
     )
 
+    # Campos relacionados para información adicional
     sample_identifier = fields.Char(
         string='Identificación de Muestra',
         related='sample_reception_id.sample_identifier',
@@ -38,14 +39,6 @@ class LimsAnalysis(models.Model):
         string='Nombre del Análisis',
         compute='_compute_display_name',
         store=True
-    )
-    
-    # Asignación de analista
-    analyst_id = fields.Many2one(
-        'res.users',
-        string='Analista Asignado',
-        required=True,
-        default=lambda self: self.env.user
     )
     
     # Fechas
@@ -66,32 +59,21 @@ class LimsAnalysis(models.Model):
         ('cancelled', 'Cancelado')
     ], string='Estado', default='draft')
     
-    # Observaciones
-    analysis_notes = fields.Text(
-        string='Observaciones del Análisis'
-    )
-    internal_notes = fields.Text(
-        string='Notas Internas'
+    # 🆕 RELACIÓN CON PARÁMETROS DE ANÁLISIS
+    parameter_analysis_ids = fields.One2many(
+        'lims.parameter.analysis',
+        'analysis_id',
+        string='Parámetros de Análisis'
     )
     
-    @api.depends('sample_reception_id', 'analyst_id')
+    @api.depends('sample_reception_id')
     def _compute_display_name(self):
         """Calcular nombre del análisis"""
         for analysis in self:
-            parts = []
             if analysis.sample_code:
-                parts.append(analysis.sample_code)
-            if analysis.sample_identifier:
-                parts.append(f"({analysis.sample_identifier})")
-            if analysis.analyst_id:
-                parts.append(f"- {analysis.analyst_id.name}")
-            
-            analysis.display_name = " ".join(parts) if parts else "Análisis"
-    
-    def action_start_analysis(self):
-        """Iniciar análisis"""
-        self.analysis_state = 'in_progress'
-        self.analysis_start_date = fields.Date.context_today(self)
+                analysis.display_name = f"Análisis - {analysis.sample_code}"
+            else:
+                analysis.display_name = "Análisis"
     
     def action_complete_analysis(self):
         """Completar análisis"""
@@ -145,6 +127,136 @@ class LimsAnalysis(models.Model):
         if orphan_receptions:
             _logger.info(f"Limpiando {len(orphan_receptions)} recepciones huérfanas")
             orphan_receptions.unlink()
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create para copiar parámetros desde la muestra"""
+        records = super().create(vals_list)
+        
+        for record in records:
+            # Copiar parámetros de la muestra a parámetros de análisis
+            if record.sample_reception_id and record.sample_reception_id.sample_id:
+                sample_parameters = record.sample_reception_id.sample_id.parameter_ids
+                
+                for param in sample_parameters:
+                    self.env['lims.parameter.analysis'].create({
+                        'analysis_id': record.id,
+                        'parameter_id': param.id,
+                        'name': param.name,
+                        'method': param.method,
+                        'microorganism': param.microorganism,
+                        'unit': param.unit,
+                        'category': param.category,
+                    })
+        
+        return records
+
+
+# 🆕 NUEVO MODELO PARA PARÁMETROS DE ANÁLISIS
+class LimsParameterAnalysis(models.Model):
+    _name = 'lims.parameter.analysis'
+    _description = 'Parámetros de Análisis con Resultados'
+    _rec_name = 'name'
+    _order = 'sequence, name'
+
+    # Relación con el análisis padre
+    analysis_id = fields.Many2one(
+        'lims.analysis',
+        string='Análisis',
+        required=True,
+        ondelete='cascade'
+    )
+    
+    # Información del parámetro (copiada desde el parámetro original)
+    parameter_id = fields.Many2one(
+        'lims.sample.parameter',
+        string='Parámetro Original',
+        readonly=True
+    )
+    
+    name = fields.Char(
+        string='Nombre del Parámetro',
+        required=True
+    )
+    method = fields.Char(
+        string='Método'
+    )
+    microorganism = fields.Char(
+        string='Microorganismo/Analito'
+    )
+    unit = fields.Char(
+        string='Unidad'
+    )
+    category = fields.Selection([
+        ('physical', 'Físico'),
+        ('chemical', 'Químico'),
+        ('microbiological', 'Microbiológico'),
+        ('other', 'Otro')
+    ], string='Categoría')
+    
+    sequence = fields.Integer(
+        string='Secuencia',
+        default=10
+    )
+    
+    # 🆕 CAMPOS PARA RESULTADOS Y ANÁLISIS
+    analysis_status = fields.Selection([
+        ('pending', 'Pendiente'),
+        ('in_progress', 'En Proceso'),
+        ('completed', 'Completado'),
+        ('reviewed', 'Revisado'),
+        ('approved', 'Aprobado')
+    ], string='Estado del Análisis', default='pending')
+    
+    result_value = fields.Char(
+        string='Resultado',
+        help='Resultado obtenido del análisis'
+    )
+    
+    result_numeric = fields.Float(
+        string='Resultado Numérico',
+        help='Para resultados que requieren cálculos'
+    )
+    
+    result_qualitative = fields.Selection([
+        ('positive', 'Positivo'),
+        ('negative', 'Negativo'),
+        ('presence', 'Presencia'),
+        ('absence', 'Ausencia'),
+        ('growth', 'Crecimiento'),
+        ('no_growth', 'Sin Crecimiento')
+    ], string='Resultado Cualitativo')
+    
+    analysis_date = fields.Date(
+        string='Fecha de Análisis'
+    )
+    
+    analyst_notes = fields.Text(
+        string='Observaciones del Analista',
+        help='Notas técnicas sobre el análisis realizado'
+    )
+    
+    internal_notes = fields.Text(
+        string='Notas Internas',
+        help='Notas internas del laboratorio'
+    )
+    
+    # Método utilizado específico para este análisis
+    specific_method = fields.Text(
+        string='Procedimiento Específico',
+        help='Detalles específicos del método utilizado'
+    )
+    
+    # Control de calidad específico
+    qc_passed = fields.Boolean(
+        string='Control de Calidad Aprobado',
+        default=False
+    )
+    
+    qc_notes = fields.Text(
+        string='Notas de Control de Calidad'
+    )
+
 
 class LimsSample(models.Model):
     _inherit = 'lims.sample'

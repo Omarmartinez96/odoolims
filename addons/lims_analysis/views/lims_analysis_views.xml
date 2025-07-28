@@ -2,7 +2,7 @@
 <odoo>
     <data>
         
-        <!-- ========== VISTA LISTA DE ANÁLISIS ========== -->
+        <!-- ========== VISTA LISTA DE ANÁLISIS ACTUALIZADA ========== -->
         <record id="view_lims_analysis_list" model="ir.ui.view">
             <field name="name">lims.analysis.list</field>
             <field name="model">lims.analysis</field>
@@ -11,27 +11,21 @@
                     <field name="sample_code"/>
                     <field name="sample_identifier"/>
                     <field name="sample_reception_id" 
-                        string="Muestra"
+                        string="Recepción"
                         options="{'no_create': True, 'no_open': True}"/>
-                    <field name="analyst_id"/>
                     <field name="analysis_start_date"/>
                     <field name="analysis_state"/>
                 </list>
             </field>
         </record>
 
-        <!-- ========== VISTA FORMULARIO DE ANÁLISIS ========== -->
+        <!-- ========== VISTA FORMULARIO DE ANÁLISIS ACTUALIZADA ========== -->
         <record id="view_lims_analysis_form" model="ir.ui.view">
             <field name="name">lims.analysis.form</field>
             <field name="model">lims.analysis</field>
             <field name="arch" type="xml">
                 <form string="Análisis de Muestra">
                     <header>
-                        <button name="action_start_analysis" 
-                                type="object" 
-                                string="🚀 Iniciar Análisis" 
-                                class="btn-primary"
-                                invisible="analysis_state != 'draft'"/>
                         <button name="action_complete_analysis" 
                                 type="object" 
                                 string="✅ Completar Análisis" 
@@ -51,34 +45,112 @@
                         <group>
                             <group string="Información de la Muestra">
                                 <field name="sample_reception_id"/>
-                                <field name="analyst_id"/>
+                                <field name="sample_code" readonly="1"/>
+                                <field name="sample_identifier" readonly="1"/>
                             </group>
-                        <group string="Identificación">
-                            <field name="sample_code" readonly="1"/>
-                            <field name="sample_identifier" readonly="1"/>
-                        </group>
                             <group string="Fechas">
                                 <field name="analysis_start_date"/>
                                 <field name="analysis_end_date"/>
                             </group>
                         </group>
 
-                        <!-- Observaciones -->
-                        <group string="Observaciones">
-                            <field name="analysis_notes" nolabel="1" 
-                                   placeholder="Observaciones sobre el análisis..."/>
-                        </group>
+                        <!-- 🆕 SECCIÓN DE PARÁMETROS DE ANÁLISIS -->
+                        <notebook>
+                            <page string="🔬 Parámetros de Análisis">
+                                <field name="parameter_analysis_ids" nolabel="1">
+                                    <list string="Parámetros">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name"/>
+                                        <field name="microorganism"/>
+                                        <field name="method"/>
+                                        <field name="analysis_status"/>
+                                        <field name="result_value"/>
+                                        <field name="qc_passed"/>
+                                    </list>
+                                    
+                                    <form string="Parámetro de Análisis">
+                                        <header>
+                                            <field name="analysis_status" widget="statusbar" statusbar_visible="pending,in_progress,completed,reviewed,approved"/>
+                                        </header>
+                                        
+                                        <sheet>
+                                            <div class="oe_title">
+                                                <h1>
+                                                    <field name="name" readonly="1"/>
+                                                </h1>
+                                                <h3>
+                                                    <field name="microorganism" readonly="1"/>
+                                                </h3>
+                                            </div>
 
-                        <group string="Notas Internas">
-                            <field name="internal_notes" nolabel="1" 
-                                   placeholder="Notas internas del laboratorio..."/>
-                        </group>
+                                            <!-- Información del parámetro -->
+                                            <group>
+                                                <group string="📋 Información del Parámetro">
+                                                    <field name="method" readonly="1"/>
+                                                    <field name="unit" readonly="1"/>
+                                                    <field name="category" readonly="1"/>
+                                                    <field name="parameter_id" readonly="1"/>
+                                                </group>
+                                                <group string="📅 Información del Análisis">
+                                                    <field name="analysis_date"/>
+                                                    <field name="qc_passed"/>
+                                                </group>
+                                            </group>
+
+                                            <!-- Resultados -->
+                                            <group string="📊 Resultados">
+                                                <group>
+                                                    <field name="result_value"/>
+                                                    <field name="result_numeric"/>
+                                                </group>
+                                                <group>
+                                                    <field name="result_qualitative"/>
+                                                </group>
+                                            </group>
+
+                                            <!-- Observaciones -->
+                                            <group string="📝 Observaciones y Notas">
+                                                <field name="analyst_notes" 
+                                                       placeholder="Observaciones técnicas del análisis..."/>
+                                                <field name="internal_notes" 
+                                                       placeholder="Notas internas del laboratorio..."/>
+                                                <field name="qc_notes" 
+                                                       placeholder="Observaciones de control de calidad..."/>
+                                            </group>
+
+                                            <!-- Procedimiento específico -->
+                                            <group string="🔬 Procedimiento">
+                                                <field name="specific_method" 
+                                                       placeholder="Detalles específicos del método utilizado..."/>
+                                            </group>
+
+                                        </sheet>
+                                    </form>
+                                </field>
+                            </page>
+                        </notebook>
 
                     </sheet>
                 </form>
             </field>
         </record>
 
+        <!-- ========== VISTA PARA PARÁMETROS DE ANÁLISIS ========== -->
+        <record id="view_parameter_analysis_list" model="ir.ui.view">
+            <field name="name">lims.parameter.analysis.list</field>
+            <field name="model">lims.parameter.analysis</field>
+            <field name="arch" type="xml">
+                <list string="Parámetros de Análisis">
+                    <field name="analysis_id"/>
+                    <field name="name"/>
+                    <field name="microorganism"/>
+                    <field name="analysis_status"/>
+                    <field name="result_value"/>
+                    <field name="analysis_date"/>
+                    <field name="qc_passed"/>
+                </list>
+            </field>
+        </record>
 
         <!-- ========== ACCIÓN PARA ANÁLISIS ========== -->
         <record id="action_lims_analysis" model="ir.actions.act_window">
@@ -100,12 +172,33 @@
             </field>
         </record>
 
-        <!-- ========== MENÚ PARA ANÁLISIS ========== -->
+        <!-- ========== ACCIÓN PARA PARÁMETROS DE ANÁLISIS ========== -->
+        <record id="action_parameter_analysis" model="ir.actions.act_window">
+            <field name="name">Parámetros de Análisis</field>
+            <field name="res_model">lims.parameter.analysis</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No hay parámetros de análisis
+                </p>
+                <p>
+                    Los parámetros se crean automáticamente al crear análisis
+                </p>
+            </field>
+        </record>
+
+        <!-- ========== MENÚS ========== -->
         <menuitem id="menu_lims_analysis" 
                   name="Análisis" 
                   parent="menu_lims_analysis_root" 
                   action="action_lims_analysis" 
                   sequence="10"/>
+
+        <menuitem id="menu_parameter_analysis" 
+                  name="Parámetros de Análisis" 
+                  parent="menu_lims_analysis_root" 
+                  action="action_parameter_analysis" 
+                  sequence="15"/>
 
         <!-- Acción para limpiar huérfanos -->
         <record id="action_clean_orphans" model="ir.actions.server">
