@@ -7,7 +7,7 @@
             <field name="name">lims.analysis.list</field>
             <field name="model">lims.analysis</field>
             <field name="arch" type="xml">
-                <list string="Análisis de Muestras" create="false">
+                <list string="Análisis de Muestras" create="true">
                     <field name="sample_code"/>
                     <field name="sample_identifier"/>
                     <field name="sample_id" options="{'no_create': True, 'no_open': True}"/>
