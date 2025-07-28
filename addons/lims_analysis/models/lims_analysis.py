@@ -166,7 +166,7 @@ class LimsAnalysis(models.Model):
             return records
 
 
-# 🆕 NUEVO MODELO PARA PARÁMETROS DE ANÁLISIS
+# 🆕 NUEVO MODELO PARA PARÁMETROS DE ANÁLISIS - CORREGIDO
 class LimsParameterAnalysis(models.Model):
     _name = 'lims.parameter.analysis'
     _description = 'Parámetros de Análisis con Resultados'
@@ -213,36 +213,54 @@ class LimsParameterAnalysis(models.Model):
         default=10
     )
     
-    # 🆕 CAMPOS PARA RESULTADOS Y ANÁLISIS (existentes)
-    analysis_status = fields.Selection([
-        ('pending', 'Pendiente'),
-        ('in_progress', 'En Proceso'),
-        ('completed', 'Completado'),
-        ('reviewed', 'Revisado'),
-        ('approved', 'Aprobado')
-    ], string='Estado del Análisis', default='pending')
+    # 🆕 SISTEMA HÍBRIDO DE RESULTADOS
     
+    # Campo principal (siempre visible)
     result_value = fields.Char(
         string='Resultado',
-        help='Resultado obtenido del análisis'
+        help='Resultado principal del análisis',
+        placeholder='Ej: 7.2, Negativo, 1.2 x 10² UFC/g, < 0.01 mg/kg'
     )
     
+    # Campos específicos que aparecen según contexto
     result_numeric = fields.Float(
-        string='Resultado Numérico',
-        help='Para resultados que requieren cálculos'
+        string='Valor Numérico',
+        help='Para cálculos automáticos y validaciones',
+        digits=(12, 4)
     )
     
+    result_unit = fields.Char(
+        string='Unidad',
+        help='Unidad del resultado',
+        placeholder='mg/L, °C, pH, NTU, etc.'
+    )
+    
+    # Para microbiología
     result_qualitative = fields.Selection([
+        ('detected', 'Detectado'),
+        ('not_detected', 'No Detectado'),
         ('positive', 'Positivo'),
         ('negative', 'Negativo'),
         ('presence', 'Presencia'),
         ('absence', 'Ausencia'),
         ('growth', 'Crecimiento'),
-        ('no_growth', 'Sin Crecimiento')
+        ('no_growth', 'Sin Crecimiento'),
+        ('confirmed', 'Confirmado'),
+        ('not_confirmed', 'No Confirmado')
     ], string='Resultado Cualitativo')
     
+    # Límites de detección y cuantificación
+    below_detection_limit = fields.Boolean(
+        string='< Límite de Detección',
+        help='Resultado por debajo del límite de detección'
+    )
     
-    # CAMPOS EXISTENTES DE ANÁLISIS
+    above_quantification_limit = fields.Boolean(
+        string='> Límite de Cuantificación',
+        help='Resultado por encima del límite de cuantificación'
+    )
+    
+    # CAMPOS DE ANÁLISIS (sin duplicar analysis_status)
     analysis_status = fields.Selection([
         ('pending', 'Pendiente'),
         ('in_progress', 'En Proceso'),
@@ -281,90 +299,15 @@ class LimsParameterAnalysis(models.Model):
         string='Notas de Control de Calidad'
     )
     
-    # 🆕 MÉTODOS COMPUTADOS Y ONCHANGE
-    @api.depends('cfu_count', 'cfu_dilution')
-    def _compute_cfu_result(self):
-        """Calcular resultado de UFC automáticamente considerando dilución"""
-        for record in self:
-            if not record.cfu_count:
-                record.cfu_result = False
-                continue
-                
-            count = record.cfu_count
-            dilution_factors = {
-                'direct': 1,
-                '10_1': 10,
-                '10_2': 100,
-                '10_3': 1000,
-                '10_4': 10000,
-                '10_5': 100000,
-                '10_6': 1000000
-            }
-            
-            factor = dilution_factors.get(record.cfu_dilution, 1)
-            final_count = count * factor
-            
-            # Formatear según el rango
-            if final_count == 0:
-                record.cfu_result = "No detectado"
-            elif final_count < 10:
-                record.cfu_result = f"< 1.0 x 10¹ UFC/g"
-            elif final_count > 300000:
-                record.cfu_result = f"> 3.0 x 10⁵ UFC/g"
-            else:
-                # Convertir a notación científica
-                if final_count >= 1000:
-                    exp = len(str(int(final_count))) - 1
-                    base = final_count / (10 ** exp)
-                    record.cfu_result = f"{base:.1f} x 10{chr(8304 + exp)} UFC/g"
-                else:
-                    record.cfu_result = f"{final_count} UFC/g"
-    
-    @api.depends('category', 'microorganism', 'name')
-    def _compute_result_type_suggestion(self):
-        """Sugerir tipo de resultado según el parámetro"""
-        for record in self:
-            if not record.category:
-                record.result_type_suggestion = False
-                continue
-                
-            suggestions = []
-            
-            if record.category == 'microbiological':
-                micro_name = (record.microorganism or record.name or '').lower()
-                
-                if any(x in micro_name for x in ['coliform', 'aerob', 'mesofil', 'levadura', 'moho']):
-                    suggestions.append("🔢 <b>Recuento:</b> Contar colonias en placa, seleccionar dilución")
-                    suggestions.append("📝 El resultado se calculará automáticamente")
-                elif any(x in micro_name for x in ['salmonella', 'listeria', 'e.coli o157', 'campylobacter']):
-                    suggestions.append("✅ <b>Cualitativo:</b> Detectado/No Detectado o Presencia/Ausencia")
-                else:
-                    suggestions.append("🧪 <b>Microbiológico:</b> Usar resultado cualitativo o recuento según corresponda")
-                    
-            elif record.category == 'chemical':
-                suggestions.append("🔬 <b>Químico:</b> Ingresar valor numérico + unidad")
-                suggestions.append("📊 Ej: 7.2 (valor) + pH (unidad) = '7.2 pH'")
-                
-            elif record.category == 'physical':
-                suggestions.append("⚗️ <b>Físico:</b> Ingresar medición + unidad")
-                suggestions.append("🌡️ Ej: 25 (valor) + °C (unidad) = '25°C'")
-            
-            if suggestions:
-                record.result_type_suggestion = "<br/>".join(suggestions)
-            else:
-                record.result_type_suggestion = "💡 <b>Resultado principal:</b> Ingresar el resultado final del análisis"
-    
+    # 🆕 MÉTODOS ONCHANGE BÁSICOS (sin campos inexistentes)
     @api.onchange('result_numeric', 'result_unit')
     def _onchange_numeric_result(self):
         """Auto-completar resultado principal cuando se llena numérico + unidad"""
         if self.result_numeric and self.result_unit:
-            # Formatear número según el tipo
             if self.result_unit.lower() in ['ph', 'unidades de ph']:
                 self.result_value = f"{self.result_numeric:.1f} {self.result_unit}"
-            elif self.category == 'chemical':
-                self.result_value = f"{self.result_numeric} {self.result_unit}"
             else:
-                self.result_value = f"{self.result_numeric}{self.result_unit}"
+                self.result_value = f"{self.result_numeric} {self.result_unit}"
     
     @api.onchange('result_qualitative')
     def _onchange_qualitative_result(self):
@@ -384,20 +327,12 @@ class LimsParameterAnalysis(models.Model):
             }
             self.result_value = qualitative_map.get(self.result_qualitative, self.result_qualitative)
     
-    @api.onchange('cfu_result')
-    def _onchange_cfu_result(self):
-        """Auto-completar resultado principal con resultado de UFC"""
-        if self.cfu_result and self.category == 'microbiological':
-            self.result_value = self.cfu_result
-    
     @api.onchange('below_detection_limit', 'above_quantification_limit')
     def _onchange_limits(self):
         """Auto-completar resultado cuando está fuera de límites"""
         if self.below_detection_limit:
-            limit = getattr(self.parameter_id, 'detection_limit', None) or '0.01'
-            unit = self.result_unit or getattr(self.parameter_id, 'unit', '') or ''
-            self.result_value = f"< {limit} {unit}".strip()
+            unit = self.result_unit or ''
+            self.result_value = f"< LD {unit}".strip()
         elif self.above_quantification_limit:
-            limit = getattr(self.parameter_id, 'quantification_limit', None) or '100'
-            unit = self.result_unit or getattr(self.parameter_id, 'unit', '') or ''
-            self.result_value = f"> {limit} {unit}".strip()
+            unit = self.result_unit or ''
+            self.result_value = f"> LC {unit}".strip()

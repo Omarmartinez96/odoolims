@@ -97,7 +97,7 @@
                                                 </group>
                                             </group>
 
-                                            <!-- 🆕 SISTEMA HÍBRIDO DE RESULTADOS -->
+                                            <!-- 🆕 SISTEMA HÍBRIDO DE RESULTADOS - VERSIÓN SIMPLIFICADA -->
                                             <group string="📊 Captura de Resultados">
                                                 
                                                 <!-- CAMPO PRINCIPAL - SIEMPRE VISIBLE -->
@@ -106,13 +106,6 @@
                                                        style="font-size: 16px;"
                                                        colspan="2"/>
                                                 
-                                                <!-- GUÍA CONTEXTUAL -->
-                                                <field name="result_type_suggestion" 
-                                                       readonly="1" 
-                                                       nolabel="1"
-                                                       colspan="2"
-                                                       widget="html"
-                                                       class="alert alert-info"/>
                                             </group>
                                             
                                             <!-- CAMPOS ESPECÍFICOS POR TIPO -->
@@ -127,18 +120,6 @@
                                                 <!-- PARA MICROBIOLOGÍA CUALITATIVA -->
                                                 <group string="Resultado Cualitativo" invisible="category != 'microbiological'">
                                                     <field name="result_qualitative"/>
-                                                </group>
-                                                
-                                                <!-- PARA RECUENTOS MICROBIOLÓGICOS -->
-                                                <group string="Recuento de UFC" invisible="category != 'microbiological'">
-                                                    <group>
-                                                        <field name="cfu_count"/>
-                                                        <field name="cfu_dilution"/>
-                                                    </group>
-                                                    <field name="cfu_result" 
-                                                           readonly="1" 
-                                                           class="o_field_highlight"
-                                                           invisible="cfu_count == 0"/>
                                                 </group>
                                                 
                                                 <!-- LÍMITES DE DETECCIÓN -->
