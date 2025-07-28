@@ -72,7 +72,7 @@ class LimsAnalysis(models.Model):
     
     @api.depends('sample_id', 'analyst_id')
     def _compute_sample_info(self):
-        """Calcular información de la muestra y nombre del análisis"""
+        """Calcular información de la muestra y nombre del análisisF"""
         for analysis in self:
             # Obtener código de recepción
             sample_code = ''
@@ -105,6 +105,35 @@ class LimsAnalysis(models.Model):
         self.analysis_state = 'completed'
         self.analysis_end_date = fields.Date.context_today(self)
 
+    def action_clean_orphan_records(self):
+        """Método temporal para limpiar registros huérfanos"""
+        # Buscar análisis con sample_id que no existe
+        all_analyses = self.search([])
+        orphan_count = 0
+        
+        for analysis in all_analyses:
+            try:
+                # Intentar acceder a la muestra
+                if analysis.sample_id:
+                    sample_exists = analysis.sample_id.exists()
+                    if not sample_exists:
+                        analysis.unlink()
+                        orphan_count += 1
+            except:
+                # Si hay error, es huérfano
+                analysis.unlink()
+                orphan_count += 1
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Limpieza Completada',
+                'message': f'Se eliminaron {orphan_count} registros huérfanos',
+                'type': 'success',
+            }
+        }
+
 class LimsSample(models.Model):
     _inherit = 'lims.sample'
     
@@ -132,3 +161,4 @@ class LimsSample(models.Model):
             'view_mode': 'form',
             'target': 'current',
         }
+    
