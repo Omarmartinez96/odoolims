@@ -128,7 +128,6 @@
                                                 <!-- Opción Directo con etiqueta visible - CORREGIDO -->
                                                 <field name="dilution_direct" 
                                                        string="Directo (sin dilución)"
-                                                       invisible="sample_treatment_type != 'iso_11737'"
                                                        colspan="2"/>
                                                 
                                                 <!-- Diluciones estándar -->
