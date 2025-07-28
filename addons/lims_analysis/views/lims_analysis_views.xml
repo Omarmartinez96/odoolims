@@ -54,14 +54,6 @@
                             </group>
                         </group>
 
-                        <!-- Botón temporal de debug -->
-                        <div class="oe_button_box">
-                            <button name="debug_parameters" 
-                                    type="object" 
-                                    string="🔍 Debug Parámetros" 
-                                    class="btn-warning"/>
-                        </div>
-
                         <!-- 🆕 SECCIÓN DE PARÁMETROS DE ANÁLISIS -->
                         <notebook>
                             <page string="🔬 Parámetros de Análisis">
