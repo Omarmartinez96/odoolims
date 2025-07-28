@@ -15,6 +15,7 @@
         'base',
         'lims_customer',
         'lims_reception',
+        'lims_sample_reception', 
     ],
     'data': [
         'data/sequences.xml',
