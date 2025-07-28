@@ -2,7 +2,7 @@
 <odoo>
     <data>
         
-        <!-- ========== VISTA LISTA DE ANÁLISIS ACTUALIZADA ========== -->
+        <!-- ========== VISTA LISTA DE ANÁLISIS ========== -->
         <record id="view_lims_analysis_list" model="ir.ui.view">
             <field name="name">lims.analysis.list</field>
             <field name="model">lims.analysis</field>
@@ -19,7 +19,7 @@
             </field>
         </record>
 
-        <!-- ========== VISTA FORMULARIO DE ANÁLISIS ACTUALIZADA ========== -->
+        <!-- ========== VISTA FORMULARIO DE ANÁLISIS ========== -->
         <record id="view_lims_analysis_form" model="ir.ui.view">
             <field name="name">lims.analysis.form</field>
             <field name="model">lims.analysis</field>
@@ -54,7 +54,7 @@
                             </group>
                         </group>
 
-                        <!-- 🆕 SECCIÓN DE PARÁMETROS DE ANÁLISIS -->
+                        <!-- SECCIÓN DE PARÁMETROS DE ANÁLISIS -->
                         <notebook>
                             <page string="🔬 Parámetros de Análisis">
                                 <field name="parameter_analysis_ids" nolabel="1">
@@ -97,56 +97,67 @@
                                                 </group>
                                             </group>
 
-                                            <!-- 🆕 SISTEMA HÍBRIDO DE RESULTADOS CON DATOS CRUDOS -->
-                                            <group string="📊 Resultado Final">
-                                                
-                                                <!-- CAMPO PRINCIPAL - SIEMPRE VISIBLE -->
-                                                <field name="result_value" 
-                                                       class="o_field_highlight"
-                                                       style="font-size: 16px;"
-                                                       readonly="1"
-                                                       help="Se calcula automáticamente desde datos crudos"
-                                                       colspan="2"/>
-                                                
-                                            </group>
-                                            
-                                            <!-- 🆕 DATOS CRUDOS DE DILUCIONES (PARA MICROBIOLOGÍA) -->
+                                            <!-- DATOS CRUDOS DE DILUCIONES (PARA MICROBIOLOGÍA) -->
                                             <group string="🧪 Datos Crudos de Diluciones" invisible="category != 'microbiological'">
-                                                <field name="raw_dilution_data_ids" nolabel="1">
+                                                
+                                                <!-- NOTA INFORMATIVA -->
+                                                <div class="alert alert-info" style="margin-bottom: 10px;" colspan="2">
+                                                    <strong>📝 Nota:</strong> Esta tabla es únicamente para registrar datos crudos. 
+                                                    Los cálculos mostrados son informativos. El resultado final debe ingresarse manualmente abajo.
+                                                </div>
+                                                
+                                                <!-- TABLA DE DILUCIONES LIMPIA -->
+                                                <field name="raw_dilution_data_ids" nolabel="1" colspan="2">
                                                     <list string="Diluciones" editable="bottom" create="true" delete="true">
                                                         <field name="dilution_factor"/>
                                                         <field name="ufc_count"/>
                                                         <field name="calculated_result" readonly="1"/>
-                                                        <field name="selected_for_result"/>
                                                         <field name="observations"/>
                                                     </list>
                                                     
                                                     <form string="Datos de Dilución">
                                                         <group>
-                                                            <group>
-                                                                <field name="dilution_factor"/>
-                                                                <field name="ufc_count"/>
-                                                                <field name="selected_for_result"/>
-                                                            </group>
-                                                            <group>
-                                                                <field name="calculated_result" readonly="1"/>
-                                                                <field name="positive_tubes" invisible="1"/>
-                                                                <field name="total_tubes" invisible="1"/>
-                                                            </group>
+                                                            <field name="dilution_factor"/>
+                                                            <field name="ufc_count"/>
+                                                            <field name="calculated_result" readonly="1"/>
                                                         </group>
                                                         <group>
-                                                            <field name="observations" nolabel="1" colspan="2"/>
+                                                            <field name="observations" nolabel="1"/>
                                                         </group>
                                                     </form>
                                                 </field>
                                                 
-                                                <!-- MOSTRAR CÁLCULO FINAL -->
-                                                <field name="final_result_calculation" 
-                                                       readonly="1" 
-                                                       nolabel="1"
-                                                       widget="text"
-                                                       style="font-family: monospace; font-size: 12px; background-color: #f8f9fa;"
-                                                       invisible="final_result_calculation == False"/>
+                                                <!-- CÁLCULOS INFORMATIVOS -->
+                                                <group string="📊 Cálculos Informativos" invisible="dilution_calculations == False">
+                                                    <field name="dilution_calculations" 
+                                                           readonly="1" 
+                                                           nolabel="1"
+                                                           widget="text"
+                                                           style="font-family: monospace; font-size: 12px; color: #0066cc; background-color: #f0f8ff; padding: 10px; border-radius: 4px;"
+                                                           colspan="2"/>
+                                                </group>
+                                                
+                                                <!-- RESULTADO FINAL MANUAL -->
+                                                <group string="📋 Resultado Final (Manual)">
+                                                    <field name="result_value" 
+                                                           class="o_field_highlight"
+                                                           style="font-size: 16px;"
+                                                           placeholder="Ingrese el resultado final manualmente"/>
+                                                    <field name="result_unit_selection"/>
+                                                    <field name="custom_unit" 
+                                                           placeholder="Especificar unidad"
+                                                           invisible="result_unit_selection != 'custom'"
+                                                           colspan="2"/>
+                                                </group>
+                                                
+                                            </group>
+                                            
+                                            <!-- RESULTADO SIMPLE PARA NO MICROBIOLÓGICOS -->
+                                            <group string="📊 Resultado Final" invisible="category == 'microbiological'">
+                                                <field name="result_value" 
+                                                       class="o_field_highlight"
+                                                       style="font-size: 16px;"
+                                                       colspan="2"/>
                                             </group>
                                             
                                             <!-- CAMPOS ESPECÍFICOS POR TIPO -->
