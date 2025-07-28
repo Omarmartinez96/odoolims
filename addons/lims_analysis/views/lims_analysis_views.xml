@@ -106,6 +106,7 @@
                                                 <field name="requires_pre_enrichment"/>
                                                 <field name="requires_selective_enrichment"/>
                                                 <field name="requires_confirmation"/>
+                                                <field name="requires_ph_adjustment"/>
                                             </group>
 
                                             <!-- 🆕 SECCIÓN DE PRE-ENRIQUECIMIENTO -->
@@ -122,16 +123,27 @@
                                                            placeholder="Seleccionar equipo específico"/>
                                                 </group>
                                                 
-                                                <group string="Horarios y Fechas">
-                                                    <field name="pre_enrichment_start_date"/>
-                                                    <field name="pre_enrichment_start_time" placeholder="HH:MM"/>
-                                                    <field name="pre_enrichment_end_date"/>
-                                                    <field name="pre_enrichment_end_time" placeholder="HH:MM"/>
+                                                <group string="Fechas del Proceso">
+                                                    <field name="pre_enrichment_processing_date"/>
+                                                    <field name="pre_enrichment_processing_time" placeholder="HH:MM"/>
                                                 </group>
                                                 
-                                                <group string="Observaciones del Pre-enriquecimiento">
-                                                    <field name="pre_enrichment_notes" nolabel="1" 
-                                                           placeholder="Observaciones específicas del proceso de pre-enriquecimiento..."/>
+                                                <group string="Incubación">
+                                                    <field name="pre_enrichment_incubation_start_date"/>
+                                                    <field name="pre_enrichment_incubation_start_time" placeholder="HH:MM"/>
+                                                    <field name="pre_enrichment_incubation_end_date"/>
+                                                    <field name="pre_enrichment_incubation_end_time" placeholder="HH:MM"/>
+                                                </group>
+                                                
+                                                <group string="Medios y Reactivos">
+                                                    <field name="pre_enrichment_media_batch_id" 
+                                                           placeholder="Seleccionar lote de medio"/>
+                                                    <field name="pre_enrichment_sample_amount" 
+                                                           placeholder="Ej: 25g, 1mL"/>
+                                                    <field name="pre_enrichment_diluent_volume" 
+                                                           placeholder="Ej: 225mL"/>
+                                                    <field name="pre_enrichment_diluent_batch" 
+                                                           placeholder="Lote del diluyente"/>
                                                 </group>
                                                 
                                             </group>
@@ -283,6 +295,7 @@
                     <field name="result_value" class="o_field_highlight"/>
                     <field name="result_unit_selection"/>
                     <field name="analysis_date"/>
+                    <field name="qc_passed"/>
                 </list>
             </field>
         </record>

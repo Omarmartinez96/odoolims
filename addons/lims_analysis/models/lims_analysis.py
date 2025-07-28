@@ -269,14 +269,18 @@ class LimsParameterAnalysis(models.Model):
         help='Marcar si este parámetro requiere pruebas de confirmación'
     )
 
+    requires_ph_adjustment = fields.Boolean(
+        string='Requiere Ajuste de pH',
+        default=False,
+        help='Marcar si este parámetro requiere ajuste de pH'
+    )
+
     # 🆕 CAMPOS PARA PRE-ENRIQUECIMIENTO
     pre_enrichment_environment = fields.Selection([
-        ('campana', 'Campana'),
         ('triangulo_esteril', 'Triángulo Estéril'),
         ('campana_flujo', 'Campana de Flujo Laminar'),
         ('campana_bioseguridad', 'Campana de Bioseguridad'),
         ('mesa_trabajo', 'Mesa de Trabajo'),
-        ('otro', 'Otro')
     ], string='Ambiente de Procesamiento')
 
     pre_enrichment_equipment_id = fields.Many2one(
@@ -286,27 +290,55 @@ class LimsParameterAnalysis(models.Model):
         help='Equipo específico utilizado para el pre-enriquecimiento'
     )
 
-    pre_enrichment_start_date = fields.Date(
-        string='Fecha de Inicio'
+    # Fechas de procesamiento
+    pre_enrichment_processing_date = fields.Date(
+        string='Fecha de Procesamiento'
     )
 
-    pre_enrichment_start_time = fields.Char(
-        string='Hora de Inicio',
+    pre_enrichment_processing_time = fields.Char(
+        string='Hora de Procesamiento',
         help='Formato HH:MM'
     )
 
-    pre_enrichment_end_date = fields.Date(
-        string='Fecha de Finalización'
+    # Fechas de incubación
+    pre_enrichment_incubation_start_date = fields.Date(
+        string='Fecha Inicio Incubación'
     )
 
-    pre_enrichment_end_time = fields.Char(
-        string='Hora de Finalización',
+    pre_enrichment_incubation_start_time = fields.Char(
+        string='Hora Inicio Incubación',
         help='Formato HH:MM'
     )
 
-    pre_enrichment_notes = fields.Text(
-        string='Observaciones de Pre-enriquecimiento',
-        help='Notas específicas sobre el proceso de pre-enriquecimiento'
+    pre_enrichment_incubation_end_date = fields.Date(
+        string='Fecha Fin Incubación'
+    )
+
+    pre_enrichment_incubation_end_time = fields.Char(
+        string='Hora Fin Incubación',
+        help='Formato HH:MM'
+    )
+
+    # Medios y reactivos
+    pre_enrichment_media_batch_id = fields.Many2one(
+        'lims.culture.media.batch',
+        string='Lote de Medio de Cultivo',
+        help='Lote del medio de cultivo utilizado para pre-enriquecimiento'
+    )
+
+    pre_enrichment_sample_amount = fields.Char(
+        string='Cantidad de Muestra',
+        help='Cantidad de muestra utilizada (ej: 25g, 1mL)'
+    )
+
+    pre_enrichment_diluent_volume = fields.Char(
+        string='Volumen de Diluyente',
+        help='Volumen del diluyente utilizado (ej: 225mL)'
+    )
+
+    pre_enrichment_diluent_batch = fields.Char(
+        string='Lote de Diluyente',
+        help='Número de lote del diluyente utilizado'
     )
 
     # Para microbiología
@@ -475,6 +507,23 @@ class LimsParameterAnalysis(models.Model):
             # Limpiar campos cualitativos
             self.result_qualitative = False
 
+    @api.onchange('pre_enrichment_environment')
+    def _onchange_pre_enrichment_environment(self):
+        """Limpiar equipo cuando cambia el ambiente"""
+        if self.pre_enrichment_environment not in ['campana_flujo', 'campana_bioseguridad']:
+            self.pre_enrichment_equipment_id = False
+        
+        # Actualizar dominio del equipo según el ambiente
+        if self.pre_enrichment_environment == 'campana_flujo':
+            domain = [('equipment_type', '=', 'campana_flujo')]
+        elif self.pre_enrichment_environment == 'campana_bioseguridad':
+            domain = [('equipment_type', '=', 'campana_bioseguridad')]
+        else:
+            domain = []
+        
+        return {'domain': {'pre_enrichment_equipment_id': domain}}
+    
+    # 🆕 MÉTODO ONCHANGE PARA AMBIENTE DE PROCESAMIENTO
     @api.onchange('pre_enrichment_environment')
     def _onchange_pre_enrichment_environment(self):
         """Limpiar equipo cuando cambia el ambiente"""
