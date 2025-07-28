@@ -290,13 +290,13 @@ class LimsSampleReception(models.Model):
                 ])
                 
                 if not existing_analysis:
-                    # Crear análisis automáticamente
+                    # Crear análisis automáticamente (SIN analyst_id)
                     analysis = self.env['lims.analysis'].create({
                         'sample_reception_id': record.id,
-                        'analyst_id': self.env.user.id,  # Asignar al usuario actual por defecto
+                        # Removido: 'analyst_id': self.env.user.id,
                     })
                     
-                    # Opcional: Mostrar notificación
+                    # Mostrar notificación de éxito
                     self.env['bus.bus']._sendone(
                         self.env.user.partner_id, 
                         'simple_notification', 
