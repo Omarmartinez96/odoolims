@@ -19,7 +19,7 @@
             </field>
         </record>
 
-        <!-- ========== VISTA FORMULARIO DE ANÁLISIS ========== -->
+        <!-- ========== VISTA FORMULARIO DE ANÁLISIS MEJORADA ========== -->
         <record id="view_lims_analysis_form" model="ir.ui.view">
             <field name="name">lims.analysis.form</field>
             <field name="model">lims.analysis</field>
@@ -97,8 +97,24 @@
                                                 </group>
                                             </group>
 
-                                            <!-- DATOS CRUDOS DE DILUCIONES (PARA MICROBIOLOGÍA) -->
-                                            <group string="🧪 Datos Crudos de Diluciones" invisible="category != 'microbiological'">
+                                            <!-- 🆕 TIPO DE RESULTADO -->
+                                            <group string="🎯 Tipo de Resultado">
+                                                <field name="result_type" widget="radio" required="1"/>
+                                            </group>
+
+                                            <!-- RESULTADO CUALITATIVO (cuando se selecciona result_type = 'qualitative') -->
+                                            <group string="📊 Resultado Cualitativo" 
+                                                   invisible="result_type != 'qualitative'">
+                                                <field name="result_qualitative"/>
+                                                <field name="result_value" 
+                                                       class="o_field_highlight"
+                                                       style="font-size: 16px;"
+                                                       placeholder="Se completará automáticamente al seleccionar resultado cualitativo"/>
+                                            </group>
+
+                                            <!-- DATOS CRUDOS DE DILUCIONES (SOLO PARA MICROBIOLOGÍA Y CUANTITATIVO) -->
+                                            <group string="🧪 Datos Crudos de Diluciones" 
+                                                   invisible="category != 'microbiological' or result_type != 'quantitative'">
                                                 
                                                 <!-- NOTA INFORMATIVA -->
                                                 <div class="alert alert-info" style="margin-bottom: 10px;" colspan="2">
@@ -106,7 +122,7 @@
                                                     Los cálculos mostrados son informativos. El resultado final debe ingresarse manualmente abajo.
                                                 </div>
                                                 
-                                                <!-- TABLA DE DILUCIONES CON SOPORTE UFC/NMP -->
+                                                <!-- TABLA DE DILUCIONES SIMPLIFICADA -->
                                                 <field name="raw_dilution_data_ids" nolabel="1" colspan="2">
                                                     <list string="Diluciones" editable="bottom" create="true" delete="true">
                                                         <field name="method_type"/>
@@ -116,12 +132,10 @@
                                                         <!-- NMP -->
                                                         <field name="positive_tubes" invisible="method_type != 'nmp'"/>
                                                         <field name="total_tubes" invisible="method_type != 'nmp'"/>
-                                                        <field name="nmp_result" invisible="method_type != 'nmp'"/>
                                                         <!-- Cualitativo -->
-                                                        <field name="result_qualitative" invisible="method_type != 'qualitative'"/>
-                                                        <!-- Resultado -->
+                                                        <field name="result_qualitative" invisible="method_type != 'qualitative'" name="dilution_qualitative"/>
+                                                        <!-- Resultado calculado -->
                                                         <field name="calculated_result" readonly="1"/>
-                                                        <field name="observations"/>
                                                     </list>
                                                     
                                                     <form string="Datos de Dilución">
@@ -151,7 +165,7 @@
                                                             
                                                             <!-- PARA CUALITATIVO -->
                                                             <group string="Resultado Cualitativo" invisible="method_type != 'qualitative'">
-                                                                <field name="result_qualitative"/>
+                                                                <field name="result_qualitative" name="dilution_qualitative"/>
                                                             </group>
                                                         </group>
                                                         
@@ -171,31 +185,25 @@
                                                            colspan="2"/>
                                                 </group>
                                                 
-                                                <!-- RESULTADO FINAL MANUAL -->
-                                                <group string="📋 Resultado Final (Manual)">
-                                                    <field name="result_value" 
-                                                           class="o_field_highlight"
-                                                           style="font-size: 16px;"
-                                                           placeholder="Ingrese el resultado final manualmente"/>
-                                                    <field name="result_unit_selection"/>
-                                                    <field name="custom_unit" 
-                                                           placeholder="Especificar unidad"
-                                                           invisible="result_unit_selection != 'custom'"
-                                                           colspan="2"/>
-                                                </group>
-                                                
                                             </group>
                                             
-                                            <!-- RESULTADO SIMPLE PARA NO MICROBIOLÓGICOS -->
-                                            <group string="📊 Resultado Final" invisible="category == 'microbiological'">
+                                            <!-- RESULTADO FINAL MANUAL (PARA CUANTITATIVO) -->
+                                            <group string="📋 Resultado Final" 
+                                                   invisible="result_type != 'quantitative'">
                                                 <field name="result_value" 
                                                        class="o_field_highlight"
                                                        style="font-size: 16px;"
+                                                       placeholder="Ingrese el resultado final manualmente"/>
+                                                <field name="result_unit_selection"/>
+                                                <field name="custom_unit" 
+                                                       placeholder="Especificar unidad"
+                                                       invisible="result_unit_selection != 'custom'"
                                                        colspan="2"/>
                                             </group>
                                             
-                                            <!-- CAMPOS ESPECÍFICOS POR TIPO -->
-                                            <group string="🔬 Campos Específicos">
+                                            <!-- CAMPOS ESPECÍFICOS POR TIPO (PARA QUÍMICO Y FÍSICO) -->
+                                            <group string="🔬 Campos Específicos" 
+                                                   invisible="category == 'microbiological' or result_type != 'quantitative'">
                                                 
                                                 <!-- PARA QUÍMICO Y FÍSICO - Valores Numéricos -->
                                                 <group string="Valores Numéricos" invisible="category not in ['chemical', 'physical']">
@@ -207,11 +215,6 @@
                                                 <group string="Límites Analíticos" invisible="category not in ['chemical', 'physical']">
                                                     <field name="below_detection_limit"/>
                                                     <field name="above_quantification_limit"/>
-                                                </group>
-                                                
-                                                <!-- PARA MICROBIOLOGÍA - Resultado Cualitativo (cuando no hay recuento) -->
-                                                <group string="Resultado Cualitativo" invisible="category != 'microbiological' or raw_dilution_data_ids">
-                                                    <field name="result_qualitative"/>
                                                 </group>
                                                 
                                             </group>

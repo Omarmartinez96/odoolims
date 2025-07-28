@@ -234,6 +234,11 @@ class LimsParameterAnalysis(models.Model):
         help='Unidad del resultado',
         placeholder='mg/L, °C, pH, NTU, etc.'
     )
+
+    result_type = fields.Selection([
+        ('qualitative', 'Cualitativo'),
+        ('quantitative', 'Cuantitativo')
+    ], string='Tipo de Resultado', default='quantitative', required=True)
     
     # Para microbiología
     result_qualitative = fields.Selection([
@@ -404,6 +409,23 @@ class LimsParameterAnalysis(models.Model):
         elif self.above_quantification_limit:
             unit = self.result_unit or ''
             self.result_value = f"> LC {unit}".strip()
+
+    @api.onchange('result_type')
+    def _onchange_result_type(self):
+        """Limpiar campos cuando cambia el tipo de resultado"""
+        if self.result_type == 'qualitative':
+            # Limpiar campos cuantitativos
+            self.result_numeric = False
+            self.result_unit = False
+            self.below_detection_limit = False
+            self.above_quantification_limit = False
+            self.result_unit_selection = False
+            self.custom_unit = False
+            # Limpiar datos de diluciones
+            self.raw_dilution_data_ids = [(5, 0, 0)]
+        elif self.result_type == 'quantitative':
+            # Limpiar campos cualitativos
+            self.result_qualitative = False
 
 # 🆕 MODELO PARA DATOS CRUDOS DE DILUCIONES
 class LimsRawDilutionData(models.Model):
