@@ -7,10 +7,11 @@
             <field name="name">lims.analysis.list</field>
             <field name="model">lims.analysis</field>
             <field name="arch" type="xml">
-                <list string="Análisis de Muestras">
+                <list string="Análisis de Muestras" create="false">
                     <field name="sample_code"/>
                     <field name="sample_identifier"/>
-                    <field name="sample_id"/>
+                    <field name="sample_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="available_sample_ids" invisible="1"/>
                     <field name="analyst_id"/>
                     <field name="analysis_start_date"/>
                     <field name="analysis_state"/>
@@ -82,12 +83,17 @@
             <field name="name">Análisis de Muestras</field>
             <field name="res_model">lims.analysis</field>
             <field name="view_mode">list,form</field>
+            <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_lims_analysis_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_lims_analysis_form')})
+            ]"/>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    Crear el primer análisis
+                    No hay análisis disponibles
                 </p>
                 <p>
-                    Gestione los análisis de muestras del laboratorio
+                    Los análisis se crean automáticamente desde muestras recibidas
                 </p>
             </field>
         </record>

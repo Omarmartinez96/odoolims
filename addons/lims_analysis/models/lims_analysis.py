@@ -12,7 +12,14 @@ class LimsAnalysis(models.Model):
         'lims.sample',
         string='Muestra',
         required=True,
-        ondelete='cascade'
+        ondelete='cascade',
+        domain="[('id', 'in', available_sample_ids)]"
+    )
+
+    # Campo para filtrar muestras recibidas
+    available_sample_ids = fields.Many2many(
+        'lims.sample',
+        compute='_compute_available_samples'
     )
     
     # Campos calculados desde la muestra
@@ -103,3 +110,16 @@ class LimsAnalysis(models.Model):
         """Completar análisis"""
         self.analysis_state = 'completed'
         self.analysis_end_date = fields.Date.context_today(self)
+
+@api.depends()
+def _compute_available_samples(self):
+    """Obtener solo muestras que han sido recibidas"""
+    for analysis in self:
+        # Buscar recepciones con estado 'recibida'
+        receptions = self.env['lims.sample.reception'].search([
+            ('reception_state', '=', 'recibida')
+        ])
+        
+        # Obtener IDs de las muestras recibidas
+        received_sample_ids = receptions.mapped('sample_id.id')
+        analysis.available_sample_ids = [(6, 0, received_sample_ids)]
