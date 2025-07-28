@@ -181,6 +181,16 @@ class LimsParameterAnalysis(models.Model):
         ondelete='cascade'
     )
     
+    analysis_start_date = fields.Date(
+        string='Fecha Inicio de Análisis',
+        help='Fecha en que se inició el análisis de este parámetro'
+    )
+
+    analysis_commitment_date = fields.Date(
+        string='Fecha Compromiso de Análisis',
+        help='Fecha comprometida para la entrega del resultado'
+    )
+
     # Información del parámetro (copiada desde el parámetro original)
     parameter_id = fields.Many2one(
         'lims.sample.parameter',
@@ -283,25 +293,10 @@ class LimsParameterAnalysis(models.Model):
         help='Notas técnicas sobre el análisis realizado'
     )
     
-    internal_notes = fields.Text(
-        string='Notas Internas',
-        help='Notas internas del laboratorio'
-    )
-    
-    # Método utilizado específico para este análisis
-    specific_method = fields.Text(
-        string='Procedimiento Específico',
-        help='Detalles específicos del método utilizado'
-    )
-    
     # Control de calidad específico
     qc_passed = fields.Boolean(
         string='Control de Calidad Aprobado',
         default=False
-    )
-    
-    qc_notes = fields.Text(
-        string='Notas de Control de Calidad'
     )
     
     # 🆕 RELACIÓN CON DATOS CRUDOS DE DILUCIONES

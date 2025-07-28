@@ -87,12 +87,12 @@
                                             <group>
                                                 <group string="📋 Información del Parámetro">
                                                     <field name="method" readonly="1"/>
-                                                    <field name="unit" readonly="1"/>
                                                     <field name="category" readonly="1"/>
                                                     <field name="parameter_id" readonly="1"/>
                                                 </group>
                                                 <group string="📅 Información del Análisis">
-                                                    <field name="analysis_date"/>
+                                                    <field name="analysis_start_date"/>
+                                                    <field name="analysis_commitment_date"/>
                                                     <field name="qc_passed"/>
                                                 </group>
                                             </group>
@@ -220,19 +220,9 @@
                                             </group>
 
                                             <!-- Observaciones -->
-                                            <group string="📝 Observaciones y Notas">
+                                            <group string="📝 Observaciones del Analista">
                                                 <field name="analyst_notes" 
                                                        placeholder="Observaciones técnicas del análisis..."/>
-                                                <field name="internal_notes" 
-                                                       placeholder="Notas internas del laboratorio..."/>
-                                                <field name="qc_notes" 
-                                                       placeholder="Observaciones de control de calidad..."/>
-                                            </group>
-
-                                            <!-- Procedimiento específico -->
-                                            <group string="🔬 Procedimiento">
-                                                <field name="specific_method" 
-                                                       placeholder="Detalles específicos del método utilizado..."/>
                                             </group>
 
                                         </sheet>
