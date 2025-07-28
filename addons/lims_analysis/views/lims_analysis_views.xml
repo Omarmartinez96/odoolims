@@ -63,8 +63,6 @@
                                         <field name="name"/>
                                         <field name="microorganism"/>
                                         <field name="method"/>
-                                        <field name="sample_treatment_type"/>
-                                        <field name="extraction_method" invisible="sample_treatment_type != 'iso_11737'"/>
                                         <field name="analysis_status"/>
                                         <field name="result_value"/>
                                         <field name="qc_passed"/>
@@ -97,58 +95,6 @@
                                                     <field name="analysis_date"/>
                                                     <field name="qc_passed"/>
                                                 </group>
-                                            </group>
-
-                                            <!-- 🆕 PROCESAMIENTO DE MUESTRAS -->
-                                            <group string="🧪 Procesamiento de Muestras">
-                                                <field name="sample_treatment_type"/>
-                                                <field name="requires_extraction" invisible="1"/>
-                                                <field name="requires_dilution" invisible="1"/>
-                                            </group>
-                                            
-                                            <!-- 🆕 EXTRACCIÓN PARA ISO 11737 (DISPOSITIVOS MÉDICOS) -->
-                                            <group string="🔬 Extracción de Microorganismos (ISO 11737-1)" invisible="requires_extraction == False">
-                                                <group>
-                                                    <field name="extraction_method"/>
-                                                    <field name="extraction_volume" placeholder="Ej: 100 mL PBS"/>
-                                                </group>
-                                                <group>
-                                                    <field name="extraction_time" placeholder="Ej: 2 min"/>
-                                                    <field name="other_extraction_method" 
-                                                           placeholder="Describir método utilizado"
-                                                           invisible="extraction_method != 'other_extraction'"/>
-                                                </group>
-                                                <field name="extraction_notes" 
-                                                       placeholder="Observaciones del proceso de extracción..."
-                                                       colspan="2"/>
-                                            </group>
-                                            
-                                            <!-- 🆕 DILUCIONES (SEPARADO Y ABAJO) -->
-                                            <group string="🧪 Diluciones Procesadas" invisible="requires_dilution == False">
-                                                <!-- Opción Directo con etiqueta visible - CORREGIDO -->
-                                                <field name="dilution_direct" 
-                                                       string="Directo (sin dilución)"
-                                                       colspan="2"/>
-                                                
-                                                <!-- Diluciones estándar -->
-                                                <group>
-                                                    <field name="dilution_10_1"/>
-                                                    <field name="dilution_10_2"/>
-                                                </group>
-                                                <group>
-                                                    <field name="dilution_10_3"/>
-                                                    <field name="dilution_10_4"/>
-                                                </group>
-                                                <field name="other_dilution" 
-                                                       placeholder="Ej: 10⁻⁵, 10⁻⁶"
-                                                       colspan="2"/>
-                                            </group>
-                                            
-                                            <!-- 🆕 NOTAS GENERALES DEL TRATAMIENTO -->
-                                            <group string="📝 Notas del Tratamiento">
-                                                <field name="treatment_notes" 
-                                                       placeholder="Observaciones específicas sobre el tratamiento aplicado..."
-                                                       nolabel="1"/>
                                             </group>
 
                                             <!-- Resultados -->
@@ -198,7 +144,6 @@
                     <field name="analysis_id"/>
                     <field name="name"/>
                     <field name="microorganism"/>
-                    <field name="sample_treatment_type"/>
                     <field name="analysis_status"/>
                     <field name="result_value"/>
                     <field name="analysis_date"/>
