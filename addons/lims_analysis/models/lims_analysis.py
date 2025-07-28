@@ -322,9 +322,21 @@ class LimsParameterAnalysis(models.Model):
                 calculations = []
                 selected_dilution = None
                 
+                # Mapeo manual de diluciones para mostrar
+                dilution_names = {
+                    'direct': 'Directo',
+                    '10_1': '10⁻¹',
+                    '10_2': '10⁻²',
+                    '10_3': '10⁻³',
+                    '10_4': '10⁻⁴',
+                    '10_5': '10⁻⁵',
+                    '10_6': '10⁻⁶'
+                }
+                
                 for data in record.raw_dilution_data_ids:
                     if data.ufc_count is not False and data.ufc_count >= 0:
-                        calculations.append(f"{data.get_dilution_display()}: {data.ufc_count} UFC → {data.calculated_result}")
+                        dilution_name = dilution_names.get(data.dilution_factor, data.dilution_factor)
+                        calculations.append(f"{dilution_name}: {data.ufc_count} UFC → {data.calculated_result}")
                         if data.selected_for_result:
                             selected_dilution = data
                 
@@ -481,10 +493,10 @@ class LimsRawDilutionData(models.Model):
     @api.onchange('selected_for_result')
     def _onchange_selected_for_result(self):
         """Solo una dilución puede estar seleccionada por parámetro"""
-        if self.selected_for_result:
+        if self.selected_for_result and self.parameter_analysis_id:
             # Desmarcar otras diluciones del mismo parámetro
             other_dilutions = self.parameter_analysis_id.raw_dilution_data_ids.filtered(
-                lambda x: x.id != self.id
+                lambda x: x.id != self.id and x.id
             )
             for dilution in other_dilutions:
                 dilution.selected_for_result = False
