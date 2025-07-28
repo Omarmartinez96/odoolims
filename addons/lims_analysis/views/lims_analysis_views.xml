@@ -96,13 +96,13 @@
                                             </group>
 
                                             <!-- 🆕 TIPO DE RESULTADO -->
-                                            <group string="🎯 Tipo de Resultado">
+                                            <group string="🎯 Tipo de Resultado" colspan="4">
                                                 <field name="result_type" widget="radio" required="1"/>
                                             </group>
 
                                             <!-- 🆕 SECCIÓN DE PROCESOS ANALÍTICOS -->
                                             <group string="🧪 Procesos Analíticos Requeridos" 
-                                                   invisible="category != 'microbiological'">
+                                                   invisible="category != 'microbiological'" colspan="4">
                                                 <field name="requires_pre_enrichment"/>
                                                 <field name="requires_selective_enrichment"/>
                                                 <field name="requires_confirmation"/>
