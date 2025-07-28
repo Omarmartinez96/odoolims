@@ -130,26 +130,40 @@ class LimsAnalysis(models.Model):
 
     @api.model_create_multi
     def create(self, vals_list):
-        """Override create para copiar parámetros desde la muestra"""
-        records = super().create(vals_list)
-        
-        for record in records:
-            # Copiar parámetros de la muestra a parámetros de análisis
-            if record.sample_reception_id and record.sample_reception_id.sample_id:
-                sample_parameters = record.sample_reception_id.sample_id.parameter_ids
-                
-                for param in sample_parameters:
-                    self.env['lims.parameter.analysis'].create({
-                        'analysis_id': record.id,
-                        'parameter_id': param.id,
-                        'name': param.name,
-                        'method': param.method,
-                        'microorganism': param.microorganism,
-                        'unit': param.unit,
-                        'category': param.category,
-                    })
-        
-        return records
+            """Override create para copiar parámetros desde la muestra"""
+            records = super().create(vals_list)
+            
+            for record in records:
+                # Obtener parámetros de la muestra a través de la recepción
+                if record.sample_reception_id and record.sample_reception_id.sample_id:
+                    sample = record.sample_reception_id.sample_id
+                    sample_parameters = sample.parameter_ids
+                    
+                    print(f"DEBUG: Muestra encontrada: {sample.sample_identifier}")
+                    print(f"DEBUG: Parámetros encontrados: {len(sample_parameters)}")
+                    
+                    # Crear parámetros de análisis para cada parámetro de la muestra
+                    for param in sample_parameters:
+                        print(f"DEBUG: Creando parámetro de análisis para: {param.name}")
+                        
+                        self.env['lims.parameter.analysis'].create({
+                            'analysis_id': record.id,
+                            'parameter_id': param.id,
+                            'name': param.name or 'Sin nombre',
+                            'method': param.method or '',
+                            'microorganism': param.microorganism or '',
+                            'unit': param.unit or '',
+                            'category': param.category or 'other',
+                            'sequence': param.id,  # Usar el ID como secuencia temporal
+                        })
+                        
+                else:
+                    print(f"DEBUG: No se encontró muestra para el análisis {record.id}")
+                    print(f"DEBUG: sample_reception_id: {record.sample_reception_id}")
+                    if record.sample_reception_id:
+                        print(f"DEBUG: sample_id: {record.sample_reception_id.sample_id}")
+            
+            return records
 
 
 # 🆕 NUEVO MODELO PARA PARÁMETROS DE ANÁLISIS
