@@ -283,7 +283,6 @@
                     <field name="result_value" class="o_field_highlight"/>
                     <field name="result_unit_selection"/>
                     <field name="analysis_date"/>
-                    <field name="qc_passed"/>
                 </list>
             </field>
         </record>
