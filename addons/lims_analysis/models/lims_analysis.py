@@ -674,9 +674,7 @@ class LimsRawDilutionData(models.Model):
             self.total_tubes = False
             self.nmp_result = False
 
-# Agregar al final del archivo lims_analysis.py
-
-# 🆕 MODELO PARA MEDIOS UTILIZADOS EN PRE-ENRIQUECIMIENTO
+# 🆕 MODELO EXTENDIDO PARA MEDIOS UTILIZADOS EN PRE-ENRIQUECIMIENTO
 class LimsPreEnrichmentMedia(models.Model):
     _name = 'lims.pre.enrichment.media'
     _description = 'Medios Utilizados en Pre-enriquecimiento'
@@ -701,6 +699,9 @@ class LimsPreEnrichmentMedia(models.Model):
         ('diluyente', 'Diluyente'),
         ('reactivo', 'Reactivo'),
         ('buffer', 'Buffer/Solución'),
+        ('enriquecimiento', 'Caldo de Enriquecimiento'),
+        ('selectivo', 'Medio Selectivo'),
+        ('diferencial', 'Medio Diferencial'),
         ('otro', 'Otro')
     ], string='Tipo', required=True, default='medio_cultivo')
     
@@ -723,17 +724,50 @@ class LimsPreEnrichmentMedia(models.Model):
         help='Lote del medio, diluyente o reactivo'
     )
     
+    # 🆕 CAMPOS DE PREPARACIÓN Y VOLÚMENES
     volume_used = fields.Char(
         string='Volumen/Cantidad Utilizada',
-        help='Ej: 225mL, 25g, 1mL (opcional)'
+        help='Ej: 225mL, 25g, 1mL'
     )
     
-    preparation_notes = fields.Text(
-        string='Notas de Preparación',
-        help='Instrucciones especiales, diluciones, etc.'
+    sample_ratio = fields.Char(
+        string='Proporción Muestra:Medio',
+        help='Ej: 1:9, 1:10, 25g:225mL'
     )
     
-    # 🆕 CAMPOS DE INCUBACIÓN (SOLO PARA MEDIOS QUE REQUIEREN INCUBACIÓN)
+    final_volume = fields.Char(
+        string='Volumen Final',
+        help='Volumen total después de agregar muestra'
+    )
+    
+    # 🆕 CONDICIONES DE PREPARACIÓN
+    preparation_method = fields.Selection([
+        ('directo', 'Inoculación Directa'),
+        ('dilucion', 'Dilución Seriada'),
+        ('homogeneizacion', 'Homogeneización'),
+        ('filtracion', 'Filtración'),
+        ('otro', 'Otro método')
+    ], string='Método de Preparación')
+    
+    ph_adjusted = fields.Boolean(
+        string='pH Ajustado',
+        default=False
+    )
+    
+    ph_final = fields.Char(
+        string='pH Final',
+        help='pH después del ajuste'
+    )
+    
+    sterilization_method = fields.Selection([
+        ('autoclave', 'Autoclave'),
+        ('filtro', 'Filtración'),
+        ('uv', 'Luz UV'),
+        ('ya_esteril', 'Ya Estéril'),
+        ('no_requiere', 'No Requiere')
+    ], string='Método de Esterilización')
+    
+    # 🆕 CAMPOS DE INCUBACIÓN EXPANDIDOS
     requires_incubation = fields.Boolean(
         string='Requiere Incubación',
         compute='_compute_requires_incubation',
@@ -760,8 +794,82 @@ class LimsPreEnrichmentMedia(models.Model):
     )
     
     incubation_temperature = fields.Char(
-        string='Temperatura',
-        help='Ej: 37°C, 25±2°C'
+        string='Temperatura de Incubación',
+        help='Ej: 37°C, 25±2°C, 42°C'
+    )
+    
+    incubation_atmosphere = fields.Selection([
+        ('aerobico', 'Aeróbico'),
+        ('anaerobico', 'Anaeróbico'),
+        ('microaerofilico', 'Microaerófilo'),
+        ('co2', 'Atmósfera CO₂'),
+        ('ambiente', 'Ambiente')
+    ], string='Atmósfera de Incubación')
+    
+    incubation_equipment = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo de Incubación',
+        domain=[('equipment_type', '=', 'incubadora')]
+    )
+    
+    # 🆕 CAMPOS DE OBSERVACIÓN Y RESULTADOS
+    observation_schedule = fields.Text(
+        string='Cronograma de Observación',
+        help='Ej: Observar a las 24h, 48h y 72h'
+    )
+    
+    expected_growth = fields.Char(
+        string='Crecimiento Esperado',
+        help='Descripción del crecimiento esperado'
+    )
+    
+    growth_indicators = fields.Text(
+        string='Indicadores de Crecimiento',
+        help='Cambio de color, turbidez, gas, etc.'
+    )
+    
+    # 🆕 CAMPOS DE CONTROL DE CALIDAD
+    positive_control = fields.Char(
+        string='Control Positivo',
+        help='Cepa de control positivo utilizada'
+    )
+    
+    negative_control = fields.Boolean(
+        string='Control Negativo Incluido',
+        default=False
+    )
+    
+    qc_observations = fields.Text(
+        string='Observaciones de QC',
+        help='Resultados de controles de calidad'
+    )
+    
+    # 🆕 CAMPOS ADICIONALES
+    supplier = fields.Char(
+        string='Proveedor',
+        help='Proveedor del medio o reactivo'
+    )
+    
+    expiry_date = fields.Date(
+        string='Fecha de Vencimiento',
+        help='Fecha de vencimiento del lote utilizado'
+    )
+    
+    storage_conditions = fields.Char(
+        string='Condiciones de Almacenamiento',
+        help='Ej: 2-8°C, Temperatura ambiente, etc.'
+    )
+    
+    preparation_notes = fields.Text(
+        string='Notas de Preparación',
+        help='Instrucciones especiales, diluciones, observaciones, etc.'
+    )
+    
+    # 🆕 CAMPOS CALCULADOS
+    incubation_duration = fields.Char(
+        string='Duración de Incubación',
+        compute='_compute_incubation_duration',
+        help='Duración calculada automáticamente'
     )
     
     display_name = fields.Char(
@@ -773,9 +881,27 @@ class LimsPreEnrichmentMedia(models.Model):
     @api.depends('media_type')
     def _compute_requires_incubation(self):
         """Calcular si requiere incubación según el tipo"""
+        incubation_types = ['medio_cultivo', 'enriquecimiento', 'selectivo', 'diferencial']
         for record in self:
-            # Solo medios de cultivo requieren incubación
-            record.requires_incubation = record.media_type == 'medio_cultivo'
+            record.requires_incubation = record.media_type in incubation_types
+    
+    @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
+    def _compute_incubation_duration(self):
+        """Calcular duración de incubación"""
+        for record in self:
+            if record.incubation_start_date and record.incubation_end_date:
+                start_date = record.incubation_start_date
+                end_date = record.incubation_end_date
+                duration = (end_date - start_date).days
+                
+                if duration == 0:
+                    record.incubation_duration = "Mismo día"
+                elif duration == 1:
+                    record.incubation_duration = "24 horas"
+                else:
+                    record.incubation_duration = f"{duration * 24} horas"
+            else:
+                record.incubation_duration = ""
     
     @api.depends('media_type', 'culture_media_batch_id', 'media_name', 'batch_number')
     def _compute_display_name(self):
@@ -797,19 +923,29 @@ class LimsPreEnrichmentMedia(models.Model):
     @api.onchange('media_type')
     def _onchange_media_type(self):
         """Limpiar campos según el tipo seleccionado"""
-        if self.media_type == 'medio_cultivo':
+        if self.media_type in ['medio_cultivo', 'enriquecimiento', 'selectivo', 'diferencial']:
             self.media_name = False
         else:
             self.culture_media_batch_id = False
-            # Limpiar campos de incubación para diluyentes/reactivos
-            self.incubation_start_date = False
-            self.incubation_start_time = False
-            self.incubation_end_date = False
-            self.incubation_end_time = False
-            self.incubation_temperature = False
+            # Limpiar campos de incubación para no-medios
+            self._clear_incubation_fields()
+    
+    def _clear_incubation_fields(self):
+        """Limpiar todos los campos de incubación"""
+        self.incubation_start_date = False
+        self.incubation_start_time = False
+        self.incubation_end_date = False
+        self.incubation_end_time = False
+        self.incubation_temperature = False
+        self.incubation_atmosphere = False
+        self.incubation_equipment = False
+        self.observation_schedule = False
+        self.expected_growth = False
+        self.growth_indicators = False
     
     @api.onchange('culture_media_batch_id')
     def _onchange_culture_media_batch_id(self):
         """Auto-llenar información del lote"""
         if self.culture_media_batch_id:
             self.batch_number = self.culture_media_batch_id.batch_code
+            self.expiry_date = self.culture_media_batch_id.expiry_date
