@@ -19,6 +19,7 @@
     ],
     'data': [
         'data/sequences.xml',
+        'data/cron_jobs.xml',
         'security/ir.model.access.csv',
         'views/lims_culture_media_qc_views.xml',
         'views/lims_culture_media_batch_views.xml',

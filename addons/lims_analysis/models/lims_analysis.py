@@ -1,6 +1,8 @@
 from odoo import models, fields, api
 from datetime import datetime
 from odoo.exceptions import UserError
+import logging
+_logger = logging.getLogger(__name__)
 
 class LimsAnalysis(models.Model):
     _name = 'lims.analysis'
@@ -125,6 +127,24 @@ class LimsAnalysis(models.Model):
             }
         }
 
+    @api.model
+    def cron_clean_orphan_records(self):
+        """Cron job para limpiar registros huérfanos automáticamente"""
+        # Limpiar análisis huérfanos
+        orphan_analyses = self.search([]).filtered(
+            lambda a: not a.sample_reception_id.exists()
+        )
+        if orphan_analyses:
+            _logger.info(f"Limpiando {len(orphan_analyses)} análisis huérfanos")
+            orphan_analyses.unlink()
+        
+        # Limpiar recepciones huérfanas
+        orphan_receptions = self.env['lims.sample.reception'].search([]).filtered(
+            lambda r: not r.sample_id.exists()
+        )
+        if orphan_receptions:
+            _logger.info(f"Limpiando {len(orphan_receptions)} recepciones huérfanas")
+            orphan_receptions.unlink()
 
 class LimsSample(models.Model):
     _inherit = 'lims.sample'

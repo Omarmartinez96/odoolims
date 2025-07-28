@@ -3,6 +3,10 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 import base64
 from datetime import datetime
+import logging
+
+_logger = logging.getLogger(__name__)
+
 
 class LimsCustodyChain(models.Model):
     _name = 'lims.custody_chain'
@@ -334,3 +338,26 @@ class LimsCustodyChain(models.Model):
             
         except Exception as e:
             raise UserError(_("Error al generar el documento: %s") % str(e))
+        
+    def unlink(self):
+        """Override para mostrar información antes de eliminar"""
+        for chain in self:
+            samples_count = len(chain.sample_ids)
+            if samples_count > 0:
+                # Buscar recepciones relacionadas
+                receptions = self.env['lims.sample.reception'].search([
+                    ('sample_id', 'in', chain.sample_ids.ids)
+                ])
+                analyses = self.env['lims.analysis'].search([
+                    ('sample_reception_id', 'in', receptions.ids)
+                ])
+                
+                message = f"Al eliminar la cadena '{chain.custody_chain_code}' también se eliminarán:\n"
+                message += f"• {samples_count} muestras\n"
+                message += f"• {len(receptions)} recepciones\n"
+                message += f"• {len(analyses)} análisis"
+                
+                # Log para auditoría
+                _logger.info(f"ELIMINACIÓN EN CASCADA: {message}")
+        
+        return super().unlink()
