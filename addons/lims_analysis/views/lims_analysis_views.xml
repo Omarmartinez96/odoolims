@@ -65,6 +65,7 @@
                                         <field name="method"/>
                                         <field name="analysis_status"/>
                                         <field name="result_value" class="o_field_highlight"/>
+                                        <field name="qc_passed"/>
                                     </list>
                                     
                                     <form string="Parámetro de Análisis">
@@ -92,12 +93,49 @@
                                                 <group string="📅 Información del Análisis">
                                                     <field name="analysis_start_date"/>
                                                     <field name="analysis_commitment_date"/>
+                                                    <field name="qc_passed"/>
                                                 </group>
                                             </group>
 
                                             <!-- 🆕 TIPO DE RESULTADO -->
                                             <group string="🎯 Tipo de Resultado">
                                                 <field name="result_type" widget="radio" required="1"/>
+                                            </group>
+
+                                            <!-- 🆕 SECCIÓN DE PROCESOS ANALÍTICOS -->
+                                            <group string="🧪 Procesos Analíticos Requeridos" 
+                                                   invisible="category != 'microbiological'">
+                                                <field name="requires_pre_enrichment"/>
+                                                <field name="requires_selective_enrichment"/>
+                                                <field name="requires_confirmation"/>
+                                            </group>
+
+                                            <!-- 🆕 SECCIÓN DE PRE-ENRIQUECIMIENTO -->
+                                            <group string="🔬 Pre-enriquecimiento" 
+                                                   invisible="requires_pre_enrichment == False">
+                                                
+                                                <group string="Ambiente de Procesamiento">
+                                                    <field name="pre_enrichment_environment" widget="radio"/>
+                                                </group>
+                                                
+                                                <group string="Equipo Utilizado" 
+                                                       invisible="pre_enrichment_environment not in ['campana_flujo', 'campana_bioseguridad']">
+                                                    <field name="pre_enrichment_equipment_id" 
+                                                           placeholder="Seleccionar equipo específico"/>
+                                                </group>
+                                                
+                                                <group string="Horarios y Fechas">
+                                                    <field name="pre_enrichment_start_date"/>
+                                                    <field name="pre_enrichment_start_time" placeholder="HH:MM"/>
+                                                    <field name="pre_enrichment_end_date"/>
+                                                    <field name="pre_enrichment_end_time" placeholder="HH:MM"/>
+                                                </group>
+                                                
+                                                <group string="Observaciones del Pre-enriquecimiento">
+                                                    <field name="pre_enrichment_notes" nolabel="1" 
+                                                           placeholder="Observaciones específicas del proceso de pre-enriquecimiento..."/>
+                                                </group>
+                                                
                                             </group>
 
                                             <!-- RESULTADO CUALITATIVO (cuando se selecciona result_type = 'qualitative') -->
@@ -123,13 +161,17 @@
                                                 <!-- TABLA DE DILUCIONES SIMPLIFICADA -->
                                                 <field name="raw_dilution_data_ids" nolabel="1" colspan="2">
                                                     <list string="Diluciones" editable="bottom" create="true" delete="true">
-                                                        <field name="method_type"/>
-                                                        <field name="dilution_factor"/>
+                                                        <field name="method_type" width="20%"/>
+                                                        <field name="dilution_factor" width="20%"/>
                                                         <!-- UFC -->
-                                                        <field name="ufc_count" invisible="method_type != 'ufc'"/>
+                                                        <field name="ufc_count" invisible="method_type != 'ufc'" width="15%"/>
                                                         <!-- NMP -->
-                                                        <field name="positive_tubes" invisible="method_type != 'nmp'"/>
-                                                        <field name="total_tubes" invisible="method_type != 'nmp'"/>
+                                                        <field name="positive_tubes" invisible="method_type != 'nmp'" width="15%"/>
+                                                        <field name="total_tubes" invisible="method_type != 'nmp'" width="15%"/>
+                                                        <!-- Cualitativo -->
+                                                        <field name="result_qualitative" invisible="method_type != 'qualitative'" width="15%"/>
+                                                        <!-- Resultado calculado -->
+                                                        <field name="calculated_result" readonly="1" width="30%"/>
                                                     </list>
                                                     
                                                     <form string="Datos de Dilución">
@@ -137,6 +179,9 @@
                                                             <group>
                                                                 <field name="method_type"/>
                                                                 <field name="dilution_factor"/>
+                                                            </group>
+                                                            <group>
+                                                                <field name="calculated_result" readonly="1"/>
                                                             </group>
                                                         </group>
                                                         
@@ -152,6 +197,11 @@
                                                                 <field name="positive_tubes"/>
                                                                 <field name="total_tubes"/>
                                                                 <field name="nmp_result" placeholder="Ej: 110 NMP/100mL (consultar tabla)"/>
+                                                            </group>
+                                                            
+                                                            <!-- PARA CUALITATIVO -->
+                                                            <group string="Resultado Cualitativo" invisible="method_type != 'qualitative'">
+                                                                <field name="result_qualitative"/>
                                                             </group>
                                                         </group>
                                                         
@@ -235,6 +285,7 @@
                     <field name="result_value" class="o_field_highlight"/>
                     <field name="result_unit_selection"/>
                     <field name="analysis_date"/>
+                    <field name="qc_passed"/>
                 </list>
             </field>
         </record>

@@ -250,6 +250,65 @@ class LimsParameterAnalysis(models.Model):
         ('quantitative', 'Cuantitativo')
     ], string='Tipo de Resultado', default='quantitative', required=True)
     
+    # 🆕 CAMPOS PARA PROCESOS ANALÍTICOS
+    requires_pre_enrichment = fields.Boolean(
+        string='Requiere Pre-enriquecimiento',
+        default=False,
+        help='Marcar si este parámetro requiere proceso de pre-enriquecimiento'
+    )
+
+    requires_selective_enrichment = fields.Boolean(
+        string='Requiere Enriquecimiento Selectivo',
+        default=False,
+        help='Marcar si este parámetro requiere enriquecimiento selectivo'
+    )
+
+    requires_confirmation = fields.Boolean(
+        string='Requiere Confirmación',
+        default=False,
+        help='Marcar si este parámetro requiere pruebas de confirmación'
+    )
+
+    # 🆕 CAMPOS PARA PRE-ENRIQUECIMIENTO
+    pre_enrichment_environment = fields.Selection([
+        ('campana', 'Campana'),
+        ('triangulo_esteril', 'Triángulo Estéril'),
+        ('campana_flujo', 'Campana de Flujo Laminar'),
+        ('campana_bioseguridad', 'Campana de Bioseguridad'),
+        ('mesa_trabajo', 'Mesa de Trabajo'),
+        ('otro', 'Otro')
+    ], string='Ambiente de Procesamiento')
+
+    pre_enrichment_equipment_id = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo Específico',
+        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]",
+        help='Equipo específico utilizado para el pre-enriquecimiento'
+    )
+
+    pre_enrichment_start_date = fields.Date(
+        string='Fecha de Inicio'
+    )
+
+    pre_enrichment_start_time = fields.Char(
+        string='Hora de Inicio',
+        help='Formato HH:MM'
+    )
+
+    pre_enrichment_end_date = fields.Date(
+        string='Fecha de Finalización'
+    )
+
+    pre_enrichment_end_time = fields.Char(
+        string='Hora de Finalización',
+        help='Formato HH:MM'
+    )
+
+    pre_enrichment_notes = fields.Text(
+        string='Observaciones de Pre-enriquecimiento',
+        help='Notas específicas sobre el proceso de pre-enriquecimiento'
+    )
+
     # Para microbiología
     result_qualitative = fields.Selection([
         ('detected', 'Detectado'),
@@ -415,6 +474,22 @@ class LimsParameterAnalysis(models.Model):
         elif self.result_type == 'quantitative':
             # Limpiar campos cualitativos
             self.result_qualitative = False
+
+    @api.onchange('pre_enrichment_environment')
+    def _onchange_pre_enrichment_environment(self):
+        """Limpiar equipo cuando cambia el ambiente"""
+        if self.pre_enrichment_environment not in ['campana_flujo', 'campana_bioseguridad']:
+            self.pre_enrichment_equipment_id = False
+        
+        # Actualizar dominio del equipo según el ambiente
+        if self.pre_enrichment_environment == 'campana_flujo':
+            domain = [('equipment_type', '=', 'campana_flujo')]
+        elif self.pre_enrichment_environment == 'campana_bioseguridad':
+            domain = [('equipment_type', '=', 'campana_bioseguridad')]
+        else:
+            domain = []
+        
+        return {'domain': {'pre_enrichment_equipment_id': domain}}
 
 # 🆕 MODELO PARA DATOS CRUDOS DE DILUCIONES
 class LimsRawDilutionData(models.Model):

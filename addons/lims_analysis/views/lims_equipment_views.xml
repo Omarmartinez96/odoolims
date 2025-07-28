@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Agregar este archivo como views/lims_equipment_views.xml -->
+<odoo>
+    <data>
+        
+        <!-- Vista Lista de Equipos -->
+        <record id="view_lims_lab_equipment_list" model="ir.ui.view">
+            <field name="name">lims.lab.equipment.list</field>
+            <field name="model">lims.lab.equipment</field>
+            <field name="arch" type="xml">
+                <list string="Equipos de Laboratorio">
+                    <field name="equipment_code"/>
+                    <field name="name"/>
+                    <field name="equipment_type"/>
+                    <field name="brand"/>
+                    <field name="model"/>
+                    <field name="location"/>
+                    <field name="is_active"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Formulario de Equipos -->
+        <record id="view_lims_lab_equipment_form" model="ir.ui.view">
+            <field name="name">lims.lab.equipment.form</field>
+            <field name="model">lims.lab.equipment</field>
+            <field name="arch" type="xml">
+                <form string="Equipo de Laboratorio">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Ej: Campana de Flujo Laminar A1"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group string="🔧 Información Básica">
+                                <field name="equipment_code" placeholder="Ej: CFL-001"/>
+                                <field name="equipment_type"/>
+                                <field name="is_active"/>
+                            </group>
+                            <group string="📍 Ubicación">
+                                <field name="location" placeholder="Ej: Laboratorio Microbiología - Sala 1"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <group string="🏭 Especificaciones">
+                                <field name="brand" placeholder="Ej: Thermo Fisher"/>
+                                <field name="model" placeholder="Ej: 1300 Series A2"/>
+                                <field name="serial_number"/>
+                            </group>
+                            <group string="📅 Calibración y Mantenimiento">
+                                <field name="calibration_date"/>
+                                <field name="next_calibration_date"/>
+                            </group>
+                        </group>
+
+                        <group string="📝 Notas de Mantenimiento">
+                            <field name="maintenance_notes" nolabel="1" 
+                                   placeholder="Historial de mantenimiento, observaciones, etc..."/>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acción para Equipos -->
+        <record id="action_lims_lab_equipment" model="ir.actions.act_window">
+            <field name="name">Equipos de Laboratorio</field>
+            <field name="res_model">lims.lab.equipment</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Registrar el primer equipo de laboratorio
+                </p>
+                <p>
+                    Gestione los equipos utilizados en los procesos analíticos
+                </p>
+            </field>
+        </record>
+
+        <!-- Menú para Equipos -->
+        <menuitem id="menu_lims_lab_equipment" 
+                  name="Equipos de Laboratorio" 
+                  parent="menu_lims_analysis_config" 
+                  action="action_lims_lab_equipment" 
+                  sequence="40"/>
+
+    </data>
+</odoo>
