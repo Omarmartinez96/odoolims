@@ -15,13 +15,13 @@ class LimsAnalysis(models.Model):
         ondelete='cascade'
     )
     
-    # Obtener el código desde el módulo de recepción
+    # Campos calculados desde la muestra
     sample_code = fields.Char(
         string='Código de Muestra',
-        compute='_compute_sample_code',
+        compute='_compute_sample_info',
         store=True
     )
-
+    
     sample_identifier = fields.Char(
         string='Identificación de Muestra',
         related='sample_id.sample_identifier',
@@ -31,10 +31,10 @@ class LimsAnalysis(models.Model):
 
     display_name = fields.Char(
         string='Nombre del Análisis',
-        compute='_compute_display_name',
+        compute='_compute_sample_info',
         store=True
     )
-
+    
     # Asignación de analista
     analyst_id = fields.Many2one(
         'res.users',
@@ -69,6 +69,31 @@ class LimsAnalysis(models.Model):
         string='Notas Internas'
     )
     
+    @api.depends('sample_id', 'analyst_id')
+    def _compute_sample_info(self):
+        """Calcular información de la muestra y nombre del análisis"""
+        for analysis in self:
+            # Obtener código de recepción
+            sample_code = ''
+            if analysis.sample_id:
+                reception = self.env['lims.sample.reception'].search([
+                    ('sample_id', '=', analysis.sample_id.id)
+                ], limit=1)
+                sample_code = reception.sample_code if reception else 'Sin código'
+            
+            analysis.sample_code = sample_code
+            
+            # Crear nombre del análisis
+            parts = []
+            if sample_code:
+                parts.append(sample_code)
+            if analysis.sample_id and analysis.sample_id.sample_identifier:
+                parts.append(f"({analysis.sample_id.sample_identifier})")
+            if analysis.analyst_id:
+                parts.append(f"- {analysis.analyst_id.name}")
+            
+            analysis.display_name = " ".join(parts) if parts else "Análisis"
+    
     def action_start_analysis(self):
         """Iniciar análisis"""
         self.analysis_state = 'in_progress'
@@ -78,39 +103,3 @@ class LimsAnalysis(models.Model):
         """Completar análisis"""
         self.analysis_state = 'completed'
         self.analysis_end_date = fields.Date.context_today(self)
-
-@api.depends('sample_id', 'analyst_id')
-def _compute_display_name(self):
-    for analysis in self:
-        parts = []
-        
-        if analysis.sample_id:
-            # Buscar código de recepción
-            reception = self.env['lims.sample.reception'].search([
-                ('sample_id', '=', analysis.sample_id.id)
-            ], limit=1)
-            
-            if reception and reception.sample_code:
-                parts.append(reception.sample_code)
-            
-            if analysis.sample_id.sample_identifier:
-                parts.append(f"({analysis.sample_id.sample_identifier})")
-        
-        if analysis.analyst_id:
-            parts.append(f"- {analysis.analyst_id.name}")
-        
-        analysis.display_name = " ".join(parts) if parts else "Análisis"
-
-@api.depends('sample_id')
-def _compute_sample_code(self):
-    """Obtener el código de muestra desde recepción"""
-    for analysis in self:
-        if analysis.sample_id:
-            # Buscar la recepción de esta muestra
-            reception = self.env['lims.sample.reception'].search([
-                ('sample_id', '=', analysis.sample_id.id)
-            ], limit=1)
-            
-            analysis.sample_code = reception.sample_code if reception else 'Sin código'
-        else:
-            analysis.sample_code = ''
