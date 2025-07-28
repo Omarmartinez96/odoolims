@@ -306,21 +306,37 @@ class LimsParameterAnalysis(models.Model):
         string='Datos Crudos de Diluciones'
     )
     
-    # Campo que se auto-calcula desde los datos crudos
-    final_result_calculation = fields.Text(
-        string='Cálculo Final',
-        compute='_compute_final_calculation',
-        store=True,
-        help='Muestra el cálculo realizado desde los datos crudos'
+    # Campo que muestra SOLO los cálculos (NO actualiza resultado automáticamente)
+    dilution_calculations = fields.Text(
+        string='Cálculos Informativos',
+        compute='_compute_dilution_calculations',
+        help='Cálculos informativos basados en datos crudos (solo referencia)'
     )
     
-    @api.depends('raw_dilution_data_ids.ufc_count', 'raw_dilution_data_ids.selected_for_result')
-    def _compute_final_calculation(self):
-        """Calcular resultado final desde datos crudos"""
+    # 🆕 CAMPOS PARA RESULTADO MANUAL
+    result_unit_selection = fields.Selection([
+        ('ufc_g', 'UFC/g'),
+        ('ufc_ml', 'UFC/mL'),
+        ('nmp_g', 'NMP/g'),
+        ('nmp_ml', 'NMP/mL'),
+        ('ufc_100ml', 'UFC/100mL'),
+        ('nmp_100ml', 'NMP/100mL'),
+        ('mg_kg', 'mg/kg'),
+        ('mg_l', 'mg/L'),
+        ('custom', 'Otra unidad (especificar)')
+    ], string='Unidad del Resultado')
+    
+    custom_unit = fields.Char(
+        string='Especificar Unidad',
+        help='Especificar unidad personalizada'
+    )
+    
+    @api.depends('raw_dilution_data_ids.ufc_count')
+    def _compute_dilution_calculations(self):
+        """Mostrar SOLO cálculos informativos (NO actualiza resultado automáticamente)"""
         for record in self:
             if record.raw_dilution_data_ids:
                 calculations = []
-                selected_dilution = None
                 
                 # Mapeo manual de diluciones para mostrar
                 dilution_names = {
@@ -337,20 +353,19 @@ class LimsParameterAnalysis(models.Model):
                     if data.ufc_count is not False and data.ufc_count >= 0:
                         dilution_name = dilution_names.get(data.dilution_factor, data.dilution_factor)
                         calculations.append(f"{dilution_name}: {data.ufc_count} UFC → {data.calculated_result}")
-                        if data.selected_for_result:
-                            selected_dilution = data
                 
                 if calculations:
-                    calc_text = "DATOS REGISTRADOS:\n" + "\n".join(calculations)
-                    if selected_dilution:
-                        calc_text += f"\n\nRESULTADO FINAL SELECCIONADO:\n{selected_dilution.calculated_result}"
-                        # Auto-actualizar el resultado principal
-                        record.result_value = selected_dilution.calculated_result
-                    record.final_result_calculation = calc_text
+                    record.dilution_calculations = "\n".join(calculations)
                 else:
-                    record.final_result_calculation = "Sin datos crudos registrados"
+                    record.dilution_calculations = "Sin datos registrados"
             else:
-                record.final_result_calculation = "Sin diluciones registradas"
+                record.dilution_calculations = "Sin diluciones registradas"
+    
+    @api.onchange('result_unit_selection')
+    def _onchange_result_unit_selection(self):
+        """Limpiar unidad personalizada si no se selecciona 'custom'"""
+        if self.result_unit_selection != 'custom':
+            self.custom_unit = False
     
     # 🆕 MÉTODOS ONCHANGE BÁSICOS (sin campos inexistentes)
     @api.onchange('result_numeric', 'result_unit')
@@ -446,12 +461,6 @@ class LimsRawDilutionData(models.Model):
         placeholder='Ej: Placas confluentes, Conteo fácil, Pocas colonias...'
     )
     
-    # Selección para resultado final
-    selected_for_result = fields.Boolean(
-        string='Usar para Resultado Final',
-        help='Marcar la dilución que se usará para el resultado final'
-    )
-    
     # Campo computado para mostrar el resultado calculado
     calculated_result = fields.Char(
         string='Resultado Calculado',
@@ -489,14 +498,3 @@ class LimsRawDilutionData(models.Model):
                         record.calculated_result = f"{result} UFC/g"
             else:
                 record.calculated_result = False
-    
-    @api.onchange('selected_for_result')
-    def _onchange_selected_for_result(self):
-        """Solo una dilución puede estar seleccionada por parámetro"""
-        if self.selected_for_result and self.parameter_analysis_id:
-            # Desmarcar otras diluciones del mismo parámetro
-            other_dilutions = self.parameter_analysis_id.raw_dilution_data_ids.filtered(
-                lambda x: x.id != self.id and x.id
-            )
-            for dilution in other_dilutions:
-                dilution.selected_for_result = False
