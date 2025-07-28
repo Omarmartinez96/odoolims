@@ -8,31 +8,33 @@ class LimsAnalysis(models.Model):
     _rec_name = 'display_name'
     _order = 'create_date desc'
 
-    # Relación con la muestra
-    sample_id = fields.Many2one(
-        'lims.sample',
-        string='Muestra',
+    # Relación con la recepción de muestra (que tiene el sample_code)
+    sample_reception_id = fields.Many2one(
+        'lims.sample.reception',
+        string='Muestra Recibida',
         required=True,
-        ondelete='cascade'
+        ondelete='cascade',
+        domain=[('reception_state', '=', 'recibida')]
     )
-    
-    # Campos calculados desde la muestra
+
+    # Campos relacionados desde la recepción
     sample_code = fields.Char(
         string='Código de Muestra',
-        compute='_compute_sample_info',
+        related='sample_reception_id.sample_code',
+        readonly=True,
         store=True
     )
-    
+
     sample_identifier = fields.Char(
         string='Identificación de Muestra',
-        related='sample_id.sample_identifier',
+        related='sample_reception_id.sample_identifier',
         readonly=True,
         store=True
     )
 
     display_name = fields.Char(
         string='Nombre del Análisis',
-        compute='_compute_sample_info',
+        compute='_compute_display_name',
         store=True
     )
     
@@ -70,26 +72,15 @@ class LimsAnalysis(models.Model):
         string='Notas Internas'
     )
     
-    @api.depends('sample_id', 'analyst_id')
-    def _compute_sample_info(self):
-        """Calcular información de la muestra y nombre del análisisF"""
+    @api.depends('sample_reception_id', 'analyst_id')
+    def _compute_display_name(self):
+        """Calcular nombre del análisis"""
         for analysis in self:
-            # Obtener código de recepción
-            sample_code = ''
-            if analysis.sample_id:
-                reception = self.env['lims.sample.reception'].search([
-                    ('sample_id', '=', analysis.sample_id.id)
-                ], limit=1)
-                sample_code = reception.sample_code if reception else 'Sin código'
-            
-            analysis.sample_code = sample_code
-            
-            # Crear nombre del análisis
             parts = []
-            if sample_code:
-                parts.append(sample_code)
-            if analysis.sample_id and analysis.sample_id.sample_identifier:
-                parts.append(f"({analysis.sample_id.sample_identifier})")
+            if analysis.sample_code:
+                parts.append(analysis.sample_code)
+            if analysis.sample_identifier:
+                parts.append(f"({analysis.sample_identifier})")
             if analysis.analyst_id:
                 parts.append(f"- {analysis.analyst_id.name}")
             
@@ -107,16 +98,16 @@ class LimsAnalysis(models.Model):
 
     def action_clean_orphan_records(self):
         """Método temporal para limpiar registros huérfanos"""
-        # Buscar análisis con sample_id que no existe
+        # Buscar análisis con sample_reception_id que no existe
         all_analyses = self.search([])
         orphan_count = 0
         
         for analysis in all_analyses:
             try:
-                # Intentar acceder a la muestra
-                if analysis.sample_id:
-                    sample_exists = analysis.sample_id.exists()
-                    if not sample_exists:
+                # Intentar acceder a la recepción
+                if analysis.sample_reception_id:
+                    reception_exists = analysis.sample_reception_id.exists()
+                    if not reception_exists:
                         analysis.unlink()
                         orphan_count += 1
             except:
@@ -134,6 +125,7 @@ class LimsAnalysis(models.Model):
             }
         }
 
+
 class LimsSample(models.Model):
     _inherit = 'lims.sample'
     
@@ -148,9 +140,9 @@ class LimsSample(models.Model):
         if not reception:
             raise UserError('Solo se pueden crear análisis para muestras recibidas.')
         
-        # Crear análisis
+        # Crear análisis usando la recepción
         analysis = self.env['lims.analysis'].create({
-            'sample_id': self.id,
+            'sample_reception_id': reception.id,
         })
         
         return {
@@ -161,4 +153,3 @@ class LimsSample(models.Model):
             'view_mode': 'form',
             'target': 'current',
         }
-    
