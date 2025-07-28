@@ -136,14 +136,56 @@
                                                 </group>
                                                 
                                                 <group string="Medios y Reactivos">
-                                                    <field name="pre_enrichment_media_batch_id" 
-                                                           placeholder="Seleccionar lote de medio"/>
-                                                    <field name="pre_enrichment_sample_amount" 
-                                                           placeholder="Ej: 25g, 1mL"/>
-                                                    <field name="pre_enrichment_diluent_volume" 
-                                                           placeholder="Ej: 225mL"/>
-                                                    <field name="pre_enrichment_diluent_batch" 
-                                                           placeholder="Lote del diluyente"/>
+                                                    <field name="pre_enrichment_media_ids" nolabel="1" colspan="2">
+                                                        <list string="Medios y Reactivos Utilizados" editable="bottom" create="true" delete="true">
+                                                            <field name="sequence" widget="handle"/>
+                                                            <field name="media_type"/>
+                                                            <field name="culture_media_batch_id" 
+                                                                   invisible="media_type != 'medio_cultivo'"
+                                                                   placeholder="Seleccionar lote"/>
+                                                            <field name="media_name" 
+                                                                   invisible="media_type == 'medio_cultivo'"
+                                                                   placeholder="Nombre del diluyente/reactivo"/>
+                                                            <field name="batch_number" placeholder="Lote"/>
+                                                            <field name="volume_used" placeholder="Ej: 225mL"/>
+                                                            <field name="display_name" readonly="1"/>
+                                                        </list>
+                                                        
+                                                        <form string="Medio/Reactivo Utilizado">
+                                                            <group>
+                                                                <group>
+                                                                    <field name="media_type"/>
+                                                                    <field name="sequence"/>
+                                                                </group>
+                                                                <group>
+                                                                    <field name="volume_used"/>
+                                                                </group>
+                                                            </group>
+                                                            
+                                                            <!-- Para medios de cultivo del catálogo -->
+                                                            <group string="Medio de Cultivo" 
+                                                                   invisible="media_type != 'medio_cultivo'">
+                                                                <field name="culture_media_batch_id" 
+                                                                       placeholder="Seleccionar lote de medio"
+                                                                       options="{'no_create': True}"/>
+                                                                <field name="batch_number" readonly="1"/>
+                                                            </group>
+                                                            
+                                                            <!-- Para diluyentes y otros -->
+                                                            <group string="Diluyente/Reactivo" 
+                                                                   invisible="media_type == 'medio_cultivo'">
+                                                                <field name="media_name" 
+                                                                       placeholder="Ej: Agua peptona, PBS, etc."/>
+                                                                <field name="batch_number" 
+                                                                       placeholder="Número de lote"/>
+                                                            </group>
+                                                            
+                                                            <group string="Notas de Preparación">
+                                                                <field name="preparation_notes" nolabel="1"
+                                                                       placeholder="Instrucciones especiales, diluciones, etc..."/>
+                                                            </group>
+                                                        </form>
+                                                    </field>
                                                 </group>
                                                 
                                             </group>

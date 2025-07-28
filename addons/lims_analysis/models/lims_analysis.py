@@ -324,25 +324,11 @@ class LimsParameterAnalysis(models.Model):
     )
 
     # Medios y reactivos
-    pre_enrichment_media_batch_id = fields.Many2one(
-        'lims.culture.media.batch',
-        string='Lote de Medio de Cultivo',
-        help='Lote del medio de cultivo utilizado para pre-enriquecimiento'
-    )
 
-    pre_enrichment_sample_amount = fields.Char(
-        string='Cantidad de Muestra',
-        help='Cantidad de muestra utilizada (ej: 25g, 1mL)'
-    )
-
-    pre_enrichment_diluent_volume = fields.Char(
-        string='Volumen de Diluyente',
-        help='Volumen del diluyente utilizado (ej: 225mL)'
-    )
-
-    pre_enrichment_diluent_batch = fields.Char(
-        string='Lote de Diluyente',
-        help='Número de lote del diluyente utilizado'
+    pre_enrichment_media_ids = fields.One2many(
+        'lims.pre.enrichment.media',
+        'parameter_analysis_id',
+        string='Medios y Reactivos Utilizados'
     )
 
     # Para microbiología
@@ -687,3 +673,99 @@ class LimsRawDilutionData(models.Model):
             self.positive_tubes = False
             self.total_tubes = False
             self.nmp_result = False
+
+# Agregar al final del archivo lims_analysis.py
+
+# 🆕 MODELO PARA MEDIOS UTILIZADOS EN PRE-ENRIQUECIMIENTO
+class LimsPreEnrichmentMedia(models.Model):
+    _name = 'lims.pre.enrichment.media'
+    _description = 'Medios Utilizados en Pre-enriquecimiento'
+    _rec_name = 'display_name'
+    _order = 'sequence, media_type'
+
+    parameter_analysis_id = fields.Many2one(
+        'lims.parameter.analysis',
+        string='Parámetro de Análisis',
+        required=True,
+        ondelete='cascade'
+    )
+    
+    sequence = fields.Integer(
+        string='Secuencia',
+        default=10,
+        help='Orden de uso de los medios'
+    )
+    
+    media_type = fields.Selection([
+        ('medio_cultivo', 'Medio de Cultivo'),
+        ('diluyente', 'Diluyente'),
+        ('reactivo', 'Reactivo'),
+        ('buffer', 'Buffer/Solución'),
+        ('otro', 'Otro')
+    ], string='Tipo', required=True, default='medio_cultivo')
+    
+    # Para medios de cultivo (del catálogo)
+    culture_media_batch_id = fields.Many2one(
+        'lims.culture.media.batch',
+        string='Lote de Medio',
+        help='Lote específico del medio de cultivo'
+    )
+    
+    # Para diluyentes y otros (campo libre)
+    media_name = fields.Char(
+        string='Nombre del Medio/Diluyente',
+        help='Nombre del diluyente, reactivo o solución utilizada'
+    )
+    
+    batch_number = fields.Char(
+        string='Número de Lote',
+        required=True,
+        help='Lote del medio, diluyente o reactivo'
+    )
+    
+    volume_used = fields.Char(
+        string='Volumen/Cantidad Utilizada',
+        help='Ej: 225mL, 25g, 1mL (opcional)'
+    )
+    
+    preparation_notes = fields.Text(
+        string='Notas de Preparación',
+        help='Instrucciones especiales, diluciones, etc.'
+    )
+    
+    display_name = fields.Char(
+        string='Descripción',
+        compute='_compute_display_name',
+        store=True
+    )
+    
+    @api.depends('media_type', 'culture_media_batch_id', 'media_name', 'batch_number')
+    def _compute_display_name(self):
+        """Calcular nombre descriptivo"""
+        for record in self:
+            if record.media_type == 'medio_cultivo' and record.culture_media_batch_id:
+                name = f"{record.culture_media_batch_id.culture_media_id.name}"
+                if record.culture_media_batch_id.batch_code:
+                    name += f" (Lote: {record.culture_media_batch_id.batch_code})"
+            elif record.media_name:
+                name = record.media_name
+                if record.batch_number:
+                    name += f" (Lote: {record.batch_number})"
+            else:
+                name = record.media_type.replace('_', ' ').title()
+            
+            record.display_name = name
+    
+    @api.onchange('media_type')
+    def _onchange_media_type(self):
+        """Limpiar campos según el tipo seleccionado"""
+        if self.media_type == 'medio_cultivo':
+            self.media_name = False
+        else:
+            self.culture_media_batch_id = False
+    
+    @api.onchange('culture_media_batch_id')
+    def _onchange_culture_media_batch_id(self):
+        """Auto-llenar información del lote"""
+        if self.culture_media_batch_id:
+            self.batch_number = self.culture_media_batch_id.batch_code
