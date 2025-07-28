@@ -8,7 +8,8 @@
             <field name="model">lims.analysis</field>
             <field name="arch" type="xml">
                 <list string="Análisis de Muestras">
-                    <field name="analysis_code"/>
+                    <field name="sample_code"/>
+                    <field name="sample_identifier"/>
                     <field name="sample_id"/>
                     <field name="analyst_id"/>
                     <field name="analysis_start_date"/>
@@ -40,29 +41,33 @@
                     <sheet>
                         <div class="oe_title">
                             <h1>
-                                <field name="analysis_code" placeholder="Se genera automáticamente"/>
+                                <field name="display_name" readonly="1"/>
                             </h1>
                         </div>
 
                         <!-- Información básica -->
                         <group>
-                            <group string="🧪 Información de la Muestra">
+                            <group string="Información de la Muestra">
                                 <field name="sample_id"/>
                                 <field name="analyst_id"/>
                             </group>
-                            <group string="📅 Fechas">
+                        <group string="Identificación">
+                            <field name="sample_code" readonly="1"/>
+                            <field name="sample_identifier" readonly="1"/>
+                        </group>
+                            <group string="Fechas">
                                 <field name="analysis_start_date"/>
                                 <field name="analysis_end_date"/>
                             </group>
                         </group>
 
                         <!-- Observaciones -->
-                        <group string="📝 Observaciones">
+                        <group string="Observaciones">
                             <field name="analysis_notes" nolabel="1" 
                                    placeholder="Observaciones sobre el análisis..."/>
                         </group>
 
-                        <group string="🔒 Notas Internas">
+                        <group string="Notas Internas">
                             <field name="internal_notes" nolabel="1" 
                                    placeholder="Notas internas del laboratorio..."/>
                         </group>

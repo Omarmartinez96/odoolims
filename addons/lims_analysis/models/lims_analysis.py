@@ -4,17 +4,9 @@ from datetime import datetime
 class LimsAnalysis(models.Model):
     _name = 'lims.analysis'
     _description = 'Análisis de Muestra'
-    _rec_name = 'analysis_code'
+    _rec_name = 'display_name'
     _order = 'create_date desc'
 
-    # Código de análisis auto-generado
-    analysis_code = fields.Char(
-        string='Código de Análisis',
-        default='/',
-        copy=False,
-        readonly=True
-    )
-    
     # Relación con la muestra
     sample_id = fields.Many2one(
         'lims.sample',
@@ -23,6 +15,26 @@ class LimsAnalysis(models.Model):
         ondelete='cascade'
     )
     
+    sample_code = fields.Char(
+        string='Código de Muestra',
+        related='sample_id.sample_reception_id.sample_code',
+        readonly=True,
+        store=True
+    )
+
+    sample_identifier = fields.Char(
+        string='Identificación de Muestra',
+        related='sample_id.sample_identifier',
+        readonly=True,
+        store=True
+    )
+
+    display_name = fields.Char(
+        string='Nombre del Análisis',
+        compute='_compute_display_name',
+        store=True
+    )
+
     # Asignación de analista
     analyst_id = fields.Many2one(
         'res.users',
@@ -66,3 +78,16 @@ class LimsAnalysis(models.Model):
         """Completar análisis"""
         self.analysis_state = 'completed'
         self.analysis_end_date = fields.Date.context_today(self)
+
+@api.depends('sample_code', 'sample_identifier', 'analyst_id')
+def _compute_display_name(self):
+    for analysis in self:
+        parts = []
+        if analysis.sample_code:
+            parts.append(analysis.sample_code)
+        if analysis.sample_identifier:
+            parts.append(f"({analysis.sample_identifier})")
+        if analysis.analyst_id:
+            parts.append(f"- {analysis.analyst_id.name}")
+        
+        analysis.display_name = " ".join(parts) if parts else "Análisis"
