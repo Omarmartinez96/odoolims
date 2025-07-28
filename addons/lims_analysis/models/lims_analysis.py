@@ -1,5 +1,6 @@
 from odoo import models, fields, api
 from datetime import datetime
+from odoo.exceptions import UserError
 
 class LimsAnalysis(models.Model):
     _name = 'lims.analysis'
@@ -12,14 +13,7 @@ class LimsAnalysis(models.Model):
         'lims.sample',
         string='Muestra',
         required=True,
-        ondelete='cascade',
-        domain="[('id', 'in', available_sample_ids)]"
-    )
-
-    # Campo para filtrar muestras recibidas
-    available_sample_ids = fields.Many2many(
-        'lims.sample',
-        compute='_compute_available_samples'
+        ondelete='cascade'
     )
     
     # Campos calculados desde la muestra
@@ -111,15 +105,30 @@ class LimsAnalysis(models.Model):
         self.analysis_state = 'completed'
         self.analysis_end_date = fields.Date.context_today(self)
 
-@api.depends()
-def _compute_available_samples(self):
-    """Obtener solo muestras que han sido recibidas"""
-    for analysis in self:
-        # Buscar recepciones con estado 'recibida'
-        receptions = self.env['lims.sample.reception'].search([
+class LimsSample(models.Model):
+    _inherit = 'lims.sample'
+    
+    def action_create_analysis(self):
+        """Crear análisis para esta muestra"""
+        # Verificar que esté recibida
+        reception = self.env['lims.sample.reception'].search([
+            ('sample_id', '=', self.id),
             ('reception_state', '=', 'recibida')
-        ])
+        ], limit=1)
         
-        # Obtener IDs de las muestras recibidas
-        received_sample_ids = receptions.mapped('sample_id.id')
-        analysis.available_sample_ids = [(6, 0, received_sample_ids)]
+        if not reception:
+            raise UserError('Solo se pueden crear análisis para muestras recibidas.')
+        
+        # Crear análisis
+        analysis = self.env['lims.analysis'].create({
+            'sample_id': self.id,
+        })
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Análisis de Muestra',
+            'res_model': 'lims.analysis',
+            'res_id': analysis.id,
+            'view_mode': 'form',
+            'target': 'current',
+        }
