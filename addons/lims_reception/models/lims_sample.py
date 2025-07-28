@@ -154,3 +154,17 @@ class LimsSample(models.Model):
                 'type': 'success',
             }
         }
+
+    def name_get(self):
+        result = []
+        for record in self:
+            # Solo mostrar muestras con identificación válida
+            if record.sample_identifier:
+                name = f"{record.sample_identifier}"
+                if record.sample_description:
+                    name += f" - {record.sample_description}"
+                result.append((record.id, name))
+            else:
+                # Para registros huérfanos, no mostrar
+                continue
+        return result

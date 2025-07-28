@@ -10,7 +10,9 @@
                 <list string="Análisis de Muestras" create="true">
                     <field name="sample_code"/>
                     <field name="sample_identifier"/>
-                    <field name="sample_id" options="{'no_create': True, 'no_open': True}"/>
+                    <field name="sample_id" 
+                        options="{'no_create': True, 'no_open': True}"
+                        domain="[('sample_identifier', '!=', False)]"/>
                     <field name="analyst_id"/>
                     <field name="analysis_start_date"/>
                     <field name="analysis_state"/>
