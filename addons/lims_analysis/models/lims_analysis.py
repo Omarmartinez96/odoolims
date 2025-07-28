@@ -293,12 +293,6 @@ class LimsParameterAnalysis(models.Model):
         help='Notas técnicas sobre el análisis realizado'
     )
     
-    # Control de calidad específico
-    qc_passed = fields.Boolean(
-        string='Control de Calidad Aprobado',
-        default=False
-    )
-    
     # 🆕 RELACIÓN CON DATOS CRUDOS DE DILUCIONES
     raw_dilution_data_ids = fields.One2many(
         'lims.raw.dilution.data',
