@@ -97,35 +97,76 @@
                                                 </group>
                                             </group>
 
-                                            <!-- 🆕 SISTEMA HÍBRIDO DE RESULTADOS - VERSIÓN SIMPLIFICADA -->
-                                            <group string="📊 Captura de Resultados">
+                                            <!-- 🆕 SISTEMA HÍBRIDO DE RESULTADOS CON DATOS CRUDOS -->
+                                            <group string="📊 Resultado Final">
                                                 
                                                 <!-- CAMPO PRINCIPAL - SIEMPRE VISIBLE -->
                                                 <field name="result_value" 
                                                        class="o_field_highlight"
                                                        style="font-size: 16px;"
+                                                       readonly="1"
+                                                       help="Se calcula automáticamente desde datos crudos"
                                                        colspan="2"/>
                                                 
+                                            </group>
+                                            
+                                            <!-- 🆕 DATOS CRUDOS DE DILUCIONES (PARA MICROBIOLOGÍA) -->
+                                            <group string="🧪 Datos Crudos de Diluciones" invisible="category != 'microbiological'">
+                                                <field name="raw_dilution_data_ids" nolabel="1">
+                                                    <list string="Diluciones" editable="bottom" create="true" delete="true">
+                                                        <field name="dilution_factor"/>
+                                                        <field name="ufc_count"/>
+                                                        <field name="calculated_result" readonly="1"/>
+                                                        <field name="selected_for_result"/>
+                                                        <field name="observations"/>
+                                                    </list>
+                                                    
+                                                    <form string="Datos de Dilución">
+                                                        <group>
+                                                            <group>
+                                                                <field name="dilution_factor"/>
+                                                                <field name="ufc_count"/>
+                                                                <field name="selected_for_result"/>
+                                                            </group>
+                                                            <group>
+                                                                <field name="calculated_result" readonly="1"/>
+                                                                <field name="positive_tubes" invisible="1"/>
+                                                                <field name="total_tubes" invisible="1"/>
+                                                            </group>
+                                                        </group>
+                                                        <group>
+                                                            <field name="observations" nolabel="1" colspan="2"/>
+                                                        </group>
+                                                    </form>
+                                                </field>
+                                                
+                                                <!-- MOSTRAR CÁLCULO FINAL -->
+                                                <field name="final_result_calculation" 
+                                                       readonly="1" 
+                                                       nolabel="1"
+                                                       widget="text"
+                                                       style="font-family: monospace; font-size: 12px; background-color: #f8f9fa;"
+                                                       invisible="final_result_calculation == False"/>
                                             </group>
                                             
                                             <!-- CAMPOS ESPECÍFICOS POR TIPO -->
                                             <group string="🔬 Campos Específicos">
                                                 
-                                                <!-- PARA QUÍMICO Y FÍSICO -->
+                                                <!-- PARA QUÍMICO Y FÍSICO - Valores Numéricos -->
                                                 <group string="Valores Numéricos" invisible="category not in ['chemical', 'physical']">
                                                     <field name="result_numeric"/>
                                                     <field name="result_unit"/>
                                                 </group>
                                                 
-                                                <!-- PARA MICROBIOLOGÍA CUALITATIVA -->
-                                                <group string="Resultado Cualitativo" invisible="category != 'microbiological'">
-                                                    <field name="result_qualitative"/>
-                                                </group>
-                                                
-                                                <!-- LÍMITES DE DETECCIÓN -->
-                                                <group string="Límites Analíticos" invisible="category == 'microbiological'">
+                                                <!-- PARA QUÍMICO Y FÍSICO - Límites de Detección -->
+                                                <group string="Límites Analíticos" invisible="category not in ['chemical', 'physical']">
                                                     <field name="below_detection_limit"/>
                                                     <field name="above_quantification_limit"/>
+                                                </group>
+                                                
+                                                <!-- PARA MICROBIOLOGÍA - Resultado Cualitativo (cuando no hay recuento) -->
+                                                <group string="Resultado Cualitativo" invisible="category != 'microbiological' or raw_dilution_data_ids">
+                                                    <field name="result_qualitative"/>
                                                 </group>
                                                 
                                             </group>

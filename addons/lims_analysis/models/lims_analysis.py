@@ -299,6 +299,47 @@ class LimsParameterAnalysis(models.Model):
         string='Notas de Control de Calidad'
     )
     
+    # 🆕 RELACIÓN CON DATOS CRUDOS DE DILUCIONES
+    raw_dilution_data_ids = fields.One2many(
+        'lims.raw.dilution.data',
+        'parameter_analysis_id',
+        string='Datos Crudos de Diluciones'
+    )
+    
+    # Campo que se auto-calcula desde los datos crudos
+    final_result_calculation = fields.Text(
+        string='Cálculo Final',
+        compute='_compute_final_calculation',
+        store=True,
+        help='Muestra el cálculo realizado desde los datos crudos'
+    )
+    
+    @api.depends('raw_dilution_data_ids.ufc_count', 'raw_dilution_data_ids.selected_for_result')
+    def _compute_final_calculation(self):
+        """Calcular resultado final desde datos crudos"""
+        for record in self:
+            if record.raw_dilution_data_ids:
+                calculations = []
+                selected_dilution = None
+                
+                for data in record.raw_dilution_data_ids:
+                    if data.ufc_count is not False and data.ufc_count >= 0:
+                        calculations.append(f"{data.get_dilution_display()}: {data.ufc_count} UFC → {data.calculated_result}")
+                        if data.selected_for_result:
+                            selected_dilution = data
+                
+                if calculations:
+                    calc_text = "DATOS REGISTRADOS:\n" + "\n".join(calculations)
+                    if selected_dilution:
+                        calc_text += f"\n\nRESULTADO FINAL SELECCIONADO:\n{selected_dilution.calculated_result}"
+                        # Auto-actualizar el resultado principal
+                        record.result_value = selected_dilution.calculated_result
+                    record.final_result_calculation = calc_text
+                else:
+                    record.final_result_calculation = "Sin datos crudos registrados"
+            else:
+                record.final_result_calculation = "Sin diluciones registradas"
+    
     # 🆕 MÉTODOS ONCHANGE BÁSICOS (sin campos inexistentes)
     @api.onchange('result_numeric', 'result_unit')
     def _onchange_numeric_result(self):
@@ -336,3 +377,114 @@ class LimsParameterAnalysis(models.Model):
         elif self.above_quantification_limit:
             unit = self.result_unit or ''
             self.result_value = f"> LC {unit}".strip()
+
+# 🆕 MODELO PARA DATOS CRUDOS DE DILUCIONES
+class LimsRawDilutionData(models.Model):
+    _name = 'lims.raw.dilution.data'
+    _description = 'Datos Crudos de Diluciones'
+    _order = 'dilution_factor'
+
+    parameter_analysis_id = fields.Many2one(
+        'lims.parameter.analysis',
+        string='Parámetro de Análisis',
+        required=True,
+        ondelete='cascade'
+    )
+    
+    dilution_factor = fields.Selection([
+        ('direct', 'Directo (sin dilución)'),
+        ('10_1', '10⁻¹ (1:10)'),
+        ('10_2', '10⁻² (1:100)'),
+        ('10_3', '10⁻³ (1:1,000)'),
+        ('10_4', '10⁻⁴ (1:10,000)'),
+        ('10_5', '10⁻⁵ (1:100,000)'),
+        ('10_6', '10⁻⁶ (1:1,000,000)')
+    ], string='Dilución', required=True)
+    
+    # Para recuentos en placa
+    ufc_count = fields.Integer(
+        string='UFC Contadas',
+        help='Número de colonias contadas en la placa'
+    )
+    
+    # Para métodos NMP (Número Más Probable)
+    positive_tubes = fields.Integer(
+        string='Tubos Positivos',
+        help='Número de tubos positivos (para NMP)'
+    )
+    
+    total_tubes = fields.Integer(
+        string='Total de Tubos',
+        help='Número total de tubos inoculados',
+        default=3
+    )
+    
+    # Para cualitativo por dilución
+    result_qualitative = fields.Selection([
+        ('positive', 'Positivo'),
+        ('negative', 'Negativo'),
+        ('growth', 'Crecimiento'),
+        ('no_growth', 'Sin Crecimiento')
+    ], string='Resultado')
+    
+    # Observaciones específicas de esta dilución
+    observations = fields.Text(
+        string='Observaciones',
+        help='Notas específicas sobre esta dilución',
+        placeholder='Ej: Placas confluentes, Conteo fácil, Pocas colonias...'
+    )
+    
+    # Selección para resultado final
+    selected_for_result = fields.Boolean(
+        string='Usar para Resultado Final',
+        help='Marcar la dilución que se usará para el resultado final'
+    )
+    
+    # Campo computado para mostrar el resultado calculado
+    calculated_result = fields.Char(
+        string='Resultado Calculado',
+        compute='_compute_calculated_result',
+        store=True,
+        help='Resultado calculado considerando la dilución'
+    )
+    
+    @api.depends('ufc_count', 'dilution_factor')
+    def _compute_calculated_result(self):
+        """Calcular resultado considerando la dilución"""
+        for record in self:
+            if record.ufc_count is not False and record.ufc_count >= 0:
+                factors = {
+                    'direct': 1, '10_1': 10, '10_2': 100, 
+                    '10_3': 1000, '10_4': 10000, '10_5': 100000, '10_6': 1000000
+                }
+                factor = factors.get(record.dilution_factor, 1)
+                result = record.ufc_count * factor
+                
+                # Formatear según el rango
+                if result == 0:
+                    record.calculated_result = "No detectado"
+                elif result < 10:
+                    record.calculated_result = f"< 1.0 x 10¹ UFC/g"
+                elif result > 300000:
+                    record.calculated_result = f"> 3.0 x 10⁵ UFC/g"
+                else:
+                    # Convertir a notación científica
+                    if result >= 1000:
+                        exp = len(str(int(result))) - 1
+                        base = result / (10 ** exp)
+                        record.calculated_result = f"{base:.1f} x 10{chr(8304 + exp)} UFC/g"
+                    else:
+                        record.calculated_result = f"{result} UFC/g"
+            else:
+                record.calculated_result = False
+    
+    @api.onchange('selected_for_result')
+    def _onchange_selected_for_result(self):
+        """Solo una dilución puede estar seleccionada por parámetro"""
+        if self.selected_for_result:
+            # Desmarcar otras diluciones del mismo parámetro
+            other_dilutions = self.parameter_analysis_id.raw_dilution_data_ids.filtered(
+                lambda x: x.id != self.id
+            )
+            for dilution in other_dilutions:
+                dilution.selected_for_result = False
