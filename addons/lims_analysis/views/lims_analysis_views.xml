@@ -64,7 +64,7 @@
                                         <field name="microorganism"/>
                                         <field name="method"/>
                                         <field name="analysis_status"/>
-                                        <field name="result_value"/>
+                                        <field name="result_value" class="o_field_highlight"/>
                                         <field name="qc_passed"/>
                                     </list>
                                     
@@ -97,15 +97,56 @@
                                                 </group>
                                             </group>
 
-                                            <!-- Resultados -->
-                                            <group string="📊 Resultados">
-                                                <group>
-                                                    <field name="result_value"/>
+                                            <!-- 🆕 SISTEMA HÍBRIDO DE RESULTADOS -->
+                                            <group string="📊 Captura de Resultados">
+                                                
+                                                <!-- CAMPO PRINCIPAL - SIEMPRE VISIBLE -->
+                                                <field name="result_value" 
+                                                       class="o_field_highlight"
+                                                       style="font-size: 16px;"
+                                                       colspan="2"/>
+                                                
+                                                <!-- GUÍA CONTEXTUAL -->
+                                                <field name="result_type_suggestion" 
+                                                       readonly="1" 
+                                                       nolabel="1"
+                                                       colspan="2"
+                                                       widget="html"
+                                                       class="alert alert-info"/>
+                                            </group>
+                                            
+                                            <!-- CAMPOS ESPECÍFICOS POR TIPO -->
+                                            <group string="🔬 Campos Específicos">
+                                                
+                                                <!-- PARA QUÍMICO Y FÍSICO -->
+                                                <group string="Valores Numéricos" invisible="category not in ['chemical', 'physical']">
                                                     <field name="result_numeric"/>
+                                                    <field name="result_unit"/>
                                                 </group>
-                                                <group>
+                                                
+                                                <!-- PARA MICROBIOLOGÍA CUALITATIVA -->
+                                                <group string="Resultado Cualitativo" invisible="category != 'microbiological'">
                                                     <field name="result_qualitative"/>
                                                 </group>
+                                                
+                                                <!-- PARA RECUENTOS MICROBIOLÓGICOS -->
+                                                <group string="Recuento de UFC" invisible="category != 'microbiological'">
+                                                    <group>
+                                                        <field name="cfu_count"/>
+                                                        <field name="cfu_dilution"/>
+                                                    </group>
+                                                    <field name="cfu_result" 
+                                                           readonly="1" 
+                                                           class="o_field_highlight"
+                                                           invisible="cfu_count == 0"/>
+                                                </group>
+                                                
+                                                <!-- LÍMITES DE DETECCIÓN -->
+                                                <group string="Límites Analíticos" invisible="category == 'microbiological'">
+                                                    <field name="below_detection_limit"/>
+                                                    <field name="above_quantification_limit"/>
+                                                </group>
+                                                
                                             </group>
 
                                             <!-- Observaciones -->
