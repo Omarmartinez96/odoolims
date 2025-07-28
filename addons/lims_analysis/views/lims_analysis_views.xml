@@ -132,8 +132,6 @@
                                                         <field name="total_tubes" invisible="method_type != 'nmp'"/>
                                                         <!-- Cualitativo -->
                                                         <field name="result_qualitative" invisible="method_type != 'qualitative'"/>
-                                                        <!-- Resultado calculado -->
-                                                        <field name="calculated_result" readonly="1"/>
                                                     </list>
                                                     
                                                     <form string="Datos de Dilución">
@@ -141,9 +139,6 @@
                                                             <group>
                                                                 <field name="method_type"/>
                                                                 <field name="dilution_factor"/>
-                                                            </group>
-                                                            <group>
-                                                                <field name="calculated_result" readonly="1"/>
                                                             </group>
                                                         </group>
                                                         
