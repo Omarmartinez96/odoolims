@@ -130,8 +130,6 @@
                                                         <!-- NMP -->
                                                         <field name="positive_tubes" invisible="method_type != 'nmp'"/>
                                                         <field name="total_tubes" invisible="method_type != 'nmp'"/>
-                                                        <!-- Cualitativo -->
-                                                        <field name="result_qualitative" invisible="method_type != 'qualitative'"/>
                                                     </list>
                                                     
                                                     <form string="Datos de Dilución">
@@ -154,11 +152,6 @@
                                                                 <field name="positive_tubes"/>
                                                                 <field name="total_tubes"/>
                                                                 <field name="nmp_result" placeholder="Ej: 110 NMP/100mL (consultar tabla)"/>
-                                                            </group>
-                                                            
-                                                            <!-- PARA CUALITATIVO -->
-                                                            <group string="Resultado Cualitativo" invisible="method_type != 'qualitative'">
-                                                                <field name="result_qualitative"/>
                                                             </group>
                                                         </group>
                                                         
