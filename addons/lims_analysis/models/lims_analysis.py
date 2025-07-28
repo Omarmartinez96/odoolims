@@ -43,8 +43,8 @@ class LimsAnalysis(models.Model):
     
     # Fechas
     analysis_start_date = fields.Date(
-        related='analysis_id.analysis_start_date',
-        readonly=True, store=True
+        string='Fecha de Inicio',
+        default=fields.Date.context_today
     )
     analysis_end_date = fields.Date(
         string='Fecha de Finalización'
