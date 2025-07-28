@@ -12,7 +12,7 @@
                     <field name="sample_identifier"/>
                     <field name="sample_id" 
                         options="{'no_create': True, 'no_open': True}"
-                        domain="[('sample_identifier', '!=', False)]"/>
+                        domain="[('sample_identifier', '!=', False), ('sample_identifier', '!=', ''), ('custody_chain_id', '!=', False)]"/>
                     <field name="analyst_id"/>
                     <field name="analysis_start_date"/>
                     <field name="analysis_state"/>
