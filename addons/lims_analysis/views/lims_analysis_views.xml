@@ -106,21 +106,55 @@
                                                     Los cálculos mostrados son informativos. El resultado final debe ingresarse manualmente abajo.
                                                 </div>
                                                 
-                                                <!-- TABLA DE DILUCIONES LIMPIA -->
+                                                <!-- TABLA DE DILUCIONES CON SOPORTE UFC/NMP -->
                                                 <field name="raw_dilution_data_ids" nolabel="1" colspan="2">
                                                     <list string="Diluciones" editable="bottom" create="true" delete="true">
+                                                        <field name="method_type"/>
                                                         <field name="dilution_factor"/>
-                                                        <field name="ufc_count"/>
+                                                        <!-- UFC -->
+                                                        <field name="ufc_count" invisible="method_type != 'ufc'"/>
+                                                        <!-- NMP -->
+                                                        <field name="positive_tubes" invisible="method_type != 'nmp'"/>
+                                                        <field name="total_tubes" invisible="method_type != 'nmp'"/>
+                                                        <field name="nmp_result" invisible="method_type != 'nmp'"/>
+                                                        <!-- Cualitativo -->
+                                                        <field name="result_qualitative" invisible="method_type != 'qualitative'"/>
+                                                        <!-- Resultado -->
                                                         <field name="calculated_result" readonly="1"/>
                                                         <field name="observations"/>
                                                     </list>
                                                     
                                                     <form string="Datos de Dilución">
                                                         <group>
-                                                            <field name="dilution_factor"/>
-                                                            <field name="ufc_count"/>
-                                                            <field name="calculated_result" readonly="1"/>
+                                                            <group>
+                                                                <field name="method_type"/>
+                                                                <field name="dilution_factor"/>
+                                                            </group>
+                                                            <group>
+                                                                <field name="calculated_result" readonly="1"/>
+                                                            </group>
                                                         </group>
+                                                        
+                                                        <!-- CAMPOS ESPECÍFICOS POR TIPO -->
+                                                        <group string="Datos Específicos">
+                                                            <!-- PARA UFC -->
+                                                            <group string="Recuento en Placa" invisible="method_type != 'ufc'">
+                                                                <field name="ufc_count"/>
+                                                            </group>
+                                                            
+                                                            <!-- PARA NMP -->
+                                                            <group string="Número Más Probable" invisible="method_type != 'nmp'">
+                                                                <field name="positive_tubes"/>
+                                                                <field name="total_tubes"/>
+                                                                <field name="nmp_result" placeholder="Ej: 110 NMP/100mL (consultar tabla)"/>
+                                                            </group>
+                                                            
+                                                            <!-- PARA CUALITATIVO -->
+                                                            <group string="Resultado Cualitativo" invisible="method_type != 'qualitative'">
+                                                                <field name="result_qualitative"/>
+                                                            </group>
+                                                        </group>
+                                                        
                                                         <group>
                                                             <field name="observations" nolabel="1"/>
                                                         </group>
