@@ -128,13 +128,6 @@
                                                     <field name="pre_enrichment_processing_time" placeholder="HH:MM"/>
                                                 </group>
                                                 
-                                                <group string="Incubación">
-                                                    <field name="pre_enrichment_incubation_start_date"/>
-                                                    <field name="pre_enrichment_incubation_start_time" placeholder="HH:MM"/>
-                                                    <field name="pre_enrichment_incubation_end_date"/>
-                                                    <field name="pre_enrichment_incubation_end_time" placeholder="HH:MM"/>
-                                                </group>
-                                                
                                                 <group string="Medios y Reactivos">
                                                     <field name="pre_enrichment_media_ids" nolabel="1" colspan="2">
                                                         <list string="Medios y Reactivos Utilizados" editable="bottom" create="true" delete="true">
@@ -148,7 +141,17 @@
                                                                    placeholder="Nombre del diluyente/reactivo"/>
                                                             <field name="batch_number" placeholder="Lote"/>
                                                             <field name="volume_used" placeholder="Ej: 225mL"/>
-                                                            <field name="display_name" readonly="1"/>
+                                                            <!-- Campos de incubación solo para medios de cultivo -->
+                                                            <field name="requires_incubation" invisible="1"/>
+                                                            <field name="incubation_start_date" 
+                                                                   invisible="requires_incubation == False"
+                                                                   placeholder="Fecha inicio"/>
+                                                            <field name="incubation_start_time" 
+                                                                   invisible="requires_incubation == False"
+                                                                   placeholder="HH:MM"/>
+                                                            <field name="incubation_temperature" 
+                                                                   invisible="requires_incubation == False"
+                                                                   placeholder="37°C"/>
                                                         </list>
                                                         
                                                         <form string="Medio/Reactivo Utilizado">
@@ -156,6 +159,7 @@
                                                                 <group>
                                                                     <field name="media_type"/>
                                                                     <field name="sequence"/>
+                                                                    <field name="requires_incubation" invisible="1"/>
                                                                 </group>
                                                                 <group>
                                                                     <field name="volume_used"/>
@@ -180,7 +184,21 @@
                                                                        placeholder="Número de lote"/>
                                                             </group>
                                                             
-                                                            <group string="Notas de Preparación">
+                                                            <!-- Incubación solo para medios de cultivo -->
+                                                            <group string="🌡️ Incubación" 
+                                                                   invisible="requires_incubation == False">
+                                                                <group>
+                                                                    <field name="incubation_start_date"/>
+                                                                    <field name="incubation_start_time" placeholder="HH:MM"/>
+                                                                    <field name="incubation_temperature" placeholder="Ej: 37°C"/>
+                                                                </group>
+                                                                <group>
+                                                                    <field name="incubation_end_date"/>
+                                                                    <field name="incubation_end_time" placeholder="HH:MM"/>
+                                                                </group>
+                                                            </group>
+                                                            
+                                                            <group string="📝 Notas de Preparación">
                                                                 <field name="preparation_notes" nolabel="1"
                                                                        placeholder="Instrucciones especiales, diluciones, etc..."/>
                                                             </group>

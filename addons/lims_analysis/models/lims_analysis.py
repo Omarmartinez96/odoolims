@@ -733,11 +733,49 @@ class LimsPreEnrichmentMedia(models.Model):
         help='Instrucciones especiales, diluciones, etc.'
     )
     
+    # 🆕 CAMPOS DE INCUBACIÓN (SOLO PARA MEDIOS QUE REQUIEREN INCUBACIÓN)
+    requires_incubation = fields.Boolean(
+        string='Requiere Incubación',
+        compute='_compute_requires_incubation',
+        store=True,
+        help='Se calcula automáticamente según el tipo de medio'
+    )
+    
+    incubation_start_date = fields.Date(
+        string='Fecha Inicio Incubación'
+    )
+    
+    incubation_start_time = fields.Char(
+        string='Hora Inicio',
+        help='Formato HH:MM'
+    )
+    
+    incubation_end_date = fields.Date(
+        string='Fecha Fin Incubación'
+    )
+    
+    incubation_end_time = fields.Char(
+        string='Hora Fin',
+        help='Formato HH:MM'
+    )
+    
+    incubation_temperature = fields.Char(
+        string='Temperatura',
+        help='Ej: 37°C, 25±2°C'
+    )
+    
     display_name = fields.Char(
         string='Descripción',
         compute='_compute_display_name',
         store=True
     )
+    
+    @api.depends('media_type')
+    def _compute_requires_incubation(self):
+        """Calcular si requiere incubación según el tipo"""
+        for record in self:
+            # Solo medios de cultivo requieren incubación
+            record.requires_incubation = record.media_type == 'medio_cultivo'
     
     @api.depends('media_type', 'culture_media_batch_id', 'media_name', 'batch_number')
     def _compute_display_name(self):
@@ -763,6 +801,12 @@ class LimsPreEnrichmentMedia(models.Model):
             self.media_name = False
         else:
             self.culture_media_batch_id = False
+            # Limpiar campos de incubación para diluyentes/reactivos
+            self.incubation_start_date = False
+            self.incubation_start_time = False
+            self.incubation_end_date = False
+            self.incubation_end_time = False
+            self.incubation_temperature = False
     
     @api.onchange('culture_media_batch_id')
     def _onchange_culture_media_batch_id(self):
