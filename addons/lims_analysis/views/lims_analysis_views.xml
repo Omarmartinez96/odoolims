@@ -50,7 +50,7 @@
                         <!-- Información básica -->
                         <group>
                             <group string="Información de la Muestra">
-                                <field name="sample_id"/>
+                                <field name="sample_reception_id"/>
                                 <field name="analyst_id"/>
                             </group>
                         <group string="Identificación">
