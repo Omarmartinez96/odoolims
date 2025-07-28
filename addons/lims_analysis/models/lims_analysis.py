@@ -357,11 +357,56 @@ class LimsParameterAnalysis(models.Model):
         ('no_preparation', 'Muestra no requiere preparación adicional')
     ], string='Tipo de Tratamiento de Muestra')
     
-    # Campos específicos para diluciones
+    # 🆕 CAMPOS ESPECÍFICOS PARA ISO 11737 (DISPOSITIVOS MÉDICOS)
+    requires_extraction = fields.Boolean(
+        string='Requiere Extracción de Microorganismos',
+        compute='_compute_requires_extraction',
+        store=True
+    )
+    
+    extraction_method = fields.Selection([
+        ('stomaching', 'Stomaching (Homogeneización en bolsa)'),
+        ('flushing', 'Flushing (Enjuague)'),
+        ('vortexing', 'Vortexing (Agitación en vórtex)'),
+        ('sonication', 'Sonication (Ultrasonido)'),
+        ('shaking', 'Shaking (Agitación mecánica)'),
+        ('immersion', 'Immersion (Inmersión)'),
+        ('swabbing', 'Swabbing (Hisopado)'),
+        ('rinsing', 'Rinsing (Enjuague directo)'),
+        ('other_extraction', 'Otro método de extracción')
+    ], string='Método de Extracción')
+    
+    other_extraction_method = fields.Char(
+        string='Especificar Otro Método',
+        help='Describir el método de extracción utilizado'
+    )
+    
+    extraction_volume = fields.Char(
+        string='Volumen de Extracción',
+        help='Ej: 100 mL, 50 mL PBS, etc.'
+    )
+    
+    extraction_time = fields.Char(
+        string='Tiempo de Extracción',
+        help='Ej: 2 min, 5 min, 30 seg'
+    )
+    
+    extraction_notes = fields.Text(
+        string='Notas de Extracción',
+        help='Observaciones específicas del proceso de extracción'
+    )
+    
+    # Campos específicos para diluciones (modificados)
     requires_dilution = fields.Boolean(
         string='Requiere Diluciones',
         compute='_compute_requires_dilution',
         store=True
+    )
+    
+    # 🆕 OPCIÓN DIRECTO PARA ISO 11737
+    dilution_direct = fields.Boolean(
+        string='Directo (sin dilución)',
+        help='Sembrar directamente el extracto sin diluir'
     )
     
     dilution_10_1 = fields.Boolean(
@@ -451,6 +496,12 @@ class LimsParameterAnalysis(models.Model):
     
     # 🆕 MÉTODOS COMPUTADOS Y ONCHANGE
     @api.depends('sample_treatment_type')
+    def _compute_requires_extraction(self):
+        """Determinar si el tipo de tratamiento requiere extracción (ISO 11737)"""
+        for record in self:
+            record.requires_extraction = record.sample_treatment_type == 'iso_11737'
+    
+    @api.depends('sample_treatment_type')
     def _compute_requires_dilution(self):
         """Determinar si el tipo de tratamiento requiere diluciones"""
         for record in self:
@@ -458,10 +509,26 @@ class LimsParameterAnalysis(models.Model):
     
     @api.onchange('sample_treatment_type')
     def _onchange_sample_treatment_type(self):
-        """Limpiar campos de dilución si no se requieren"""
+        """Limpiar campos según el tipo de tratamiento seleccionado"""
+        if self.sample_treatment_type != 'iso_11737':
+            # Limpiar campos de extracción si no es ISO 11737
+            self.extraction_method = False
+            self.other_extraction_method = False
+            self.extraction_volume = False
+            self.extraction_time = False
+            self.extraction_notes = False
+        
         if not self.requires_dilution:
+            # Limpiar campos de dilución si no se requieren
+            self.dilution_direct = False
             self.dilution_10_1 = False
             self.dilution_10_2 = False
             self.dilution_10_3 = False
             self.dilution_10_4 = False
             self.other_dilution = False
+    
+    @api.onchange('extraction_method')
+    def _onchange_extraction_method(self):
+        """Limpiar campo 'otro método' si no se selecciona 'other_extraction'"""
+        if self.extraction_method != 'other_extraction':
+            self.other_extraction_method = False

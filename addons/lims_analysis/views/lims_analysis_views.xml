@@ -64,6 +64,7 @@
                                         <field name="microorganism"/>
                                         <field name="method"/>
                                         <field name="sample_treatment_type"/>
+                                        <field name="extraction_method" invisible="sample_treatment_type != 'iso_11737'"/>
                                         <field name="analysis_status"/>
                                         <field name="result_value"/>
                                         <field name="qc_passed"/>
@@ -101,10 +102,30 @@
                                             <!-- 🆕 PROCESAMIENTO DE MUESTRAS -->
                                             <group string="🧪 Procesamiento de Muestras">
                                                 <field name="sample_treatment_type"/>
+                                                <field name="requires_extraction" invisible="1"/>
                                                 <field name="requires_dilution" invisible="1"/>
                                                 
-                                                <!-- Diluciones (solo visible si se requieren) -->
+                                                <!-- 🆕 EXTRACCIÓN PARA ISO 11737 (DISPOSITIVOS MÉDICOS) -->
+                                                <group string="Extracción de Microorganismos (ISO 11737-1)" invisible="requires_extraction == False">
+                                                    <group>
+                                                        <field name="extraction_method"/>
+                                                        <field name="other_extraction_method" 
+                                                               placeholder="Describir método utilizado"
+                                                               invisible="extraction_method != 'other_extraction'"/>
+                                                    </group>
+                                                    <group>
+                                                        <field name="extraction_volume" placeholder="Ej: 100 mL PBS"/>
+                                                        <field name="extraction_time" placeholder="Ej: 2 min"/>
+                                                    </group>
+                                                    <field name="extraction_notes" 
+                                                           placeholder="Observaciones del proceso de extracción..."/>
+                                                </group>
+                                                
+                                                <!-- Diluciones (visible para NOM-110 e ISO 11737) -->
                                                 <group string="Diluciones Procesadas" invisible="requires_dilution == False">
+                                                    <!-- 🆕 OPCIÓN DIRECTO PARA ISO 11737 -->
+                                                    <field name="dilution_direct" invisible="sample_treatment_type != 'iso_11737'"/>
+                                                    
                                                     <group>
                                                         <field name="dilution_10_1"/>
                                                         <field name="dilution_10_2"/>
