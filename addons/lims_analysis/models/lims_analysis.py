@@ -15,10 +15,10 @@ class LimsAnalysis(models.Model):
         ondelete='cascade'
     )
     
+    # Obtener el código desde el módulo de recepción
     sample_code = fields.Char(
         string='Código de Muestra',
-        related='sample_id.sample_reception_id.sample_code',
-        readonly=True,
+        compute='_compute_sample_code',
         store=True
     )
 
@@ -79,15 +79,38 @@ class LimsAnalysis(models.Model):
         self.analysis_state = 'completed'
         self.analysis_end_date = fields.Date.context_today(self)
 
-@api.depends('sample_code', 'sample_identifier', 'analyst_id')
+@api.depends('sample_id', 'analyst_id')
 def _compute_display_name(self):
     for analysis in self:
         parts = []
-        if analysis.sample_code:
-            parts.append(analysis.sample_code)
-        if analysis.sample_identifier:
-            parts.append(f"({analysis.sample_identifier})")
+        
+        if analysis.sample_id:
+            # Buscar código de recepción
+            reception = self.env['lims.sample.reception'].search([
+                ('sample_id', '=', analysis.sample_id.id)
+            ], limit=1)
+            
+            if reception and reception.sample_code:
+                parts.append(reception.sample_code)
+            
+            if analysis.sample_id.sample_identifier:
+                parts.append(f"({analysis.sample_id.sample_identifier})")
+        
         if analysis.analyst_id:
             parts.append(f"- {analysis.analyst_id.name}")
         
         analysis.display_name = " ".join(parts) if parts else "Análisis"
+
+@api.depends('sample_id')
+def _compute_sample_code(self):
+    """Obtener el código de muestra desde recepción"""
+    for analysis in self:
+        if analysis.sample_id:
+            # Buscar la recepción de esta muestra
+            reception = self.env['lims.sample.reception'].search([
+                ('sample_id', '=', analysis.sample_id.id)
+            ], limit=1)
+            
+            analysis.sample_code = reception.sample_code if reception else 'Sin código'
+        else:
+            analysis.sample_code = ''
