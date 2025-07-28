@@ -304,26 +304,18 @@ class LimsParameterAnalysis(models.Model):
         help='Formato HH:MM'
     )
 
-    # Fechas de incubación
-    pre_enrichment_incubation_start_date = fields.Date(
-        string='Fecha Inicio Incubación'
-    )
-
-    pre_enrichment_incubation_start_time = fields.Char(
-        string='Hora Inicio Incubación',
-        help='Formato HH:MM'
-    )
-
-    pre_enrichment_incubation_end_date = fields.Date(
-        string='Fecha Fin Incubación'
-    )
-
-    pre_enrichment_incubation_end_time = fields.Char(
-        string='Hora Fin Incubación',
-        help='Formato HH:MM'
-    )
-
     # Medios y reactivos
+
+    pre_enrichment_media_ids = fields.One2many(
+        'lims.pre.enrichment.media',
+        'parameter_analysis_id',
+        string='Medios y Reactivos Utilizados'
+    )
+
+    pre_enrichment_processing_time = fields.Char(
+        string='Hora de Procesamiento',
+        help='Formato HH:MM'
+    )
 
     pre_enrichment_media_ids = fields.One2many(
         'lims.pre.enrichment.media',
