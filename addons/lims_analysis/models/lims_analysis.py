@@ -44,12 +44,17 @@ class LimsAnalysis(models.Model):
     # Fechas
     analysis_start_date = fields.Date(
         string='Fecha de Inicio',
-        default=fields.Date.context_today
+        default=fields.Date.context_today,
+        help='Fecha en que se inició el análisis'
     )
     analysis_end_date = fields.Date(
         string='Fecha de Finalización'
     )
-    
+    analysis_commitment_date = fields.Date(
+        string='Fecha Compromiso',
+        help='Fecha comprometida para entregar resultados'
+    )
+
     # Estado del análisis
     analysis_state = fields.Selection([
         ('draft', 'Borrador'),
