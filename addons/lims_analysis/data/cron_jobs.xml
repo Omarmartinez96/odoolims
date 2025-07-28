@@ -8,7 +8,6 @@
             <field name="code">model.cron_clean_orphan_records()</field>
             <field name="interval_number">1</field>
             <field name="interval_type">weeks</field>
-            <field name="numbercall">-1</field>
             <field name="active">True</field>
         </record>
     </data>
