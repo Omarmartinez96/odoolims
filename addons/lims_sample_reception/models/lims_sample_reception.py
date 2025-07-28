@@ -277,6 +277,39 @@ class LimsSampleReception(models.Model):
             self.microorganism = template.microorganism
             self.unit = template.unit
 
+    def write(self, vals):
+        """Override write para crear análisis automáticamente cuando se marca como recibida"""
+        result = super().write(vals)
+        
+        # Si se cambió el estado a 'recibida', crear análisis automáticamente
+        if vals.get('reception_state') == 'recibida':
+            for record in self:
+                # Verificar que no exista ya un análisis para esta recepción
+                existing_analysis = self.env['lims.analysis'].search([
+                    ('sample_reception_id', '=', record.id)
+                ])
+                
+                if not existing_analysis:
+                    # Crear análisis automáticamente
+                    analysis = self.env['lims.analysis'].create({
+                        'sample_reception_id': record.id,
+                        'analyst_id': self.env.user.id,  # Asignar al usuario actual por defecto
+                    })
+                    
+                    # Opcional: Mostrar notificación
+                    self.env['bus.bus']._sendone(
+                        self.env.user.partner_id, 
+                        'simple_notification', 
+                        {
+                            'title': 'Análisis Creado',
+                            'message': f'Se creó automáticamente el análisis para la muestra {record.sample_code}',
+                            'type': 'success'
+                        }
+                    )
+        
+        return result
+
+
 class LimsSample(models.Model):
     _inherit = 'lims.sample'
     
