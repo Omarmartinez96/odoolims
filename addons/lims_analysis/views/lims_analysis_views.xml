@@ -125,10 +125,11 @@
                                             
                                             <!-- 🆕 DILUCIONES (SEPARADO Y ABAJO) -->
                                             <group string="🧪 Diluciones Procesadas" invisible="requires_dilution == False">
-                                                <!-- Opción Directo con etiqueta visible -->
-                                                <div invisible="sample_treatment_type != 'iso_11737'" colspan="2">
-                                                    <field name="dilution_direct" string="Directo (sin dilución)"/>
-                                                </div>
+                                                <!-- Opción Directo con etiqueta visible - CORREGIDO -->
+                                                <field name="dilution_direct" 
+                                                       string="Directo (sin dilución)"
+                                                       invisible="sample_treatment_type != 'iso_11737'"
+                                                       colspan="2"/>
                                                 
                                                 <!-- Diluciones estándar -->
                                                 <group>
