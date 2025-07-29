@@ -429,12 +429,17 @@
                                                     
                                                     <!-- RESULTADO CUALITATIVO -->
                                                     <group string="📊 Resultado Cualitativo" 
-                                                           invisible="result_type != 'qualitative'">
+                                                        invisible="result_type != 'qualitative'">
                                                         <field name="result_qualitative"/>
+                                                        <field name="qualitative_unit_selection" string="Unidad/Base"/>
+                                                        <field name="qualitative_custom_unit" 
+                                                            placeholder="Especificar unidad personalizada"
+                                                            invisible="qualitative_unit_selection != 'custom'"
+                                                            colspan="2"/>
                                                         <field name="result_value" 
-                                                               class="o_field_highlight"
-                                                               style="font-size: 16px;"
-                                                               placeholder="Se completará automáticamente al seleccionar resultado cualitativo"/>
+                                                            class="o_field_highlight"
+                                                            style="font-size: 16px;"
+                                                            placeholder="Se completará automáticamente al seleccionar resultado y unidad"/>
                                                     </group>
 
                                                     <!-- PARA CUANTITATIVOS: TABLA DE MEDIOS PRIMERO -->
