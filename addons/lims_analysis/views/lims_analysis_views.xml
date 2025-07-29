@@ -133,38 +133,36 @@
                                                     <group string="Medios y Reactivos">
                                                         <field name="pre_enrichment_media_ids" nolabel="1" colspan="2">
                                                             <list string="Medios y Reactivos Utilizados" editable="bottom" create="true" delete="true">
-                                                                <field name="sequence" widget="handle"/>
                                                                 <field name="media_type"/>
                                                                 <field name="culture_media_batch_id" 
                                                                        invisible="media_type != 'medio_cultivo'"
                                                                        placeholder="Seleccionar lote"/>
-                                                                <field name="media_name" 
-                                                                       invisible="media_type == 'medio_cultivo'"
-                                                                       placeholder="Nombre del diluyente/reactivo"/>
-                                                                <field name="batch_number" placeholder="Lote"/>
-                                                                <field name="volume_used" placeholder="Ej: 225mL"/>
-                                                                <!-- Campos de incubación solo para medios de cultivo -->
-                                                                <field name="requires_incubation" invisible="1"/>
+                                                                <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                                <field name="incubation_equipment" 
+                                                                       invisible="requires_incubation == False"
+                                                                       placeholder="Equipo de incubación"/>
                                                                 <field name="incubation_start_date" 
                                                                        invisible="requires_incubation == False"
                                                                        placeholder="Fecha inicio"/>
                                                                 <field name="incubation_start_time" 
                                                                        invisible="requires_incubation == False"
                                                                        placeholder="HH:MM"/>
-                                                                <field name="incubation_temperature" 
+                                                                <field name="incubation_end_date" 
                                                                        invisible="requires_incubation == False"
-                                                                       placeholder="37°C"/>
+                                                                       placeholder="Fecha fin"/>
+                                                                <field name="incubation_end_time" 
+                                                                       invisible="requires_incubation == False"
+                                                                       placeholder="HH:MM"/>
                                                             </list>
                                                             
                                                             <form string="Medio/Reactivo Utilizado">
                                                                 <group>
                                                                     <group>
                                                                         <field name="media_type"/>
-                                                                        <field name="sequence"/>
-                                                                        <field name="requires_incubation" invisible="1"/>
+                                                                        <field name="requires_incubation" string="¿Requiere Incubación?"/>
                                                                     </group>
                                                                     <group>
-                                                                        <field name="volume_used"/>
+                                                                        <!-- Campo vacío para balance visual -->
                                                                     </group>
                                                                 </group>
                                                                 
@@ -174,25 +172,16 @@
                                                                     <field name="culture_media_batch_id" 
                                                                            placeholder="Seleccionar lote de medio"
                                                                            options="{'no_create': True}"/>
-                                                                    <field name="batch_number" readonly="1"/>
                                                                 </group>
                                                                 
-                                                                <!-- Para diluyentes y otros -->
-                                                                <group string="Diluyente/Reactivo" 
-                                                                       invisible="media_type == 'medio_cultivo'">
-                                                                    <field name="media_name" 
-                                                                           placeholder="Ej: Agua peptona, PBS, etc."/>
-                                                                    <field name="batch_number" 
-                                                                           placeholder="Número de lote"/>
-                                                                </group>
-                                                                
-                                                                <!-- Incubación solo para medios de cultivo -->
+                                                                <!-- Incubación cuando se requiere -->
                                                                 <group string="🌡️ Incubación" 
                                                                        invisible="requires_incubation == False">
                                                                     <group>
+                                                                        <field name="incubation_equipment" 
+                                                                               placeholder="Equipo utilizado"/>
                                                                         <field name="incubation_start_date"/>
                                                                         <field name="incubation_start_time" placeholder="HH:MM"/>
-                                                                        <field name="incubation_temperature" placeholder="Ej: 37°C"/>
                                                                     </group>
                                                                     <group>
                                                                         <field name="incubation_end_date"/>
@@ -202,7 +191,7 @@
                                                                 
                                                                 <group string="📝 Notas de Preparación">
                                                                     <field name="preparation_notes" nolabel="1"
-                                                                           placeholder="Instrucciones especiales, diluciones, etc..."/>
+                                                                           placeholder="Instrucciones especiales, observaciones, etc..."/>
                                                                 </group>
                                                             </form>
                                                         </field>
