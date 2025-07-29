@@ -746,7 +746,7 @@ class LimsPreEnrichmentMedia(models.Model):
         help='Lote específico del medio de cultivo'
     )
     
-    # CAMPOS DE INCUBACIÓN SIMPLIFICADOS
+    # CAMPOS DE INCUBACIÓN
     requires_incubation = fields.Boolean(
         string='Requiere Incubación',
         default=False,
@@ -819,7 +819,10 @@ class LimsPreEnrichmentMedia(models.Model):
     def _compute_display_name(self):
         """Calcular nombre descriptivo"""
         for record in self:
-            if record.media_type == 'medio_cultivo' and record.culture_media_batch_id:
+            # Tipos que pueden usar lotes del catálogo
+            catalog_types = ['medio_cultivo', 'diluyente', 'enriquecimiento', 'selectivo', 'diferencial']
+            
+            if record.media_type in catalog_types and record.culture_media_batch_id:
                 name = f"{record.culture_media_batch_id.culture_media_id.name}"
                 if record.culture_media_batch_id.batch_code:
                     name += f" (Lote: {record.culture_media_batch_id.batch_code})"
@@ -831,7 +834,9 @@ class LimsPreEnrichmentMedia(models.Model):
     @api.onchange('media_type')
     def _onchange_media_type(self):
         """Limpiar campos según el tipo seleccionado"""
-        if self.media_type != 'medio_cultivo':
+        # Solo limpiar el lote si NO es un tipo que puede usar catálogo
+        catalog_types = ['medio_cultivo', 'diluyente', 'enriquecimiento', 'selectivo', 'diferencial']
+        if self.media_type not in catalog_types:
             self.culture_media_batch_id = False
     
     @api.onchange('requires_incubation')
@@ -948,7 +953,10 @@ class LimsSelectiveEnrichmentMedia(models.Model):
     def _compute_display_name(self):
         """Calcular nombre descriptivo"""
         for record in self:
-            if record.media_type == 'medio_cultivo' and record.culture_media_batch_id:
+            # Tipos que pueden usar lotes del catálogo
+            catalog_types = ['medio_cultivo', 'diluyente', 'enriquecimiento', 'selectivo', 'diferencial']
+            
+            if record.media_type in catalog_types and record.culture_media_batch_id:
                 name = f"{record.culture_media_batch_id.culture_media_id.name}"
                 if record.culture_media_batch_id.batch_code:
                     name += f" (Lote: {record.culture_media_batch_id.batch_code})"
@@ -960,7 +968,9 @@ class LimsSelectiveEnrichmentMedia(models.Model):
     @api.onchange('media_type')
     def _onchange_media_type(self):
         """Limpiar campos según el tipo seleccionado"""
-        if self.media_type != 'medio_cultivo':
+        # Solo limpiar el lote si NO es un tipo que puede usar catálogo
+        catalog_types = ['medio_cultivo', 'diluyente', 'enriquecimiento', 'selectivo', 'diferencial']
+        if self.media_type not in catalog_types:
             self.culture_media_batch_id = False
     
     @api.onchange('requires_incubation')

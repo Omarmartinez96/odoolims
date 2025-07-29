@@ -135,7 +135,7 @@
                                                             <list string="Medios y Reactivos Utilizados" editable="bottom" create="true" delete="true">
                                                                 <field name="media_type"/>
                                                                 <field name="culture_media_batch_id" 
-                                                                       invisible="media_type != 'medio_cultivo'"
+                                                                       invisible="media_type not in ['medio_cultivo', 'diluyente', 'enriquecimiento', 'selectivo', 'diferencial']"
                                                                        placeholder="Seleccionar lote"/>
                                                                 <field name="requires_incubation" string="¿Requiere Incubación?"/>
                                                                 <field name="incubation_equipment" 
@@ -168,7 +168,7 @@
                                                                 
                                                                 <!-- Para medios de cultivo del catálogo -->
                                                                 <group string="Medio de Cultivo" 
-                                                                       invisible="media_type != 'medio_cultivo'">
+                                                                       invisible="media_type not in ['medio_cultivo', 'diluyente', 'enriquecimiento', 'selectivo', 'diferencial']">
                                                                     <field name="culture_media_batch_id" 
                                                                            placeholder="Seleccionar lote de medio"
                                                                            options="{'no_create': True}"/>
@@ -222,7 +222,7 @@
                                                             <list string="Medios Selectivos Utilizados" editable="bottom" create="true" delete="true">
                                                                 <field name="media_type"/>
                                                                 <field name="culture_media_batch_id" 
-                                                                       invisible="media_type != 'medio_cultivo'"
+                                                                       invisible="media_type not in ['medio_cultivo', 'diluyente', 'enriquecimiento', 'selectivo', 'diferencial']"
                                                                        placeholder="Seleccionar lote"/>
                                                                 <field name="requires_incubation" string="¿Requiere Incubación?"/>
                                                                 <field name="incubation_equipment" 
@@ -255,7 +255,7 @@
                                                                 
                                                                 <!-- Para medios de cultivo del catálogo -->
                                                                 <group string="Medio de Cultivo" 
-                                                                       invisible="media_type != 'medio_cultivo'">
+                                                                       invisible="media_type not in ['medio_cultivo', 'diluyente', 'enriquecimiento', 'selectivo', 'diferencial']">
                                                                     <field name="culture_media_batch_id" 
                                                                            placeholder="Seleccionar lote de medio"
                                                                            options="{'no_create': True}"/>
