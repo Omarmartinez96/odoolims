@@ -398,6 +398,38 @@ class LimsParameterAnalysis(models.Model):
         help='Especificar unidad personalizada'
     )
     
+    # CAMPOS PARA ENRIQUECIMIENTO SELECTIVO
+    selective_enrichment_environment = fields.Selection([
+        ('triangulo_esteril', 'Triángulo Estéril'),
+        ('campana_flujo', 'Campana de Flujo Laminar'),
+        ('campana_bioseguridad', 'Campana de Bioseguridad'),
+        ('mesa_trabajo', 'Mesa de Trabajo'),
+    ], string='Ambiente de Procesamiento Selectivo')
+
+    selective_enrichment_equipment_id = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo Específico para Selectivo',
+        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]",
+        help='Equipo específico utilizado para el enriquecimiento selectivo'
+    )
+
+    # Fechas de procesamiento selectivo
+    selective_enrichment_processing_date = fields.Date(
+        string='Fecha de Procesamiento Selectivo'
+    )
+
+    selective_enrichment_processing_time = fields.Char(
+        string='Hora de Procesamiento Selectivo',
+        help='Formato HH:MM'
+    )
+
+    # Medios selectivos
+    selective_enrichment_media_ids = fields.One2many(
+        'lims.selective.enrichment.media',
+        'parameter_analysis_id',
+        string='Medios Selectivos Utilizados'
+    )
+
     @api.depends('raw_dilution_data_ids.ufc_count')
     def _compute_dilution_calculations(self):
         """Mostrar SOLO cálculos informativos (NO actualiza resultado automáticamente)"""
@@ -521,6 +553,22 @@ class LimsParameterAnalysis(models.Model):
             domain = []
         
         return {'domain': {'pre_enrichment_equipment_id': domain}}
+
+    @api.onchange('selective_enrichment_environment')
+    def _onchange_selective_enrichment_environment(self):
+        """Limpiar equipo cuando cambia el ambiente selectivo"""
+        if self.selective_enrichment_environment not in ['campana_flujo', 'campana_bioseguridad']:
+            self.selective_enrichment_equipment_id = False
+        
+        # Actualizar dominio del equipo según el ambiente
+        if self.selective_enrichment_environment == 'campana_flujo':
+            domain = [('equipment_type', '=', 'campana_flujo')]
+        elif self.selective_enrichment_environment == 'campana_bioseguridad':
+            domain = [('equipment_type', '=', 'campana_bioseguridad')]
+        else:
+            domain = []
+        
+        return {'domain': {'selective_enrichment_equipment_id': domain}}
 
 # 🆕 MODELO PARA DATOS CRUDOS DE DILUCIONES
 class LimsRawDilutionData(models.Model):
@@ -702,6 +750,135 @@ class LimsPreEnrichmentMedia(models.Model):
     requires_incubation = fields.Boolean(
         string='Requiere Incubación',
         default=False,
+        help='Marcar si este medio requiere incubación'
+    )
+    
+    incubation_equipment = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo de Incubación',
+        domain=[('equipment_type', '=', 'incubadora')],
+        help='Equipo específico utilizado para incubación'
+    )
+    
+    incubation_start_date = fields.Date(
+        string='Fecha Inicio Incubación'
+    )
+    
+    incubation_start_time = fields.Char(
+        string='Hora Inicio',
+        help='Formato HH:MM'
+    )
+    
+    incubation_end_date = fields.Date(
+        string='Fecha Fin Incubación'
+    )
+    
+    incubation_end_time = fields.Char(
+        string='Hora Fin',
+        help='Formato HH:MM'
+    )
+    
+    # NOTAS
+    preparation_notes = fields.Text(
+        string='Notas de Preparación',
+        help='Instrucciones especiales, observaciones, etc.'
+    )
+    
+    # CAMPOS CALCULADOS
+    incubation_duration = fields.Char(
+        string='Duración de Incubación',
+        compute='_compute_incubation_duration',
+        help='Duración calculada automáticamente'
+    )
+    
+    display_name = fields.Char(
+        string='Descripción',
+        compute='_compute_display_name',
+        store=True
+    )
+    
+    @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
+    def _compute_incubation_duration(self):
+        """Calcular duración de incubación"""
+        for record in self:
+            if record.incubation_start_date and record.incubation_end_date:
+                start_date = record.incubation_start_date
+                end_date = record.incubation_end_date
+                duration = (end_date - start_date).days
+                
+                if duration == 0:
+                    record.incubation_duration = "Mismo día"
+                elif duration == 1:
+                    record.incubation_duration = "24 horas"
+                else:
+                    record.incubation_duration = f"{duration * 24} horas"
+            else:
+                record.incubation_duration = ""
+    
+    @api.depends('media_type', 'culture_media_batch_id')
+    def _compute_display_name(self):
+        """Calcular nombre descriptivo"""
+        for record in self:
+            if record.media_type == 'medio_cultivo' and record.culture_media_batch_id:
+                name = f"{record.culture_media_batch_id.culture_media_id.name}"
+                if record.culture_media_batch_id.batch_code:
+                    name += f" (Lote: {record.culture_media_batch_id.batch_code})"
+            else:
+                name = record.media_type.replace('_', ' ').title()
+            
+            record.display_name = name
+    
+    @api.onchange('media_type')
+    def _onchange_media_type(self):
+        """Limpiar campos según el tipo seleccionado"""
+        if self.media_type != 'medio_cultivo':
+            self.culture_media_batch_id = False
+    
+    @api.onchange('requires_incubation')
+    def _onchange_requires_incubation(self):
+        """Limpiar campos de incubación cuando no se requiere"""
+        if not self.requires_incubation:
+            self.incubation_equipment = False
+            self.incubation_start_date = False
+            self.incubation_start_time = False
+            self.incubation_end_date = False
+            self.incubation_end_time = False
+
+class LimsSelectiveEnrichmentMedia(models.Model):
+    _name = 'lims.selective.enrichment.media'
+    _description = 'Medios Utilizados en Enriquecimiento Selectivo'
+    _rec_name = 'display_name'
+    _order = 'media_type'
+
+    parameter_analysis_id = fields.Many2one(
+        'lims.parameter.analysis',
+        string='Parámetro de Análisis',
+        required=True,
+        ondelete='cascade'
+    )
+    
+    media_type = fields.Selection([
+        ('medio_cultivo', 'Medio de Cultivo'),
+        ('diluyente', 'Diluyente'),
+        ('reactivo', 'Reactivo'),
+        ('buffer', 'Buffer/Solución'),
+        ('enriquecimiento', 'Caldo de Enriquecimiento'),
+        ('selectivo', 'Medio Selectivo'),
+        ('diferencial', 'Medio Diferencial'),
+        ('otro', 'Otro')
+    ], string='Tipo', required=True, default='selectivo')
+    
+    # Para medios de cultivo (del catálogo)
+    culture_media_batch_id = fields.Many2one(
+        'lims.culture.media.batch',
+        string='Lote de Medio',
+        help='Lote específico del medio de cultivo'
+    )
+    
+    # CAMPOS DE INCUBACIÓN
+    requires_incubation = fields.Boolean(
+        string='Requiere Incubación',
+        default=True,  # Por defecto True para medios selectivos
         help='Marcar si este medio requiere incubación'
     )
     

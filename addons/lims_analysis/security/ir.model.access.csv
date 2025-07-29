@@ -6,3 +6,4 @@ access_lims_parameter_analysis,lims.parameter.analysis,model_lims_parameter_anal
 access_lims_raw_dilution_data,lims.raw.dilution.data,model_lims_raw_dilution_data,base.group_user,1,1,1,1
 access_lims_lab_equipment,lims.lab.equipment,model_lims_lab_equipment,base.group_user,1,1,1,1
 access_lims_pre_enrichment_media,lims.pre.enrichment.media,model_lims_pre_enrichment_media,base.group_user,1,1,1,1
+access_lims_selective_enrichment_media,lims.selective.enrichment.media,model_lims_selective_enrichment_media,base.group_user,1,1,1,1

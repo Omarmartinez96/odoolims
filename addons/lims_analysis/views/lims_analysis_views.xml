@@ -199,6 +199,93 @@
                                                     
                                                 </page>
 
+                                                <!-- TAB DE ENRIQUECIMIENTO SELECTIVO -->
+                                                <page string="🧫 Enriquecimiento Selectivo" invisible="requires_selective_enrichment == False">
+                                                    
+                                                    <group string="Ambiente de Procesamiento">
+                                                        <field name="selective_enrichment_environment" widget="radio"/>
+                                                    </group>
+                                                    
+                                                    <group string="Equipo Utilizado" 
+                                                           invisible="selective_enrichment_environment not in ['campana_flujo', 'campana_bioseguridad']">
+                                                        <field name="selective_enrichment_equipment_id" 
+                                                               placeholder="Seleccionar equipo específico"/>
+                                                    </group>
+                                                    
+                                                    <group string="Fechas del Proceso">
+                                                        <field name="selective_enrichment_processing_date"/>
+                                                        <field name="selective_enrichment_processing_time" placeholder="HH:MM"/>
+                                                    </group>
+                                                    
+                                                    <group string="Medios Selectivos y Reactivos">
+                                                        <field name="selective_enrichment_media_ids" nolabel="1" colspan="2">
+                                                            <list string="Medios Selectivos Utilizados" editable="bottom" create="true" delete="true">
+                                                                <field name="media_type"/>
+                                                                <field name="culture_media_batch_id" 
+                                                                       invisible="media_type != 'medio_cultivo'"
+                                                                       placeholder="Seleccionar lote"/>
+                                                                <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                                <field name="incubation_equipment" 
+                                                                       invisible="requires_incubation == False"
+                                                                       placeholder="Equipo de incubación"/>
+                                                                <field name="incubation_start_date" 
+                                                                       invisible="requires_incubation == False"
+                                                                       placeholder="Fecha inicio"/>
+                                                                <field name="incubation_start_time" 
+                                                                       invisible="requires_incubation == False"
+                                                                       placeholder="HH:MM"/>
+                                                                <field name="incubation_end_date" 
+                                                                       invisible="requires_incubation == False"
+                                                                       placeholder="Fecha fin"/>
+                                                                <field name="incubation_end_time" 
+                                                                       invisible="requires_incubation == False"
+                                                                       placeholder="HH:MM"/>
+                                                            </list>
+                                                            
+                                                            <form string="Medio Selectivo Utilizado">
+                                                                <group>
+                                                                    <group>
+                                                                        <field name="media_type"/>
+                                                                        <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                                    </group>
+                                                                    <group>
+                                                                        <!-- Campo vacío para balance visual -->
+                                                                    </group>
+                                                                </group>
+                                                                
+                                                                <!-- Para medios de cultivo del catálogo -->
+                                                                <group string="Medio de Cultivo" 
+                                                                       invisible="media_type != 'medio_cultivo'">
+                                                                    <field name="culture_media_batch_id" 
+                                                                           placeholder="Seleccionar lote de medio"
+                                                                           options="{'no_create': True}"/>
+                                                                </group>
+                                                                
+                                                                <!-- Incubación cuando se requiere -->
+                                                                <group string="🌡️ Incubación" 
+                                                                       invisible="requires_incubation == False">
+                                                                    <group>
+                                                                        <field name="incubation_equipment" 
+                                                                               placeholder="Equipo utilizado"/>
+                                                                        <field name="incubation_start_date"/>
+                                                                        <field name="incubation_start_time" placeholder="HH:MM"/>
+                                                                    </group>
+                                                                    <group>
+                                                                        <field name="incubation_end_date"/>
+                                                                        <field name="incubation_end_time" placeholder="HH:MM"/>
+                                                                    </group>
+                                                                </group>
+                                                                
+                                                                <group string="📝 Notas de Preparación">
+                                                                    <field name="preparation_notes" nolabel="1"
+                                                                           placeholder="Instrucciones especiales, observaciones, etc..."/>
+                                                                </group>
+                                                            </form>
+                                                        </field>
+                                                    </group>
+                                                    
+                                                </page>
+
                                                 <!-- TAB DE RESULTADOS -->
                                                 <page string="📊 Resultados">
                                                     
