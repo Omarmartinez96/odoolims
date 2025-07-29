@@ -19,7 +19,7 @@
             </field>
         </record>
 
-        <!-- ========== VISTA FORMULARIO DE ANÁLISIS MEJORADA ========== -->
+        <!-- ========== VISTA FORMULARIO DE ANÁLISIS CORREGIDA ========== -->
         <record id="view_lims_analysis_form" model="ir.ui.view">
             <field name="name">lims.analysis.form</field>
             <field name="model">lims.analysis</field>
@@ -95,241 +95,249 @@
                                                 </group>
                                             </group>
 
-                                            <!-- 🆕 TIPO DE RESULTADO -->
+                                            <!-- TIPO DE RESULTADO -->
                                             <group string="🎯 Tipo de Resultado" colspan="4">
                                                 <field name="result_type" widget="radio" required="1"/>
                                             </group>
 
-                                            <!-- 🆕 SECCIÓN DE PROCESOS ANALÍTICOS -->
-                                            <group string="🧪 Procesos Analíticos Requeridos" 
-                                                   invisible="category != 'microbiological'" colspan="4">
-                                                <field name="requires_pre_enrichment"/>
-                                                <field name="requires_selective_enrichment"/>
-                                                <field name="requires_confirmation"/>
-                                                <field name="requires_ph_adjustment"/>
-                                            </group>
+                                            <!-- NOTEBOOK INTERNO PARA ORGANIZAR LOS PROCESOS -->
+                                            <notebook>
+                                                <!-- TAB DE PROCESOS ANALÍTICOS -->
+                                                <page string="🧪 Procesos Analíticos" invisible="category != 'microbiological'">
+                                                    <group string="Procesos Requeridos" colspan="4">
+                                                        <field name="requires_pre_enrichment"/>
+                                                        <field name="requires_selective_enrichment"/>
+                                                        <field name="requires_confirmation"/>
+                                                        <field name="requires_ph_adjustment"/>
+                                                    </group>
+                                                </page>
 
-                                            <!-- 🆕 SECCIÓN DE PRE-ENRIQUECIMIENTO -->
-                                            <group string="🔬 Pre-enriquecimiento" 
-                                                   invisible="requires_pre_enrichment == False">
-                                                
-                                                <group string="Ambiente de Procesamiento">
-                                                    <field name="pre_enrichment_environment" widget="radio"/>
-                                                </group>
-                                                
-                                                <group string="Equipo Utilizado" 
-                                                       invisible="pre_enrichment_environment not in ['campana_flujo', 'campana_bioseguridad']">
-                                                    <field name="pre_enrichment_equipment_id" 
-                                                           placeholder="Seleccionar equipo específico"/>
-                                                </group>
-                                                
-                                                <group string="Fechas del Proceso">
-                                                    <field name="pre_enrichment_processing_date"/>
-                                                    <field name="pre_enrichment_processing_time" placeholder="HH:MM"/>
-                                                </group>
-                                                
-                                                <group string="Medios y Reactivos">
-                                                    <field name="pre_enrichment_media_ids" nolabel="1" colspan="2">
-                                                        <list string="Medios y Reactivos Utilizados" editable="bottom" create="true" delete="true">
-                                                            <field name="sequence" widget="handle"/>
-                                                            <field name="media_type"/>
-                                                            <field name="culture_media_batch_id" 
-                                                                   invisible="media_type != 'medio_cultivo'"
-                                                                   placeholder="Seleccionar lote"/>
-                                                            <field name="media_name" 
-                                                                   invisible="media_type == 'medio_cultivo'"
-                                                                   placeholder="Nombre del diluyente/reactivo"/>
-                                                            <field name="batch_number" placeholder="Lote"/>
-                                                            <field name="volume_used" placeholder="Ej: 225mL"/>
-                                                            <!-- Campos de incubación solo para medios de cultivo -->
-                                                            <field name="requires_incubation" invisible="1"/>
-                                                            <field name="incubation_start_date" 
-                                                                   invisible="requires_incubation == False"
-                                                                   placeholder="Fecha inicio"/>
-                                                            <field name="incubation_start_time" 
-                                                                   invisible="requires_incubation == False"
-                                                                   placeholder="HH:MM"/>
-                                                            <field name="incubation_temperature" 
-                                                                   invisible="requires_incubation == False"
-                                                                   placeholder="37°C"/>
-                                                        </list>
-                                                        
-                                                        <form string="Medio/Reactivo Utilizado">
-                                                            <group>
-                                                                <group>
-                                                                    <field name="media_type"/>
-                                                                    <field name="sequence"/>
-                                                                    <field name="requires_incubation" invisible="1"/>
-                                                                </group>
-                                                                <group>
-                                                                    <field name="volume_used"/>
-                                                                </group>
-                                                            </group>
-                                                            
-                                                            <!-- Para medios de cultivo del catálogo -->
-                                                            <group string="Medio de Cultivo" 
-                                                                   invisible="media_type != 'medio_cultivo'">
+                                                <!-- TAB DE PRE-ENRIQUECIMIENTO -->
+                                                <page string="🔬 Pre-enriquecimiento" invisible="requires_pre_enrichment == False">
+                                                    
+                                                    <group string="Ambiente de Procesamiento">
+                                                        <field name="pre_enrichment_environment" widget="radio"/>
+                                                    </group>
+                                                    
+                                                    <group string="Equipo Utilizado" 
+                                                           invisible="pre_enrichment_environment not in ['campana_flujo', 'campana_bioseguridad']">
+                                                        <field name="pre_enrichment_equipment_id" 
+                                                               placeholder="Seleccionar equipo específico"/>
+                                                    </group>
+                                                    
+                                                    <group string="Fechas del Proceso">
+                                                        <field name="pre_enrichment_processing_date"/>
+                                                        <field name="pre_enrichment_processing_time" placeholder="HH:MM"/>
+                                                    </group>
+                                                    
+                                                    <group string="Medios y Reactivos">
+                                                        <field name="pre_enrichment_media_ids" nolabel="1" colspan="2">
+                                                            <list string="Medios y Reactivos Utilizados" editable="bottom" create="true" delete="true">
+                                                                <field name="sequence" widget="handle"/>
+                                                                <field name="media_type"/>
                                                                 <field name="culture_media_batch_id" 
-                                                                       placeholder="Seleccionar lote de medio"
-                                                                       options="{'no_create': True}"/>
-                                                                <field name="batch_number" readonly="1"/>
-                                                            </group>
-                                                            
-                                                            <!-- Para diluyentes y otros -->
-                                                            <group string="Diluyente/Reactivo" 
-                                                                   invisible="media_type == 'medio_cultivo'">
+                                                                       invisible="media_type != 'medio_cultivo'"
+                                                                       placeholder="Seleccionar lote"/>
                                                                 <field name="media_name" 
-                                                                       placeholder="Ej: Agua peptona, PBS, etc."/>
-                                                                <field name="batch_number" 
-                                                                       placeholder="Número de lote"/>
-                                                            </group>
+                                                                       invisible="media_type == 'medio_cultivo'"
+                                                                       placeholder="Nombre del diluyente/reactivo"/>
+                                                                <field name="batch_number" placeholder="Lote"/>
+                                                                <field name="volume_used" placeholder="Ej: 225mL"/>
+                                                                <!-- Campos de incubación solo para medios de cultivo -->
+                                                                <field name="requires_incubation" invisible="1"/>
+                                                                <field name="incubation_start_date" 
+                                                                       invisible="requires_incubation == False"
+                                                                       placeholder="Fecha inicio"/>
+                                                                <field name="incubation_start_time" 
+                                                                       invisible="requires_incubation == False"
+                                                                       placeholder="HH:MM"/>
+                                                                <field name="incubation_temperature" 
+                                                                       invisible="requires_incubation == False"
+                                                                       placeholder="37°C"/>
+                                                            </list>
                                                             
-                                                            <!-- Incubación solo para medios de cultivo -->
-                                                            <group string="🌡️ Incubación" 
-                                                                   invisible="requires_incubation == False">
+                                                            <form string="Medio/Reactivo Utilizado">
                                                                 <group>
-                                                                    <field name="incubation_start_date"/>
-                                                                    <field name="incubation_start_time" placeholder="HH:MM"/>
-                                                                    <field name="incubation_temperature" placeholder="Ej: 37°C"/>
+                                                                    <group>
+                                                                        <field name="media_type"/>
+                                                                        <field name="sequence"/>
+                                                                        <field name="requires_incubation" invisible="1"/>
+                                                                    </group>
+                                                                    <group>
+                                                                        <field name="volume_used"/>
+                                                                    </group>
                                                                 </group>
-                                                                <group>
-                                                                    <field name="incubation_end_date"/>
-                                                                    <field name="incubation_end_time" placeholder="HH:MM"/>
+                                                                
+                                                                <!-- Para medios de cultivo del catálogo -->
+                                                                <group string="Medio de Cultivo" 
+                                                                       invisible="media_type != 'medio_cultivo'">
+                                                                    <field name="culture_media_batch_id" 
+                                                                           placeholder="Seleccionar lote de medio"
+                                                                           options="{'no_create': True}"/>
+                                                                    <field name="batch_number" readonly="1"/>
                                                                 </group>
-                                                            </group>
-                                                            
-                                                            <group string="📝 Notas de Preparación">
-                                                                <field name="preparation_notes" nolabel="1"
-                                                                       placeholder="Instrucciones especiales, diluciones, etc..."/>
-                                                            </group>
-                                                        </form>
-                                                    </field>
+                                                                
+                                                                <!-- Para diluyentes y otros -->
+                                                                <group string="Diluyente/Reactivo" 
+                                                                       invisible="media_type == 'medio_cultivo'">
+                                                                    <field name="media_name" 
+                                                                           placeholder="Ej: Agua peptona, PBS, etc."/>
+                                                                    <field name="batch_number" 
+                                                                           placeholder="Número de lote"/>
+                                                                </group>
+                                                                
+                                                                <!-- Incubación solo para medios de cultivo -->
+                                                                <group string="🌡️ Incubación" 
+                                                                       invisible="requires_incubation == False">
+                                                                    <group>
+                                                                        <field name="incubation_start_date"/>
+                                                                        <field name="incubation_start_time" placeholder="HH:MM"/>
+                                                                        <field name="incubation_temperature" placeholder="Ej: 37°C"/>
+                                                                    </group>
+                                                                    <group>
+                                                                        <field name="incubation_end_date"/>
+                                                                        <field name="incubation_end_time" placeholder="HH:MM"/>
+                                                                    </group>
+                                                                </group>
+                                                                
+                                                                <group string="📝 Notas de Preparación">
+                                                                    <field name="preparation_notes" nolabel="1"
+                                                                           placeholder="Instrucciones especiales, diluciones, etc..."/>
+                                                                </group>
+                                                            </form>
+                                                        </field>
+                                                    </group>
                                                     
                                                 </page>
-                                            </notebook>
 
-                                            <!-- RESULTADO CUALITATIVO (cuando se selecciona result_type = 'qualitative') -->
-                                            <group string="📊 Resultado Cualitativo" 
-                                                   invisible="result_type != 'qualitative'">
-                                                <field name="result_qualitative"/>
-                                                <field name="result_value" 
-                                                       class="o_field_highlight"
-                                                       style="font-size: 16px;"
-                                                       placeholder="Se completará automáticamente al seleccionar resultado cualitativo"/>
-                                            </group>
-
-                                            <!-- DATOS CRUDOS DE DILUCIONES (SOLO PARA MICROBIOLOGÍA Y CUANTITATIVO) -->
-                                            <group string="🧪 Datos Crudos de Diluciones" 
-                                                   invisible="category != 'microbiological' or result_type != 'quantitative'">
-                                                
-                                                <!-- NOTA INFORMATIVA -->
-                                                <div class="alert alert-info" style="margin-bottom: 10px;" colspan="2">
-                                                    <strong>📝 Nota:</strong> Esta tabla es únicamente para registrar datos crudos. 
-                                                    Los cálculos mostrados son informativos. El resultado final debe ingresarse manualmente abajo.
-                                                </div>
-                                                
-                                                <!-- TABLA DE DILUCIONES SIMPLIFICADA -->
-                                                <field name="raw_dilution_data_ids" nolabel="1" colspan="2">
-                                                    <list string="Diluciones" editable="bottom" create="true" delete="true">
-                                                        <field name="method_type" width="20%"/>
-                                                        <field name="dilution_factor" width="20%"/>
-                                                        <!-- UFC -->
-                                                        <field name="ufc_count" invisible="method_type != 'ufc'" width="15%"/>
-                                                        <!-- NMP -->
-                                                        <field name="positive_tubes" invisible="method_type != 'nmp'" width="15%"/>
-                                                        <field name="total_tubes" invisible="method_type != 'nmp'" width="15%"/>
-                                                        <!-- Cualitativo -->
-                                                        <field name="result_qualitative" invisible="method_type != 'qualitative'" width="15%"/>
-                                                        <!-- Resultado calculado -->
-                                                        <field name="calculated_result" readonly="1" width="30%"/>
-                                                    </list>
+                                                <!-- TAB DE RESULTADOS -->
+                                                <page string="📊 Resultados">
                                                     
-                                                    <form string="Datos de Dilución">
-                                                        <group>
-                                                            <group>
-                                                                <field name="method_type"/>
-                                                                <field name="dilution_factor"/>
-                                                            </group>
-                                                            <group>
-                                                                <field name="calculated_result" readonly="1"/>
-                                                            </group>
-                                                        </group>
-                                                        
-                                                        <!-- CAMPOS ESPECÍFICOS POR TIPO -->
-                                                        <group string="Datos Específicos">
-                                                            <!-- PARA UFC -->
-                                                            <group string="Recuento en Placa" invisible="method_type != 'ufc'">
-                                                                <field name="ufc_count"/>
-                                                            </group>
-                                                            
-                                                            <!-- PARA NMP -->
-                                                            <group string="Número Más Probable" invisible="method_type != 'nmp'">
-                                                                <field name="positive_tubes"/>
-                                                                <field name="total_tubes"/>
-                                                                <field name="nmp_result" placeholder="Ej: 110 NMP/100mL (consultar tabla)"/>
-                                                            </group>
-                                                            
-                                                            <!-- PARA CUALITATIVO -->
-                                                            <group string="Resultado Cualitativo" invisible="method_type != 'qualitative'">
-                                                                <field name="result_qualitative"/>
-                                                            </group>
-                                                        </group>
-                                                        
-                                                        <group>
-                                                            <field name="observations" nolabel="1"/>
-                                                        </group>
-                                                    </form>
-                                                </field>
-                                                
-                                                <!-- CÁLCULOS INFORMATIVOS -->
-                                                <group string="📊 Cálculos Informativos" invisible="dilution_calculations == False">
-                                                    <field name="dilution_calculations" 
-                                                           readonly="1" 
-                                                           nolabel="1"
-                                                           widget="text"
-                                                           style="font-family: monospace; font-size: 12px; color: #0066cc; background-color: #f0f8ff; padding: 10px; border-radius: 4px;"
-                                                           colspan="2"/>
-                                                </group>
-                                                
-                                            </group>
-                                            
-                                            <!-- RESULTADO FINAL MANUAL (PARA CUANTITATIVO) -->
-                                            <group string="📋 Resultado Final" 
-                                                   invisible="result_type != 'quantitative'">
-                                                <field name="result_value" 
-                                                       class="o_field_highlight"
-                                                       style="font-size: 16px;"
-                                                       placeholder="Ingrese el resultado final manualmente"/>
-                                                <field name="result_unit_selection"/>
-                                                <field name="custom_unit" 
-                                                       placeholder="Especificar unidad"
-                                                       invisible="result_unit_selection != 'custom'"
-                                                       colspan="2"/>
-                                            </group>
-                                            
-                                            <!-- CAMPOS ESPECÍFICOS POR TIPO (PARA QUÍMICO Y FÍSICO) -->
-                                            <group string="🔬 Campos Específicos" 
-                                                   invisible="category == 'microbiological' or result_type != 'quantitative'">
-                                                
-                                                <!-- PARA QUÍMICO Y FÍSICO - Valores Numéricos -->
-                                                <group string="Valores Numéricos" invisible="category not in ['chemical', 'physical']">
-                                                    <field name="result_numeric"/>
-                                                    <field name="result_unit"/>
-                                                </group>
-                                                
-                                                <!-- PARA QUÍMICO Y FÍSICO - Límites de Detección -->
-                                                <group string="Límites Analíticos" invisible="category not in ['chemical', 'physical']">
-                                                    <field name="below_detection_limit"/>
-                                                    <field name="above_quantification_limit"/>
-                                                </group>
-                                                
-                                            </group>
+                                                    <!-- RESULTADO CUALITATIVO -->
+                                                    <group string="📊 Resultado Cualitativo" 
+                                                           invisible="result_type != 'qualitative'">
+                                                        <field name="result_qualitative"/>
+                                                        <field name="result_value" 
+                                                               class="o_field_highlight"
+                                                               style="font-size: 16px;"
+                                                               placeholder="Se completará automáticamente al seleccionar resultado cualitativo"/>
+                                                    </group>
 
-                                            <!-- Observaciones -->
-                                            <group string="📝 Observaciones del Analista">
-                                                <field name="analyst_notes" 
-                                                       placeholder="Observaciones técnicas del análisis..."/>
-                                            </group>
+                                                    <!-- DATOS CRUDOS DE DILUCIONES -->
+                                                    <group string="🧪 Datos Crudos de Diluciones" 
+                                                           invisible="category != 'microbiological' or result_type != 'quantitative'">
+                                                        
+                                                        <!-- NOTA INFORMATIVA -->
+                                                        <div class="alert alert-info" style="margin-bottom: 10px;" colspan="2">
+                                                            <strong>📝 Nota:</strong> Esta tabla es únicamente para registrar datos crudos. 
+                                                            Los cálculos mostrados son informativos. El resultado final debe ingresarse manualmente abajo.
+                                                        </div>
+                                                        
+                                                        <!-- TABLA DE DILUCIONES SIMPLIFICADA -->
+                                                        <field name="raw_dilution_data_ids" nolabel="1" colspan="2">
+                                                            <list string="Diluciones" editable="bottom" create="true" delete="true">
+                                                                <field name="method_type" width="20%"/>
+                                                                <field name="dilution_factor" width="20%"/>
+                                                                <!-- UFC -->
+                                                                <field name="ufc_count" invisible="method_type != 'ufc'" width="15%"/>
+                                                                <!-- NMP -->
+                                                                <field name="positive_tubes" invisible="method_type != 'nmp'" width="15%"/>
+                                                                <field name="total_tubes" invisible="method_type != 'nmp'" width="15%"/>
+                                                                <!-- Cualitativo -->
+                                                                <field name="result_qualitative" invisible="method_type != 'qualitative'" width="15%"/>
+                                                                <!-- Resultado calculado -->
+                                                                <field name="calculated_result" readonly="1" width="30%"/>
+                                                            </list>
+                                                            
+                                                            <form string="Datos de Dilución">
+                                                                <group>
+                                                                    <group>
+                                                                        <field name="method_type"/>
+                                                                        <field name="dilution_factor"/>
+                                                                    </group>
+                                                                    <group>
+                                                                        <field name="calculated_result" readonly="1"/>
+                                                                    </group>
+                                                                </group>
+                                                                
+                                                                <!-- CAMPOS ESPECÍFICOS POR TIPO -->
+                                                                <group string="Datos Específicos">
+                                                                    <!-- PARA UFC -->
+                                                                    <group string="Recuento en Placa" invisible="method_type != 'ufc'">
+                                                                        <field name="ufc_count"/>
+                                                                    </group>
+                                                                    
+                                                                    <!-- PARA NMP -->
+                                                                    <group string="Número Más Probable" invisible="method_type != 'nmp'">
+                                                                        <field name="positive_tubes"/>
+                                                                        <field name="total_tubes"/>
+                                                                        <field name="nmp_result" placeholder="Ej: 110 NMP/100mL (consultar tabla)"/>
+                                                                    </group>
+                                                                    
+                                                                    <!-- PARA CUALITATIVO -->
+                                                                    <group string="Resultado Cualitativo" invisible="method_type != 'qualitative'">
+                                                                        <field name="result_qualitative"/>
+                                                                    </group>
+                                                                </group>
+                                                                
+                                                                <group>
+                                                                    <field name="observations" nolabel="1"/>
+                                                                </group>
+                                                            </form>
+                                                        </field>
+                                                        
+                                                        <!-- CÁLCULOS INFORMATIVOS -->
+                                                        <group string="📊 Cálculos Informativos" invisible="dilution_calculations == False">
+                                                            <field name="dilution_calculations" 
+                                                                   readonly="1" 
+                                                                   nolabel="1"
+                                                                   widget="text"
+                                                                   style="font-family: monospace; font-size: 12px; color: #0066cc; background-color: #f0f8ff; padding: 10px; border-radius: 4px;"
+                                                                   colspan="2"/>
+                                                        </group>
+                                                        
+                                                    </group>
+                                                    
+                                                    <!-- RESULTADO FINAL MANUAL (PARA CUANTITATIVO) -->
+                                                    <group string="📋 Resultado Final" 
+                                                           invisible="result_type != 'quantitative'">
+                                                        <field name="result_value" 
+                                                               class="o_field_highlight"
+                                                               style="font-size: 16px;"
+                                                               placeholder="Ingrese el resultado final manualmente"/>
+                                                        <field name="result_unit_selection"/>
+                                                        <field name="custom_unit" 
+                                                               placeholder="Especificar unidad"
+                                                               invisible="result_unit_selection != 'custom'"
+                                                               colspan="2"/>
+                                                    </group>
+                                                    
+                                                    <!-- CAMPOS ESPECÍFICOS POR TIPO (PARA QUÍMICO Y FÍSICO) -->
+                                                    <group string="🔬 Campos Específicos" 
+                                                           invisible="category == 'microbiological' or result_type != 'quantitative'">
+                                                        
+                                                        <!-- PARA QUÍMICO Y FÍSICO - Valores Numéricos -->
+                                                        <group string="Valores Numéricos" invisible="category not in ['chemical', 'physical']">
+                                                            <field name="result_numeric"/>
+                                                            <field name="result_unit"/>
+                                                        </group>
+                                                        
+                                                        <!-- PARA QUÍMICO Y FÍSICO - Límites de Detección -->
+                                                        <group string="Límites Analíticos" invisible="category not in ['chemical', 'physical']">
+                                                            <field name="below_detection_limit"/>
+                                                            <field name="above_quantification_limit"/>
+                                                        </group>
+                                                        
+                                                    </group>
+
+                                                    <!-- Observaciones -->
+                                                    <group string="📝 Observaciones del Analista">
+                                                        <field name="analyst_notes" 
+                                                               placeholder="Observaciones técnicas del análisis..."/>
+                                                    </group>
+
+                                                </page>
+                                            </notebook>
 
                                         </sheet>
                                     </form>
