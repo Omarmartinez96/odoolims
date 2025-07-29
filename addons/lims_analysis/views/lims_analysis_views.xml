@@ -133,10 +133,11 @@
                                                     <group string="Medios y Reactivos">
                                                         <field name="pre_enrichment_media_ids" nolabel="1" colspan="2">
                                                             <list string="Medios y Reactivos Utilizados" editable="bottom" create="true" delete="true">
-                                                                <field name="media_type"/>
                                                                 <field name="culture_media_batch_id" 
-                                                                       invisible="media_type not in ['medio_cultivo', 'diluyente', 'enriquecimiento', 'selectivo', 'diferencial']"
+                                                                       string="Lote de Medio"
                                                                        placeholder="Seleccionar lote"/>
+                                                                <field name="media_usage" 
+                                                                       string="Uso"/>
                                                                 <field name="requires_incubation" string="¿Requiere Incubación?"/>
                                                                 <field name="incubation_equipment" 
                                                                        invisible="requires_incubation == False"
@@ -158,20 +159,18 @@
                                                             <form string="Medio/Reactivo Utilizado">
                                                                 <group>
                                                                     <group>
-                                                                        <field name="media_type"/>
-                                                                        <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                                        <field name="culture_media_batch_id" 
+                                                                               string="Lote de Medio"
+                                                                               placeholder="Seleccionar lote de medio"
+                                                                               options="{'no_create': True}"
+                                                                               required="1"/>
+                                                                        <field name="media_usage" 
+                                                                               string="Uso del Medio"
+                                                                               required="1"/>
                                                                     </group>
                                                                     <group>
-                                                                        <!-- Campo vacío para balance visual -->
+                                                                        <field name="requires_incubation" string="¿Requiere Incubación?"/>
                                                                     </group>
-                                                                </group>
-                                                                
-                                                                <!-- Para medios de cultivo del catálogo -->
-                                                                <group string="Medio de Cultivo" 
-                                                                       invisible="media_type not in ['medio_cultivo', 'diluyente', 'enriquecimiento', 'selectivo', 'diferencial']">
-                                                                    <field name="culture_media_batch_id" 
-                                                                           placeholder="Seleccionar lote de medio"
-                                                                           options="{'no_create': True}"/>
                                                                 </group>
                                                                 
                                                                 <!-- Incubación cuando se requiere -->
@@ -220,10 +219,11 @@
                                                     <group string="Medios Selectivos y Reactivos">
                                                         <field name="selective_enrichment_media_ids" nolabel="1" colspan="2">
                                                             <list string="Medios Selectivos Utilizados" editable="bottom" create="true" delete="true">
-                                                                <field name="media_type"/>
                                                                 <field name="culture_media_batch_id" 
-                                                                       invisible="media_type not in ['medio_cultivo', 'diluyente', 'enriquecimiento', 'selectivo', 'diferencial']"
+                                                                       string="Lote de Medio"
                                                                        placeholder="Seleccionar lote"/>
+                                                                <field name="media_usage" 
+                                                                       string="Uso"/>
                                                                 <field name="requires_incubation" string="¿Requiere Incubación?"/>
                                                                 <field name="incubation_equipment" 
                                                                        invisible="requires_incubation == False"
@@ -245,20 +245,18 @@
                                                             <form string="Medio Selectivo Utilizado">
                                                                 <group>
                                                                     <group>
-                                                                        <field name="media_type"/>
-                                                                        <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                                        <field name="culture_media_batch_id" 
+                                                                               string="Lote de Medio"
+                                                                               placeholder="Seleccionar lote de medio"
+                                                                               options="{'no_create': True}"
+                                                                               required="1"/>
+                                                                        <field name="media_usage" 
+                                                                               string="Uso del Medio"
+                                                                               required="1"/>
                                                                     </group>
                                                                     <group>
-                                                                        <!-- Campo vacío para balance visual -->
+                                                                        <field name="requires_incubation" string="¿Requiere Incubación?"/>
                                                                     </group>
-                                                                </group>
-                                                                
-                                                                <!-- Para medios de cultivo del catálogo -->
-                                                                <group string="Medio de Cultivo" 
-                                                                       invisible="media_type not in ['medio_cultivo', 'diluyente', 'enriquecimiento', 'selectivo', 'diferencial']">
-                                                                    <field name="culture_media_batch_id" 
-                                                                           placeholder="Seleccionar lote de medio"
-                                                                           options="{'no_create': True}"/>
                                                                 </group>
                                                                 
                                                                 <!-- Incubación cuando se requiere -->

@@ -719,7 +719,7 @@ class LimsPreEnrichmentMedia(models.Model):
     _name = 'lims.pre.enrichment.media'
     _description = 'Medios Utilizados en Pre-enriquecimiento'
     _rec_name = 'display_name'
-    _order = 'media_type'
+    _order = 'culture_media_batch_id, media_usage'
 
     parameter_analysis_id = fields.Many2one(
         'lims.parameter.analysis',
@@ -728,23 +728,27 @@ class LimsPreEnrichmentMedia(models.Model):
         ondelete='cascade'
     )
     
-    media_type = fields.Selection([
-        ('medio_cultivo', 'Medio de Cultivo'),
-        ('diluyente', 'Diluyente'),
-        ('reactivo', 'Reactivo'),
-        ('buffer', 'Buffer/Solución'),
-        ('enriquecimiento', 'Caldo de Enriquecimiento'),
-        ('selectivo', 'Medio Selectivo'),
-        ('diferencial', 'Medio Diferencial'),
-        ('otro', 'Otro')
-    ], string='Tipo', required=True, default='medio_cultivo')
-    
-    # Para medios de cultivo (del catálogo)
+    # Lote del medio (siempre requerido)
     culture_media_batch_id = fields.Many2one(
         'lims.culture.media.batch',
         string='Lote de Medio',
-        help='Lote específico del medio de cultivo'
+        required=True,
+        help='Lote específico del medio de cultivo utilizado'
     )
+    
+    # Uso específico del medio
+    media_usage = fields.Selection([
+        ('diluyente', 'Diluyente'),
+        ('eluyente', 'Eluyente'),
+        ('enriquecimiento', 'Enriquecimiento'),
+        ('desarrollo_selectivo', 'Desarrollo Selectivo'),
+        ('desarrollo_diferencial', 'Desarrollo Diferencial'),
+        ('desarrollo_selectivo_diferencial', 'Desarrollo Selectivo y Diferencial'),
+        ('pruebas_bioquimicas', 'Pruebas Bioquímicas'),
+        ('transporte', 'Transporte'),
+        ('mantenimiento', 'Mantenimiento'),
+        ('otro', 'Otro')
+    ], string='Uso del Medio', required=True, default='enriquecimiento')
     
     # CAMPOS DE INCUBACIÓN
     requires_incubation = fields.Boolean(
@@ -815,29 +819,37 @@ class LimsPreEnrichmentMedia(models.Model):
             else:
                 record.incubation_duration = ""
     
-    @api.depends('media_type', 'culture_media_batch_id')
+    @api.depends('culture_media_batch_id', 'media_usage')
     def _compute_display_name(self):
         """Calcular nombre descriptivo"""
         for record in self:
-            # Tipos que pueden usar lotes del catálogo
-            catalog_types = ['medio_cultivo', 'diluyente', 'enriquecimiento', 'selectivo', 'diferencial']
-            
-            if record.media_type in catalog_types and record.culture_media_batch_id:
-                name = f"{record.culture_media_batch_id.culture_media_id.name}"
-                if record.culture_media_batch_id.batch_code:
-                    name += f" (Lote: {record.culture_media_batch_id.batch_code})"
+            if record.culture_media_batch_id:
+                media_name = record.culture_media_batch_id.culture_media_id.name
+                batch_code = record.culture_media_batch_id.batch_code
+                
+                # Traducción del uso
+                usage_translations = {
+                    'diluyente': 'Diluyente',
+                    'eluyente': 'Eluyente',
+                    'enriquecimiento': 'Enriquecimiento',
+                    'desarrollo_selectivo': 'Desarrollo Selectivo',
+                    'desarrollo_diferencial': 'Desarrollo Diferencial',
+                    'desarrollo_selectivo_diferencial': 'Desarrollo Selectivo y Diferencial',
+                    'pruebas_bioquimicas': 'Pruebas Bioquímicas',
+                    'transporte': 'Transporte',
+                    'mantenimiento': 'Mantenimiento',
+                    'otro': 'Otro'
+                }
+                
+                usage_display = usage_translations.get(record.media_usage, record.media_usage)
+                name = f"{media_name} - {usage_display}"
+                
+                if batch_code:
+                    name += f" (Lote: {batch_code})"
+                    
+                record.display_name = name
             else:
-                name = record.media_type.replace('_', ' ').title()
-            
-            record.display_name = name
-    
-    @api.onchange('media_type')
-    def _onchange_media_type(self):
-        """Limpiar campos según el tipo seleccionado"""
-        # Solo limpiar el lote si NO es un tipo que puede usar catálogo
-        catalog_types = ['medio_cultivo', 'diluyente', 'enriquecimiento', 'selectivo', 'diferencial']
-        if self.media_type not in catalog_types:
-            self.culture_media_batch_id = False
+                record.display_name = "Medio sin especificar"
     
     @api.onchange('requires_incubation')
     def _onchange_requires_incubation(self):
@@ -853,7 +865,7 @@ class LimsSelectiveEnrichmentMedia(models.Model):
     _name = 'lims.selective.enrichment.media'
     _description = 'Medios Utilizados en Enriquecimiento Selectivo'
     _rec_name = 'display_name'
-    _order = 'media_type'
+    _order = 'culture_media_batch_id, media_usage'
 
     parameter_analysis_id = fields.Many2one(
         'lims.parameter.analysis',
@@ -862,23 +874,27 @@ class LimsSelectiveEnrichmentMedia(models.Model):
         ondelete='cascade'
     )
     
-    media_type = fields.Selection([
-        ('medio_cultivo', 'Medio de Cultivo'),
-        ('diluyente', 'Diluyente'),
-        ('reactivo', 'Reactivo'),
-        ('buffer', 'Buffer/Solución'),
-        ('enriquecimiento', 'Caldo de Enriquecimiento'),
-        ('selectivo', 'Medio Selectivo'),
-        ('diferencial', 'Medio Diferencial'),
-        ('otro', 'Otro')
-    ], string='Tipo', required=True, default='selectivo')
-    
-    # Para medios de cultivo (del catálogo)
+    # Lote del medio (siempre requerido)
     culture_media_batch_id = fields.Many2one(
         'lims.culture.media.batch',
         string='Lote de Medio',
-        help='Lote específico del medio de cultivo'
+        required=True,
+        help='Lote específico del medio de cultivo utilizado'
     )
+    
+    # Uso específico del medio
+    media_usage = fields.Selection([
+        ('diluyente', 'Diluyente'),
+        ('eluyente', 'Eluyente'),
+        ('enriquecimiento', 'Enriquecimiento'),
+        ('desarrollo_selectivo', 'Desarrollo Selectivo'),
+        ('desarrollo_diferencial', 'Desarrollo Diferencial'),
+        ('desarrollo_selectivo_diferencial', 'Desarrollo Selectivo y Diferencial'),
+        ('pruebas_bioquimicas', 'Pruebas Bioquímicas'),
+        ('transporte', 'Transporte'),
+        ('mantenimiento', 'Mantenimiento'),
+        ('otro', 'Otro')
+    ], string='Uso del Medio', required=True, default='desarrollo_selectivo')
     
     # CAMPOS DE INCUBACIÓN
     requires_incubation = fields.Boolean(
@@ -949,29 +965,37 @@ class LimsSelectiveEnrichmentMedia(models.Model):
             else:
                 record.incubation_duration = ""
     
-    @api.depends('media_type', 'culture_media_batch_id')
+    @api.depends('culture_media_batch_id', 'media_usage')
     def _compute_display_name(self):
         """Calcular nombre descriptivo"""
         for record in self:
-            # Tipos que pueden usar lotes del catálogo
-            catalog_types = ['medio_cultivo', 'diluyente', 'enriquecimiento', 'selectivo', 'diferencial']
-            
-            if record.media_type in catalog_types and record.culture_media_batch_id:
-                name = f"{record.culture_media_batch_id.culture_media_id.name}"
-                if record.culture_media_batch_id.batch_code:
-                    name += f" (Lote: {record.culture_media_batch_id.batch_code})"
+            if record.culture_media_batch_id:
+                media_name = record.culture_media_batch_id.culture_media_id.name
+                batch_code = record.culture_media_batch_id.batch_code
+                
+                # Traducción del uso
+                usage_translations = {
+                    'diluyente': 'Diluyente',
+                    'eluyente': 'Eluyente',
+                    'enriquecimiento': 'Enriquecimiento',
+                    'desarrollo_selectivo': 'Desarrollo Selectivo',
+                    'desarrollo_diferencial': 'Desarrollo Diferencial',
+                    'desarrollo_selectivo_diferencial': 'Desarrollo Selectivo y Diferencial',
+                    'pruebas_bioquimicas': 'Pruebas Bioquímicas',
+                    'transporte': 'Transporte',
+                    'mantenimiento': 'Mantenimiento',
+                    'otro': 'Otro'
+                }
+                
+                usage_display = usage_translations.get(record.media_usage, record.media_usage)
+                name = f"{media_name} - {usage_display}"
+                
+                if batch_code:
+                    name += f" (Lote: {batch_code})"
+                    
+                record.display_name = name
             else:
-                name = record.media_type.replace('_', ' ').title()
-            
-            record.display_name = name
-    
-    @api.onchange('media_type')
-    def _onchange_media_type(self):
-        """Limpiar campos según el tipo seleccionado"""
-        # Solo limpiar el lote si NO es un tipo que puede usar catálogo
-        catalog_types = ['medio_cultivo', 'diluyente', 'enriquecimiento', 'selectivo', 'diferencial']
-        if self.media_type not in catalog_types:
-            self.culture_media_batch_id = False
+                record.display_name = "Medio sin especificar"
     
     @api.onchange('requires_incubation')
     def _onchange_requires_incubation(self):
