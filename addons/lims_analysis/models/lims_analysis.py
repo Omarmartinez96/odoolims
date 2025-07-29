@@ -430,6 +430,12 @@ class LimsParameterAnalysis(models.Model):
         string='Medios Selectivos Utilizados'
     )
 
+    quantitative_media_ids = fields.One2many(
+        'lims.quantitative.media',
+        'parameter_analysis_id',
+        string='Medios Utilizados para Cuantitativos'
+    )
+
     @api.depends('raw_dilution_data_ids.ufc_count')
     def _compute_dilution_calculations(self):
         """Mostrar SOLO cálculos informativos (NO actualiza resultado automáticamente)"""
@@ -583,11 +589,10 @@ class LimsRawDilutionData(models.Model):
         ondelete='cascade'
     )
     
-    # 🆕 TIPO DE MÉTODO
+    # 🆕 TIPO DE MÉTODO - SIN CUALITATIVO
     method_type = fields.Selection([
         ('ufc', 'Recuento en Placa (UFC)'),
-        ('nmp', 'Número Más Probable (NMP)'),
-        ('qualitative', 'Cualitativo')
+        ('nmp', 'Número Más Probable (NMP)')
     ], string='Tipo de Método', default='ufc', required=True)
     
     dilution_factor = fields.Selection([
@@ -600,13 +605,13 @@ class LimsRawDilutionData(models.Model):
         ('10_6', '10⁻⁶ (1:1,000,000)')
     ], string='Dilución', required=True)
     
-    # 🆕 PARA RECUENTOS EN PLACA (UFC)
+    # PARA RECUENTOS EN PLACA (UFC)
     ufc_count = fields.Integer(
         string='UFC Contadas',
         help='Número de colonias contadas en la placa'
     )
     
-    # 🆕 PARA MÉTODOS NMP
+    # PARA MÉTODOS NMP
     positive_tubes = fields.Integer(
         string='Tubos Positivos',
         help='Número de tubos positivos de esta dilución'
@@ -618,19 +623,11 @@ class LimsRawDilutionData(models.Model):
         default=3
     )
     
-    # 🆕 RESULTADO NMP MANUAL (ya que se consulta en tabla)
+    # RESULTADO NMP MANUAL
     nmp_result = fields.Char(
         string='Resultado NMP',
         help='Resultado obtenido de la tabla NMP (ej: 110 NMP/100mL)'
     )
-    
-    # 🆕 PARA CUALITATIVO POR DILUCIÓN
-    result_qualitative = fields.Selection([
-        ('positive', 'Positivo'),
-        ('negative', 'Negativo'),
-        ('growth', 'Crecimiento'),
-        ('no_growth', 'Sin Crecimiento')
-    ], string='Resultado')
     
     # Observaciones específicas de esta dilución
     observations = fields.Text(
@@ -639,7 +636,7 @@ class LimsRawDilutionData(models.Model):
         placeholder='Ej: Placas confluentes, Tubos con gas, etc...'
     )
     
-    # 🆕 CAMPO COMPUTADO QUE SE ADAPTA AL TIPO
+    # CAMPO COMPUTADO SIMPLIFICADO
     calculated_result = fields.Char(
         string='Resultado Calculado',
         compute='_compute_calculated_result',
@@ -647,12 +644,12 @@ class LimsRawDilutionData(models.Model):
         help='Resultado según el tipo de método'
     )
     
-    @api.depends('method_type', 'ufc_count', 'dilution_factor', 'positive_tubes', 'total_tubes', 'nmp_result', 'result_qualitative')
+    @api.depends('method_type', 'ufc_count', 'dilution_factor', 'positive_tubes', 'total_tubes', 'nmp_result')
     def _compute_calculated_result(self):
         """Calcular resultado según el tipo de método"""
         for record in self:
             if record.method_type == 'ufc' and record.ufc_count is not False and record.ufc_count >= 0:
-                # CÁLCULO UFC (como antes)
+                # CÁLCULO UFC
                 factors = {
                     'direct': 1, '10_1': 10, '10_2': 100, 
                     '10_3': 1000, '10_4': 10000, '10_5': 100000, '10_6': 1000000
@@ -675,7 +672,7 @@ class LimsRawDilutionData(models.Model):
                         record.calculated_result = f"{result} UFC/g"
                         
             elif record.method_type == 'nmp':
-                # PARA NMP - MOSTRAR INFO DE TUBOS + RESULTADO MANUAL
+                # PARA NMP
                 if record.positive_tubes is not False and record.total_tubes:
                     tube_info = f"{record.positive_tubes}/{record.total_tubes} tubos +"
                     if record.nmp_result:
@@ -684,16 +681,6 @@ class LimsRawDilutionData(models.Model):
                         record.calculated_result = f"{tube_info} → Consultar tabla NMP"
                 else:
                     record.calculated_result = "Datos incompletos"
-                    
-            elif record.method_type == 'qualitative' and record.result_qualitative:
-                # PARA CUALITATIVO
-                qualitative_map = {
-                    'positive': 'Positivo',
-                    'negative': 'Negativo',
-                    'growth': 'Crecimiento',
-                    'no_growth': 'Sin Crecimiento'
-                }
-                record.calculated_result = qualitative_map.get(record.result_qualitative, record.result_qualitative)
             else:
                 record.calculated_result = False
     
@@ -704,15 +691,8 @@ class LimsRawDilutionData(models.Model):
             self.positive_tubes = False
             self.total_tubes = 3
             self.nmp_result = False
-            self.result_qualitative = False
         elif self.method_type == 'nmp':
             self.ufc_count = False
-            self.result_qualitative = False
-        elif self.method_type == 'qualitative':
-            self.ufc_count = False
-            self.positive_tubes = False
-            self.total_tubes = False
-            self.nmp_result = False
 
 # 🆕 MODELO EXTENDIDO PARA MEDIOS UTILIZADOS EN PRE-ENRIQUECIMIENTO
 class LimsPreEnrichmentMedia(models.Model):
@@ -900,6 +880,152 @@ class LimsSelectiveEnrichmentMedia(models.Model):
     requires_incubation = fields.Boolean(
         string='Requiere Incubación',
         default=True,  # Por defecto True para medios selectivos
+        help='Marcar si este medio requiere incubación'
+    )
+    
+    incubation_equipment = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo de Incubación',
+        domain=[('equipment_type', '=', 'incubadora')],
+        help='Equipo específico utilizado para incubación'
+    )
+    
+    incubation_start_date = fields.Date(
+        string='Fecha Inicio Incubación'
+    )
+    
+    incubation_start_time = fields.Char(
+        string='Hora Inicio',
+        help='Formato HH:MM'
+    )
+    
+    incubation_end_date = fields.Date(
+        string='Fecha Fin Incubación'
+    )
+    
+    incubation_end_time = fields.Char(
+        string='Hora Fin',
+        help='Formato HH:MM'
+    )
+    
+    # NOTAS
+    preparation_notes = fields.Text(
+        string='Notas de Preparación',
+        help='Instrucciones especiales, observaciones, etc.'
+    )
+    
+    # CAMPOS CALCULADOS
+    incubation_duration = fields.Char(
+        string='Duración de Incubación',
+        compute='_compute_incubation_duration',
+        help='Duración calculada automáticamente'
+    )
+    
+    display_name = fields.Char(
+        string='Descripción',
+        compute='_compute_display_name',
+        store=True
+    )
+    
+    @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
+    def _compute_incubation_duration(self):
+        """Calcular duración de incubación"""
+        for record in self:
+            if record.incubation_start_date and record.incubation_end_date:
+                start_date = record.incubation_start_date
+                end_date = record.incubation_end_date
+                duration = (end_date - start_date).days
+                
+                if duration == 0:
+                    record.incubation_duration = "Mismo día"
+                elif duration == 1:
+                    record.incubation_duration = "24 horas"
+                else:
+                    record.incubation_duration = f"{duration * 24} horas"
+            else:
+                record.incubation_duration = ""
+    
+    @api.depends('culture_media_batch_id', 'media_usage')
+    def _compute_display_name(self):
+        """Calcular nombre descriptivo"""
+        for record in self:
+            if record.culture_media_batch_id:
+                media_name = record.culture_media_batch_id.culture_media_id.name
+                batch_code = record.culture_media_batch_id.batch_code
+                
+                # Traducción del uso
+                usage_translations = {
+                    'diluyente': 'Diluyente',
+                    'eluyente': 'Eluyente',
+                    'enriquecimiento': 'Enriquecimiento',
+                    'desarrollo_selectivo': 'Desarrollo Selectivo',
+                    'desarrollo_diferencial': 'Desarrollo Diferencial',
+                    'desarrollo_selectivo_diferencial': 'Desarrollo Selectivo y Diferencial',
+                    'pruebas_bioquimicas': 'Pruebas Bioquímicas',
+                    'transporte': 'Transporte',
+                    'mantenimiento': 'Mantenimiento',
+                    'otro': 'Otro'
+                }
+                
+                usage_display = usage_translations.get(record.media_usage, record.media_usage)
+                name = f"{media_name} - {usage_display}"
+                
+                if batch_code:
+                    name += f" (Lote: {batch_code})"
+                    
+                record.display_name = name
+            else:
+                record.display_name = "Medio sin especificar"
+    
+    @api.onchange('requires_incubation')
+    def _onchange_requires_incubation(self):
+        """Limpiar campos de incubación cuando no se requiere"""
+        if not self.requires_incubation:
+            self.incubation_equipment = False
+            self.incubation_start_date = False
+            self.incubation_start_time = False
+            self.incubation_end_date = False
+            self.incubation_end_time = False
+
+class LimsQuantitativeMedia(models.Model):
+    _name = 'lims.quantitative.media'
+    _description = 'Medios Utilizados en Análisis Cuantitativos'
+    _rec_name = 'display_name'
+    _order = 'culture_media_batch_id, media_usage'
+
+    parameter_analysis_id = fields.Many2one(
+        'lims.parameter.analysis',
+        string='Parámetro de Análisis',
+        required=True,
+        ondelete='cascade'
+    )
+    
+    # Lote del medio (siempre requerido)
+    culture_media_batch_id = fields.Many2one(
+        'lims.culture.media.batch',
+        string='Lote de Medio',
+        required=True,
+        help='Lote específico del medio de cultivo utilizado'
+    )
+    
+    # Uso específico del medio
+    media_usage = fields.Selection([
+        ('diluyente', 'Diluyente'),
+        ('eluyente', 'Eluyente'),
+        ('enriquecimiento', 'Enriquecimiento'),
+        ('desarrollo_selectivo', 'Desarrollo Selectivo'),
+        ('desarrollo_diferencial', 'Desarrollo Diferencial'),
+        ('desarrollo_selectivo_diferencial', 'Desarrollo Selectivo y Diferencial'),
+        ('pruebas_bioquimicas', 'Pruebas Bioquímicas'),
+        ('transporte', 'Transporte'),
+        ('mantenimiento', 'Mantenimiento'),
+        ('otro', 'Otro')
+    ], string='Uso del Medio', required=True, default='diluyente')
+    
+    # CAMPOS DE INCUBACIÓN
+    requires_incubation = fields.Boolean(
+        string='Requiere Incubación',
+        default=True,  # Por defecto True para cuantitativos
         help='Marcar si este medio requiere incubación'
     )
     
