@@ -475,6 +475,51 @@ class LimsParameterAnalysis(models.Model):
         string='Resultados de Confirmación'
     )
 
+    def sync_confirmation_results(self):
+        """Botón para sincronizar resultados de confirmación manualmente"""
+        for record in self:
+            try:
+                # Limpiar resultados existentes
+                existing_results = self.env['lims.confirmation.result'].search([
+                    ('parameter_analysis_id', '=', record.id)
+                ])
+                if existing_results:
+                    existing_results.unlink()
+                
+                # Crear nuevos resultados para cada medio de confirmación
+                for media in record.confirmation_media_ids:
+                    if media.culture_media_batch_id:
+                        batch_display = f"{media.culture_media_batch_id.culture_media_id.name} (Lote: {media.culture_media_batch_id.batch_code})"
+                        
+                        self.env['lims.confirmation.result'].create({
+                            'parameter_analysis_id': record.id,
+                            'confirmation_media_id': media.id,
+                            'batch_display_name': batch_display,
+                        })
+                
+                # Mostrar mensaje de éxito
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': 'Sincronización Completada',
+                        'message': f'Se crearon {len(record.confirmation_media_ids)} resultados de confirmación',
+                        'type': 'success',
+                    }
+                }
+                
+            except Exception as e:
+                # Mostrar mensaje de error
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': 'Error en Sincronización',
+                        'message': f'Error: {str(e)}',
+                        'type': 'warning',
+                    }
+                }
+
     @api.depends('raw_dilution_data_ids.ufc_count')
     def _compute_dilution_calculations(self):
         """Mostrar SOLO cálculos informativos (NO actualiza resultado automáticamente)"""
@@ -1334,29 +1379,113 @@ class LimsConfirmationMedia(models.Model):
             self.incubation_end_date = False
             self.incubation_end_time = False
     
+    @api.onchange('culture_media_batch_id')
+    def _onchange_culture_media_batch_id(self):
+        """Actualizar resultados cuando cambia el lote"""
+        if self.culture_media_batch_id and self.parameter_analysis_id:
+            # Crear o actualizar resultado automáticamente
+            self._sync_confirmation_result()
+    
+    def _sync_confirmation_result(self):
+        """Sincronizar resultado de confirmación"""
+        if not self.culture_media_batch_id or not self.parameter_analysis_id:
+            return
+            
+        batch_display = f"{self.culture_media_batch_id.culture_media_id.name} (Lote: {self.culture_media_batch_id.batch_code})"
+        
+        # Buscar resultado existente
+        existing_result = self.env['lims.confirmation.result'].search([
+            ('confirmation_media_id', '=', self.id)
+        ])
+        
+        if existing_result:
+            # Actualizar existente
+            existing_result.write({
+                'batch_display_name': batch_display
+            })
+        else:
+            # Crear nuevo si no existe
+            if self.id:  # Solo si el registro ya está guardado
+                self.env['lims.confirmation.result'].create({
+                    'parameter_analysis_id': self.parameter_analysis_id.id,
+                    'confirmation_media_id': self.id,
+                    'batch_display_name': batch_display,
+                })
+    
     @api.model_create_multi
     def create(self, vals_list):
         """Crear registros de resultados automáticamente al crear medios"""
         records = super().create(vals_list)
         
         for record in records:
-            # Crear automáticamente un resultado para cada medio
-            batch_display = f"{record.culture_media_batch_id.culture_media_id.name} (Lote: {record.culture_media_batch_id.batch_code})"
-            
-            self.env['lims.confirmation.result'].create({
-                'parameter_analysis_id': record.parameter_analysis_id.id,
-                'confirmation_media_id': record.id,
-                'batch_display_name': batch_display,
-            })
+            try:
+                # Verificar que tenemos el lote
+                if record.culture_media_batch_id:
+                    # Crear automáticamente un resultado para cada medio
+                    batch_display = f"{record.culture_media_batch_id.culture_media_id.name} (Lote: {record.culture_media_batch_id.batch_code})"
+                    
+                    # Verificar si ya existe un resultado para este medio
+                    existing_result = self.env['lims.confirmation.result'].search([
+                        ('confirmation_media_id', '=', record.id)
+                    ])
+                    
+                    if not existing_result:
+                        result_vals = {
+                            'parameter_analysis_id': record.parameter_analysis_id.id,
+                            'confirmation_media_id': record.id,
+                            'batch_display_name': batch_display,
+                        }
+                        
+                        result = self.env['lims.confirmation.result'].create(result_vals)
+                        print(f"DEBUG: Resultado creado: {result.id} - {batch_display}")
+                    else:
+                        print(f"DEBUG: Ya existe resultado para medio {record.id}")
+                else:
+                    print(f"DEBUG: No hay culture_media_batch_id para record {record.id}")
+                    
+            except Exception as e:
+                print(f"DEBUG: Error creando resultado: {str(e)}")
+                import traceback
+                traceback.print_exc()
         
         return records
     
+    def write(self, vals):
+        """Actualizar resultado cuando se modifica el medio"""
+        result = super().write(vals)
+        
+        # Si se cambió el lote, actualizar el resultado
+        if 'culture_media_batch_id' in vals:
+            for record in self:
+                try:
+                    existing_result = self.env['lims.confirmation.result'].search([
+                        ('confirmation_media_id', '=', record.id)
+                    ])
+                    
+                    if existing_result and record.culture_media_batch_id:
+                        batch_display = f"{record.culture_media_batch_id.culture_media_id.name} (Lote: {record.culture_media_batch_id.batch_code})"
+                        existing_result.write({
+                            'batch_display_name': batch_display
+                        })
+                        print(f"DEBUG: Resultado actualizado: {batch_display}")
+                except Exception as e:
+                    print(f"DEBUG: Error actualizando resultado: {str(e)}")
+        
+        return result
+    
     def unlink(self):
         """Eliminar resultados asociados al eliminar medios"""
-        # Eliminar resultados asociados
-        self.env['lims.confirmation.result'].search([
-            ('confirmation_media_id', 'in', self.ids)
-        ]).unlink()
+        try:
+            # Eliminar resultados asociados
+            results_to_delete = self.env['lims.confirmation.result'].search([
+                ('confirmation_media_id', 'in', self.ids)
+            ])
+            
+            if results_to_delete:
+                print(f"DEBUG: Eliminando {len(results_to_delete)} resultados")
+                results_to_delete.unlink()
+        except Exception as e:
+            print(f"DEBUG: Error eliminando resultados: {str(e)}")
         
         return super().unlink()
 

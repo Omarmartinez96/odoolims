@@ -381,6 +381,16 @@
                                                     <!-- TABLA DE RESULTADOS DE CONFIRMACIÓN -->
                                                     <group string="📋 Resultados de Confirmación" 
                                                            invisible="confirmation_media_ids == False">
+                                                        
+                                                        <!-- Botón para sincronizar resultados manualmente -->
+                                                        <div class="oe_button_box" style="margin-bottom: 10px;">
+                                                            <button name="sync_confirmation_results" 
+                                                                    type="object" 
+                                                                    string="🔄 Sincronizar Resultados" 
+                                                                    class="btn-primary"
+                                                                    help="Generar resultados automáticamente para cada medio agregado"/>
+                                                        </div>
+                                                        
                                                         <field name="confirmation_results_ids" nolabel="1" colspan="2">
                                                             <list string="Resultados por Lote" editable="bottom" create="false" delete="false">
                                                                 <field name="batch_display_name" readonly="1" string="Lote" width="40%"/>
