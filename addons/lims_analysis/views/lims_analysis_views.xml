@@ -204,9 +204,9 @@
                                                             </group>
                                                         </form>
                                                     </field>
-                                                </group>
-                                                
-                                            </group>
+                                                    
+                                                </page>
+                                            </notebook>
 
                                             <!-- RESULTADO CUALITATIVO (cuando se selecciona result_type = 'qualitative') -->
                                             <group string="📊 Resultado Cualitativo" 
