@@ -2,7 +2,7 @@
 <odoo>
     <data>
         
-        <!-- ========== VISTA LISTA DE ANÁLISIS ========== -->
+        <!-- ========== VISTA LISTA DE ANÁLISIS MODIFICADA ========== -->
         <record id="view_lims_analysis_list" model="ir.ui.view">
             <field name="name">lims.analysis.list</field>
             <field name="model">lims.analysis</field>
@@ -15,11 +15,17 @@
                         options="{'no_create': True, 'no_open': True}"/>
                     <field name="analysis_start_date"/>
                     <field name="analysis_state"/>
+                    <!-- 🆕 NUEVAS COLUMNAS PARA REPORTES -->
+                    <field name="ready_parameters_count" string="Listos"/>
+                    <field name="total_parameters_count" string="Total"/>
+                    <field name="has_ready_parameters" string="📊" 
+                           widget="boolean_toggle" 
+                           readonly="1"/>
                 </list>
             </field>
         </record>
 
-        <!-- ========== VISTA FORMULARIO DE ANÁLISIS CORREGIDA ========== -->
+        <!-- ========== VISTA FORMULARIO DE ANÁLISIS MODIFICADA ========== -->
         <record id="view_lims_analysis_form" model="ir.ui.view">
             <field name="name">lims.analysis.form</field>
             <field name="model">lims.analysis</field>
@@ -31,6 +37,21 @@
                                 string="✅ Completar Análisis" 
                                 class="btn-success"
                                 invisible="analysis_state != 'in_progress'"/>
+                        
+                        <!-- 🆕 NUEVOS BOTONES PARA REPORTES -->
+                        <button name="mark_parameters_as_reported" 
+                                type="object" 
+                                string="✅ Marcar como Reportados" 
+                                class="btn-info"
+                                invisible="has_ready_parameters == False"
+                                help="Marcar parámetros listos como ya reportados"/>
+                        
+                        <button name="reset_report_status" 
+                                type="object" 
+                                string="🔄 Restablecer Estado" 
+                                class="btn-secondary"
+                                help="Restablecer parámetros reportados a estado listo"/>
+                        
                         <field name="analysis_state" widget="statusbar" statusbar_visible="draft,in_progress,completed,validated"/>
                     </header>
                     
@@ -39,6 +60,28 @@
                             <h1>
                                 <field name="display_name" readonly="1"/>
                             </h1>
+                        </div>
+
+                        <!-- 🆕 INDICADORES DE ESTADO DE REPORTE -->
+                        <div class="alert alert-success" 
+                             invisible="has_ready_parameters == False"
+                             style="margin: 10px 0;">
+                            <strong>🟢 Reporte Disponible:</strong> 
+                            <field name="ready_parameters_count"/> de 
+                            <field name="total_parameters_count"/> parámetros listos para reporte
+                            
+                            <span invisible="all_parameters_ready == False" 
+                                  style="margin-left: 20px; color: #0066cc;">
+                                <strong>🔵 Listo para Reporte Final</strong>
+                            </span>
+                        </div>
+                        
+                        <div class="alert alert-info" 
+                             invisible="has_ready_parameters == True"
+                             style="margin: 10px 0;">
+                            <strong>🟡 En Proceso:</strong> 
+                            <field name="ready_parameters_count"/> de 
+                            <field name="total_parameters_count"/> parámetros completados
                         </div>
 
                         <!-- Información básica -->
@@ -64,6 +107,11 @@
                                         <field name="microorganism"/>
                                         <field name="method"/>
                                         <field name="analysis_status"/>
+                                        <!-- 🆕 NUEVA COLUMNA ESTADO DE REPORTE -->
+                                        <field name="report_status" 
+                                               decoration-success="report_status == 'ready'"
+                                               decoration-info="report_status == 'reported'"
+                                               decoration-muted="report_status == 'draft'"/>
                                         <field name="result_complete" class="o_field_highlight" string="Resultado"/>
                                     </list>
                                     
@@ -93,6 +141,8 @@
                                                     <field name="analysis_start_date"/>
                                                     <field name="analysis_commitment_date"/>
                                                     <field name="analysis_status_checkbox" widget="radio"/>
+                                                    <!-- 🆕 CAMPO ESTADO DE REPORTE -->
+                                                    <field name="report_status" readonly="1"/>
                                                 </group>
                                             </group>
 
@@ -620,7 +670,7 @@
             </field>
         </record>
 
-        <!-- ========== VISTA PARA PARÁMETROS DE ANÁLISIS ========== -->
+        <!-- ========== VISTA PARA PARÁMETROS DE ANÁLISIS MODIFICADA ========== -->
         <record id="view_parameter_analysis_list" model="ir.ui.view">
             <field name="name">lims.parameter.analysis.list</field>
             <field name="model">lims.parameter.analysis</field>
@@ -631,6 +681,11 @@
                     <field name="microorganism"/>
                     <field name="analysis_status"/>
                     <field name="analysis_status_checkbox"/>
+                    <!-- 🆕 NUEVA COLUMNA ESTADO DE REPORTE -->
+                    <field name="report_status" 
+                           decoration-success="report_status == 'ready'"
+                           decoration-info="report_status == 'reported'"
+                           decoration-muted="report_status == 'draft'"/>
                     <field name="result_complete" class="o_field_highlight"/>
                     <field name="result_unit_selection"/>
                     <field name="qualitative_unit_selection"/>
@@ -640,7 +695,113 @@
             </field>
         </record>
 
-        <!-- ========== ACCIÓN PARA ANÁLISIS ========== -->
+        <!-- 🆕 ========== NUEVA VISTA DE BÚSQUEDA PARA REPORTES ========== -->
+        <record id="view_lims_analysis_search_reports" model="ir.ui.view">
+            <field name="name">lims.analysis.search.reports</field>
+            <field name="model">lims.analysis</field>
+            <field name="arch" type="xml">
+                <search string="Análisis - Estados para Reportes">
+                    
+                    <!-- Filtros por campo de texto -->
+                    <field name="sample_code"/>
+                    <field name="sample_identifier"/>
+                    
+                    <!-- Separador -->
+                    <separator/>
+                    
+                    <!-- 🔍 FILTROS PRINCIPALES PARA REPORTES -->
+                    <filter string="🟢 Listos para Reporte Preliminar" 
+                            name="ready_preliminary"
+                            domain="[('has_ready_parameters', '=', True)]"
+                            help="Análisis con al menos un parámetro finalizado"/>
+                    
+                    <filter string="🔵 Listos para Reporte Final" 
+                            name="ready_final"
+                            domain="[('all_parameters_ready', '=', True)]"
+                            help="Análisis con todos los parámetros finalizados"/>
+                    
+                    <filter string="🟡 En Proceso" 
+                            name="in_progress"
+                            domain="[('has_ready_parameters', '=', False)]"
+                            help="Análisis sin parámetros listos"/>
+                    
+                    <!-- Separador -->
+                    <separator/>
+                    
+                    <!-- Filtros por estado de análisis -->
+                    <filter string="Completados" 
+                            name="completed"
+                            domain="[('analysis_state', '=', 'completed')]"/>
+                    
+                    <filter string="Validados" 
+                            name="validated"
+                            domain="[('analysis_state', '=', 'validated')]"/>
+                    
+                    <!-- Agrupar por -->
+                    <group expand="0" string="Agrupar Por">
+                        <filter string="Estado de Reporte" 
+                                name="group_report_readiness"
+                                context="{'group_by': 'has_ready_parameters'}"/>
+                        <filter string="Estado de Análisis" 
+                                name="group_analysis_state"
+                                context="{'group_by': 'analysis_state'}"/>
+                        <filter string="Fecha de Inicio" 
+                                name="group_start_date"
+                                context="{'group_by': 'analysis_start_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- 🆕 ========== VISTA KANBAN PARA REPORTES ========== -->
+        <record id="view_analysis_for_reports_kanban" model="ir.ui.view">
+            <field name="name">lims.analysis.kanban.reports</field>
+            <field name="model">lims.analysis</field>
+            <field name="arch" type="xml">
+                <kanban string="Análisis para Reportes" default_group_by="has_ready_parameters">
+                    <field name="sample_code"/>
+                    <field name="sample_identifier"/>
+                    <field name="ready_parameters_count"/>
+                    <field name="total_parameters_count"/>
+                    <field name="has_ready_parameters"/>
+                    <field name="all_parameters_ready"/>
+                    <field name="analysis_start_date"/>
+                    
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                
+                                <!-- Header con código de muestra -->
+                                <div class="oe_kanban_content">
+                                    <div class="o_kanban_record_title">
+                                        <strong><field name="sample_code"/></strong>
+                                    </div>
+                                    <div class="o_kanban_record_subtitle">
+                                        <field name="sample_identifier"/>
+                                    </div>
+                                </div>
+                                
+                                <!-- Progreso de parámetros -->
+                                <div class="oe_kanban_bottom_left">
+                                    <div class="badge" 
+                                         t-attf-class="badge-#{record.all_parameters_ready.raw_value ? 'success' : record.has_ready_parameters.raw_value ? 'warning' : 'secondary'}">
+                                        <field name="ready_parameters_count"/> / <field name="total_parameters_count"/> listos
+                                    </div>
+                                </div>
+                                
+                                <!-- Fecha -->
+                                <div class="oe_kanban_bottom_right">
+                                    <small><field name="analysis_start_date"/></small>
+                                </div>
+                                
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- ========== ACCIÓN PARA ANÁLISIS ORIGINAL ========== -->
         <record id="action_lims_analysis" model="ir.actions.act_window">
             <field name="name">Análisis de Muestras</field>
             <field name="res_model">lims.analysis</field>
@@ -656,6 +817,29 @@
                 </p>
                 <p>
                     Los análisis se crean automáticamente desde muestras recibidas
+                </p>
+            </field>
+        </record>
+
+        <!-- 🆕 ========== NUEVA ACCIÓN ESPECÍFICA PARA REPORTES ========== -->
+        <record id="action_analysis_ready_for_reports" model="ir.actions.act_window">
+            <field name="name">📊 Análisis Listos para Reportes</field>
+            <field name="res_model">lims.analysis</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="search_view_id" ref="view_lims_analysis_search_reports"/>
+            <field name="context">{'search_default_ready_preliminary': 1}</field>
+            <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_analysis_for_reports_kanban')}),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_lims_analysis_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_lims_analysis_form')})
+            ]"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No hay análisis listos para reporte
+                </p>
+                <p>
+                    Los análisis aparecerán aquí automáticamente cuando tengan parámetros finalizados
                 </p>
             </field>
         </record>
@@ -681,6 +865,13 @@
                   parent="menu_lims_analysis_root" 
                   action="action_lims_analysis" 
                   sequence="10"/>
+
+        <!-- 🆕 NUEVO MENÚ PARA REPORTES -->
+        <menuitem id="menu_analysis_reports_ready" 
+                  name="📊 Listos para Reporte" 
+                  parent="menu_lims_analysis_root" 
+                  action="action_analysis_ready_for_reports" 
+                  sequence="5"/>
 
         <menuitem id="menu_parameter_analysis" 
                   name="Parámetros de Análisis" 

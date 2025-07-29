@@ -70,6 +70,34 @@ class LimsAnalysis(models.Model):
         string='Parámetros de Análisis'
     )
     
+    has_ready_parameters = fields.Boolean(
+        string='Tiene Parámetros Listos',
+        compute='_compute_report_readiness',
+        store=True,
+        help='Al menos un parámetro está listo para reporte preliminar'
+    )
+    
+    all_parameters_ready = fields.Boolean(
+        string='Todos los Parámetros Listos',
+        compute='_compute_report_readiness',
+        store=True,
+        help='Todos los parámetros están listos para reporte final'
+    )
+    
+    ready_parameters_count = fields.Integer(
+        string='Parámetros Listos',
+        compute='_compute_report_readiness',
+        store=True,
+        help='Cantidad de parámetros listos para reporte'
+    )
+    
+    total_parameters_count = fields.Integer(
+        string='Total Parámetros',
+        compute='_compute_report_readiness',
+        store=True,
+        help='Cantidad total de parámetros en este análisis'
+    )
+
     @api.depends('sample_reception_id')
     def _compute_display_name(self):
         """Calcular nombre del análisis"""
@@ -169,6 +197,93 @@ class LimsAnalysis(models.Model):
             
             return records
 
+
+    @api.depends('parameter_analysis_ids.report_status')
+    def _compute_report_readiness(self):
+        """Calcular disponibilidad para reportes usando ORM nativo"""
+        for analysis in self:
+            # Contar parámetros usando filtros nativos
+            all_params = analysis.parameter_analysis_ids
+            ready_params = all_params.filtered(lambda p: p.report_status == 'ready')
+            
+            analysis.total_parameters_count = len(all_params)
+            analysis.ready_parameters_count = len(ready_params)
+            analysis.has_ready_parameters = len(ready_params) > 0
+            analysis.all_parameters_ready = (
+                len(ready_params) == len(all_params) 
+                if all_params else False
+            )
+    
+    # 🆕 MÉTODOS PARA BÚSQUEDA DESDE MÓDULO DE REPORTES
+    @api.model
+    def get_ready_for_preliminary_report(self):
+        """Buscar análisis listos para reporte preliminar"""
+        return self.search([
+            ('has_ready_parameters', '=', True)
+        ])
+    
+    @api.model 
+    def get_ready_for_final_report(self):
+        """Buscar análisis listos para reporte final"""
+        return self.search([
+            ('all_parameters_ready', '=', True)
+        ])
+    
+    @api.model
+    def get_parameters_ready_for_report(self, analysis_ids=None):
+        """Obtener parámetros específicos listos para reporte"""
+        domain = [('report_status', '=', 'ready')]
+        if analysis_ids:
+            domain.append(('analysis_id', 'in', analysis_ids))
+        
+        return self.env['lims.parameter.analysis'].search(domain)
+    
+    # 🆕 MÉTODO PARA MARCAR COMO REPORTADO
+    def mark_parameters_as_reported(self, parameter_ids=None):
+        """Marcar parámetros como ya reportados"""
+        if parameter_ids:
+            # Marcar parámetros específicos
+            params_to_mark = self.parameter_analysis_ids.filtered(
+                lambda p: p.id in parameter_ids and p.report_status == 'ready'
+            )
+        else:
+            # Marcar todos los parámetros listos
+            params_to_mark = self.parameter_analysis_ids.filtered(
+                lambda p: p.report_status == 'ready'
+            )
+        
+        if params_to_mark:
+            params_to_mark.write({'report_status': 'reported'})
+            
+            # Mensaje de confirmación nativo
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Parámetros Reportados',
+                    'message': f'{len(params_to_mark)} parámetro(s) marcado(s) como reportado(s)',
+                    'type': 'success',
+                }
+            }
+    
+    # 🆕 MÉTODO PARA RESTABLECER ESTADO
+    def reset_report_status(self):
+        """Restablecer estado de reporte para correcciones"""
+        reported_params = self.parameter_analysis_ids.filtered(
+            lambda p: p.report_status == 'reported'
+        )
+        
+        if reported_params:
+            reported_params.write({'report_status': 'ready'})
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Estado Restablecido',
+                    'message': f'{len(reported_params)} parámetro(s) restablecido(s) a "Listo para Reporte"',
+                    'type': 'info',
+                }
+            }
 
 # 🆕 NUEVO MODELO PARA PARÁMETROS DE ANÁLISIS - CORREGIDO
 class LimsParameterAnalysis(models.Model):
@@ -305,17 +420,6 @@ class LimsParameterAnalysis(models.Model):
     )
 
     # Medios y reactivos
-
-    pre_enrichment_media_ids = fields.One2many(
-        'lims.pre.enrichment.media',
-        'parameter_analysis_id',
-        string='Medios y Reactivos Utilizados'
-    )
-
-    pre_enrichment_processing_time = fields.Char(
-        string='Hora de Procesamiento',
-        help='Formato HH:MM'
-    )
 
     pre_enrichment_media_ids = fields.One2many(
         'lims.pre.enrichment.media',
@@ -503,6 +607,14 @@ class LimsParameterAnalysis(models.Model):
         help='Resultado con unidad incluida'
     )
 
+    report_status = fields.Selection([
+        ('draft', 'En Proceso'),
+        ('ready', 'Listo para Reporte'),
+        ('reported', 'Ya Reportado')
+    ], string='Estado para Reporte', 
+       default='draft',
+       help='Indica si este parámetro está listo para incluir en reportes')
+
     def sync_confirmation_results(self):
         """Botón para sincronizar resultados de confirmación manualmente"""
         for record in self:
@@ -638,22 +750,6 @@ class LimsParameterAnalysis(models.Model):
         elif self.result_type == 'quantitative':
             # Limpiar campos cualitativos
             self.result_qualitative = False
-
-    @api.onchange('pre_enrichment_environment')
-    def _onchange_pre_enrichment_environment(self):
-        """Limpiar equipo cuando cambia el ambiente"""
-        if self.pre_enrichment_environment not in ['campana_flujo', 'campana_bioseguridad']:
-            self.pre_enrichment_equipment_id = False
-        
-        # Actualizar dominio del equipo según el ambiente
-        if self.pre_enrichment_environment == 'campana_flujo':
-            domain = [('equipment_type', '=', 'campana_flujo')]
-        elif self.pre_enrichment_environment == 'campana_bioseguridad':
-            domain = [('equipment_type', '=', 'campana_bioseguridad')]
-        else:
-            domain = []
-        
-        return {'domain': {'pre_enrichment_equipment_id': domain}}
     
     # 🆕 MÉTODO ONCHANGE PARA AMBIENTE DE PROCESAMIENTO
     @api.onchange('pre_enrichment_environment')
@@ -812,6 +908,20 @@ class LimsParameterAnalysis(models.Model):
             mapped_status = status_mapping.get(self.analysis_status_checkbox)
             if mapped_status:
                 self.analysis_status = mapped_status
+
+    @api.onchange('result_value', 'analysis_status_checkbox')
+    def _onchange_check_report_ready(self):
+        """Detectar automáticamente cuando el parámetro está listo para reporte"""
+        if (self.result_value and 
+            self.result_value.strip() and 
+            self.analysis_status_checkbox == 'finalizado'):
+            # Solo cambiar a 'ready' si estaba en 'draft'
+            if self.report_status == 'draft':
+                self.report_status = 'ready'
+        else:
+            # Solo volver a 'draft' si no está reportado
+            if self.report_status != 'reported':
+                self.report_status = 'draft'
 
 # 🆕 MODELO PARA DATOS CRUDOS DE DILUCIONES
 class LimsRawDilutionData(models.Model):
