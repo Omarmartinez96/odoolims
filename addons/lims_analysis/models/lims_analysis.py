@@ -285,6 +285,56 @@ class LimsAnalysis(models.Model):
                 }
             }
 
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Override create para copiar parámetros y controles de calidad desde la muestra"""
+        records = super().create(vals_list)
+        
+        for record in records:
+            # Obtener parámetros de la muestra a través de la recepción
+            if record.sample_reception_id and record.sample_reception_id.sample_id:
+                sample = record.sample_reception_id.sample_id
+                sample_parameters = sample.parameter_ids
+                
+                print(f"DEBUG: Muestra encontrada: {sample.sample_identifier}")
+                print(f"DEBUG: Parámetros encontrados: {len(sample_parameters)}")
+                
+                # Crear parámetros de análisis para cada parámetro de la muestra
+                for param in sample_parameters:
+                    print(f"DEBUG: Creando parámetro de análisis para: {param.name}")
+                    
+                    # Crear el parámetro de análisis
+                    param_analysis = self.env['lims.parameter.analysis'].create({
+                        'analysis_id': record.id,
+                        'parameter_id': param.id,
+                        'name': param.name or 'Sin nombre',
+                        'method': param.method or '',
+                        'microorganism': param.microorganism or '',
+                        'unit': param.unit or '',
+                        'category': param.category or 'other',
+                        'sequence': param.id,  # Usar el ID como secuencia temporal
+                    })
+                    
+                    # 🆕 COPIAR CONTROLES DE CALIDAD DEL PARÁMETRO PLANTILLA
+                    if param.quality_control_ids:
+                        print(f"DEBUG: Copiando {len(param.quality_control_ids)} controles de calidad")
+                        
+                        for qc in param.quality_control_ids:
+                            self.env['lims.executed.quality.control'].create({
+                                'parameter_analysis_id': param_analysis.id,
+                                'qc_type_id': qc.control_type_id.id,
+                                'expected_result': qc.expected_result,
+                                'control_status': 'pending',
+                                'sequence': qc.sequence,
+                                'notes': qc.notes or '',
+                            })
+                    
+            else:
+                print(f"DEBUG: No se encontró muestra para el análisis {record.id}")
+        
+        return records
+
+
 # 🆕 NUEVO MODELO PARA PARÁMETROS DE ANÁLISIS - CORREGIDO
 class LimsParameterAnalysis(models.Model):
     _name = 'lims.parameter.analysis'
@@ -615,6 +665,12 @@ class LimsParameterAnalysis(models.Model):
        default='draft',
        help='Indica si este parámetro está listo para incluir en reportes')
 
+    executed_qc_ids = fields.One2many(
+        'lims.executed.quality.control',
+        'parameter_analysis_id',
+        string='Controles de Calidad Ejecutados'
+    )
+
     def sync_confirmation_results(self):
         """Botón para sincronizar resultados de confirmación manualmente"""
         for record in self:
@@ -922,6 +978,62 @@ class LimsParameterAnalysis(models.Model):
             # Solo volver a 'draft' si no está reportado
             if self.report_status != 'reported':
                 self.report_status = 'draft'
+
+    def action_add_missing_qc(self):
+        """Botón para agregar control de calidad manual"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Agregar Control de Calidad',
+            'res_model': 'lims.executed.quality.control',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_parameter_analysis_id': self.id,
+                'default_control_status': 'pending'
+            }
+        }
+    
+    def action_copy_qc_from_template(self):
+        """Copiar controles de calidad desde la plantilla del parámetro"""
+        if not self.parameter_id or not self.parameter_id.quality_control_ids:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Sin Controles en Plantilla',
+                    'message': 'El parámetro no tiene controles de calidad definidos en su plantilla',
+                    'type': 'warning',
+                }
+            }
+        
+        # Copiar controles desde la plantilla
+        new_controls = 0
+        for qc in self.parameter_id.quality_control_ids:
+            # Verificar si ya existe
+            existing = self.executed_qc_ids.filtered(
+                lambda x: x.qc_type_id.id == qc.control_type_id.id
+            )
+            
+            if not existing:
+                self.env['lims.executed.quality.control'].create({
+                    'parameter_analysis_id': self.id,
+                    'qc_type_id': qc.control_type_id.id,
+                    'expected_result': qc.expected_result,
+                    'control_status': 'pending',
+                    'sequence': qc.sequence,
+                    'notes': qc.notes or '',
+                })
+                new_controls += 1
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Controles Copiados',
+                'message': f'Se agregaron {new_controls} controles de calidad desde la plantilla',
+                'type': 'success',
+            }
+        }
 
 # 🆕 MODELO PARA DATOS CRUDOS DE DILUCIONES
 class LimsRawDilutionData(models.Model):
@@ -1778,3 +1890,228 @@ class LimsConfirmationResult(models.Model):
         string='Observaciones',
         help='Observaciones adicionales sobre este resultado'
     )
+
+class LimsExecutedQualityControl(models.Model):
+    _name = 'lims.executed.quality.control'
+    _description = 'Controles de Calidad Ejecutados en Análisis'
+    _rec_name = 'display_name'
+    _order = 'sequence, execution_date desc'
+
+    # Relación con el parámetro de análisis
+    parameter_analysis_id = fields.Many2one(
+        'lims.parameter.analysis',
+        string='Parámetro de Análisis',
+        required=True,
+        ondelete='cascade'
+    )
+    
+    # Tipo de control de calidad (copiado desde la plantilla)
+    qc_type_id = fields.Many2one(
+        'lims.quality.control.type',
+        string='Tipo de Control',
+        required=True,
+        help='Tipo de control de calidad a ejecutar'
+    )
+    
+    # INFORMACIÓN DEL CONTROL (precargada desde plantilla)
+    expected_result = fields.Char(
+        string='Resultado Esperado',
+        required=True,
+        help='Resultado que debe obtenerse si el control es exitoso'
+    )
+    
+    actual_result = fields.Char(
+        string='Resultado Obtenido',
+        help='Resultado real obtenido en el control'
+    )
+    
+    # ESTADO DEL CONTROL
+    control_status = fields.Selection([
+        ('pending', 'Pendiente'),
+        ('in_progress', 'En Proceso'),
+        ('passed', 'Exitoso'),
+        ('failed', 'Falló'),
+        ('not_applicable', 'No Aplica')
+    ], string='Estado del Control', default='pending', required=True)
+    
+    # FECHAS Y SEGUIMIENTO
+    execution_date = fields.Date(
+        string='Fecha de Ejecución',
+        help='Fecha en que se ejecutó el control'
+    )
+    
+    execution_time = fields.Char(
+        string='Hora de Ejecución',
+        help='Formato HH:MM'
+    )
+    
+    # RESPONSABLE
+    executed_by = fields.Many2one(
+        'res.users',
+        string='Ejecutado por',
+        help='Usuario que ejecutó el control de calidad'
+    )
+    
+    # DETALLES TÉCNICOS
+    method_used = fields.Char(
+        string='Método Utilizado',
+        help='Método o procedimiento específico utilizado'
+    )
+    
+    equipment_used = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo Utilizado',
+        help='Equipo de laboratorio utilizado para el control'
+    )
+    
+    # LOTE DE MEDIO UTILIZADO (si aplica)
+    culture_media_batch_id = fields.Many2one(
+        'lims.culture.media.batch',
+        string='Lote de Medio Utilizado',
+        help='Lote específico del medio utilizado en el control'
+    )
+    
+    # OBSERVACIONES Y NOTAS
+    notes = fields.Text(
+        string='Notas y Observaciones',
+        help='Observaciones adicionales sobre la ejecución del control'
+    )
+    
+    sequence = fields.Integer(
+        string='Secuencia',
+        default=10,
+        help='Orden de ejecución del control'
+    )
+    
+    # CAMPOS COMPUTADOS
+    display_name = fields.Char(
+        string='Nombre',
+        compute='_compute_display_name',
+        store=True
+    )
+    
+    days_since_execution = fields.Integer(
+        string='Días desde Ejecución',
+        compute='_compute_days_since_execution',
+        help='Días transcurridos desde la ejecución'
+    )
+    
+    @api.depends('qc_type_id.name', 'control_status', 'expected_result')
+    def _compute_display_name(self):
+        """Calcular nombre descriptivo"""
+        for record in self:
+            if record.qc_type_id:
+                status_icons = {
+                    'pending': '⏳',
+                    'in_progress': '🔄',
+                    'passed': '✅',
+                    'failed': '❌',
+                    'not_applicable': '➖'
+                }
+                icon = status_icons.get(record.control_status, '❓')
+                record.display_name = f"{icon} {record.qc_type_id.name}: {record.expected_result}"
+            else:
+                record.display_name = "Control sin especificar"
+    
+    @api.depends('execution_date')
+    def _compute_days_since_execution(self):
+        """Calcular días desde la ejecución"""
+        today = fields.Date.context_today(self)
+        for record in self:
+            if record.execution_date:
+                delta = today - record.execution_date
+                record.days_since_execution = delta.days
+            else:
+                record.days_since_execution = 0
+    
+    # MÉTODOS DE ACCIÓN
+    def action_start_control(self):
+        """Iniciar el control de calidad"""
+        self.write({
+            'control_status': 'in_progress',
+            'execution_date': fields.Date.context_today(self),
+            'execution_time': fields.Datetime.now().strftime('%H:%M'),
+            'executed_by': self.env.user.id
+        })
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Control Iniciado',
+                'message': f'Control "{self.qc_type_id.name}" marcado como en proceso',
+                'type': 'info',
+            }
+        }
+    
+    def action_mark_passed(self):
+        """Marcar control como exitoso"""
+        self.write({
+            'control_status': 'passed',
+            'execution_date': fields.Date.context_today(self),
+            'execution_time': fields.Datetime.now().strftime('%H:%M'),
+            'executed_by': self.env.user.id
+        })
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Control Exitoso',
+                'message': f'Control "{self.qc_type_id.name}" marcado como exitoso ✅',
+                'type': 'success',
+            }
+        }
+    
+    def action_mark_failed(self):
+        """Marcar control como fallido"""
+        self.write({
+            'control_status': 'failed',
+            'execution_date': fields.Date.context_today(self),
+            'execution_time': fields.Datetime.now().strftime('%H:%M'),
+            'executed_by': self.env.user.id
+        })
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Control Fallido',
+                'message': f'Control "{self.qc_type_id.name}" marcado como fallido ❌',
+                'type': 'warning',
+            }
+        }
+    
+    def action_reset_control(self):
+        """Restablecer control a estado pendiente"""
+        self.write({
+            'control_status': 'pending',
+            'actual_result': False,
+            'execution_date': False,
+            'execution_time': False,
+            'executed_by': False
+        })
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Control Restablecido',
+                'message': f'Control "{self.qc_type_id.name}" restablecido a pendiente',
+                'type': 'info',
+            }
+        }
+    
+    @api.onchange('control_status')
+    def _onchange_control_status(self):
+        """Auto-llenar campos cuando cambia el estado"""
+        if self.control_status in ['passed', 'failed'] and not self.execution_date:
+            self.execution_date = fields.Date.context_today(self)
+            self.execution_time = fields.Datetime.now().strftime('%H:%M')
+            self.executed_by = self.env.user
+    
+    @api.onchange('qc_type_id')
+    def _onchange_qc_type_id(self):
+        """Auto-llenar resultado esperado desde el tipo de control"""
+        if self.qc_type_id and self.qc_type_id.default_expected_result:
+            self.expected_result = self.qc_type_id.default_expected_result

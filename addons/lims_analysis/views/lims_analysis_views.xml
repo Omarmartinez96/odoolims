@@ -650,10 +650,162 @@
                                                         
                                                     </group>
 
-                                                    <!-- Observaciones -->
+                                                    <!-- Observaciones del Analista -->
                                                     <group string="📝 Observaciones del Analista">
                                                         <field name="analyst_notes" 
                                                                placeholder="Observaciones técnicas del análisis..."/>
+                                                    </group>
+
+                                                    <!-- 🆕 SECCIÓN DE CONTROL DE CALIDAD -->
+                                                    <group string="🔬 Control de Calidad" colspan="4">
+                                                        
+                                                        <!-- Información general de controles -->
+                                                        <div class="alert alert-info" style="margin-bottom: 15px;" colspan="2">
+                                                            <strong>📋 Controles de Calidad:</strong> 
+                                                            Estos controles se han precargado automáticamente desde la plantilla del parámetro 
+                                                            para garantizar la calidad y confiabilidad de los resultados.
+                                                        </div>
+                                                        
+                                                        <!-- Lista de controles de calidad ejecutados -->
+                                                        <field name="executed_qc_ids" nolabel="1" colspan="2">
+                                                            <list string="Controles de Calidad" editable="bottom" create="true" delete="true">
+                                                                <!-- Información básica del control -->
+                                                                <field name="qc_type_id" string="Tipo de Control" width="25%"/>
+                                                                <field name="expected_result" string="Resultado Esperado" width="15%"/>
+                                                                <field name="actual_result" string="Resultado Obtenido" width="15%"/>
+                                                                
+                                                                <!-- Estado con decoraciones visuales -->
+                                                                <field name="control_status" string="Estado" width="12%"
+                                                                       decoration-success="control_status == 'passed'"
+                                                                       decoration-warning="control_status == 'in_progress'"
+                                                                       decoration-danger="control_status == 'failed'"
+                                                                       decoration-muted="control_status == 'not_applicable'"/>
+                                                                
+                                                                <!-- Información de ejecución -->
+                                                                <field name="execution_date" string="Fecha" width="10%"/>
+                                                                <field name="executed_by" string="Ejecutado por" width="15%"/>
+                                                                
+                                                                <!-- Campos ocultos para funcionalidad -->
+                                                                <field name="sequence" invisible="1"/>
+                                                                <field name="execution_time" invisible="1"/>
+                                                                <field name="days_since_execution" invisible="1"/>
+                                                            </list>
+                                                            
+                                                            <!-- Formulario detallado para cada control -->
+                                                            <form string="Control de Calidad">
+                                                                <header>
+                                                                    <!-- Botones de acción rápida -->
+                                                                    <button name="action_start_control" 
+                                                                            type="object" 
+                                                                            string="🔄 Iniciar Control" 
+                                                                            class="btn-info"
+                                                                            invisible="control_status != 'pending'"
+                                                                            help="Marcar como en proceso"/>
+                                                                    
+                                                                    <button name="action_mark_passed" 
+                                                                            type="object" 
+                                                                            string="✅ Marcar Exitoso" 
+                                                                            class="btn-success"
+                                                                            invisible="control_status in ['passed', 'not_applicable']"
+                                                                            help="Marcar control como exitoso"/>
+                                                                    
+                                                                    <button name="action_mark_failed" 
+                                                                            type="object" 
+                                                                            string="❌ Marcar Fallido" 
+                                                                            class="btn-danger"
+                                                                            invisible="control_status in ['failed', 'not_applicable']"
+                                                                            help="Marcar control como fallido"/>
+                                                                    
+                                                                    <button name="action_reset_control" 
+                                                                            type="object" 
+                                                                            string="🔄 Restablecer" 
+                                                                            class="btn-secondary"
+                                                                            invisible="control_status == 'pending'"
+                                                                            help="Restablecer a estado pendiente"/>
+                                                                    
+                                                                    <!-- Estado del control -->
+                                                                    <field name="control_status" widget="statusbar" 
+                                                                           statusbar_visible="pending,in_progress,passed,failed"/>
+                                                                </header>
+                                                                
+                                                                <sheet>
+                                                                    <!-- Título del control -->
+                                                                    <div class="oe_title">
+                                                                        <h1>
+                                                                            <field name="display_name" readonly="1"/>
+                                                                        </h1>
+                                                                    </div>
+                                                                    
+                                                                    <!-- Información básica del control -->
+                                                                    <group>
+                                                                        <group string="📋 Información del Control">
+                                                                            <field name="qc_type_id" 
+                                                                                   options="{'no_create': True}"
+                                                                                   required="1"/>
+                                                                            <field name="expected_result" required="1"/>
+                                                                            <field name="sequence"/>
+                                                                        </group>
+                                                                        <group string="📊 Resultado Obtenido">
+                                                                            <field name="actual_result" 
+                                                                                   placeholder="Ingrese el resultado obtenido"/>
+                                                                            <field name="control_status"/>
+                                                                        </group>
+                                                                    </group>
+                                                                    
+                                                                    <!-- Información de ejecución -->
+                                                                    <group string="🕐 Información de Ejecución">
+                                                                        <group>
+                                                                            <field name="execution_date"/>
+                                                                            <field name="execution_time" placeholder="HH:MM"/>
+                                                                            <field name="executed_by"/>
+                                                                        </group>
+                                                                        <group>
+                                                                            <field name="days_since_execution" readonly="1"/>
+                                                                            <field name="method_used" 
+                                                                                   placeholder="Método o procedimiento utilizado"/>
+                                                                        </group>
+                                                                    </group>
+                                                                    
+                                                                    <!-- Detalles técnicos -->
+                                                                    <group string="🔬 Detalles Técnicos">
+                                                                        <group>
+                                                                            <field name="equipment_used" 
+                                                                                   placeholder="Equipo utilizado (opcional)"/>
+                                                                            <field name="culture_media_batch_id" 
+                                                                                   placeholder="Lote de medio utilizado (opcional)"/>
+                                                                        </group>
+                                                                    </group>
+                                                                    
+                                                                    <!-- Notas y observaciones -->
+                                                                    <group string="📝 Notas y Observaciones">
+                                                                        <field name="notes" nolabel="1" 
+                                                                               placeholder="Observaciones adicionales sobre la ejecución del control, incidencias, desviaciones, etc..."/>
+                                                                    </group>
+                                                                    
+                                                                </sheet>
+                                                            </form>
+                                                        </field>
+                                                        
+                                                        <!-- Resumen visual de controles -->
+                                                        <div class="oe_horizontal_separator" style="margin: 15px 0;" colspan="2">
+                                                            <strong>Resumen de Controles</strong>
+                                                        </div>
+                                                        
+                                                        <!-- Botones de acción masiva -->
+                                                        <div class="oe_button_box" style="margin-bottom: 10px;" colspan="2">
+                                                            <button type="object" 
+                                                                    name="action_add_missing_qc" 
+                                                                    string="➕ Agregar Control Manual" 
+                                                                    class="btn-info"
+                                                                    help="Agregar control de calidad adicional"/>
+                                                            
+                                                            <button type="object" 
+                                                                    name="action_copy_qc_from_template" 
+                                                                    string="📋 Copiar desde Plantilla" 
+                                                                    class="btn-secondary"
+                                                                    help="Copiar controles desde la plantilla del parámetro"/>
+                                                        </div>
+                                                        
                                                     </group>
 
                                                 </page>
