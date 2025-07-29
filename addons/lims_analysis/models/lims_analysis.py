@@ -475,6 +475,34 @@ class LimsParameterAnalysis(models.Model):
         string='Resultados de Confirmación'
     )
 
+    analysis_status_checkbox = fields.Selection([
+        ('sin_procesar', 'Sin Procesar'),
+        ('en_proceso', 'En Proceso'),
+        ('finalizado', 'Finalizado')
+    ], string='Estado del Análisis', default='sin_procesar', required=True)
+
+    qualitative_unit_selection = fields.Selection([
+        ('ausencia_presencia_25g', 'Ausencia/Presencia en 25g'),
+        ('ausencia_presencia_100ml', 'Ausencia/Presencia en 100mL'),
+        ('ausencia_presencia_10g', 'Ausencia/Presencia en 10g'),
+        ('ausencia_presencia_1g', 'Ausencia/Presencia en 1g'),
+        ('detectado_no_detectado', 'Detectado/No Detectado'),
+        ('positivo_negativo', 'Positivo/Negativo'),
+        ('custom', 'Otra unidad (especificar)')
+    ], string='Unidad/Base para Cualitativos')
+    
+    qualitative_custom_unit = fields.Char(
+        string='Unidad Personalizada',
+        help='Especificar unidad personalizada para resultado cualitativo'
+    )
+
+    result_complete = fields.Char(
+        string='Resultado Completo',
+        compute='_compute_result_complete',
+        store=True,
+        help='Resultado con unidad incluida'
+    )
+
     def sync_confirmation_results(self):
         """Botón para sincronizar resultados de confirmación manualmente"""
         for record in self:
@@ -675,6 +703,115 @@ class LimsParameterAnalysis(models.Model):
             domain = []
         
         return {'domain': {'confirmation_equipment_id': domain}}
+    
+    @api.depends('result_value', 'result_unit_selection', 'custom_unit', 'result_qualitative', 'qualitative_unit_selection', 'qualitative_custom_unit', 'result_type')
+    def _compute_result_complete(self):
+        """Calcular resultado completo (valor + unidad)"""
+        for record in self:
+            if record.result_type == 'qualitative':
+                # Para cualitativos: resultado + unidad cualitativa
+                if record.result_value and record.qualitative_unit_selection:
+                    unit_translations = {
+                        'ausencia_presencia_25g': 'en 25g',
+                        'ausencia_presencia_100ml': 'en 100mL',
+                        'ausencia_presencia_10g': 'en 10g',
+                        'ausencia_presencia_1g': 'en 1g',
+                        'detectado_no_detectado': '',
+                        'positivo_negativo': '',
+                        'custom': record.qualitative_custom_unit or ''
+                    }
+                    unit = unit_translations.get(record.qualitative_unit_selection, '')
+                    if unit:
+                        record.result_complete = f"{record.result_value} {unit}".strip()
+                    else:
+                        record.result_complete = record.result_value
+                else:
+                    record.result_complete = record.result_value or ''
+                    
+            elif record.result_type == 'quantitative':
+                # Para cuantitativos: resultado + unidad cuantitativa
+                if record.result_value:
+                    if record.result_unit_selection and record.result_unit_selection != 'custom':
+                        # Unidades predefinidas
+                        unit_translations = {
+                            'ufc_g': 'UFC/g',
+                            'ufc_ml': 'UFC/mL',
+                            'nmp_g': 'NMP/g',
+                            'nmp_ml': 'NMP/mL',
+                            'ufc_100ml': 'UFC/100mL',
+                            'nmp_100ml': 'NMP/100mL',
+                            'mg_kg': 'mg/kg',
+                            'mg_l': 'mg/L'
+                        }
+                        unit = unit_translations.get(record.result_unit_selection, '')
+                        record.result_complete = f"{record.result_value} {unit}".strip()
+                    elif record.result_unit_selection == 'custom' and record.custom_unit:
+                        # Unidad personalizada
+                        record.result_complete = f"{record.result_value} {record.custom_unit}".strip()
+                    else:
+                        record.result_complete = record.result_value
+                else:
+                    record.result_complete = ''
+            else:
+                record.result_complete = record.result_value or ''
+    
+    @api.onchange('result_qualitative', 'qualitative_unit_selection', 'qualitative_custom_unit')
+    def _onchange_qualitative_result_with_unit(self):
+        """Auto-completar resultado principal con resultado cualitativo + unidad"""
+        if self.result_qualitative and self.qualitative_unit_selection:
+            qualitative_map = {
+                'detected': 'Detectado',
+                'not_detected': 'No Detectado',
+                'positive': 'Positivo',
+                'negative': 'Negativo',
+                'presence': 'Presencia',
+                'absence': 'Ausencia',
+                'growth': 'Crecimiento',
+                'no_growth': 'Sin Crecimiento',
+                'confirmed': 'Confirmado',
+                'not_confirmed': 'No Confirmado'
+            }
+            
+            result_text = qualitative_map.get(self.result_qualitative, self.result_qualitative)
+            
+            # Agregar unidad
+            unit_translations = {
+                'ausencia_presencia_25g': 'en 25g',
+                'ausencia_presencia_100ml': 'en 100mL',
+                'ausencia_presencia_10g': 'en 10g',
+                'ausencia_presencia_1g': 'en 1g',
+                'detectado_no_detectado': '',
+                'positivo_negativo': '',
+                'custom': self.qualitative_custom_unit or ''
+            }
+            
+            unit = unit_translations.get(self.qualitative_unit_selection, '')
+            
+            if unit:
+                self.result_value = f"{result_text} {unit}".strip()
+            else:
+                self.result_value = result_text
+    
+    @api.onchange('qualitative_unit_selection')
+    def _onchange_qualitative_unit_selection(self):
+        """Limpiar unidad personalizada si no se selecciona 'custom'"""
+        if self.qualitative_unit_selection != 'custom':
+            self.qualitative_custom_unit = False
+    
+    @api.onchange('analysis_status_checkbox')
+    def _onchange_analysis_status_checkbox(self):
+        """Sincronizar con el campo analysis_status original si existe"""
+        # Mapeo entre checkbox y estado original
+        status_mapping = {
+            'sin_procesar': 'pending',
+            'en_proceso': 'in_progress', 
+            'finalizado': 'completed'
+        }
+        
+        if hasattr(self, 'analysis_status') and self.analysis_status_checkbox:
+            mapped_status = status_mapping.get(self.analysis_status_checkbox)
+            if mapped_status:
+                self.analysis_status = mapped_status
 
 # 🆕 MODELO PARA DATOS CRUDOS DE DILUCIONES
 class LimsRawDilutionData(models.Model):

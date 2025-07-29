@@ -64,7 +64,7 @@
                                         <field name="microorganism"/>
                                         <field name="method"/>
                                         <field name="analysis_status"/>
-                                        <field name="result_value" class="o_field_highlight"/>
+                                        <field name="result_complete" class="o_field_highlight" string="Resultado"/>
                                     </list>
                                     
                                     <form string="Parámetro de Análisis">
@@ -90,8 +90,9 @@
                                                     <field name="parameter_id" readonly="1"/>
                                                 </group>
                                                 <group string="📅 Información del Análisis">
-                                                    <field name="analysis_start_date" readonly="1"/>
+                                                    <field name="analysis_start_date"/>
                                                     <field name="analysis_commitment_date"/>
+                                                    <field name="analysis_status_checkbox" widget="radio"/>
                                                 </group>
                                             </group>
 
