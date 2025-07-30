@@ -12,6 +12,22 @@ class LimsAnalysisReport(models.Model):
     _order = 'create_date desc'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
+    customer_id = fields.Many2one(
+        'res.partner',
+        string='Cliente',
+        related='custody_chain_id.cliente_id',
+        readonly=True,
+        store=True
+    )
+    
+    # AGREGAR AQUÍ:
+    reception_date = fields.Date(
+        string='Fecha de Recepción',
+        compute='_compute_reception_date',
+        store=True,
+        help='Fecha de recepción más temprana de las muestras'
+    )
+
     # Código automático del reporte
     report_code = fields.Char(
         string='Código de Reporte',
@@ -263,3 +279,15 @@ class LimsAnalysisReport(models.Model):
         })
         
         return report
+    
+    @api.depends('analysis_ids.sample_reception_id.reception_date')
+    def _compute_reception_date(self):
+        """Calcular fecha de recepción desde las muestras recibidas"""
+        for report in self:
+            reception_dates = report.analysis_ids.mapped('sample_reception_id.reception_date')
+            valid_dates = [date for date in reception_dates if date]
+            
+            if valid_dates:
+                report.reception_date = min(valid_dates)
+            else:
+                report.reception_date = False
