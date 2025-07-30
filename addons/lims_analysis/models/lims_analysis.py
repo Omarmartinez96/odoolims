@@ -484,11 +484,8 @@ class LimsAnalysis(models.Model):
         # Marcar parámetros como listos
         finalized_params.write({'report_status': 'ready'})
         
-        # Registro en chatter
-        self.message_post(
-            body=f"Muestra firmada por {self.env.user.name}. "
-                f"{len(finalized_params)} parámetros marcados como listos para reporte."
-        )
+        _logger.info(f"Muestra {self.sample_code} firmada por {self.env.user.name}. "
+                    f"{len(finalized_params)} parámetros marcados como listos para reporte.")
         
         return {
             'type': 'ir.actions.client',
@@ -514,10 +511,7 @@ class LimsAnalysis(models.Model):
             lambda p: p.report_status == 'ready'
         ).write({'report_status': 'draft'})
         
-        # Registro en chatter
-        self.message_post(
-            body=f"Firma cancelada por {self.env.user.name}."
-        )
+        _logger.info(f"Firma de muestra {self.sample_code} cancelada por {self.env.user.name}.")
         
         return {
             'type': 'ir.actions.client',
