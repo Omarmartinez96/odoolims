@@ -218,7 +218,7 @@
             <field name="name">lims.analysis.report.list</field>
             <field name="model">lims.analysis.report</field>
             <field name="arch" type="xml">
-                <list string="Reportes de Análisis" default_order="create_date desc">
+                <list string="Reportes de Análisis" default_order="create_date desc" create="false">
                     <!-- Campos básicos -->
                     <field name="report_code"/>
                     <field name="custody_chain_code"/>
