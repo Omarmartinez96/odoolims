@@ -704,7 +704,7 @@ class LimsAnalysis(models.Model):
             'analysis_end_date': self.analysis_end_date,
         }
         
-        revision = self.create(revision_vals)
+        revision = self.with_context(skip_copy_relations=True).create(revision_vals)
         
         # Copiar todos los parámetros con todos sus datos
         for param in self.parameter_analysis_ids:
