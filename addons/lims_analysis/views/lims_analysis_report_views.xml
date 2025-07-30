@@ -458,10 +458,13 @@
                     <field name="reception_date" string="Fecha Recepción"/>
                     <field name="ready_parameters_count" string="Listos"/>
                     <field name="total_parameters_count" string="Total"/>
-                    <!-- AGREGAR INDICADORES DE ESTADO -->
                     <field name="has_ready_parameters" string="📊 Listos" widget="boolean_toggle"/>
                     <field name="all_parameters_ready" string="✅ Completo" widget="boolean_toggle"/>
-                    <!-- NUEVO CAMPO PARA ESTADO DE REPORTE -->
+                    <!-- AGREGAR ESTADO DE FIRMA -->
+                    <field name="signature_state" string="✍️ Firma" 
+                        decoration-success="signature_state == 'signed'"
+                        decoration-warning="signature_state == 'cancelled'"
+                        decoration-muted="signature_state == 'not_signed'"/>
                     <field name="report_status_summary" string="Estado Reporte"/>
                 </list>
             </field>
@@ -541,13 +544,22 @@
                     <field name="custody_chain_code"/>
                     <field name="customer_id"/>
                     
-                    <filter string="Con Parámetros Listos" 
+                    <!-- CAMBIAR FILTROS PARA MOSTRAR ESTADOS -->
+                    <filter string="📋 Con Parámetros Listos" 
                             name="with_ready_params"
                             domain="[('has_ready_parameters', '=', True)]"/>
                     
-                    <filter string="Completamente Finalizados" 
+                    <filter string="✅ Completamente Finalizados" 
                             name="all_completed"
                             domain="[('all_parameters_ready', '=', True)]"/>
+                    
+                    <filter string="📊 Ya Reportados" 
+                            name="reported"
+                            domain="[('parameter_analysis_ids.report_status', '=', 'reported')]"/>
+                    
+                    <filter string="⏳ En Proceso" 
+                            name="in_process"
+                            domain="[('parameter_analysis_ids.report_status', '=', 'draft')]"/>
                     
                     <separator/>
                     
@@ -562,6 +574,9 @@
                         <filter string="Cliente" 
                                 name="group_customer"
                                 context="{'group_by': 'customer_id'}"/>
+                        <filter string="Estado de Reporte"
+                                name="group_report_status"
+                                context="{'group_by': 'report_status_summary'}"/>
                     </group>
                 </search>
             </field>

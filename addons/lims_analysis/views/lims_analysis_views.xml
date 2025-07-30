@@ -38,7 +38,24 @@
                                 class="btn-success"
                                 invisible="analysis_state != 'in_progress'"/>
                         
+                        <!-- BOTÓN DE FIRMA -->
+                        <button name="action_sign_sample"
+                                type="object"
+                                string="✍️ Firmar Muestra"
+                                class="btn-warning"
+                                invisible="signature_state != 'not_signed'"
+                                confirm="¿Está seguro de firmar esta muestra? Los parámetros finalizados quedarán listos para reporte."/>
+                        
+                        <!-- BOTÓN DE CANCELACIÓN -->
+                        <button name="action_cancel_signature"
+                                type="object"
+                                string="❌ Cancelar Firma"
+                                class="btn-danger"
+                                invisible="can_cancel_signature == False"
+                                confirm="¿Está seguro de cancelar la firma? Los parámetros volverán a estado borrador."/>
+                        
                         <field name="analysis_state" widget="statusbar" statusbar_visible="draft,in_progress,completed,validated"/>
+                        <field name="signature_state" widget="statusbar" statusbar_visible="not_signed,signed"/>
                     </header>
                     
                     <sheet>
@@ -58,6 +75,19 @@
                             <group string="Fechas">
                                 <field name="analysis_start_date"/>
                                 <field name="analysis_end_date"/>
+                            </group>
+                        </group>
+
+                        <group string="✍️ Estado de Firma" invisible="signature_state == 'not_signed'">
+                            <group>
+                                <field name="sample_signature_name" readonly="1"/>
+                                <field name="sample_signature_position" readonly="1"/>
+                                <field name="sample_signature_date" readonly="1"/>
+                            </group>
+                            <group invisible="signature_state != 'cancelled'">
+                                <field name="signature_cancelled_by" readonly="1"/>
+                                <field name="signature_cancelled_date" readonly="1"/>
+                                <field name="signature_cancellation_reason" readonly="1"/>
                             </group>
                         </group>
 
@@ -880,54 +910,67 @@
                   action="action_parameter_analysis" 
                   sequence="15"/>
 
-        <!-- ========== VISTA PARA FIRMAR PARÁMETROS ========== -->
-        <record id="view_parameter_signature_form" model="ir.ui.view">
-            <field name="name">lims.parameter.analysis.signature.form</field>
-            <field name="model">lims.parameter.analysis</field>
+        <!-- ========== VISTA PARA FIRMAR MUESTRAS ========== -->
+        <record id="view_sample_signature_form" model="ir.ui.view">
+            <field name="name">lims.analysis.sample.signature.form</field>
+            <field name="model">lims.analysis</field>
             <field name="arch" type="xml">
-                <form string="Firmar Parámetro">
+                <form string="Firmar Muestra">
                     <sheet>
                         <div class="oe_title">
-                            <h1>Firma de Aprobación</h1>
+                            <h1>Firma de Aprobación de Muestra</h1>
                             <h2>
-                                Parámetro: <field name="name" readonly="1"/>
+                                Muestra: <field name="sample_code" readonly="1"/>
                             </h2>
                             <h3>
-                                Resultado: <field name="result_complete" readonly="1"/>
+                                Identificación: <field name="sample_identifier" readonly="1"/>
                             </h3>
                         </div>
                         
-                        <!-- Información del parámetro -->
-                        <group string="📋 Información del Parámetro">
-                            <field name="microorganism" readonly="1"/>
-                            <field name="method" readonly="1"/>
-                            <field name="analysis_status_checkbox" readonly="1"/>
+                        <!-- Información de la muestra -->
+                        <group string="📋 Resumen de la Muestra">
+                            <field name="custody_chain_code" readonly="1"/>
+                            <field name="customer_id" readonly="1"/>
+                            <field name="ready_parameters_count" readonly="1"/>
+                            <field name="total_parameters_count" readonly="1"/>
                         </group>
                         
                         <!-- Información del firmante -->
                         <group string="👥 Información del Firmante">
-                            <field name="parameter_signature_name" 
-                                   placeholder="Nombre completo del responsable"
-                                   required="1"/>
-                            <field name="parameter_signature_position" 
-                                   placeholder="Cargo o posición"/>
+                            <field name="sample_signature_name" 
+                                placeholder="Nombre completo del responsable"
+                                required="1"/>
+                            <field name="sample_signature_position" 
+                                placeholder="Cargo o posición"/>
                         </group>
                         
                         <!-- Widget de firma -->
                         <group string="✍️ Firma de Aprobación">
-                            <field name="parameter_signature" 
-                                   widget="signature" 
-                                   placeholder="Firmar aquí para aprobar el parámetro"/>
+                            <field name="sample_signature" 
+                                widget="signature" 
+                                placeholder="Firmar aquí para aprobar la muestra completa"/>
+                        </group>
+                        
+                        <!-- Lista de parámetros que se marcarán como listos -->
+                        <group string="📊 Parámetros que serán marcados como listos">
+                            <field name="parameter_analysis_ids" readonly="1" nolabel="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="analysis_status_checkbox"/>
+                                    <field name="result_complete"/>
+                                    <field name="report_status"/>
+                                </list>
+                            </field>
                         </group>
                         
                         <!-- Advertencia -->
-                        <div class="alert alert-info" style="margin: 15px 0;">
-                            <strong>ℹ️ Importante:</strong><br/>
-                            Al firmar este parámetro, confirma que:
+                        <div class="alert alert-warning" style="margin: 15px 0;">
+                            <strong>⚠️ Importante:</strong><br/>
+                            Al firmar esta muestra:
                             <ul style="margin: 10px 0;">
-                                <li>El resultado es correcto y ha sido verificado</li>
-                                <li>El análisis se realizó conforme a los procedimientos</li>
-                                <li>El parámetro queda marcado como "Listo para Reporte"</li>
+                                <li>Todos los parámetros finalizados quedarán marcados como "Listos para Reporte"</li>
+                                <li>Confirma que los resultados son correctos y han sido verificados</li>
+                                <li>Los análisis se realizaron conforme a los procedimientos</li>
                             </ul>
                         </div>
                         
@@ -935,8 +978,8 @@
                     
                     <!-- Botones de acción -->
                     <footer>
-                        <button string="✅ Firmar Parámetro" 
-                                name="action_save_parameter_signature" 
+                        <button string="✅ Firmar Muestra" 
+                                name="action_save_sample_signature" 
                                 type="object" 
                                 class="btn-primary"/>
                         <button string="Cancelar" 
