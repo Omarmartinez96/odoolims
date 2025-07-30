@@ -165,10 +165,12 @@ class LimsAnalysis(models.Model):
                 analysis.display_name = f"Análisis - {analysis.sample_code}"
             else:
                 analysis.display_name = "Análisis"
+
     def action_complete_analysis(self):
         """Completar análisis"""
         self.analysis_state = 'completed'
         self.analysis_end_date = fields.Date.context_today(self)
+
     def action_clean_orphan_records(self):
         """Método temporal para limpiar registros huérfanos"""
         # Buscar análisis con sample_reception_id que no existe
@@ -197,6 +199,7 @@ class LimsAnalysis(models.Model):
                 'type': 'success',
             }
         }
+    
     @api.model
     def cron_clean_orphan_records(self):
         """Cron job para limpiar registros huérfanos automáticamente"""
@@ -215,6 +218,7 @@ class LimsAnalysis(models.Model):
         if orphan_receptions:
             _logger.info(f"Limpiando {len(orphan_receptions)} recepciones huérfanas")
             orphan_receptions.unlink()
+
     @api.depends('parameter_analysis_ids.report_status')
     def _compute_report_readiness(self):
         """Calcular disponibilidad para reportes usando ORM nativo"""
@@ -230,6 +234,7 @@ class LimsAnalysis(models.Model):
                 len(ready_params) == len(all_params) 
                 if all_params else False
             )
+
     @api.model_create_multi
     def create(self, vals_list):
         """Override create para copiar parámetros y controles de calidad desde la muestra"""
@@ -278,6 +283,7 @@ class LimsAnalysis(models.Model):
                 print(f"DEBUG: No se encontró muestra para el análisis {record.id}")
         
         return records
+    
     def action_print_preliminary_report_for_chain_no_auto_mark(self):
         """Crear e imprimir reporte preliminar SIN marcar como reportado"""
         custody_chain = self.custody_chain_id
@@ -305,6 +311,7 @@ class LimsAnalysis(models.Model):
         
         # Generar PDF
         return self.env.ref('lims_analysis.action_report_analysis_results').report_action(report)
+    
     def action_print_final_report_for_chain_no_auto_mark(self):
         """Crear e imprimir reporte final SIN marcar como reportado"""
         custody_chain = self.custody_chain_id
@@ -332,6 +339,7 @@ class LimsAnalysis(models.Model):
         
         # Generar PDF
         return self.env.ref('lims_analysis.action_report_analysis_results').report_action(report)
+    
     @api.model
     def action_mass_print_preliminary_report(self, analysis_ids):
         """Acción masiva para reportes preliminares"""
@@ -364,6 +372,7 @@ class LimsAnalysis(models.Model):
                     'type': 'success',
                 }
             }
+        
     @api.model
     def action_mass_print_final_report(self, analysis_ids):
         """Acción masiva para reportes finales"""
@@ -396,6 +405,7 @@ class LimsAnalysis(models.Model):
                     'type': 'success',
                 }
             }
+        
     @api.model
     def action_mass_mark_as_reported(self, analysis_ids):
         """Acción masiva para marcar como reportado"""
@@ -419,6 +429,7 @@ class LimsAnalysis(models.Model):
                 'type': 'success',
             }
         }
+    
     @api.depends('parameter_analysis_ids.report_status')
     def _compute_report_status_summary(self):
         """Calcular resumen del estado de reporte"""
@@ -441,6 +452,7 @@ class LimsAnalysis(models.Model):
                 status_parts.append(f"⏳ {draft_count} en proceso")
                 
             analysis.report_status_summary = " | ".join(status_parts) if status_parts else "Sin estado"
+
     @api.depends('signature_state')
     def _compute_can_cancel_signature(self):
         """Por ahora todos pueden cancelar - cambiar cuando implementes grupos"""
@@ -449,6 +461,7 @@ class LimsAnalysis(models.Model):
             # can_cancel = self.env.user.has_group('lims_analysis.group_quality_manager')
             can_cancel = True  # Por ahora todos pueden cancelar
             record.can_cancel_signature = can_cancel and record.signature_state == 'signed'
+
     def action_sign_sample(self):
         """Firmar muestra - versión simple"""
         # Verificar que hay parámetros finalizados
@@ -485,6 +498,7 @@ class LimsAnalysis(models.Model):
                 'type': 'success',
             }
         }
+    
     def action_cancel_signature(self):
         """Cancelar firma - versión simple"""
         self.write({
@@ -848,31 +862,6 @@ class LimsParameterAnalysis(models.Model):
         'lims.executed.quality.control',
         'parameter_analysis_id',
         string='Controles de Calidad Ejecutados'
-    )
-
-    parameter_signature = fields.Binary(
-        string='Firma del Parámetro',
-        help='Firma de aprobación del parámetro'
-    )
-
-    parameter_signature_date = fields.Datetime(
-        string='Fecha de Firma del Parámetro'
-    )
-
-    parameter_signature_name = fields.Char(
-        string='Firmado por',
-        help='Nombre de quien firmó el parámetro'
-    )
-
-    parameter_signature_position = fields.Char(
-        string='Cargo del Firmante',
-        help='Cargo de quien firmó el parámetro'
-    )
-
-    is_parameter_signed = fields.Boolean(
-        string='Parámetro Firmado',
-        compute='_compute_is_parameter_signed',
-        store=True
     )
 
     def sync_confirmation_results(self):
@@ -1244,42 +1233,6 @@ class LimsParameterAnalysis(models.Model):
         """Verificar si el parámetro está firmado"""
         for param in self:
             param.is_parameter_signed = bool(param.parameter_signature)
-
-    def action_sign_parameter(self):
-        """Abrir ventana para firmar parámetro"""
-        return {
-            'name': 'Firmar Parámetro',
-            'type': 'ir.actions.act_window',
-            'res_model': 'lims.parameter.analysis',
-            'res_id': self.id,
-            'view_mode': 'form',
-            'view_id': self.env.ref('lims_analysis.view_parameter_signature_form').id,
-            'target': 'new',
-            'context': {'signature_mode': True}
-        }
-
-    def action_save_parameter_signature(self):
-        """Guardar firma del parámetro"""
-        if not self.parameter_signature:
-            raise UserError('Debe proporcionar una firma.')
-        
-        if not self.parameter_signature_name:
-            raise UserError('Debe especificar el nombre del firmante.')
-        
-        self.write({
-            'parameter_signature_date': fields.Datetime.now(),
-            'report_status': 'ready'  # Automáticamente marcar como listo al firmar
-        })
-        
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Parámetro Firmado',
-                'message': f'El parámetro {self.name} ha sido firmado y marcado como listo.',
-                'type': 'success',
-            }
-        }
 
 # 🆕 MODELO PARA DATOS CRUDOS DE DILUCIONES
 class LimsRawDilutionData(models.Model):

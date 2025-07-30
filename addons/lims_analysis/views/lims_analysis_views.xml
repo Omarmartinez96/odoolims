@@ -110,15 +110,6 @@
                                     </list>
                                     
                                     <form string="Parámetro de Análisis">
-                                        <header>
-                                            <button name="action_sign_parameter"
-                                                    type="object"
-                                                    string="✍️ Firmar Parámetro"
-                                                    class="btn-success"
-                                                    invisible="is_parameter_signed == True or analysis_status_checkbox != 'finalizado'"/>
-                                            
-                                            <field name="analysis_status" widget="statusbar" statusbar_visible="pending,in_progress,completed,reviewed,approved"/>
-                                        </header>
                                         
                                         <sheet>
                                             <div class="oe_title">
@@ -909,86 +900,6 @@
                   parent="menu_lims_analysis_root" 
                   action="action_parameter_analysis" 
                   sequence="15"/>
-
-        <!-- ========== VISTA PARA FIRMAR MUESTRAS ========== -->
-        <record id="view_sample_signature_form" model="ir.ui.view">
-            <field name="name">lims.analysis.sample.signature.form</field>
-            <field name="model">lims.analysis</field>
-            <field name="arch" type="xml">
-                <form string="Firmar Muestra">
-                    <sheet>
-                        <div class="oe_title">
-                            <h1>Firma de Aprobación de Muestra</h1>
-                            <h2>
-                                Muestra: <field name="sample_code" readonly="1"/>
-                            </h2>
-                            <h3>
-                                Identificación: <field name="sample_identifier" readonly="1"/>
-                            </h3>
-                        </div>
-                        
-                        <!-- Información de la muestra -->
-                        <group string="📋 Resumen de la Muestra">
-                            <field name="custody_chain_code" readonly="1"/>
-                            <field name="customer_id" readonly="1"/>
-                            <field name="ready_parameters_count" readonly="1"/>
-                            <field name="total_parameters_count" readonly="1"/>
-                        </group>
-                        
-                        <!-- Información del firmante -->
-                        <group string="👥 Información del Firmante">
-                            <field name="sample_signature_name" 
-                                placeholder="Nombre completo del responsable"
-                                required="1"/>
-                            <field name="sample_signature_position" 
-                                placeholder="Cargo o posición"/>
-                        </group>
-                        
-                        <!-- Widget de firma -->
-                        <group string="✍️ Firma de Aprobación">
-                            <field name="sample_signature" 
-                                widget="signature" 
-                                placeholder="Firmar aquí para aprobar la muestra completa"/>
-                        </group>
-                        
-                        <!-- Lista de parámetros que se marcarán como listos -->
-                        <group string="📊 Parámetros que serán marcados como listos">
-                            <field name="parameter_analysis_ids" readonly="1" nolabel="1">
-                                <list>
-                                    <field name="name"/>
-                                    <field name="analysis_status_checkbox"/>
-                                    <field name="result_complete"/>
-                                    <field name="report_status"/>
-                                </list>
-                            </field>
-                        </group>
-                        
-                        <!-- Advertencia -->
-                        <div class="alert alert-warning" style="margin: 15px 0;">
-                            <strong>⚠️ Importante:</strong><br/>
-                            Al firmar esta muestra:
-                            <ul style="margin: 10px 0;">
-                                <li>Todos los parámetros finalizados quedarán marcados como "Listos para Reporte"</li>
-                                <li>Confirma que los resultados son correctos y han sido verificados</li>
-                                <li>Los análisis se realizaron conforme a los procedimientos</li>
-                            </ul>
-                        </div>
-                        
-                    </sheet>
-                    
-                    <!-- Botones de acción -->
-                    <footer>
-                        <button string="✅ Firmar Muestra" 
-                                name="action_save_sample_signature" 
-                                type="object" 
-                                class="btn-primary"/>
-                        <button string="Cancelar" 
-                                class="btn-secondary" 
-                                special="cancel"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
 
         <!-- Acción para limpiar huérfanos -->
         <record id="action_clean_orphans" model="ir.actions.server">
