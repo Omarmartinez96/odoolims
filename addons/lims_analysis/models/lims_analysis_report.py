@@ -206,23 +206,17 @@ class LimsAnalysisReport(models.Model):
         }
     
     def action_generate_pdf(self):
-        """Generar PDF del reporte"""
+        """Generar PDF del reporte - simplificado"""
         self.ensure_one()
         
-        if not self.is_authorized:
-            raise UserError('El reporte debe estar autorizado para generar PDF.')
-        
-        # Marcar parámetros como reportados
+        # Marcar parámetros como reportados si no están ya marcados
         params_to_mark = self.analysis_ids.mapped('parameter_analysis_ids').filtered(
             lambda p: p.report_status == 'ready'
         )
         if params_to_mark:
             params_to_mark.write({'report_status': 'reported'})
         
-        return self.env.ref('lims_analysis.action_report_analysis_results')._render_qweb_pdf(
-            'lims_analysis.action_report_analysis_results', 
-            res_ids=[self.id]
-        )
+        return self.env.ref('lims_analysis.action_report_analysis_results').report_action(self)
     
     @api.model
     def create_preliminary_report_for_chain(self, custody_chain_id):

@@ -38,21 +38,6 @@
                                 class="btn-success"
                                 invisible="analysis_state != 'in_progress'"/>
                         
-                        <!-- 🆕 NUEVOS BOTONES PARA REPORTES -->
-                        <button name="action_create_preliminary_report"
-                                type="object"
-                                string="📋 Crear Reporte Preliminar"
-                                class="btn-info"
-                                invisible="has_ready_parameters == False"
-                                help="Crear reporte con resultados parciales disponibles"/>
-
-                        <button name="action_create_final_report" 
-                                type="object"
-                                string="📋 Crear Reporte Final"
-                                class="btn-success"
-                                invisible="all_parameters_ready == False"
-                                help="Crear reporte con todos los resultados completados"/>
-
                         <field name="analysis_state" widget="statusbar" statusbar_visible="draft,in_progress,completed,validated"/>
                     </header>
                     

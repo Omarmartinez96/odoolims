@@ -293,6 +293,71 @@ class LimsAnalysis(models.Model):
             'target': 'current'
         }
 
+    def action_print_preliminary_report_for_chain(self):
+        """Crear e imprimir reporte preliminar para toda la cadena"""
+        custody_chain = self.sample_reception_id.sample_id.custody_chain_id
+        
+        # Buscar todos los análisis de la cadena con parámetros listos
+        analyses = self.env['lims.analysis'].search([
+            ('sample_reception_id.sample_id.custody_chain_id', '=', custody_chain.id),
+            ('has_ready_parameters', '=', True)
+        ])
+        
+        if not analyses:
+            raise UserError('No hay análisis con parámetros listos en esta cadena.')
+        
+        # Crear reporte preliminar
+        report = self.env['lims.analysis.report'].create({
+            'custody_chain_id': custody_chain.id,
+            'analysis_ids': [(6, 0, analyses.ids)],
+            'report_type': 'preliminary',
+            'report_state': 'authorized',
+            'quality_signature_name': self.env.user.name,
+            'quality_signature_date': fields.Datetime.now(),
+        })
+        
+        # Marcar parámetros como reportados
+        ready_params = analyses.mapped('parameter_analysis_ids').filtered(
+            lambda p: p.report_status == 'ready'
+        )
+        ready_params.write({'report_status': 'reported'})
+        
+        # Generar PDF
+        return self.env.ref('lims_analysis.action_report_analysis_results').report_action(report)
+
+    def action_print_final_report_for_chain(self):
+        """Crear e imprimir reporte final para toda la cadena"""
+        custody_chain = self.sample_reception_id.sample_id.custody_chain_id
+        
+        # Buscar todos los análisis de la cadena completamente terminados
+        analyses = self.env['lims.analysis'].search([
+            ('sample_reception_id.sample_id.custody_chain_id', '=', custody_chain.id),
+            ('all_parameters_ready', '=', True)
+        ])
+        
+        if not analyses:
+            raise UserError('No hay análisis completamente terminados en esta cadena.')
+        
+        # Crear reporte final
+        report = self.env['lims.analysis.report'].create({
+            'custody_chain_id': custody_chain.id,
+            'analysis_ids': [(6, 0, analyses.ids)],
+            'report_type': 'final',
+            'report_state': 'authorized',
+            'quality_signature_name': self.env.user.name,
+            'quality_signature_date': fields.Datetime.now(),
+        })
+        
+        # Marcar parámetros como reportados
+        ready_params = analyses.mapped('parameter_analysis_ids').filtered(
+            lambda p: p.report_status == 'ready'
+        )
+        ready_params.write({'report_status': 'reported'})
+        
+        # Generar PDF
+        return self.env.ref('lims_analysis.action_report_analysis_results').report_action(report)
+
+
 # 🆕 NUEVO MODELO PARA PARÁMETROS DE ANÁLISIS - CORREGIDO
 class LimsParameterAnalysis(models.Model):
     _name = 'lims.parameter.analysis'

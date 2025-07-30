@@ -453,29 +453,146 @@
             </field>
         </record>
 
-        <!-- ========== MENÚS ========== -->
-        <menuitem id="menu_analysis_reports_root" 
-                  name="📊 Reportes de Análisis" 
-                  parent="menu_lims_analysis_root" 
-                  sequence="20"/>
+        <!-- ========== NUEVA VISTA CONSOLIDADA DE ANÁLISIS POR CADENA ========== -->
+        <record id="view_analysis_consolidated_list" model="ir.ui.view">
+            <field name="name">lims.analysis.consolidated.list</field>
+            <field name="model">lims.analysis</field>
+            <field name="arch" type="xml">
+                <list string="Análisis por Cadena de Custodia" 
+                    default_group_by="sample_reception_id.sample_id.custody_chain_id">
+                    <field name="sample_reception_id.sample_id.custody_chain_id" invisible="1"/>
+                    <field name="sample_reception_id.sample_id.custody_chain_id.custody_chain_code" string="Cadena"/>
+                    <field name="sample_reception_id.sample_id.custody_chain_id.cliente_id" string="Cliente"/>
+                    <field name="sample_code"/>
+                    <field name="sample_identifier"/>
+                    <field name="ready_parameters_count" string="Listos"/>
+                    <field name="total_parameters_count" string="Total"/>
+                    <field name="has_ready_parameters" string="📊" widget="boolean_toggle"/>
+                    <field name="all_parameters_ready" string="✅" widget="boolean_toggle"/>
+                </list>
+            </field>
+        </record>
 
-        <menuitem id="menu_analysis_reports_all" 
-                  name="Todos los Reportes" 
-                  parent="menu_analysis_reports_root" 
-                  action="action_analysis_reports" 
-                  sequence="10"/>
+        <record id="view_analysis_consolidated_form" model="ir.ui.view">
+            <field name="name">lims.analysis.consolidated.form</field>
+            <field name="model">lims.analysis</field>
+            <field name="arch" type="xml">
+                <form string="Análisis - Vista de Reportes">
+                    <header>
+                        <button name="action_print_preliminary_report_for_chain"
+                                type="object"
+                                string="📋 Imprimir Preliminar de Cadena"
+                                class="btn-warning"
+                                invisible="has_ready_parameters == False"/>
+                        
+                        <button name="action_print_final_report_for_chain"
+                                type="object"
+                                string="📄 Imprimir Final de Cadena"
+                                class="btn-success"
+                                invisible="all_parameters_ready == False"/>
+                    </header>
+                    
+                    <sheet>
+                        <!-- Información de la cadena -->
+                        <group>
+                            <group string="Información de la Cadena">
+                                <field name="sample_reception_id.sample_id.custody_chain_id.custody_chain_code" readonly="1"/>
+                                <field name="sample_reception_id.sample_id.custody_chain_id.cliente_id" readonly="1"/>
+                                <field name="sample_reception_id.sample_id.custody_chain_id.reception_date" readonly="1"/>
+                            </group>
+                            <group string="Estado de Reportes">
+                                <field name="ready_parameters_count" readonly="1"/>
+                                <field name="total_parameters_count" readonly="1"/>
+                                <field name="has_ready_parameters" readonly="1"/>
+                                <field name="all_parameters_ready" readonly="1"/>
+                            </group>
+                        </group>
+                        
+                        <!-- Información de esta muestra específica -->
+                        <group string="Esta Muestra">
+                            <field name="sample_code" readonly="1"/>
+                            <field name="sample_identifier" readonly="1"/>
+                            <field name="analysis_state" readonly="1"/>
+                        </group>
+                        
+                        <!-- Lista de parámetros de esta muestra -->
+                        <field name="parameter_analysis_ids" readonly="1">
+                            <list>
+                                <field name="name"/>
+                                <field name="microorganism"/>
+                                <field name="report_status"/>
+                                <field name="result_complete"/>
+                            </list>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
 
-        <menuitem id="menu_reports_pending_auth" 
-                  name="Pendientes de Autorización" 
-                  parent="menu_analysis_reports_root" 
-                  action="action_reports_pending_authorization" 
-                  sequence="20"/>
+        <!-- ========== NUEVA ACCIÓN PRINCIPAL CONSOLIDADA ========== -->
+        <record id="action_analysis_for_reports" model="ir.actions.act_window">
+            <field name="name">Reportes de Análisis</field>
+            <field name="res_model">lims.analysis</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_analysis_consolidated_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_analysis_consolidated_form')})
+            ]"/>
+            <field name="domain">[('has_ready_parameters', '=', True)]</field>
+            <field name="context">{'group_by': 'sample_reception_id.sample_id.custody_chain_id'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No hay análisis con parámetros listos para reportar
+                </p>
+                <p>
+                    Los análisis aparecerán aquí cuando tengan parámetros finalizados.
+                </p>
+            </field>
+        </record>
 
-        <menuitem id="menu_reports_authorized" 
-                  name="Reportes Autorizados" 
-                  parent="menu_analysis_reports_root" 
-                  action="action_reports_authorized" 
-                  sequence="30"/>
+        <!-- ========== VISTA DE BÚSQUEDA CON FILTROS ========== -->
+        <record id="view_analysis_reports_search" model="ir.ui.view">
+            <field name="name">lims.analysis.reports.search</field>
+            <field name="model">lims.analysis</field>
+            <field name="arch" type="xml">
+                <search string="Buscar Análisis para Reportes">
+                    <field name="sample_code"/>
+                    <field name="sample_reception_id.sample_id.custody_chain_id.custody_chain_code"/>
+                    <field name="sample_reception_id.sample_id.custody_chain_id.cliente_id"/>
+                    
+                    <filter string="Con Parámetros Listos" 
+                            name="with_ready_params"
+                            domain="[('has_ready_parameters', '=', True)]"/>
+                    
+                    <filter string="Completamente Finalizados" 
+                            name="all_completed"
+                            domain="[('all_parameters_ready', '=', True)]"/>
+                    
+                    <separator/>
+                    
+                    <filter string="Esta Semana" 
+                            name="this_week"
+                            domain="[('analysis_start_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                    
+                    <group expand="0" string="Agrupar Por">
+                        <filter string="Cadena de Custodia" 
+                                name="group_chain"
+                                context="{'group_by': 'sample_reception_id.sample_id.custody_chain_id'}"/>
+                        <filter string="Cliente" 
+                                name="group_customer"
+                                context="{'group_by': 'sample_reception_id.sample_id.custody_chain_id.cliente_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- ========== MENÚ ÚNICO SIMPLIFICADO ========== -->
+        <menuitem id="menu_analysis_reports_unified" 
+                name="📊 Reportes de Análisis" 
+                parent="menu_lims_analysis_root" 
+                action="action_analysis_for_reports" 
+                sequence="20"/>
 
     </data>
 </odoo>
