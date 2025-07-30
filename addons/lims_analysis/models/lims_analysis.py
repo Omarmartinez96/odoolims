@@ -2,7 +2,6 @@ from odoo import models, fields, api
 from datetime import datetime
 from odoo.exceptions import UserError
 import logging
-from . import lims_analysis_report
 
 _logger = logging.getLogger(__name__)
 
@@ -96,7 +95,6 @@ class LimsAnalysis(models.Model):
         'lims.parameter.analysis',
         'analysis_id',
         string='Parámetros de Análisis',
-        copy=False
     )
     has_ready_parameters = fields.Boolean(
         string='Tiene Parámetros Listos',
@@ -285,6 +283,10 @@ class LimsAnalysis(models.Model):
         records = super().create(vals_list)
         
         for record in records:
+            # AGREGAR ESTA CONDICIÓN:
+            if self.env.context.get('skip_auto_params'):
+                continue  # Saltar creación automática de parámetros
+                
             # Obtener parámetros de la muestra a través de la recepción
             if record.sample_reception_id and record.sample_reception_id.sample_id:
                 sample = record.sample_reception_id.sample_id
@@ -309,7 +311,7 @@ class LimsAnalysis(models.Model):
                         'sequence': param.id,  # Usar el ID como secuencia temporal
                     })
                     
-                    # 🆕 COPIAR CONTROLES DE CALIDAD DEL PARÁMETRO PLANTILLA
+                    # COPIAR CONTROLES DE CALIDAD DEL PARÁMETRO PLANTILLA
                     if param.quality_control_ids:
                         print(f"DEBUG: Copiando {len(param.quality_control_ids)} controles de calidad")
                         
@@ -555,31 +557,6 @@ class LimsAnalysis(models.Model):
             can_cancel = True  # Por ahora todos pueden cancelar
             record.can_cancel_signature = can_cancel and record.signature_state == 'signed'
 
-    def action_sign_sample(self):
-        """Abrir wizard de firma en lugar de firmar directamente"""
-        # Verificar que hay parámetros finalizados
-        finalized_params = self.parameter_analysis_ids.filtered(
-            lambda p: p.analysis_status_checkbox == 'finalizado'
-        )
-        
-        if not finalized_params:
-            raise UserError('No hay parámetros finalizados para firmar.')
-        
-        # Abrir wizard de firma
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Firmar Muestra',
-            'res_model': 'lims.sample.signature.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'view_id': self.env.ref('lims_analysis.view_signature_wizard_form').id,
-            'context': {
-                'default_analysis_id': self.id,
-                'default_sample_code': self.sample_code,
-                'default_parameters_count': len(finalized_params),
-            }
-        }
-
     def action_cancel_signature(self):
         """Cancelar firma - versión simple"""
         self.write({
@@ -705,7 +682,7 @@ class LimsAnalysis(models.Model):
             'analysis_end_date': self.analysis_end_date,
         }
         
-        revision = self.with_context(skip_copy_relations=True).create(revision_vals)
+        revision = self.with_context(skip_auto_params=True).create(revision_vals)
         
         # Copiar todos los parámetros con todos sus datos
         for param in self.parameter_analysis_ids:
