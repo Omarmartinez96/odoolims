@@ -3,7 +3,7 @@
     <data>
         
         <!-- ========== VISTA LISTA DE ANÁLISIS MODIFICADA ========== -->
-        <record id="view_lims_analysis_list" model="ir.ui.view" create="false">
+        <record id="view_lims_analysis_list" model="ir.ui.view">
             <field name="name">lims.analysis.list</field>
             <field name="model">lims.analysis</field>
             <field name="arch" type="xml">
