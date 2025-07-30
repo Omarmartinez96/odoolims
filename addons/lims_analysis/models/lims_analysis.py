@@ -527,8 +527,8 @@ class LimsAnalysis(models.Model):
                 'default_sample_code': self.sample_code,
                 'default_parameters_count': len(finalized_params),
             }
-        }
-    
+        } 
+
     def action_cancel_signature(self):
         """Cancelar firma - versión simple"""
         self.write({
@@ -547,12 +547,7 @@ class LimsAnalysis(models.Model):
         
         return {
             'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Firma Cancelada',
-                'message': f'La firma de la muestra {self.sample_code} ha sido cancelada.',
-                'type': 'warning',
-            }
+            'tag': 'reload',
         }
 
     @api.depends('revision_ids')
@@ -661,10 +656,22 @@ class LimsAnalysis(models.Model):
             'revision_date': fields.Datetime.now(),
             'analysis_state': 'draft',
             'signature_state': 'not_signed',
+            'sample_code': self.sample_code,
+            'sample_identifier': self.sample_identifier, 
+            'analysis_start_date': self.analysis_start_date,
+            'analysis_end_date': self.analysis_end_date,
+            'analyst_id': self.analyst_id.id if self.analyst_id else False,
+            'notes': self.notes,
         }
         
         revision = self.create(revision_vals)
         
+        for param in self.parameter_analysis_ids:
+            param.copy({
+                'analysis_id': revision.id,
+                'report_status': 'draft',  # Reiniciar estado para revisión
+            })
+
         _logger.info(f"Revisión {new_revision_number} creada para muestra {self.sample_code} "
                      f"por {revision_data.get('requested_by')}")
         
@@ -697,12 +704,7 @@ class LimsAnalysis(models.Model):
         
         return {
             'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Cancelación Deshecha',
-                'message': f'La muestra {self.sample_code} está lista para firmar nuevamente.',
-                'type': 'info',
-            }
+            'tag': 'reload',
         }
 
 # 🆕 NUEVO MODELO PARA PARÁMETROS DE ANÁLISIS - CORREGIDO

@@ -456,11 +456,7 @@
                     <field name="sample_code"/>
                     <field name="sample_identifier"/>
                     <field name="reception_date" string="Fecha Recepción"/>
-                    <!-- AGREGAR COLUMNAS DE REVISIÓN -->
-                    <field name="revision_number" string="Rev." width="50px"/>
                     <field name="is_revision" string="🔄" widget="boolean_toggle" width="30px"/>
-                    <field name="revision_count" string="Total Rev." width="70px"/>
-                    <!-- COLUMNAS EXISTENTES -->
                     <field name="ready_parameters_count" string="Listos"/>
                     <field name="total_parameters_count" string="Total"/>
                     <field name="has_ready_parameters" string="📊 Tiene Listos" widget="boolean_toggle"/>

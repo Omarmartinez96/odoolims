@@ -128,7 +128,11 @@
                 <!-- Fila 2: Cadena de custodia relacionada -->
                 <tr>
                   <td style="padding:4px;">
-                    <strong>Cadena de Custodia:</strong> <span t-esc="doc.custody_chain_code"/>
+                    <strong>Cadena de Custodia:</strong> 
+                    <span t-esc="doc.custody_chain_code"/>
+                    <t t-if="doc.is_revision and doc.revision_number > 0">
+                        <span style="font-weight: bold;"> R<span t-esc="doc.revision_number"/></span>
+                    </t>
                   </td>
                   <td style="padding:4px; text-align:right;">
                     <strong>Tipo de Reporte:</strong> 
