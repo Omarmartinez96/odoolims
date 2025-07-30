@@ -613,7 +613,7 @@
                     
                     <filter string="🔢 Con Revisiones" 
                             name="with_revisions"
-                            domain="[('revision_count', '>', 0)]"/>
+                            domain="[('revision_ids', '!=', False)]"/>
                     
                     <separator/>
                     
