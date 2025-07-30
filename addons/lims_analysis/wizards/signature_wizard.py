@@ -59,3 +59,18 @@ class LimsSampleSignatureWizard(models.TransientModel):
                 'type': 'success',
             }
         }
+    
+    @api.model
+    def default_get(self, fields_list):
+        """Establecer valores por defecto desde contexto"""
+        defaults = super().default_get(fields_list)
+        
+        if self.env.context.get('default_analysis_id'):
+            analysis = self.env['lims.analysis'].browse(self.env.context['default_analysis_id'])
+            defaults.update({
+                'analysis_id': analysis.id,
+                'sample_code': analysis.sample_code,
+                'parameters_count': self.env.context.get('default_parameters_count', 0)
+            })
+        
+        return defaults

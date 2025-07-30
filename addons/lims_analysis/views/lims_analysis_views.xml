@@ -143,11 +143,6 @@
                                                 </group>
                                             </group>
 
-                                            <!-- TIPO DE RESULTADO -->
-                                            <group string="🎯 Tipo de Resultado" colspan="4">
-                                                <field name="result_type" widget="radio" required="1"/>
-                                            </group>
-
                                             <!-- NOTEBOOK INTERNO PARA ORGANIZAR LOS PROCESOS -->
                                             <notebook>
                                                 <!-- TAB DE PROCESOS ANALÍTICOS CUALITATIVOS -->
