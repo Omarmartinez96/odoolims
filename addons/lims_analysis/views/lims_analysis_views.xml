@@ -851,7 +851,7 @@
             <field name="name">Análisis de Muestras</field>
             <field name="res_model">lims.analysis</field>
             <field name="view_mode">list,form</field>
-            <!-- <field name="search_view_id" ref="view_lims_analysis_search"/> -->
+            <field name="search_view_id" ref="view_lims_analysis_search"/>
             <field name="context">{'group_by': 'custody_chain_id'}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
@@ -888,51 +888,17 @@
                     <field name="custody_chain_code"/>
                     <field name="customer_id"/>
                     
-                    <!-- Filtros principales -->
                     <filter string="📋 Con Parámetros Listos" 
                             name="with_ready_params"
                             domain="[('has_ready_parameters', '=', True)]"/>
-                    
-                    <filter string="✅ Completamente Finalizados" 
-                            name="all_completed"
-                            domain="[('all_parameters_ready', '=', True)]"/>
-                    
-                    <filter string="📊 Con Parámetros Reportados" 
-                            name="has_reported"
-                            domain="[('parameter_analysis_ids.report_status', '=', 'reported')]"/>
-                    
-                    <separator/>
-                    
-                    <!-- Filtros de estado -->
-                    <filter string="⏳ En Proceso" 
-                            name="in_progress"
-                            domain="[('analysis_state', '=', 'in_progress')]"/>
                     
                     <filter string="✅ Completados" 
                             name="completed"
                             domain="[('analysis_state', '=', 'completed')]"/>
                     
-                    <separator/>
-                    
-                    <!-- Filtros de firma -->
                     <filter string="✍️ Firmadas" 
                             name="signed"
                             domain="[('signature_state', '=', 'signed')]"/>
-                    
-                    <filter string="⏸️ Sin Firmar" 
-                            name="not_signed"
-                            domain="[('signature_state', '=', 'not_signed')]"/>
-                    
-                    <separator/>
-                    
-                    <!-- Filtros de revisiones -->
-                    <filter string="🔄 Solo Revisiones" 
-                            name="only_revisions"
-                            domain="[('is_revision', '=', True)]"/>
-                    
-                    <filter string="📋 Solo Originales" 
-                            name="only_originals"
-                            domain="[('is_revision', '=', False)]"/>
                     
                     <group expand="0" string="Agrupar Por">
                         <filter string="Cadena de Custodia" 
@@ -941,15 +907,6 @@
                         <filter string="Cliente" 
                                 name="group_customer"
                                 context="{'group_by': 'customer_id'}"/>
-                        <filter string="Estado de Análisis" 
-                                name="group_analysis_state"
-                                context="{'group_by': 'analysis_state'}"/>
-                        <filter string="Estado de Firma"
-                                name="group_signature"
-                                context="{'group_by': 'signature_state'}"/>
-                        <filter string="Fecha de Inicio"
-                                name="group_start_date"
-                                context="{'group_by': 'analysis_start_date'}"/>
                     </group>
                 </search>
             </field>
