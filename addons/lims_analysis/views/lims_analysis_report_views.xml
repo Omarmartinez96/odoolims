@@ -24,12 +24,12 @@
                                 invisible="is_authorized == False"
                                 help="Generar reporte en PDF"/>
                         
-                        <button name="action_send_email_report"
+                        <!-- <button name="action_send_email_report"
                                 type="object"
                                 string="📧 Enviar por Email"
                                 class="btn-success"
                                 invisible="is_authorized == False"
-                                help="Enviar reporte por correo electrónico"/>
+                                help="Enviar reporte por correo electrónico"/> -->
                         
                         <!-- Barra de estado -->
                         <field name="report_state" widget="statusbar" 
