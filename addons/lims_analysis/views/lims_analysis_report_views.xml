@@ -456,6 +456,11 @@
                     <field name="sample_code"/>
                     <field name="sample_identifier"/>
                     <field name="reception_date" string="Fecha Recepción"/>
+                    <!-- AGREGAR COLUMNAS DE REVISIÓN -->
+                    <field name="revision_number" string="Rev." width="50px"/>
+                    <field name="is_revision" string="🔄" widget="boolean_toggle" width="30px"/>
+                    <field name="revision_count" string="Total Rev." width="70px"/>
+                    <!-- COLUMNAS EXISTENTES -->
                     <field name="ready_parameters_count" string="Listos"/>
                     <field name="total_parameters_count" string="Total"/>
                     <field name="has_ready_parameters" string="📊 Tiene Listos" widget="boolean_toggle"/>
@@ -475,7 +480,7 @@
             <field name="arch" type="xml">
                 <form string="Análisis - Vista de Reportes">
                     <header>
-                        <!-- BOTONES DE FIRMA AQUÍ -->
+                        <!-- BOTONES DE FIRMA EXISTENTES -->
                         <button name="action_sign_sample"
                                 type="object"
                                 string="✍️ Firmar Muestra"
@@ -489,6 +494,14 @@
                                 class="btn-danger"
                                 invisible="can_cancel_signature == False"
                                 confirm="¿Está seguro de cancelar la firma? Los parámetros volverán a estado borrador."/>
+                        
+                        <!-- NUEVO BOTÓN DE REVISIÓN -->
+                        <button name="action_request_revision"
+                                type="object"
+                                string="🔄 Solicitar Revisión"
+                                class="btn-info"
+                                invisible="signature_state != 'signed'"
+                                confirm="¿Está seguro de solicitar una revisión? Esto cancelará la firma actual."/>
                         
                         <field name="signature_state" widget="statusbar" statusbar_visible="not_signed,signed"/>
                     </header>
@@ -580,10 +593,6 @@
                             name="with_ready_params"
                             domain="[('has_ready_parameters', '=', True)]"/>
                     
-                    <filter string="✅ Completamente Finalizados" 
-                            name="all_completed"
-                            domain="[('all_parameters_ready', '=', True)]"/>
-                    
                     <filter string="📊 Con Parámetros Reportados" 
                             name="has_reported"
                             domain="[('parameter_analysis_ids.report_status', '=', 'reported')]"/>
@@ -591,6 +600,20 @@
                     <filter string="🔄 Todos los Estados" 
                             name="all_states"
                             domain="[]"/>
+                    
+                    <separator/>
+                    
+                    <filter string="🔄 Solo Revisiones" 
+                            name="only_revisions"
+                            domain="[('is_revision', '=', True)]"/>
+                    
+                    <filter string="📋 Solo Originales" 
+                            name="only_originals"
+                            domain="[('is_revision', '=', False)]"/>
+                    
+                    <filter string="🔢 Con Revisiones" 
+                            name="with_revisions"
+                            domain="[('revision_count', '>', 0)]"/>
                     
                     <separator/>
                     
@@ -609,9 +632,9 @@
                         <filter string="Estado de Firma"
                                 name="group_signature"
                                 context="{'group_by': 'signature_state'}"/>
-                        <filter string="Estado de Parámetros"
-                                name="group_params"
-                                context="{'group_by': 'report_status_summary'}"/>
+                        <filter string="Tipo (Original/Revisión)"
+                                name="group_revision_type"
+                                context="{'group_by': 'is_revision'}"/>
                     </group>
                 </search>
             </field>
