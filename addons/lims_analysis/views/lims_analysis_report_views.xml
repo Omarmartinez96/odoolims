@@ -458,14 +458,13 @@
                     <field name="reception_date" string="Fecha Recepción"/>
                     <field name="ready_parameters_count" string="Listos"/>
                     <field name="total_parameters_count" string="Total"/>
-                    <field name="has_ready_parameters" string="📊 Listos" widget="boolean_toggle"/>
-                    <field name="all_parameters_ready" string="✅ Completo" widget="boolean_toggle"/>
-                    <!-- AGREGAR ESTADO DE FIRMA -->
+                    <field name="has_ready_parameters" string="📊 Tiene Listos" widget="boolean_toggle"/>
+                    <field name="all_parameters_ready" string="✅ Todo Listo" widget="boolean_toggle"/>
                     <field name="signature_state" string="✍️ Firma" 
                         decoration-success="signature_state == 'signed'"
                         decoration-warning="signature_state == 'cancelled'"
                         decoration-muted="signature_state == 'not_signed'"/>
-                    <field name="report_status_summary" string="Estado Reporte"/>
+                    <field name="report_status_summary" string="Estado Parámetros"/>
                 </list>
             </field>
         </record>
@@ -475,7 +474,25 @@
             <field name="model">lims.analysis</field>
             <field name="arch" type="xml">
                 <form string="Análisis - Vista de Reportes">
-
+                    <header>
+                        <!-- BOTONES DE FIRMA AQUÍ -->
+                        <button name="action_sign_sample"
+                                type="object"
+                                string="✍️ Firmar Muestra"
+                                class="btn-warning"
+                                invisible="signature_state != 'not_signed'"
+                                confirm="¿Está seguro de firmar esta muestra? Los parámetros finalizados quedarán listos para reporte."/>
+                        
+                        <button name="action_cancel_signature"
+                                type="object"
+                                string="❌ Cancelar Firma"
+                                class="btn-danger"
+                                invisible="can_cancel_signature == False"
+                                confirm="¿Está seguro de cancelar la firma? Los parámetros volverán a estado borrador."/>
+                        
+                        <field name="signature_state" widget="statusbar" statusbar_visible="not_signed,signed"/>
+                    </header>
+                    
                     <sheet>
                         <!-- Información de la cadena -->
                         <group>
@@ -489,6 +506,20 @@
                                 <field name="total_parameters_count" readonly="1"/>
                                 <field name="has_ready_parameters" readonly="1"/>
                                 <field name="all_parameters_ready" readonly="1"/>
+                            </group>
+                        </group>
+                        
+                        <!-- SECCIÓN DE FIRMA -->
+                        <group string="✍️ Estado de Firma" invisible="signature_state == 'not_signed'">
+                            <group>
+                                <field name="sample_signature_name" readonly="1"/>
+                                <field name="sample_signature_position" readonly="1"/>
+                                <field name="sample_signature_date" readonly="1"/>
+                            </group>
+                            <group invisible="signature_state != 'cancelled'">
+                                <field name="signature_cancelled_by" readonly="1"/>
+                                <field name="signature_cancelled_date" readonly="1"/>
+                                <field name="signature_cancellation_reason" readonly="1"/>
                             </group>
                         </group>
                         
@@ -506,6 +537,7 @@
                                 <field name="microorganism"/>
                                 <field name="report_status"/>
                                 <field name="result_complete"/>
+                                <field name="analysis_status_checkbox"/>
                             </list>
                         </field>
                     </sheet>
@@ -544,7 +576,6 @@
                     <field name="custody_chain_code"/>
                     <field name="customer_id"/>
                     
-                    <!-- CAMBIAR FILTROS PARA MOSTRAR ESTADOS -->
                     <filter string="📋 Con Parámetros Listos" 
                             name="with_ready_params"
                             domain="[('has_ready_parameters', '=', True)]"/>
@@ -553,29 +584,33 @@
                             name="all_completed"
                             domain="[('all_parameters_ready', '=', True)]"/>
                     
-                    <filter string="📊 Ya Reportados" 
-                            name="reported"
+                    <filter string="📊 Con Parámetros Reportados" 
+                            name="has_reported"
                             domain="[('parameter_analysis_ids.report_status', '=', 'reported')]"/>
                     
-                    <filter string="⏳ En Proceso" 
-                            name="in_process"
-                            domain="[('parameter_analysis_ids.report_status', '=', 'draft')]"/>
+                    <filter string="🔄 Todos los Estados" 
+                            name="all_states"
+                            domain="[]"/>
                     
                     <separator/>
                     
-                    <filter string="Esta Semana" 
-                            name="this_week"
-                            domain="[('reception_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                    <filter string="✍️ Firmadas" 
+                            name="signed"
+                            domain="[('signature_state', '=', 'signed')]"/>
+                    
+                    <filter string="⏸️ Sin Firmar" 
+                            name="not_signed"
+                            domain="[('signature_state', '=', 'not_signed')]"/>
                     
                     <group expand="0" string="Agrupar Por">
                         <filter string="Cadena de Custodia" 
                                 name="group_chain"
                                 context="{'group_by': 'custody_chain_id'}"/>
-                        <filter string="Cliente" 
-                                name="group_customer"
-                                context="{'group_by': 'customer_id'}"/>
-                        <filter string="Estado de Reporte"
-                                name="group_report_status"
+                        <filter string="Estado de Firma"
+                                name="group_signature"
+                                context="{'group_by': 'signature_state'}"/>
+                        <filter string="Estado de Parámetros"
+                                name="group_params"
                                 context="{'group_by': 'report_status_summary'}"/>
                     </group>
                 </search>

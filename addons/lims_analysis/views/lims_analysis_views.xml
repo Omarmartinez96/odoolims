@@ -31,31 +31,8 @@
             <field name="model">lims.analysis</field>
             <field name="arch" type="xml">
                 <form string="Análisis de Muestra">
-                    <header>
-                        <button name="action_complete_analysis" 
-                                type="object" 
-                                string="✅ Completar Análisis" 
-                                class="btn-success"
-                                invisible="analysis_state != 'in_progress'"/>
-                        
-                        <!-- BOTÓN DE FIRMA -->
-                        <button name="action_sign_sample"
-                                type="object"
-                                string="✍️ Firmar Muestra"
-                                class="btn-warning"
-                                invisible="signature_state != 'not_signed'"
-                                confirm="¿Está seguro de firmar esta muestra? Los parámetros finalizados quedarán listos para reporte."/>
-                        
-                        <!-- BOTÓN DE CANCELACIÓN -->
-                        <button name="action_cancel_signature"
-                                type="object"
-                                string="❌ Cancelar Firma"
-                                class="btn-danger"
-                                invisible="can_cancel_signature == False"
-                                confirm="¿Está seguro de cancelar la firma? Los parámetros volverán a estado borrador."/>
-                        
+                    <header>                        
                         <field name="analysis_state" widget="statusbar" statusbar_visible="draft,in_progress,completed,validated"/>
-                        <field name="signature_state" widget="statusbar" statusbar_visible="not_signed,signed"/>
                     </header>
                     
                     <sheet>
