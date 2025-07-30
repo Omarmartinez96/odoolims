@@ -660,9 +660,17 @@ class LimsAnalysis(models.Model):
         revision = self.create(revision_vals)
         
         for param in self.parameter_analysis_ids:
-            param.copy({
+            self.env['lims.parameter.analysis'].create({
                 'analysis_id': revision.id,
+                'name': param.name,
+                'method': param.method,
+                'microorganism': param.microorganism,
+                'result_value': param.result_value,
+                'result_complete': param.result_complete,
+                'analyst_notes': param.analyst_notes,
+                'analysis_status_checkbox': param.analysis_status_checkbox,
                 'report_status': 'draft',  # Reiniciar estado para revisión
+                # Agregar aquí otros campos que necesites copiar del parámetro original
             })
 
         _logger.info(f"Revisión {new_revision_number} creada para muestra {self.sample_code} "

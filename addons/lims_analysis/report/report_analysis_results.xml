@@ -266,44 +266,45 @@
               </div>
             </t>
 
-            <!-- 🆕 SECCIÓN DE AUTORIZACIÓN DE CALIDAD -->
-            <t t-if="doc.is_authorized">
-              <div class="authorization-section">
-                <h3 style="font-size: 16px; margin: 0 0 15px 0; color: #28a745; text-align: center;">
-                  AUTORIZACIÓN DE CALIDAD
+            <!-- SECCIÓN DE FIRMA DE MUESTRA -->
+            <t t-foreach="doc.analysis_ids.filtered(lambda a: a.signature_state == 'signed')" t-as="signed_analysis">
+              <div class="authorization-section" style="border-color: #007bff; background-color: #f8f9ff;">
+                <h3 style="font-size: 16px; margin: 0 0 15px 0; color: #007bff; text-align: center;">
+                  FIRMA DE MUESTRA - <span t-esc="signed_analysis.sample_code"/>
                 </h3>
                 
                 <table style="width: 100%; border-collapse: collapse;">
                   <tr>
                     <td style="width: 50%; vertical-align: top; padding: 10px; text-align: center;">
-                      <img t-att-src="image_data_uri(doc.quality_signature)" 
-                           style="max-width: 200px; max-height: 100px; border: 1px solid #28a745; padding: 5px;"/>
-                      <div style="margin-top: 10px; border-top: 2px solid #28a745; padding-top: 5px;">
-                        <strong>Firma de Autorización</strong>
+                      <t t-if="signed_analysis.sample_digital_signature">
+                        <img t-att-src="image_data_uri(signed_analysis.sample_digital_signature)" 
+                            style="max-width: 200px; max-height: 100px; border: 1px solid #007bff; padding: 5px;"/>
+                      </t>
+                      <div style="margin-top: 10px; border-top: 2px solid #007bff; padding-top: 5px;">
+                        <strong>Firma de Muestra</strong>
                       </div>
                     </td>
                     <td style="width: 50%; vertical-align: top; padding: 10px;">
                       <div style="font-size: 12px; line-height: 1.6;">
-                        <p><strong>Autorizado por:</strong> <span t-esc="doc.quality_signature_name or 'No especificado'"/></p>
-                        <p><strong>Cargo:</strong> <span t-esc="doc.quality_signature_position or 'No especificado'"/></p>
-                        <p><strong>Fecha de Autorización:</strong> 
-                          <t t-if="doc.quality_signature_date">
-                            <t t-set="auth_date" t-value="doc.quality_signature_date"/>
-                            <t t-set="d_auth" t-value="auth_date.strftime('%d')"/>
-                            <t t-set="m_auth" t-value="auth_date.strftime('%m')"/>
-                            <t t-set="y_auth" t-value="auth_date.strftime('%Y')"/>
-                            <t t-set="h_auth" t-value="auth_date.strftime('%H:%M')"/>
-                            <span t-esc="d_auth + '/' + meses[m_auth] + '/' + y_auth + ' ' + h_auth"/>
+                        <p><strong>Firmado por:</strong> <span t-esc="signed_analysis.sample_signature_name or 'No especificado'"/></p>
+                        <p><strong>Cargo:</strong> <span t-esc="signed_analysis.sample_signature_position or 'No especificado'"/></p>
+                        <p><strong>Fecha de Firma:</strong> 
+                          <t t-if="signed_analysis.sample_signature_date">
+                            <t t-set="sign_date" t-value="signed_analysis.sample_signature_date"/>
+                            <t t-set="d_sign" t-value="sign_date.strftime('%d')"/>
+                            <t t-set="m_sign" t-value="sign_date.strftime('%m')"/>
+                            <t t-set="y_sign" t-value="sign_date.strftime('%Y')"/>
+                            <t t-set="h_sign" t-value="sign_date.strftime('%H:%M')"/>
+                            <span t-esc="d_sign + '/' + meses[m_sign] + '/' + y_sign + ' ' + h_sign"/>
                           </t>
                           <span t-else="">No especificada</span>
                         </p>
-                        <div style="margin-top: 15px; font-style: italic; font-size: 11px; color: #495057;">
-                          Los resultados contenidos en este reporte han sido revisados y autorizados por el personal técnico responsable del control de calidad.
-                        </div>
                       </div>
                     </td>
                   </tr>
                 </table>
+              </div>
+            </t>
 
                 <!-- Notas de calidad si existen -->
                 <t t-if="doc.quality_notes">
