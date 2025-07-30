@@ -520,14 +520,14 @@ class LimsAnalysis(models.Model):
             'name': 'Firmar Muestra',
             'res_model': 'lims.sample.signature.wizard',
             'view_mode': 'form',
-            'view_type': 'form',
             'target': 'new',
+            'view_id': self.env.ref('lims_analysis.view_signature_wizard_form').id,
             'context': {
                 'default_analysis_id': self.id,
                 'default_sample_code': self.sample_code,
                 'default_parameters_count': len(finalized_params),
             }
-        } 
+        }
 
     def action_cancel_signature(self):
         """Cancelar firma - versión simple"""
