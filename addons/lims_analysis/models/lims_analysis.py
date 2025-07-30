@@ -11,6 +11,7 @@ class LimsAnalysis(models.Model):
     _description = 'Análisis de Muestra'
     _rec_name = 'display_name'
     _order = 'create_date desc'
+    _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # Relación con la recepción de muestra (que tiene el sample_code)
     sample_reception_id = fields.Many2one(

@@ -13,6 +13,7 @@
     'author': 'Omar Martinez',
     'depends': [
         'base',
+        'mail',
         'lims_customer',
         'lims_reception',
         'lims_sample_reception', 
