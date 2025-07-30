@@ -494,8 +494,14 @@
                                 class="btn-danger"
                                 invisible="can_cancel_signature == False"
                                 confirm="¿Está seguro de cancelar la firma? Los parámetros volverán a estado borrador."/>
-                        
-                        <!-- NUEVO BOTÓN DE REVISIÓN -->
+
+                        <button name="action_undo_cancellation"
+                                type="object"
+                                string="🔄 Deshacer Cancelación"
+                                class="btn-info"
+                                invisible="signature_state != 'cancelled'"
+                                confirm="¿Deshacer la cancelación? La muestra volverá a estar lista para firmar."/>
+
                         <button name="action_request_revision"
                                 type="object"
                                 string="🔄 Solicitar Revisión"

@@ -679,6 +679,41 @@ class LimsAnalysis(models.Model):
         
         return revision
 
+    def action_undo_cancellation(self):
+        """Deshacer cancelación de firma - TEMPORAL PARA PRUEBAS"""
+        if self.signature_state != 'cancelled':
+            raise UserError('Solo se puede deshacer la cancelación de firmas canceladas.')
+        
+        # Limpiar todos los campos de cancelación
+        self.write({
+            'signature_state': 'not_signed',
+            'signature_cancelled_by': False,
+            'signature_cancelled_date': False,
+            'signature_cancellation_reason': False,
+            # También limpiar campos de firma anterior
+            'sample_signature_name': False,
+            'sample_signature_position': False,
+            'sample_signature_date': False,
+            'sample_digital_signature': False,
+        })
+        
+        # Volver parámetros a estado que estaban (finalizados pero no listos)
+        self.parameter_analysis_ids.filtered(
+            lambda p: p.analysis_status_checkbox == 'finalizado'
+        ).write({'report_status': 'draft'})
+        
+        _logger.info(f"Cancelación deshecha para muestra {self.sample_code} por {self.env.user.name}. Lista para firmar nuevamente.")
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Cancelación Deshecha',
+                'message': f'La muestra {self.sample_code} está lista para firmar nuevamente.',
+                'type': 'info',
+            }
+        }
+
 # 🆕 NUEVO MODELO PARA PARÁMETROS DE ANÁLISIS - CORREGIDO
 class LimsParameterAnalysis(models.Model):
     _name = 'lims.parameter.analysis'
