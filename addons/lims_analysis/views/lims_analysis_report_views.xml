@@ -382,7 +382,7 @@
             <field name="name">lims.analysis.consolidated.list</field>
             <field name="model">lims.analysis</field>
             <field name="arch" type="xml">
-                <list string="Análisis por Cadena de Custodia" default_group_by="custody_chain_id">
+                <list string="Análisis por Cadena de Custodia" default_group_by="custody_chain_id" create="false">
                     <field name="custody_chain_id" invisible="1"/>
                     <field name="custody_chain_code" string="Cadena"/>
                     <field name="customer_id" string="Cliente"/>
