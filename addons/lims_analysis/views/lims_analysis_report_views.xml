@@ -64,20 +64,20 @@
 
                         <!-- Indicador visual de progreso -->
                         <div class="alert alert-info" 
-                             invisible="is_authorized == True"
-                             style="margin: 15px 0;">
+                            invisible="is_authorized == True"
+                            style="margin: 15px 0;">
                             <strong>📊 Progreso del Reporte:</strong>
                             <field name="completed_parameters"/> de 
                             <field name="total_parameters"/> parámetros incluidos
                             
-                            <div style="margin-top: 10px;">
-                                <div class="progress" style="height: 20px;">
-                                    <div class="progress-bar" 
-                                         role="progressbar" 
-                                         t-attf-style="width: #{doc.completed_parameters * 100 / doc.total_parameters if doc.total_parameters > 0 else 0}%"
-                                         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                                    </div>
-                                </div>
+                            <!-- Progreso en texto simple -->
+                            <div style="margin-top: 10px; font-size: 14px;">
+                                <span style="color: #28a745; font-weight: bold;">
+                                    ✅ Completados: <field name="completed_parameters"/>
+                                </span>
+                                <span style="margin-left: 20px; color: #6c757d;">
+                                    📊 Total: <field name="total_parameters"/>
+                                </span>
                             </div>
                         </div>
 
