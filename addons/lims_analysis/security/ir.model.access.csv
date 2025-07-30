@@ -12,3 +12,5 @@ access_lims_confirmation_media,lims.confirmation.media,model_lims_confirmation_m
 access_lims_confirmation_result,lims.confirmation.result,model_lims_confirmation_result,base.group_user,1,1,1,1
 access_lims_executed_quality_control,lims.executed.quality.control,model_lims_executed_quality_control,base.group_user,1,1,1,1
 access_lims_analysis_report,lims.analysis.report,model_lims_analysis_report,base.group_user,1,1,1,1
+access_lims_revision_wizard,lims.revision.request.wizard,model_lims_revision_request_wizard,,1,1,1,1
+access_lims_signature_wizard,lims.sample.signature.wizard,model_lims_sample_signature_wizard,,1,1,1,1
