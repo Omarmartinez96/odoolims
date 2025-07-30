@@ -348,10 +348,9 @@ class LimsAnalysis(models.Model):
             'report_state': 'authorized',
             'quality_signature_name': self.env.user.name,
             'quality_signature_date': fields.Datetime.now(),
+            'include_sample_signature': False,  
         })
-        
-        # NO MARCAR COMO REPORTADO - control manual
-        
+                
         # Generar PDF
         return self.env.ref('lims_analysis.action_report_analysis_results').report_action(report)
     
@@ -448,7 +447,57 @@ class LimsAnalysis(models.Model):
                     'type': 'success',
                 }
             }
+
+    @api.model
+    def action_mass_print_report_for_signing(self, analysis_ids):
+        """Acción para reportes finales SIN firma digital - para firmar a mano"""
+        analyses = self.browse(analysis_ids)
         
+        # Verificar que están firmados digitalmente
+        signed_analyses = analyses.filtered(lambda a: a.signature_state == 'signed')
+        if not signed_analyses:
+            raise UserError('Solo se pueden imprimir reportes de muestras ya firmadas digitalmente.')
+        
+        # Agrupar por cadena de custodia
+        chains_processed = set()
+        reports_generated = []
+        
+        for analysis in signed_analyses:
+            if analysis.custody_chain_id.id not in chains_processed:
+                # Buscar todos los análisis firmados de esta cadena
+                chain_analyses = signed_analyses.filtered(
+                    lambda a: a.custody_chain_id.id == analysis.custody_chain_id.id
+                )
+                
+                custody_chain = analysis.custody_chain_id
+                report = self.env['lims.analysis.report'].create({
+                    'custody_chain_id': custody_chain.id,
+                    'analysis_ids': [(6, 0, chain_analyses.ids)],
+                    'report_type': 'final',
+                    'report_state': 'authorized',
+                    'quality_signature_name': self.env.user.name,
+                    'quality_signature_date': fields.Datetime.now(),
+                    'include_sample_signature': False,  # NO incluir firma digital
+                    'for_manual_signing': True,  # Indicar que es para firma manual
+                })
+                
+                pdf_action = self.env.ref('lims_analysis.action_report_analysis_results').report_action(report)
+                reports_generated.append(pdf_action)
+                chains_processed.add(analysis.custody_chain_id.id)
+        
+        if len(reports_generated) == 1:
+            return reports_generated[0]
+        else:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Reportes para Firma Manual',
+                    'message': f'Se generaron {len(reports_generated)} reportes para firma autógrafa.',
+                    'type': 'success',
+                }
+            }
+
     @api.model
     def action_mass_mark_as_reported(self, analysis_ids):
         """Acción masiva para marcar como reportado"""
@@ -659,19 +708,20 @@ class LimsAnalysis(models.Model):
         
         revision = self.create(revision_vals)
         
-        for param in self.parameter_analysis_ids:
-            self.env['lims.parameter.analysis'].create({
-                'analysis_id': revision.id,
-                'name': param.name,
-                'method': param.method,
-                'microorganism': param.microorganism,
-                'result_value': param.result_value,
-                'result_complete': param.result_complete,
-                'analyst_notes': param.analyst_notes,
-                'analysis_status_checkbox': param.analysis_status_checkbox,
-                'report_status': 'draft',  # Reiniciar estado para revisión
-                # Agregar aquí otros campos que necesites copiar del parámetro original
-            })
+        # Si no funciona, eliminar.
+        # for param in self.parameter_analysis_ids:
+        #     self.env['lims.parameter.analysis'].create({
+        #         'analysis_id': revision.id,
+        #         'name': param.name,
+        #         'method': param.method,
+        #         'microorganism': param.microorganism,
+        #         'result_value': param.result_value,
+        #         'result_complete': param.result_complete,
+        #         'analyst_notes': param.analyst_notes,
+        #         'analysis_status_checkbox': param.analysis_status_checkbox,
+        #         'report_status': 'draft',  # Reiniciar estado para revisión
+        #         # Agregar aquí otros campos que necesites copiar del parámetro original
+        #     })
 
         _logger.info(f"Revisión {new_revision_number} creada para muestra {self.sample_code} "
                      f"por {revision_data.get('requested_by')}")

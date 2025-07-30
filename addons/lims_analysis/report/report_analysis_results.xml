@@ -274,7 +274,7 @@
             </t>
 
             <!-- SECCIÓN DE FIRMA DE MUESTRA -->
-            <t t-foreach="doc.analysis_ids.filtered(lambda a: a.signature_state == 'signed')" t-as="signed_analysis">
+            <t t-if="doc.include_sample_signature" t-foreach="doc.analysis_ids.filtered(lambda a: a.signature_state == 'signed')" t-as="signed_analysis">
               <div class="authorization-section" style="border-color: #007bff; background-color: #f8f9ff;">
                 <h3 style="font-size: 16px; margin: 0 0 15px 0; color: #007bff; text-align: center;">
                   FIRMA DE MUESTRA - <span t-esc="signed_analysis.sample_code"/>
@@ -311,6 +311,49 @@
                   </tr>
                 </table>
               </div>
+            </t>
+
+            <!-- SECCIÓN PARA FIRMA MANUAL -->
+            <t t-if="doc.for_manual_signing">
+              <t t-foreach="doc.analysis_ids.filtered(lambda a: a.signature_state == 'signed')" t-as="signed_analysis">
+                <div class="authorization-section" style="border-color: #6c757d; background-color: #f8f9fa;">
+                  <h3 style="font-size: 16px; margin: 0 0 15px 0; color: #6c757d; text-align: center;">
+                    ESPACIO PARA FIRMA AUTÓGRAFA - <span t-esc="signed_analysis.sample_code"/>
+                  </h3>
+                  
+                  <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                      <td style="width: 50%; vertical-align: top; padding: 10px; text-align: center;">
+                        <div style="border: 2px solid #6c757d; height: 100px; width: 200px; margin: 0 auto; background-color: white;">
+                          <div style="text-align: center; padding-top: 40px; color: #6c757d; font-style: italic;">
+                            Espacio para firma autógrafa
+                          </div>
+                        </div>
+                        <div style="margin-top: 10px; border-top: 2px solid #6c757d; padding-top: 5px;">
+                          <strong>Firma Manual</strong>
+                        </div>
+                      </td>
+                      <td style="width: 50%; vertical-align: top; padding: 10px;">
+                        <div style="font-size: 12px; line-height: 1.6;">
+                          <p><strong>Firmado por:</strong> <span t-esc="signed_analysis.sample_signature_name or 'No especificado'"/></p>
+                          <p><strong>Cargo:</strong> <span t-esc="signed_analysis.sample_signature_position or 'No especificado'"/></p>
+                          <p><strong>Fecha de Firma Digital:</strong> 
+                            <t t-if="signed_analysis.sample_signature_date">
+                              <t t-set="sign_date" t-value="signed_analysis.sample_signature_date"/>
+                              <t t-set="d_sign" t-value="sign_date.strftime('%d')"/>
+                              <t t-set="m_sign" t-value="sign_date.strftime('%m')"/>
+                              <t t-set="y_sign" t-value="sign_date.strftime('%Y')"/>
+                              <t t-set="h_sign" t-value="sign_date.strftime('%H:%M')"/>
+                              <span t-esc="d_sign + '/' + meses[m_sign] + '/' + y_sign + ' ' + h_sign"/>
+                            </t>
+                          </p>
+                          <p style="margin-top: 20px;"><strong>Fecha de Firma Manual:</strong> _______________</p>
+                        </div>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+              </t>
             </t>
 
             <!-- Información adicional -->

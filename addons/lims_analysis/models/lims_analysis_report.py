@@ -198,6 +198,18 @@ class LimsAnalysisReport(models.Model):
         help='Número de revisión más alto de los análisis incluidos'
     )
 
+    include_sample_signature = fields.Boolean(
+        string='Incluir Firma Digital',
+        default=True,
+        help='Si incluir o no la firma digital en el reporte'
+    )
+
+    for_manual_signing = fields.Boolean(
+        string='Para Firma Manual',
+        default=False,
+        help='Reporte preparado para firma autógrafa'
+    )
+
 # MÉTODOS COMPUTADOS
     @api.depends('quality_signature')
     def _compute_is_authorized(self):
