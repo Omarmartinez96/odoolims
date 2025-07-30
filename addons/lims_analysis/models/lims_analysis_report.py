@@ -32,13 +32,15 @@ class LimsAnalysisReport(models.Model):
     sample_code = fields.Char(
         string='Código de Muestra',
         related='analysis_ids.sample_code',
-        readonly=True
+        readonly=True,
+        store=True
     )
 
     sample_identifier = fields.Char(
         string='Identificación de Muestra',
         related='analysis_ids.sample_identifier',
-        readonly=True
+        readonly=True,
+        store=True
     )
 
     analysis_state = fields.Selection([
@@ -49,7 +51,10 @@ class LimsAnalysisReport(models.Model):
         ('cancelled', 'Cancelado')
     ], string='Estado de Análisis',
     related='analysis_ids.analysis_state',
-    readonly=True)
+    readonly=True,
+    store=True
+    )
+    
 
     # Código automático del reporte
     report_code = fields.Char(
@@ -74,8 +79,6 @@ class LimsAnalysisReport(models.Model):
         readonly=True,
         store=True
     )
-    
-    
     
     # Análisis incluidos
     analysis_ids = fields.Many2many(
@@ -102,6 +105,12 @@ class LimsAnalysisReport(models.Model):
     report_date = fields.Date(
         string='Fecha de Reporte',
         default=fields.Date.context_today
+    )
+
+    parameter_analysis_ids = fields.Many2many(
+        'lims.parameter.analysis',
+        compute='_compute_all_parameters',
+        string='Parámetros del Reporte'
     )
 
 # AUTORIZACIÓN DE CALIDAD
