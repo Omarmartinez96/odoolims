@@ -7,20 +7,46 @@
             <field name="name">lims.analysis.list</field>
             <field name="model">lims.analysis</field>
             <field name="arch" type="xml">
-                <list string="Análisis de Muestras" create="true">
-                    <field name="sample_code"/>
-                    <field name="sample_identifier"/>
-                    <field name="sample_reception_id" 
-                        string="Recepción"
-                        options="{'no_create': True, 'no_open': True}"/>
-                    <field name="analysis_start_date"/>
-                    <field name="analysis_state"/>
-                    <!-- 🆕 NUEVAS COLUMNAS PARA REPORTES -->
+                <list string="Análisis de Muestras" 
+                    create="true" 
+                    default_group_by="custody_chain_id"
+                    expand="1">
+                    <!-- Campos invisibles para agrupación -->
+                    <field name="custody_chain_id" invisible="1"/>
+                    
+                    <!-- Información de la cadena (visible en el grupo) -->
+                    <field name="custody_chain_code" string="Cadena"/>
+                    <field name="customer_id" string="Cliente"/>
+                    
+                    <!-- Información de la muestra -->
+                    <field name="sample_code" string="Código Muestra"/>
+                    <field name="sample_identifier" string="Identificación"/>
+                    
+                    <!-- Información de revisiones -->
+                    <field name="revision_number" string="Rev." width="50px"/>
+                    <field name="is_revision" string="🔄" widget="boolean_toggle" width="30px"/>
+                    
+                    <!-- Fechas -->
+                    <field name="analysis_start_date" string="Inicio"/>
+                    <field name="reception_date" string="Recepción"/>
+                    
+                    <!-- Estados y contadores -->
                     <field name="ready_parameters_count" string="Listos"/>
                     <field name="total_parameters_count" string="Total"/>
-                    <field name="has_ready_parameters" string="📊" 
-                           widget="boolean_toggle" 
-                           readonly="1"/>
+                    <field name="has_ready_parameters" string="📊 Tiene Listos" widget="boolean_toggle"/>
+                    <field name="all_parameters_ready" string="✅ Todo Listo" widget="boolean_toggle"/>
+                    
+                    <!-- Estado de firma -->
+                    <field name="signature_state" string="✍️ Firma" 
+                        decoration-success="signature_state == 'signed'"
+                        decoration-warning="signature_state == 'cancelled'"
+                        decoration-muted="signature_state == 'not_signed'"/>
+                    
+                    <!-- Estado de análisis -->
+                    <field name="analysis_state" string="Estado Análisis"/>
+                    
+                    <!-- Resumen de reportes -->
+                    <field name="report_status_summary" string="Estado Parámetros"/>
                 </list>
             </field>
         </record>
@@ -830,12 +856,14 @@
                 (0, 0, {'view_mode': 'list', 'view_id': ref('view_lims_analysis_list')}),
                 (0, 0, {'view_mode': 'form', 'view_id': ref('view_lims_analysis_form')})
             ]"/>
+            <field name="search_view_id" ref="view_lims_analysis_search"/>
+            <field name="context">{'group_by': 'custody_chain_id'}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     No hay análisis disponibles
                 </p>
                 <p>
-                    Los análisis se crean automáticamente desde muestras recibidas
+                    Los análisis se crean automáticamente desde muestras recibidas y se organizan por cadena de custodia.
                 </p>
             </field>
         </record>
@@ -855,18 +883,89 @@
             </field>
         </record>
 
+        <record id="view_lims_analysis_search" model="ir.ui.view">
+            <field name="name">lims.analysis.search</field>
+            <field name="model">lims.analysis</field>
+            <field name="arch" type="xml">
+                <search string="Buscar Análisis">
+                    <field name="sample_code"/>
+                    <field name="sample_identifier"/>
+                    <field name="custody_chain_code"/>
+                    <field name="customer_id"/>
+                    
+                    <!-- Filtros principales -->
+                    <filter string="📋 Con Parámetros Listos" 
+                            name="with_ready_params"
+                            domain="[('has_ready_parameters', '=', True)]"/>
+                    
+                    <filter string="✅ Completamente Finalizados" 
+                            name="all_completed"
+                            domain="[('all_parameters_ready', '=', True)]"/>
+                    
+                    <filter string="📊 Con Parámetros Reportados" 
+                            name="has_reported"
+                            domain="[('parameter_analysis_ids.report_status', '=', 'reported')]"/>
+                    
+                    <separator/>
+                    
+                    <!-- Filtros de estado -->
+                    <filter string="⏳ En Proceso" 
+                            name="in_progress"
+                            domain="[('analysis_state', '=', 'in_progress')]"/>
+                    
+                    <filter string="✅ Completados" 
+                            name="completed"
+                            domain="[('analysis_state', '=', 'completed')]"/>
+                    
+                    <separator/>
+                    
+                    <!-- Filtros de firma -->
+                    <filter string="✍️ Firmadas" 
+                            name="signed"
+                            domain="[('signature_state', '=', 'signed')]"/>
+                    
+                    <filter string="⏸️ Sin Firmar" 
+                            name="not_signed"
+                            domain="[('signature_state', '=', 'not_signed')]"/>
+                    
+                    <separator/>
+                    
+                    <!-- Filtros de revisiones -->
+                    <filter string="🔄 Solo Revisiones" 
+                            name="only_revisions"
+                            domain="[('is_revision', '=', True)]"/>
+                    
+                    <filter string="📋 Solo Originales" 
+                            name="only_originals"
+                            domain="[('is_revision', '=', False)]"/>
+                    
+                    <group expand="0" string="Agrupar Por">
+                        <filter string="Cadena de Custodia" 
+                                name="group_chain"
+                                context="{'group_by': 'custody_chain_id'}"/>
+                        <filter string="Cliente" 
+                                name="group_customer"
+                                context="{'group_by': 'customer_id'}"/>
+                        <filter string="Estado de Análisis" 
+                                name="group_analysis_state"
+                                context="{'group_by': 'analysis_state'}"/>
+                        <filter string="Estado de Firma"
+                                name="group_signature"
+                                context="{'group_by': 'signature_state'}"/>
+                        <filter string="Fecha de Inicio"
+                                name="group_start_date"
+                                context="{'group_by': 'analysis_start_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
         <!-- ========== MENÚS ========== -->
         <menuitem id="menu_lims_analysis" 
                   name="Análisis" 
                   parent="menu_lims_analysis_root" 
                   action="action_lims_analysis" 
                   sequence="10"/>
-
-        <menuitem id="menu_parameter_analysis" 
-                  name="Parámetros de Análisis" 
-                  parent="menu_lims_analysis_root" 
-                  action="action_parameter_analysis" 
-                  sequence="15"/>
 
         <!-- Acción para limpiar huérfanos -->
         <record id="action_clean_orphans" model="ir.actions.server">
