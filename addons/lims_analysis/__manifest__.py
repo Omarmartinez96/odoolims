@@ -27,6 +27,7 @@
         'views/lims_analysis_views.xml',
         'views/lims_equipment_views.xml',
         'views/lims_analysis_report_views.xml',
+        'views/wizard_views.xml',
         'report/report_analysis_results.xml',
         'report/report_analysis_action.xml',
     ],

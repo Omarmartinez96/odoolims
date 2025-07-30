@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vista para el wizard de revisión -->
+        <record id="view_revision_request_wizard_form" model="ir.ui.view">
+            <field name="name">lims.revision.request.wizard.form</field>
+            <field name="model">lims.revision.request.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Solicitar Revisión de Informe">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>Solicitar Revisión</h1>
+                            <h2>
+                                Muestra: <field name="sample_code" readonly="1"/>
+                            </h2>
+                            <h3>
+                                Revisión actual: <field name="current_revision" readonly="1"/>
+                            </h3>
+                        </div>
+                        
+                        <group>
+                            <field name="requested_by" placeholder="Nombre del cliente o solicitante"/>
+                        </group>
+                        
+                        <group string="Motivo de la Revisión">
+                            <field name="reason" nolabel="1" 
+                                   placeholder="Describa detalladamente por qué se solicita la revisión del informe..."/>
+                        </group>
+                        
+                        <div class="alert alert-warning" style="margin: 15px 0;">
+                            <strong>⚠️ Importante:</strong><br/>
+                            Al solicitar esta revisión:
+                            <ul style="margin: 10px 0;">
+                                <li>Se cancelará la firma actual del informe</li>
+                                <li>Los parámetros volverán a estado "borrador"</li>
+                                <li>Se creará una nueva revisión editable</li>
+                                <li>Se generará un número de revisión consecutivo</li>
+                            </ul>
+                        </div>
+                    </sheet>
+                    
+                    <footer>
+                        <button string="✅ Crear Revisión" 
+                                name="action_create_revision" 
+                                type="object" 
+                                class="btn-primary"/>
+                        <button string="Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+        <!-- Vista para el wizard de firma -->
+        <record id="view_signature_wizard_form" model="ir.ui.view">
+            <field name="name">lims.sample.signature.wizard.form</field>
+            <field name="model">lims.sample.signature.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Firmar Muestra">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>Firmar Muestra</h1>
+                            <h2>
+                                Código: <field name="sample_code" readonly="1"/>
+                            </h2>
+                            <h3>
+                                Parámetros a marcar: <field name="parameters_count" readonly="1"/>
+                            </h3>
+                        </div>
+                        
+                        <group string="Información del Firmante">
+                            <field name="signature_name"/>
+                            <field name="signature_position"/>
+                        </group>
+                        
+                        <group string="Firma Digital">
+                            <field name="digital_signature" widget="signature" 
+                                   placeholder="Firmar aquí para aprobar la muestra"/>
+                        </group>
+                        
+                        <div class="alert alert-info" style="margin: 15px 0;">
+                            <strong>ℹ️ Al firmar esta muestra:</strong><br/>
+                            <ul style="margin: 10px 0;">
+                                <li>Los parámetros finalizados quedarán listos para reporte</li>
+                                <li>Se registrará la fecha y hora de firma</li>
+                                <li>La muestra estará disponible para generar informes</li>
+                            </ul>
+                        </div>
+                    </sheet>
+                    
+                    <footer>
+                        <button string="✅ Confirmar Firma" 
+                                name="action_confirm_signature" 
+                                type="object" 
+                                class="btn-primary"/>
+                        <button string="Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+        
+    </data>
+</odoo>
