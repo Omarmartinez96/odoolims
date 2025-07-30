@@ -60,12 +60,12 @@ class LimsAnalysis(models.Model):
         store=True
     )
 
-    # reception_date = fields.Date(
-    #     string='Fecha de Recepción',
-    #     related='sample_reception_id.sample_id.custody_chain_id.reception_date',
-    #     readonly=True,
-    #     store=True
-    # )
+    reception_date = fields.Date(
+        string='Fecha de Recepción',
+        related='sample_reception_id.reception_date',  
+        readonly=True,
+        store=True
+    )
 
     display_name = fields.Char(
         string='Nombre del Análisis',
