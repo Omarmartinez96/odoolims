@@ -557,7 +557,7 @@ class LimsAnalysis(models.Model):
             analysis.revision_count = len(analysis.revision_ids)
     
     def action_sign_sample(self):
-        """Firmar muestra - versión simple SIN wizard"""
+        """Abrir wizard de firma en lugar de firmar directamente"""
         # Verificar que hay parámetros finalizados
         finalized_params = self.parameter_analysis_ids.filtered(
             lambda p: p.analysis_status_checkbox == 'finalizado'
@@ -566,26 +566,18 @@ class LimsAnalysis(models.Model):
         if not finalized_params:
             raise UserError('No hay parámetros finalizados para firmar.')
         
-        # Firmar directamente
-        self.write({
-            'signature_state': 'signed',
-            'sample_signature_name': self.env.user.name,
-            'sample_signature_position': 'Analista',
-            'sample_signature_date': fields.Datetime.now(),
-        })
-        
-        # Marcar parámetros como listos
-        finalized_params.write({'report_status': 'ready'})
-        
-        _logger.info(f"Muestra {self.sample_code} firmada por {self.env.user.name}.")
-        
+        # Abrir wizard de firma
         return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Muestra Firmada',
-                'message': f'La muestra {self.sample_code} ha sido firmada exitosamente.',
-                'type': 'success',
+            'type': 'ir.actions.act_window',
+            'name': 'Firmar Muestra',
+            'res_model': 'lims.sample.signature.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'view_id': self.env.ref('lims_analysis.view_signature_wizard_form').id,
+            'context': {
+                'default_analysis_id': self.id,
+                'default_sample_code': self.sample_code,
+                'default_parameters_count': len(finalized_params),
             }
         }
     
