@@ -3,14 +3,11 @@
     <data>
         
         <!-- ========== VISTA LISTA DE ANÁLISIS MODIFICADA ========== -->
-        <record id="view_lims_analysis_list" model="ir.ui.view">
+        <record id="view_lims_analysis_list" model="ir.ui.view" create="false">
             <field name="name">lims.analysis.list</field>
             <field name="model">lims.analysis</field>
             <field name="arch" type="xml">
-                <list string="Análisis de Muestras" 
-                    create="true" 
-                    default_group_by="custody_chain_id"
-                    expand="1">
+                <list string="Análisis de Muestras" create="false" default_group_by="custody_chain_id" expand="1">
                     <!-- Campos invisibles para agrupación -->
                     <field name="custody_chain_id" invisible="1"/>
                     
