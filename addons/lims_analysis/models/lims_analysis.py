@@ -95,7 +95,8 @@ class LimsAnalysis(models.Model):
     parameter_analysis_ids = fields.One2many(
         'lims.parameter.analysis',
         'analysis_id',
-        string='Parámetros de Análisis'
+        string='Parámetros de Análisis',
+        copy=False
     )
     has_ready_parameters = fields.Boolean(
         string='Tiene Parámetros Listos',
