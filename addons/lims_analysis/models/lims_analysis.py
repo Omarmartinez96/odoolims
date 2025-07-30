@@ -702,29 +702,26 @@ class LimsAnalysis(models.Model):
             'sample_identifier': self.sample_identifier, 
             'analysis_start_date': self.analysis_start_date,
             'analysis_end_date': self.analysis_end_date,
-            # 'analyst_id': self.analyst_id.id if self.analyst_id else False,
-            # 'analyst_notes': self.analyst_notes,
         }
         
         revision = self.create(revision_vals)
         
-        # Si no funciona, eliminar.
-        # for param in self.parameter_analysis_ids:
-        #     self.env['lims.parameter.analysis'].create({
-        #         'analysis_id': revision.id,
-        #         'name': param.name,
-        #         'method': param.method,
-        #         'microorganism': param.microorganism,
-        #         'result_value': param.result_value,
-        #         'result_complete': param.result_complete,
-        #         'analyst_notes': param.analyst_notes,
-        #         'analysis_status_checkbox': param.analysis_status_checkbox,
-        #         'report_status': 'draft',  # Reiniciar estado para revisión
-        #         # Agregar aquí otros campos que necesites copiar del parámetro original
-        #     })
+        # Copiar todos los parámetros con todos sus datos
+        for param in self.parameter_analysis_ids:
+            # Obtener todos los valores del parámetro original
+            param_vals = param.copy_data()[0]  # copy_data() devuelve todos los campos
+            
+            # Actualizar campos específicos para la revisión
+            param_vals.update({
+                'analysis_id': revision.id,
+                'report_status': 'draft',  # Reiniciar estado para revisión
+            })
+            
+            # Crear el nuevo parámetro con todos los datos
+            self.env['lims.parameter.analysis'].create(param_vals)
 
         _logger.info(f"Revisión {new_revision_number} creada para muestra {self.sample_code} "
-                     f"por {revision_data.get('requested_by')}")
+                    f"por {revision_data.get('requested_by')}")
         
         return revision
 
