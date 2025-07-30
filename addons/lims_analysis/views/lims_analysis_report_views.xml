@@ -459,12 +459,13 @@
             <field name="model">lims.analysis</field>
             <field name="arch" type="xml">
                 <list string="Análisis por Cadena de Custodia" 
-                    default_group_by="sample_reception_id.sample_id.custody_chain_id">
-                    <field name="sample_reception_id.sample_id.custody_chain_id" invisible="1"/>
-                    <field name="sample_reception_id.sample_id.custody_chain_id.custody_chain_code" string="Cadena"/>
-                    <field name="sample_reception_id.sample_id.custody_chain_id.cliente_id" string="Cliente"/>
+                    default_group_by="custody_chain_id">
+                    <field name="custody_chain_id" invisible="1"/>
+                    <field name="custody_chain_code" string="Cadena"/>
+                    <field name="customer_id" string="Cliente"/>
                     <field name="sample_code"/>
                     <field name="sample_identifier"/>
+                    <field name="reception_date" string="Fecha Recepción"/>
                     <field name="ready_parameters_count" string="Listos"/>
                     <field name="total_parameters_count" string="Total"/>
                     <field name="has_ready_parameters" string="📊" widget="boolean_toggle"/>
@@ -496,9 +497,9 @@
                         <!-- Información de la cadena -->
                         <group>
                             <group string="Información de la Cadena">
-                                <field name="sample_reception_id.sample_id.custody_chain_id.custody_chain_code" readonly="1"/>
-                                <field name="sample_reception_id.sample_id.custody_chain_id.cliente_id" readonly="1"/>
-                                <field name="sample_reception_id.sample_id.custody_chain_id.reception_date" readonly="1"/>
+                                <field name="custody_chain_code" readonly="1"/>
+                                <field name="customer_id" readonly="1"/>
+                                <field name="reception_date" readonly="1"/>
                             </group>
                             <group string="Estado de Reportes">
                                 <field name="ready_parameters_count" readonly="1"/>
@@ -540,7 +541,7 @@
                 (0, 0, {'view_mode': 'form', 'view_id': ref('view_analysis_consolidated_form')})
             ]"/>
             <field name="domain">[('has_ready_parameters', '=', True)]</field>
-            <field name="context">{'group_by': 'sample_reception_id.sample_id.custody_chain_id'}</field>
+            <field name="context">{'group_by': 'custody_chain_id'}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     No hay análisis con parámetros listos para reportar
@@ -558,8 +559,8 @@
             <field name="arch" type="xml">
                 <search string="Buscar Análisis para Reportes">
                     <field name="sample_code"/>
-                    <field name="sample_reception_id.sample_id.custody_chain_id.custody_chain_code"/>
-                    <field name="sample_reception_id.sample_id.custody_chain_id.cliente_id"/>
+                    <field name="custody_chain_code"/>
+                    <field name="customer_id"/>
                     
                     <filter string="Con Parámetros Listos" 
                             name="with_ready_params"
@@ -573,15 +574,15 @@
                     
                     <filter string="Esta Semana" 
                             name="this_week"
-                            domain="[('analysis_start_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                            domain="[('reception_date', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
                     
                     <group expand="0" string="Agrupar Por">
                         <filter string="Cadena de Custodia" 
                                 name="group_chain"
-                                context="{'group_by': 'sample_reception_id.sample_id.custody_chain_id'}"/>
+                                context="{'group_by': 'custody_chain_id'}"/>
                         <filter string="Cliente" 
                                 name="group_customer"
-                                context="{'group_by': 'sample_reception_id.sample_id.custody_chain_id.cliente_id'}"/>
+                                context="{'group_by': 'customer_id'}"/>
                     </group>
                 </search>
             </field>

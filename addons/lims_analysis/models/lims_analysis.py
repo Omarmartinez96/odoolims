@@ -37,6 +37,36 @@ class LimsAnalysis(models.Model):
         store=True
     )
 
+    custody_chain_id = fields.Many2one(
+        'lims.custody_chain',
+        string='Cadena de Custodia',
+        related='sample_reception_id.sample_id.custody_chain_id',
+        readonly=True,
+        store=True
+    )
+
+    custody_chain_code = fields.Char(
+        string='Código de Cadena',
+        related='sample_reception_id.sample_id.custody_chain_id.custody_chain_code',
+        readonly=True,
+        store=True
+    )
+
+    customer_id = fields.Many2one(
+        'res.partner',
+        string='Cliente',
+        related='sample_reception_id.sample_id.custody_chain_id.cliente_id',
+        readonly=True,
+        store=True
+    )
+
+    reception_date = fields.Date(
+        string='Fecha de Recepción',
+        related='sample_reception_id.sample_id.custody_chain_id.reception_date',
+        readonly=True,
+        store=True
+    )
+
     display_name = fields.Char(
         string='Nombre del Análisis',
         compute='_compute_display_name',
@@ -295,11 +325,11 @@ class LimsAnalysis(models.Model):
 
     def action_print_preliminary_report_for_chain(self):
         """Crear e imprimir reporte preliminar para toda la cadena"""
-        custody_chain = self.sample_reception_id.sample_id.custody_chain_id
+        custody_chain = self.custody_chain_id  # Usar el campo relacionado directo
         
         # Buscar todos los análisis de la cadena con parámetros listos
         analyses = self.env['lims.analysis'].search([
-            ('sample_reception_id.sample_id.custody_chain_id', '=', custody_chain.id),
+            ('custody_chain_id', '=', custody_chain.id),
             ('has_ready_parameters', '=', True)
         ])
         
@@ -327,11 +357,11 @@ class LimsAnalysis(models.Model):
 
     def action_print_final_report_for_chain(self):
         """Crear e imprimir reporte final para toda la cadena"""
-        custody_chain = self.sample_reception_id.sample_id.custody_chain_id
+        custody_chain = self.custody_chain_id  # Usar el campo relacionado directo
         
         # Buscar todos los análisis de la cadena completamente terminados
         analyses = self.env['lims.analysis'].search([
-            ('sample_reception_id.sample_id.custody_chain_id', '=', custody_chain.id),
+            ('custody_chain_id', '=', custody_chain.id),
             ('all_parameters_ready', '=', True)
         ])
         
@@ -356,7 +386,6 @@ class LimsAnalysis(models.Model):
         
         # Generar PDF
         return self.env.ref('lims_analysis.action_report_analysis_results').report_action(report)
-
 
 # 🆕 NUEVO MODELO PARA PARÁMETROS DE ANÁLISIS - CORREGIDO
 class LimsParameterAnalysis(models.Model):
