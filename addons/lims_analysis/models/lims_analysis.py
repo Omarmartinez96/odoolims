@@ -379,6 +379,96 @@ class LimsAnalysis(models.Model):
         # Generar PDF
         return self.env.ref('lims_analysis.action_report_analysis_results').report_action(report)
 
+    @api.model
+    def action_mass_print_preliminary_report(self, analysis_ids):
+        """Acción masiva para reportes preliminares"""
+        analyses = self.browse(analysis_ids)
+        
+        # Verificar que hay parámetros listos
+        if not any(analysis.has_ready_parameters for analysis in analyses):
+            raise UserError('Ningún análisis seleccionado tiene parámetros listos para reportar.')
+        
+        # Agrupar por cadena de custodia
+        chains_processed = set()
+        reports_generated = []
+        
+        for analysis in analyses:
+            if analysis.custody_chain_id.id not in chains_processed and analysis.has_ready_parameters:
+                # Crear reporte para esta cadena
+                report = analysis.action_print_preliminary_report_for_chain_no_auto_mark()
+                reports_generated.append(report)
+                chains_processed.add(analysis.custody_chain_id.id)
+        
+        if len(reports_generated) == 1:
+            return reports_generated[0]
+        else:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Reportes Generados',
+                    'message': f'Se generaron {len(reports_generated)} reportes preliminares.',
+                    'type': 'success',
+                }
+            }
+
+    @api.model
+    def action_mass_print_final_report(self, analysis_ids):
+        """Acción masiva para reportes finales"""
+        analyses = self.browse(analysis_ids)
+        
+        # Verificar que hay análisis completos
+        if not any(analysis.all_parameters_ready for analysis in analyses):
+            raise UserError('Ningún análisis seleccionado está completamente terminado.')
+        
+        # Agrupar por cadena de custodia
+        chains_processed = set()
+        reports_generated = []
+        
+        for analysis in analyses:
+            if analysis.custody_chain_id.id not in chains_processed and analysis.all_parameters_ready:
+                # Crear reporte para esta cadena
+                report = analysis.action_print_final_report_for_chain_no_auto_mark()
+                reports_generated.append(report)
+                chains_processed.add(analysis.custody_chain_id.id)
+        
+        if len(reports_generated) == 1:
+            return reports_generated[0]
+        else:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Reportes Generados',
+                    'message': f'Se generaron {len(reports_generated)} reportes finales.',
+                    'type': 'success',
+                }
+            }
+
+    @api.model
+    def action_mass_mark_as_reported(self, analysis_ids):
+        """Acción masiva para marcar como reportado"""
+        analyses = self.browse(analysis_ids)
+        
+        total_marked = 0
+        for analysis in analyses:
+            ready_params = analysis.parameter_analysis_ids.filtered(
+                lambda p: p.report_status == 'ready'
+            )
+            if ready_params:
+                ready_params.write({'report_status': 'reported'})
+                total_marked += len(ready_params)
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Parámetros Marcados',
+                'message': f'Se marcaron {total_marked} parámetros como reportados.',
+                'type': 'success',
+            }
+        }
+
 # 🆕 NUEVO MODELO PARA PARÁMETROS DE ANÁLISIS - CORREGIDO
 class LimsParameterAnalysis(models.Model):
     _name = 'lims.parameter.analysis'

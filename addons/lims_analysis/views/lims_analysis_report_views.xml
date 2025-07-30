@@ -574,7 +574,7 @@
                 action="action_analysis_for_reports" 
                 sequence="20"/>
 
-        <!-- ========== ACCIONES DE SERVIDOR (AL FINAL) ========== -->
+        <!-- ========== ACCIONES DE SERVIDOR ========== -->
         <record id="action_print_preliminary_report" model="ir.actions.server">
             <field name="name">📋 Imprimir Reporte Preliminar</field>
             <field name="model_id" ref="model_lims_analysis"/>
@@ -582,34 +582,7 @@
             <field name="binding_view_types">list,form</field>
             <field name="state">code</field>
             <field name="code">
-        # Verificar que hay parámetros listos
-        if not any(record.has_ready_parameters for record in records):
-            raise UserError('Ningún análisis seleccionado tiene parámetros listos para reportar.')
-
-        # Agrupar por cadena de custodia
-        chains_processed = set()
-        reports_generated = []
-
-        for record in records:
-            if record.custody_chain_id.id not in chains_processed and record.has_ready_parameters:
-                # Crear reporte para esta cadena
-                report = record.action_print_preliminary_report_for_chain_no_auto_mark()
-                reports_generated.append(report)
-                chains_processed.add(record.custody_chain_id.id)
-
-        if len(reports_generated) == 1:
-            action = reports_generated[0]
-        else:
-            # Si hay múltiples reportes, mostrar notificación
-            action = {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': 'Reportes Generados',
-                    'message': f'Se generaron {len(reports_generated)} reportes preliminares.',
-                    'type': 'success',
-                }
-            }
+        action = model.action_mass_print_preliminary_report(records.ids)
             </field>
         </record>
 
@@ -620,34 +593,7 @@
             <field name="binding_view_types">list,form</field>
             <field name="state">code</field>
             <field name="code">
-        # Verificar que hay análisis completos
-        if not any(record.all_parameters_ready for record in records):
-            raise UserError('Ningún análisis seleccionado está completamente terminado.')
-
-        # Agrupar por cadena de custodia
-        chains_processed = set()
-        reports_generated = []
-
-        for record in records:
-            if record.custody_chain_id.id not in chains_processed and record.all_parameters_ready:
-                # Crear reporte para esta cadena
-                report = record.action_print_final_report_for_chain_no_auto_mark()
-                reports_generated.append(report)
-                chains_processed.add(record.custody_chain_id.id)
-
-        if len(reports_generated) == 1:
-            action = reports_generated[0]
-        else:
-            # Si hay múltiples reportes, mostrar notificación
-            action = {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': 'Reportes Generados',
-                    'message': f'Se generaron {len(reports_generated)} reportes finales.',
-                    'type': 'success',
-                }
-            }
+        action = model.action_mass_print_final_report(records.ids)
             </field>
         </record>
 
@@ -658,25 +604,7 @@
             <field name="binding_view_types">list</field>
             <field name="state">code</field>
             <field name="code">
-        # Marcar parámetros listos como reportados
-        total_marked = 0
-        for record in records:
-            ready_params = record.parameter_analysis_ids.filtered(
-                lambda p: p.report_status == 'ready'
-            )
-            if ready_params:
-                ready_params.write({'report_status': 'reported'})
-                total_marked += len(ready_params)
-
-        action = {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Parámetros Marcados',
-                'message': f'Se marcaron {total_marked} parámetros como reportados.',
-                'type': 'success',
-            }
-        }
+        action = model.action_mass_mark_as_reported(records.ids)
             </field>
         </record>
 
