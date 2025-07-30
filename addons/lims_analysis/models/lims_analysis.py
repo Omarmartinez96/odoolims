@@ -653,7 +653,7 @@ class LimsAnalysis(models.Model):
             'sample_identifier': self.sample_identifier, 
             'analysis_start_date': self.analysis_start_date,
             'analysis_end_date': self.analysis_end_date,
-            'analyst_id': self.analyst_id.id if self.analyst_id else False,
+            # 'analyst_id': self.analyst_id.id if self.analyst_id else False,
             'notes': self.notes,
         }
         
