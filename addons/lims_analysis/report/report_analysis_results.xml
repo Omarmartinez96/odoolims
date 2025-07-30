@@ -266,6 +266,13 @@
               </div>
             </t>
 
+            <!-- Mensaje si no hay análisis -->
+            <t t-if="not doc.analysis_ids">
+              <div style="text-align: center; padding: 40px; background-color: #f8f9fa; border: 1px solid #dee2e6;">
+                <p style="font-size: 16px; color: #6c757d; margin: 0;">No se han incluido análisis en este reporte.</p>
+              </div>
+            </t>
+
             <!-- SECCIÓN DE FIRMA DE MUESTRA -->
             <t t-foreach="doc.analysis_ids.filtered(lambda a: a.signature_state == 'signed')" t-as="signed_analysis">
               <div class="authorization-section" style="border-color: #007bff; background-color: #f8f9ff;">
@@ -303,16 +310,6 @@
                     </td>
                   </tr>
                 </table>
-              </div>
-            </t>
-
-                <!-- Notas de calidad si existen -->
-                <t t-if="doc.quality_notes">
-                  <div style="margin-top: 15px; padding: 10px; background-color: #e8f5e8; border-left: 4px solid #28a745;">
-                    <strong>Notas de Calidad:</strong><br/>
-                    <span t-esc="doc.quality_notes"/>
-                  </div>
-                </t>
               </div>
             </t>
 
