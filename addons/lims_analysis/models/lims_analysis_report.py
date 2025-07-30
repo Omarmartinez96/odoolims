@@ -130,6 +130,34 @@ class LimsAnalysisReport(models.Model):
         help='Observaciones del personal de calidad'
     )
 
+    ready_parameters_count = fields.Integer(
+        string='Parámetros Listos',
+        compute='_compute_parameters_stats',
+        store=True,
+        help='Cantidad de parámetros listos para reporte'
+    )
+
+    total_parameters_count = fields.Integer(
+        string='Total Parámetros',
+        compute='_compute_parameters_stats',
+        store=True,
+        help='Cantidad total de parámetros en los análisis'
+    )
+
+    has_ready_parameters = fields.Boolean(
+        string='Tiene Parámetros Listos',
+        compute='_compute_parameters_stats',
+        store=True,
+        help='Al menos un parámetro está listo para reporte'
+    )
+
+    all_parameters_ready = fields.Boolean(
+        string='Todos los Parámetros Listos',
+        compute='_compute_parameters_stats',
+        store=True,
+        help='Todos los parámetros están listos para reporte'
+    )
+
 # MÉTODOS COMPUTADOS
     @api.depends('quality_signature')
     def _compute_is_authorized(self):
@@ -138,14 +166,16 @@ class LimsAnalysisReport(models.Model):
     
     @api.depends('analysis_ids.parameter_analysis_ids')
     def _compute_report_stats(self):
+        """Calcular estadísticas básicas del reporte"""
         for record in self:
             samples = record.analysis_ids.mapped('sample_reception_id.sample_id')
             all_params = record.analysis_ids.mapped('parameter_analysis_ids')
             ready_params = all_params.filtered(lambda p: p.report_status == 'ready')
             
             record.total_samples = len(samples)
-            record.total_parameters = len(all_params)
-            record.completed_parameters = len(ready_params)
+            # Usar los campos computados específicos para evitar duplicación
+            record.total_parameters = record.total_parameters_count
+            record.completed_parameters = record.ready_parameters_count
 
 # CREACIÓN AUTOMÁTICA DE CÓDIGO
     @api.model_create_multi
@@ -291,3 +321,30 @@ class LimsAnalysisReport(models.Model):
                 report.reception_date = min(valid_dates)
             else:
                 report.reception_date = False
+
+    @api.depends('analysis_ids.sample_reception_id.reception_date')
+    def _compute_reception_date(self):
+        """Calcular fecha de recepción desde las muestras recibidas"""
+        for report in self:
+            reception_dates = report.analysis_ids.mapped('sample_reception_id.reception_date')
+            valid_dates = [date for date in reception_dates if date]
+            
+            if valid_dates:
+                report.reception_date = min(valid_dates)
+            else:
+                report.reception_date = False
+    
+    @api.depends('analysis_ids.parameter_analysis_ids.report_status')
+    def _compute_parameters_stats(self):
+        """Calcular estadísticas de parámetros desde los análisis incluidos"""
+        for report in self:
+            all_params = report.analysis_ids.mapped('parameter_analysis_ids')
+            ready_params = all_params.filtered(lambda p: p.report_status == 'ready')
+            
+            report.total_parameters_count = len(all_params)
+            report.ready_parameters_count = len(ready_params)
+            report.has_ready_parameters = len(ready_params) > 0
+            report.all_parameters_ready = (
+                len(ready_params) == len(all_params) 
+                if all_params else False
+            )
