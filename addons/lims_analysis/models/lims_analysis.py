@@ -73,6 +73,12 @@ class LimsAnalysis(models.Model):
         store=True
     )
     
+    report_status_summary = fields.Char(
+        string='Estado de Reporte',
+        compute='_compute_report_status_summary',
+        help='Resumen del estado de reporte de los parámetros'
+    )
+
     # Fechas
     analysis_start_date = fields.Date(
         string='Fecha de Inicio',
@@ -469,6 +475,29 @@ class LimsAnalysis(models.Model):
             }
         }
 
+    @api.depends('parameter_analysis_ids.report_status')
+    def _compute_report_status_summary(self):
+        """Calcular resumen del estado de reporte"""
+        for analysis in self:
+            params = analysis.parameter_analysis_ids
+            if not params:
+                analysis.report_status_summary = "Sin parámetros"
+                continue
+                
+            ready_count = len(params.filtered(lambda p: p.report_status == 'ready'))
+            reported_count = len(params.filtered(lambda p: p.report_status == 'reported'))
+            draft_count = len(params.filtered(lambda p: p.report_status == 'draft'))
+            
+            status_parts = []
+            if reported_count > 0:
+                status_parts.append(f"✅ {reported_count} reportados")
+            if ready_count > 0:
+                status_parts.append(f"📋 {ready_count} listos")
+            if draft_count > 0:
+                status_parts.append(f"⏳ {draft_count} en proceso")
+                
+            analysis.report_status_summary = " | ".join(status_parts) if status_parts else "Sin estado"
+
 # 🆕 NUEVO MODELO PARA PARÁMETROS DE ANÁLISIS - CORREGIDO
 class LimsParameterAnalysis(models.Model):
     _name = 'lims.parameter.analysis'
@@ -803,6 +832,31 @@ class LimsParameterAnalysis(models.Model):
         'lims.executed.quality.control',
         'parameter_analysis_id',
         string='Controles de Calidad Ejecutados'
+    )
+
+    parameter_signature = fields.Binary(
+        string='Firma del Parámetro',
+        help='Firma de aprobación del parámetro'
+    )
+
+    parameter_signature_date = fields.Datetime(
+        string='Fecha de Firma del Parámetro'
+    )
+
+    parameter_signature_name = fields.Char(
+        string='Firmado por',
+        help='Nombre de quien firmó el parámetro'
+    )
+
+    parameter_signature_position = fields.Char(
+        string='Cargo del Firmante',
+        help='Cargo de quien firmó el parámetro'
+    )
+
+    is_parameter_signed = fields.Boolean(
+        string='Parámetro Firmado',
+        compute='_compute_is_parameter_signed',
+        store=True
     )
 
     def sync_confirmation_results(self):
@@ -1165,6 +1219,48 @@ class LimsParameterAnalysis(models.Model):
             'params': {
                 'title': 'Controles Copiados',
                 'message': f'Se agregaron {new_controls} controles de calidad desde la plantilla',
+                'type': 'success',
+            }
+        }
+
+    @api.depends('parameter_signature')
+    def _compute_is_parameter_signed(self):
+        """Verificar si el parámetro está firmado"""
+        for param in self:
+            param.is_parameter_signed = bool(param.parameter_signature)
+
+    def action_sign_parameter(self):
+        """Abrir ventana para firmar parámetro"""
+        return {
+            'name': 'Firmar Parámetro',
+            'type': 'ir.actions.act_window',
+            'res_model': 'lims.parameter.analysis',
+            'res_id': self.id,
+            'view_mode': 'form',
+            'view_id': self.env.ref('lims_analysis.view_parameter_signature_form').id,
+            'target': 'new',
+            'context': {'signature_mode': True}
+        }
+
+    def action_save_parameter_signature(self):
+        """Guardar firma del parámetro"""
+        if not self.parameter_signature:
+            raise UserError('Debe proporcionar una firma.')
+        
+        if not self.parameter_signature_name:
+            raise UserError('Debe especificar el nombre del firmante.')
+        
+        self.write({
+            'parameter_signature_date': fields.Datetime.now(),
+            'report_status': 'ready'  # Automáticamente marcar como listo al firmar
+        })
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Parámetro Firmado',
+                'message': f'El parámetro {self.name} ha sido firmado y marcado como listo.',
                 'type': 'success',
             }
         }

@@ -81,6 +81,12 @@
                                     
                                     <form string="Parámetro de Análisis">
                                         <header>
+                                            <button name="action_sign_parameter"
+                                                    type="object"
+                                                    string="✍️ Firmar Parámetro"
+                                                    class="btn-success"
+                                                    invisible="is_parameter_signed == True or analysis_status_checkbox != 'finalizado'"/>
+                                            
                                             <field name="analysis_status" widget="statusbar" statusbar_visible="pending,in_progress,completed,reviewed,approved"/>
                                         </header>
                                         
@@ -105,8 +111,18 @@
                                                     <field name="analysis_start_date"/>
                                                     <field name="analysis_commitment_date"/>
                                                     <field name="analysis_status_checkbox" widget="radio"/>
-                                                    <!-- 🆕 CAMPO ESTADO DE REPORTE -->
                                                     <field name="report_status" readonly="1"/>
+                                                </group>
+
+                                                <group string="✍️ Firma del Parámetro" invisible="is_parameter_signed == False">
+                                                    <field name="parameter_signature_name" readonly="1"/>
+                                                    <field name="parameter_signature_position" readonly="1"/>
+                                                    <field name="parameter_signature_date" readonly="1"/>
+                                                    <field name="is_parameter_signed" invisible="1"/>
+                                                </group>
+
+                                                <group string="🎯 Tipo de Resultado" colspan="4">
+                                                    <field name="result_type" widget="radio" required="1"/>
                                                 </group>
                                             </group>
 
@@ -620,6 +636,10 @@
                                                                placeholder="Observaciones técnicas del análisis..."/>
                                                     </group>
 
+                                                    <group string="✍️ Firma Visual del Parámetro" invisible="is_parameter_signed == False" colspan="4">
+                                                        <field name="parameter_signature" widget="image" readonly="1" nolabel="1"/>
+                                                    </group>
+
                                                     <!-- 🆕 SECCIÓN DE CONTROL DE CALIDAD -->
                                                     <group string="🔬 Control de Calidad" colspan="4">
                                                         
@@ -859,6 +879,73 @@
                   parent="menu_lims_analysis_root" 
                   action="action_parameter_analysis" 
                   sequence="15"/>
+
+        <!-- ========== VISTA PARA FIRMAR PARÁMETROS ========== -->
+        <record id="view_parameter_signature_form" model="ir.ui.view">
+            <field name="name">lims.parameter.analysis.signature.form</field>
+            <field name="model">lims.parameter.analysis</field>
+            <field name="arch" type="xml">
+                <form string="Firmar Parámetro">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>Firma de Aprobación</h1>
+                            <h2>
+                                Parámetro: <field name="name" readonly="1"/>
+                            </h2>
+                            <h3>
+                                Resultado: <field name="result_complete" readonly="1"/>
+                            </h3>
+                        </div>
+                        
+                        <!-- Información del parámetro -->
+                        <group string="📋 Información del Parámetro">
+                            <field name="microorganism" readonly="1"/>
+                            <field name="method" readonly="1"/>
+                            <field name="analysis_status_checkbox" readonly="1"/>
+                        </group>
+                        
+                        <!-- Información del firmante -->
+                        <group string="👥 Información del Firmante">
+                            <field name="parameter_signature_name" 
+                                   placeholder="Nombre completo del responsable"
+                                   required="1"/>
+                            <field name="parameter_signature_position" 
+                                   placeholder="Cargo o posición"/>
+                        </group>
+                        
+                        <!-- Widget de firma -->
+                        <group string="✍️ Firma de Aprobación">
+                            <field name="parameter_signature" 
+                                   widget="signature" 
+                                   placeholder="Firmar aquí para aprobar el parámetro"/>
+                        </group>
+                        
+                        <!-- Advertencia -->
+                        <div class="alert alert-info" style="margin: 15px 0;">
+                            <strong>ℹ️ Importante:</strong><br/>
+                            Al firmar este parámetro, confirma que:
+                            <ul style="margin: 10px 0;">
+                                <li>El resultado es correcto y ha sido verificado</li>
+                                <li>El análisis se realizó conforme a los procedimientos</li>
+                                <li>El parámetro queda marcado como "Listo para Reporte"</li>
+                            </ul>
+                        </div>
+                        
+                    </sheet>
+                    
+                    <!-- Botones de acción -->
+                    <footer>
+                        <button string="✅ Firmar Parámetro" 
+                                name="action_save_parameter_signature" 
+                                type="object" 
+                                class="btn-primary"/>
+                        <button string="Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
 
         <!-- Acción para limpiar huérfanos -->
         <record id="action_clean_orphans" model="ir.actions.server">

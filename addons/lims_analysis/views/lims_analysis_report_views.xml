@@ -449,8 +449,7 @@
             <field name="name">lims.analysis.consolidated.list</field>
             <field name="model">lims.analysis</field>
             <field name="arch" type="xml">
-                <list string="Análisis por Cadena de Custodia" 
-                    default_group_by="custody_chain_id">
+                <list string="Análisis por Cadena de Custodia" default_group_by="custody_chain_id">
                     <field name="custody_chain_id" invisible="1"/>
                     <field name="custody_chain_code" string="Cadena"/>
                     <field name="customer_id" string="Cliente"/>
@@ -459,8 +458,11 @@
                     <field name="reception_date" string="Fecha Recepción"/>
                     <field name="ready_parameters_count" string="Listos"/>
                     <field name="total_parameters_count" string="Total"/>
-                    <field name="has_ready_parameters" string="📊" widget="boolean_toggle"/>
-                    <field name="all_parameters_ready" string="✅" widget="boolean_toggle"/>
+                    <!-- AGREGAR INDICADORES DE ESTADO -->
+                    <field name="has_ready_parameters" string="📊 Listos" widget="boolean_toggle"/>
+                    <field name="all_parameters_ready" string="✅ Completo" widget="boolean_toggle"/>
+                    <!-- NUEVO CAMPO PARA ESTADO DE REPORTE -->
+                    <field name="report_status_summary" string="Estado Reporte"/>
                 </list>
             </field>
         </record>
@@ -518,8 +520,6 @@
                 (0, 0, {'view_mode': 'list', 'view_id': ref('view_analysis_consolidated_list')}),
                 (0, 0, {'view_mode': 'form', 'view_id': ref('view_analysis_consolidated_form')})
             ]"/>
-            <!-- ELIMINAR el domain restrictivo -->
-            <!-- <field name="domain">[('has_ready_parameters', '=', True)]</field> -->
             <field name="context">{'group_by': 'custody_chain_id'}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
