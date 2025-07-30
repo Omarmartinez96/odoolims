@@ -451,7 +451,7 @@ class LimsAnalysis(models.Model):
             if draft_count > 0:
                 status_parts.append(f"⏳ {draft_count} en proceso")
                 
-            analysis.report_status_summary = " | ".join(status_parts) if status_parts else "Sin estado"
+            analysis.report_status_summary = " | ".join(status_parts) if status_parts else "Todos en borrador"
 
     @api.depends('signature_state')
     def _compute_can_cancel_signature(self):
