@@ -8,33 +8,7 @@
             <field name="model">lims.analysis.report</field>
             <field name="arch" type="xml">
                 <form string="Reporte de Análisis">
-                    <header>
-                        <!-- Botones de acción -->
-                        <button name="action_authorize_quality"
-                                type="object"
-                                string="✅ Autorizar Calidad"
-                                class="btn-warning"
-                                invisible="report_state != 'ready' or is_authorized == True"
-                                help="Autorizar resultados para emisión"/>
-                        
-                        <button name="action_generate_pdf"
-                                type="object" 
-                                string="📋 Generar PDF"
-                                class="btn-primary"
-                                invisible="is_authorized == False"
-                                help="Generar reporte en PDF"/>
-                        
-                        <!-- <button name="action_send_email_report"
-                                type="object"
-                                string="📧 Enviar por Email"
-                                class="btn-success"
-                                invisible="is_authorized == False"
-                                help="Enviar reporte por correo electrónico"/> -->
-                        
-                        <!-- Barra de estado -->
-                        <field name="report_state" widget="statusbar" 
-                               statusbar_visible="draft,ready,authorized,sent"/>
-                    </header>
+
                     
                     <sheet>
                         <!-- Título del reporte -->
@@ -47,20 +21,37 @@
                             </h2>
                         </div>
 
-                        <!-- Información básica -->
+                        <!-- Información de la cadena -->
                         <group>
-                            <group string="📋 Información del Reporte">
-                                <field name="report_type" readonly="1"/>
-                                <field name="report_date"/>
+                            <group string="Información de la Cadena">
+                                <field name="custody_chain_code" readonly="1"/>
                                 <field name="customer_id" readonly="1"/>
+                                <field name="reception_date" readonly="1"/>
                             </group>
-                            <group string="📊 Estadísticas">
-                                <field name="total_samples" readonly="1"/>
-                                <field name="total_parameters" readonly="1"/>
-                                <field name="completed_parameters" readonly="1"/>
-                                <field name="is_authorized" readonly="1"/>
+                            <group string="Estado de Reportes">
+                                <field name="ready_parameters_count" readonly="1"/>
+                                <field name="total_parameters_count" readonly="1"/>
+                                <field name="has_ready_parameters" readonly="1"/>
+                                <field name="all_parameters_ready" readonly="1"/>
                             </group>
                         </group>
+                        
+                        <!-- Información de esta muestra específica -->
+                        <group string="Esta Muestra">
+                            <field name="sample_code" readonly="1"/>
+                            <field name="sample_identifier" readonly="1"/>
+                            <field name="analysis_state" readonly="1"/>
+                        </group>
+                        
+                        <!-- Lista de parámetros de esta muestra -->
+                        <field name="parameter_analysis_ids" readonly="1">
+                            <list>
+                                <field name="name"/>
+                                <field name="microorganism"/>
+                                <field name="report_status"/>
+                                <field name="result_complete"/>
+                            </list>
+                        </field>
 
                         <!-- Indicador visual de progreso -->
                         <div class="alert alert-info" 
@@ -479,20 +470,7 @@
             <field name="model">lims.analysis</field>
             <field name="arch" type="xml">
                 <form string="Análisis - Vista de Reportes">
-                    <header>
-                        <button name="action_print_preliminary_report_for_chain"
-                                type="object"
-                                string="📋 Imprimir Preliminar de Cadena"
-                                class="btn-warning"
-                                invisible="has_ready_parameters == False"/>
-                        
-                        <button name="action_print_final_report_for_chain"
-                                type="object"
-                                string="📄 Imprimir Final de Cadena"
-                                class="btn-success"
-                                invisible="all_parameters_ready == False"/>
-                    </header>
-                    
+
                     <sheet>
                         <!-- Información de la cadena -->
                         <group>
@@ -540,14 +518,15 @@
                 (0, 0, {'view_mode': 'list', 'view_id': ref('view_analysis_consolidated_list')}),
                 (0, 0, {'view_mode': 'form', 'view_id': ref('view_analysis_consolidated_form')})
             ]"/>
-            <field name="domain">[('has_ready_parameters', '=', True)]</field>
+            <!-- ELIMINAR el domain restrictivo -->
+            <!-- <field name="domain">[('has_ready_parameters', '=', True)]</field> -->
             <field name="context">{'group_by': 'custody_chain_id'}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    No hay análisis con parámetros listos para reportar
+                    No hay análisis disponibles
                 </p>
                 <p>
-                    Los análisis aparecerán aquí cuando tengan parámetros finalizados.
+                    Los análisis aparecerán aquí organizados por cadena de custodia.
                 </p>
             </field>
         </record>
@@ -594,6 +573,112 @@
                 parent="menu_lims_analysis_root" 
                 action="action_analysis_for_reports" 
                 sequence="20"/>
+
+        <!-- ========== ACCIONES DE SERVIDOR (AL FINAL) ========== -->
+        <record id="action_print_preliminary_report" model="ir.actions.server">
+            <field name="name">📋 Imprimir Reporte Preliminar</field>
+            <field name="model_id" ref="model_lims_analysis"/>
+            <field name="binding_model_id" ref="model_lims_analysis"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                # Verificar que hay parámetros listos
+                if not any(record.has_ready_parameters for record in records):
+                    raise UserError('Ningún análisis seleccionado tiene parámetros listos para reportar.')
+                
+                # Agrupar por cadena de custodia
+                chains_processed = set()
+                reports_generated = []
+                
+                for record in records:
+                    if record.custody_chain_id.id not in chains_processed and record.has_ready_parameters:
+                        # Crear reporte para esta cadena
+                        report = record.action_print_preliminary_report_for_chain_no_auto_mark()
+                        reports_generated.append(report)
+                        chains_processed.add(record.custody_chain_id.id)
+                
+                if len(reports_generated) == 1:
+                    action = reports_generated[0]
+                else:
+                    # Si hay múltiples reportes, mostrar notificación
+                    action = {
+                        'type': 'ir.actions.client',
+                        'tag': 'display_notification',
+                        'params': {
+                            'title': 'Reportes Generados',
+                            'message': f'Se generaron {len(reports_generated)} reportes preliminares.',
+                            'type': 'success',
+                        }
+                    }
+            </field>
+        </record>
+
+        <record id="action_print_final_report" model="ir.actions.server">
+            <field name="name">📄 Imprimir Reporte Final</field>
+            <field name="model_id" ref="model_lims_analysis"/>
+            <field name="binding_model_id" ref="model_lims_analysis"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+                # Verificar que hay análisis completos
+                if not any(record.all_parameters_ready for record in records):
+                    raise UserError('Ningún análisis seleccionado está completamente terminado.')
+                
+                # Agrupar por cadena de custodia
+                chains_processed = set()
+                reports_generated = []
+                
+                for record in records:
+                    if record.custody_chain_id.id not in chains_processed and record.all_parameters_ready:
+                        # Crear reporte para esta cadena
+                        report = record.action_print_final_report_for_chain_no_auto_mark()
+                        reports_generated.append(report)
+                        chains_processed.add(record.custody_chain_id.id)
+                
+                if len(reports_generated) == 1:
+                    action = reports_generated[0]
+                else:
+                    # Si hay múltiples reportes, mostrar notificación
+                    action = {
+                        'type': 'ir.actions.client',
+                        'tag': 'display_notification',
+                        'params': {
+                            'title': 'Reportes Generados',
+                            'message': f'Se generaron {len(reports_generated)} reportes finales.',
+                            'type': 'success',
+                        }
+                    }
+            </field>
+        </record>
+
+        <record id="action_mark_as_reported" model="ir.actions.server">
+            <field name="name">✅ Marcar como Reportado</field>
+            <field name="model_id" ref="model_lims_analysis"/>
+            <field name="binding_model_id" ref="model_lims_analysis"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+                # Marcar parámetros listos como reportados
+                total_marked = 0
+                for record in records:
+                    ready_params = record.parameter_analysis_ids.filtered(
+                        lambda p: p.report_status == 'ready'
+                    )
+                    if ready_params:
+                        ready_params.write({'report_status': 'reported'})
+                        total_marked += len(ready_params)
+                
+                action = {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': 'Parámetros Marcados',
+                        'message': f'Se marcaron {total_marked} parámetros como reportados.',
+                        'type': 'success',
+                    }
+                }
+            </field>
+        </record>
 
     </data>
 </odoo>

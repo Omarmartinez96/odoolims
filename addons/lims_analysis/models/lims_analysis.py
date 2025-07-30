@@ -323,9 +323,9 @@ class LimsAnalysis(models.Model):
             'target': 'current'
         }
 
-    def action_print_preliminary_report_for_chain(self):
-        """Crear e imprimir reporte preliminar para toda la cadena"""
-        custody_chain = self.custody_chain_id  # Usar el campo relacionado directo
+    def action_print_preliminary_report_for_chain_no_auto_mark(self):
+        """Crear e imprimir reporte preliminar SIN marcar como reportado"""
+        custody_chain = self.custody_chain_id
         
         # Buscar todos los análisis de la cadena con parámetros listos
         analyses = self.env['lims.analysis'].search([
@@ -346,18 +346,14 @@ class LimsAnalysis(models.Model):
             'quality_signature_date': fields.Datetime.now(),
         })
         
-        # Marcar parámetros como reportados
-        ready_params = analyses.mapped('parameter_analysis_ids').filtered(
-            lambda p: p.report_status == 'ready'
-        )
-        ready_params.write({'report_status': 'reported'})
+        # NO MARCAR COMO REPORTADO - control manual
         
         # Generar PDF
         return self.env.ref('lims_analysis.action_report_analysis_results').report_action(report)
 
-    def action_print_final_report_for_chain(self):
-        """Crear e imprimir reporte final para toda la cadena"""
-        custody_chain = self.custody_chain_id  # Usar el campo relacionado directo
+    def action_print_final_report_for_chain_no_auto_mark(self):
+        """Crear e imprimir reporte final SIN marcar como reportado"""
+        custody_chain = self.custody_chain_id
         
         # Buscar todos los análisis de la cadena completamente terminados
         analyses = self.env['lims.analysis'].search([
@@ -378,11 +374,7 @@ class LimsAnalysis(models.Model):
             'quality_signature_date': fields.Datetime.now(),
         })
         
-        # Marcar parámetros como reportados
-        ready_params = analyses.mapped('parameter_analysis_ids').filtered(
-            lambda p: p.report_status == 'ready'
-        )
-        ready_params.write({'report_status': 'reported'})
+        # NO MARCAR COMO REPORTADO - control manual
         
         # Generar PDF
         return self.env.ref('lims_analysis.action_report_analysis_results').report_action(report)
