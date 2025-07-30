@@ -158,6 +158,47 @@ class LimsAnalysis(models.Model):
         string='Puede Cancelar Firma',
         compute='_compute_can_cancel_signature'
     )
+    sample_digital_signature = fields.Binary(
+        string='Firma Digital de la Muestra',
+        help='Firma digital capturada al firmar la muestra'
+    )
+    revision_number = fields.Integer(
+        string='Número de Revisión',
+        default=0,
+        help='Número de revisión del informe'
+    )
+    revision_reason = fields.Text(
+        string='Motivo de Revisión',
+        help='Razón por la cual se solicita la revisión'
+    )
+    revision_requested_by = fields.Char(
+        string='Revisión Solicitada por',
+        help='Persona o entidad que solicita la revisión'
+    )
+    revision_date = fields.Datetime(
+        string='Fecha de Solicitud de Revisión'
+    )
+    is_revision = fields.Boolean(
+        string='Es Revisión',
+        default=False,
+        help='Indica si este análisis es una revisión'
+    )
+    original_analysis_id = fields.Many2one(
+        'lims.analysis',
+        string='Análisis Original',
+        help='Referencia al análisis original si es revisión'
+    )
+    revision_ids = fields.One2many(
+        'lims.analysis',
+        'original_analysis_id',
+        string='Revisiones',
+        help='Revisiones de este análisis'
+    )
+    revision_count = fields.Integer(
+        string='Total Revisiones',
+        compute='_compute_revision_count',
+        help='Número total de revisiones'
+    )
     @api.depends('sample_reception_id')
     def _compute_display_name(self):
         """Calcular nombre del análisis"""
@@ -522,6 +563,115 @@ class LimsAnalysis(models.Model):
                 'type': 'warning',
             }
         }
+
+    @api.depends('revision_ids')
+    def _compute_revision_count(self):
+        """Calcular número de revisiones"""
+        for analysis in self:
+            analysis.revision_count = len(analysis.revision_ids)
+    
+    # REEMPLAZAR el método action_sign_sample existente
+    def action_sign_sample(self):
+        """Firmar muestra con captura de firma"""
+        # Verificar que hay parámetros finalizados
+        finalized_params = self.parameter_analysis_ids.filtered(
+            lambda p: p.analysis_status_checkbox == 'finalizado'
+        )
+        
+        if not finalized_params:
+            raise UserError('No hay parámetros finalizados para firmar.')
+        
+        # Abrir ventana de firma
+        return {
+            'name': 'Firmar Muestra',
+            'type': 'ir.actions.act_window',
+            'res_model': 'lims.sample.signature.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_analysis_id': self.id,
+                'default_sample_code': self.sample_code,
+                'default_parameters_count': len(finalized_params),
+                'default_signature_name': self.env.user.name,
+                'default_signature_position': 'Analista'
+            }
+        }
+    
+    def confirm_sample_signature(self, signature_data):
+        """Confirmar la firma (llamado desde wizard)"""
+        finalized_params = self.parameter_analysis_ids.filtered(
+            lambda p: p.analysis_status_checkbox == 'finalizado'
+        )
+        
+        self.write({
+            'signature_state': 'signed',
+            'sample_signature_name': signature_data.get('signature_name'),
+            'sample_signature_position': signature_data.get('signature_position'),
+            'sample_signature_date': fields.Datetime.now(),
+            'sample_digital_signature': signature_data.get('digital_signature'),
+        })
+        
+        # Marcar parámetros como listos
+        finalized_params.write({'report_status': 'ready'})
+        
+        _logger.info(f"Muestra {self.sample_code} firmada por {signature_data.get('signature_name')}. "
+                     f"{len(finalized_params)} parámetros marcados como listos para reporte.")
+        
+        return True
+    
+    def action_request_revision(self):
+        """Solicitar revisión del informe"""
+        if self.signature_state != 'signed':
+            raise UserError('Solo se pueden revisar informes firmados.')
+        
+        return {
+            'name': 'Solicitar Revisión de Informe',
+            'type': 'ir.actions.act_window',
+            'res_model': 'lims.revision.request.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_analysis_id': self.id,
+                'default_sample_code': self.sample_code,
+                'default_current_revision': self.revision_number
+            }
+        }
+    
+    def create_revision(self, revision_data):
+        """Crear revisión del análisis"""
+        # Cancelar firma del análisis actual
+        self.write({
+            'signature_state': 'cancelled',
+            'signature_cancelled_by': self.env.user.name,
+            'signature_cancelled_date': fields.Datetime.now(),
+            'signature_cancellation_reason': f"Revisión solicitada: {revision_data.get('reason', '')}"
+        })
+        
+        # Volver parámetros a draft para permitir modificaciones
+        self.parameter_analysis_ids.write({'report_status': 'draft'})
+        
+        # Incrementar número de revisión
+        new_revision_number = self.revision_number + 1
+        
+        # Crear copia para revisión
+        revision_vals = {
+            'sample_reception_id': self.sample_reception_id.id,
+            'is_revision': True,
+            'revision_number': new_revision_number,
+            'original_analysis_id': self.id,
+            'revision_reason': revision_data.get('reason'),
+            'revision_requested_by': revision_data.get('requested_by'),
+            'revision_date': fields.Datetime.now(),
+            'analysis_state': 'draft',
+            'signature_state': 'not_signed',
+        }
+        
+        revision = self.create(revision_vals)
+        
+        _logger.info(f"Revisión {new_revision_number} creada para muestra {self.sample_code} "
+                     f"por {revision_data.get('requested_by')}")
+        
+        return revision
 
 # 🆕 NUEVO MODELO PARA PARÁMETROS DE ANÁLISIS - CORREGIDO
 class LimsParameterAnalysis(models.Model):
