@@ -184,6 +184,20 @@ class LimsAnalysisReport(models.Model):
         help='Todos los parámetros están listos para reporte'
     )
 
+    is_revision = fields.Boolean(
+        string='Es Revisión',
+        compute='_compute_revision_info',
+        store=True,
+        help='Indica si algún análisis incluido es una revisión'
+    )
+
+    revision_number = fields.Integer(
+        string='Número de Revisión',
+        compute='_compute_revision_info',
+        store=True,
+        help='Número de revisión más alto de los análisis incluidos'
+    )
+
 # MÉTODOS COMPUTADOS
     @api.depends('quality_signature')
     def _compute_is_authorized(self):
@@ -374,3 +388,17 @@ class LimsAnalysisReport(models.Model):
                 len(ready_params) == len(all_params) 
                 if all_params else False
             )
+
+    @api.depends('analysis_ids.is_revision', 'analysis_ids.revision_number')
+    def _compute_revision_info(self):
+        """Calcular información de revisión desde los análisis incluidos"""
+        for report in self:
+            revision_analyses = report.analysis_ids.filtered('is_revision')
+            
+            if revision_analyses:
+                report.is_revision = True
+                # Tomar el número de revisión más alto
+                report.revision_number = max(revision_analyses.mapped('revision_number'))
+            else:
+                report.is_revision = False
+                report.revision_number = 0

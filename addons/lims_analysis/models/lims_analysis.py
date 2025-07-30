@@ -199,6 +199,7 @@ class LimsAnalysis(models.Model):
         compute='_compute_revision_count',
         help='Número total de revisiones'
     )
+
     @api.depends('sample_reception_id')
     def _compute_display_name(self):
         """Calcular nombre del análisis"""

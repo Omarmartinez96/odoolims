@@ -51,7 +51,7 @@ class LimsSampleSignatureWizard(models.TransientModel):
         self.analysis_id.confirm_sample_signature(signature_data)
         
         return {
-            'type': 'ir.actions.client',
+            'type': 'ir.actions.act_window_close',
             'tag': 'display_notification',
             'params': {
                 'title': 'Muestra Firmada',
