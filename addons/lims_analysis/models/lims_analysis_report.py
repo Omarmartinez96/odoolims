@@ -28,6 +28,29 @@ class LimsAnalysisReport(models.Model):
         help='Fecha de recepción más temprana de las muestras'
     )
 
+    # AGREGAR al modelo lims.analysis.report
+    sample_code = fields.Char(
+        string='Código de Muestra',
+        related='analysis_ids.sample_code',
+        readonly=True
+    )
+
+    sample_identifier = fields.Char(
+        string='Identificación de Muestra',
+        related='analysis_ids.sample_identifier',
+        readonly=True
+    )
+
+    analysis_state = fields.Selection([
+        ('draft', 'Borrador'),
+        ('in_progress', 'En Proceso'),
+        ('completed', 'Completado'),
+        ('validated', 'Validado'),
+        ('cancelled', 'Cancelado')
+    ], string='Estado de Análisis',
+    related='analysis_ids.analysis_state',
+    readonly=True)
+
     # Código automático del reporte
     report_code = fields.Char(
         string='Código de Reporte',
@@ -52,13 +75,7 @@ class LimsAnalysisReport(models.Model):
         store=True
     )
     
-    customer_id = fields.Many2one(
-        'res.partner',
-        string='Cliente',
-        related='custody_chain_id.cliente_id',
-        readonly=True,
-        store=True
-    )
+    
     
     # Análisis incluidos
     analysis_ids = fields.Many2many(
