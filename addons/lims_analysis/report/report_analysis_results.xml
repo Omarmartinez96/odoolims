@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+  <template id="report_analysis_results_document">
+    <t t-call="web.html_container">
+      <meta charset="UTF-8"/>
+      <t t-call-assets="web.report_assets_common" t-js="false"/>
+      <t t-set="company" t-value="env.company"/>
+
+      <!-- ESTILOS LOCALES -->
+      <t>
+        <style>
+          body,
+          .o_report_layout,
+          table,
+          td,
+          th,
+          span,
+          div,
+          p {
+            font-family: "DejaVu Sans", sans-serif !important;
+          }
+          .sample-section {
+            margin-top: 20px;
+            border: 2px solid #2c5aa0;
+            padding: 15px;
+            background-color: #f8f9fa;
+            page-break-inside: avoid;
+          }
+          .parameter-row {
+            background-color: #e8f4fd;
+            font-size: 11px;
+          }
+          .result-row {
+            font-size: 12px;
+          }
+          .header-title {
+            background-color: #2c5aa0;
+            color: white;
+            padding: 8px;
+            text-align: center;
+            font-weight: bold;
+          }
+          .authorization-section {
+            margin-top: 30px;
+            border: 2px solid #28a745;
+            padding: 15px;
+            background-color: #f8fff8;
+          }
+        </style>
+      </t>
+
+      <!-- HEADER SOLO CON LOGO -->
+      <div class="header" style="padding: 10px 20px;">
+        <img t-if="company.logo"
+            t-att-src="image_data_uri(company.logo)"
+            style="max-height: 120px; width: auto;"/>
+      </div>
+
+      <!-- FOOTER FIJO -->
+      <div class="footer">
+        <table class="table table-borderless" style="width: 100%; font-size: 10px; border-top: 1px solid #ddd; padding-top: 5px;">
+          <tr>
+            <td style="width: 33%; text-align: left; padding: 3px;">
+              Teléfono: (664) 973-8185
+            </td>
+            <td style="width: 33%; text-align: center; padding: 3px;">
+              FOR-021 Rev. 01 | PROC-005
+            </td>
+            <td style="width: 33%; text-align: right; padding: 3px;">
+              contacto@proteuslaboratorio.com
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3" style="text-align: center; font-size: 9px; padding: 2px;">
+              <t t-if="company.partner_id">
+                <t t-esc="company.partner_id.name"/>,
+                <t t-if="company.partner_id.street" t-esc="company.partner_id.street"/>
+                <t t-if="company.partner_id.street2">, <t t-esc="company.partner_id.street2"/></t>,
+                <t t-if="company.partner_id.city" t-esc="company.partner_id.city"/>,
+                <t t-if="company.partner_id.zip">C.P. <t t-esc="company.partner_id.zip"/></t>,
+                <t t-if="company.partner_id.country_id" t-esc="company.partner_id.country_id.name"/>
+              </t>
+            </td>
+          </tr>
+          <tr>
+            <td colspan="3" style="text-align: center; font-size: 9px; padding: 2px;">
+              Página <span class="page"/> / <span class="topage"/>
+            </td>
+          </tr>
+        </table>
+      </div>
+      <t t-foreach="docs" t-as="doc">
+        <div class="page">
+          <div class="main-content">
+
+            <!-- Título principal -->
+            <div style="text-align: center; margin: 20px 0 30px 0;">
+              <h1 style="font-size: 24px; font-weight: bold; margin: 0;">
+                REPORTE DE RESULTADOS DE ANÁLISIS
+                <t t-if="doc.report_type == 'preliminary'"> - PRELIMINAR</t>
+                <t t-if="doc.report_type == 'final'"> - FINAL</t>
+              </h1>
+            </div>
+
+            <!-- Información del reporte -->
+            <table class="table table-borderless mt-1"
+                  style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0;">
+              <t t-set="meses" t-value="{
+                '01':'Ene','02':'Feb','03':'Mar','04':'Abr',
+                '05':'May','06':'Jun','07':'Jul','08':'Ago',
+                '09':'Sep','10':'Oct','11':'Nov','12':'Dic'
+              }"/>
+              <tbody>
+                <!-- Fila 1: Código de reporte / Fecha del reporte -->
+                <tr>
+                  <td style="width:50%; padding:4px;">
+                    <strong>Código de Reporte:</strong> <span t-esc="doc.report_code"/>
+                  </td>
+                  <td style="width:50%; padding:4px; text-align:right;">
+                    <strong>Fecha de emisión:</strong>
+                    <t t-set="today" t-value="datetime.datetime.now()"/>
+                    <t t-set="d_today" t-value="today.strftime('%d')"/>
+                    <t t-set="m_today" t-value="today.strftime('%m')"/>
+                    <t t-set="y_today" t-value="today.strftime('%Y')"/>
+                    <span t-esc="d_today + '/' + meses[m_today] + '/' + y_today"/>
+                  </td>
+                </tr>
+                <!-- Fila 2: Cadena de custodia relacionada -->
+                <tr>
+                  <td style="padding:4px;">
+                    <strong>Cadena de Custodia:</strong> <span t-esc="doc.custody_chain_code"/>
+                  </td>
+                  <td style="padding:4px; text-align:right;">
+                    <strong>Tipo de Reporte:</strong> 
+                    <span t-if="doc.report_type == 'preliminary'" style="color: #ffc107;">PRELIMINAR</span>
+                    <span t-if="doc.report_type == 'final'" style="color: #28a745;">FINAL</span>
+                  </td>
+                </tr>
+                <!-- Fila 3: Cliente -->
+                <tr>
+                  <td style="padding:4px;">
+                    <strong>Cliente:</strong> <span t-esc="doc.customer_id.name"/>
+                  </td>
+                  <td style="padding:4px; text-align:right;">
+                    <strong>Estado:</strong> 
+                    <span t-if="doc.is_authorized" style="color: #28a745;">✅ AUTORIZADO</span>
+                    <span t-else="" style="color: #dc3545;">❌ NO AUTORIZADO</span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+
+            <!-- Separador -->
+            <hr style="margin: 20px 0; border: 1px solid;"/>
+
+            <!-- Resumen estadístico -->
+            <div style="text-align: center; margin: 20px 0; padding: 10px; background-color: #e9ecef; border-radius: 5px;">
+              <strong>Resumen:</strong> 
+              <span t-esc="doc.total_samples"/> muestra(s) • 
+              <span t-esc="doc.completed_parameters"/> de <span t-esc="doc.total_parameters"/> parámetro(s) reportado(s)
+            </div>
+
+            <!-- Resultados por muestra -->
+            <h3 style="font-size: 18px; margin-bottom: 15px;">Resultados de Análisis</h3>
+            <t t-foreach="doc.analysis_ids" t-as="analysis">
+              <div class="sample-section">
+                
+                <!-- Header de la muestra -->
+                <div class="header-title">
+                  Muestra: <span t-esc="analysis.sample_code"/> - <span t-esc="analysis.sample_identifier"/>
+                </div>
+
+                <!-- Información básica de la muestra -->
+                <table class="table table-borderless" 
+                      style="width:100%; font-size:12px; margin: 10px 0;">
+                  <tbody>
+                    <tr>
+                      <td style="width:50%; padding:3px;">
+                        <strong>Descripción:</strong> <span t-esc="analysis.sample_reception_id.sample_id.sample_description or 'No especificada'"/>
+                      </td>
+                      <td style="width:50%; padding:3px;">
+                        <strong>Tipo:</strong> <span t-esc="analysis.sample_reception_id.sample_id.sample_type_id.name or 'No especificado'"/>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding:3px;">
+                        <strong>Fecha de Análisis:</strong> 
+                        <t t-if="analysis.analysis_start_date">
+                          <t t-set="a_date" t-value="analysis.analysis_start_date"/>
+                          <t t-set="d_analysis" t-value="a_date.strftime('%d')"/>
+                          <t t-set="m_analysis" t-value="a_date.strftime('%m')"/>
+                          <t t-set="y_analysis" t-value="a_date.strftime('%Y')"/>
+                          <span t-esc="d_analysis + '/' + meses[m_analysis] + '/' + y_analysis"/>
+                        </t>
+                        <span t-else="">No especificada</span>
+                      </td>
+                      <td style="padding:3px;">
+                        <strong>Estado:</strong> 
+                        <span t-if="analysis.all_parameters_ready" style="color: #28a745;">✅ Completo</span>
+                        <span t-elif="analysis.has_ready_parameters" style="color: #ffc107;">🔄 Parcial</span>
+                        <span t-else="" style="color: #6c757d;">⏳ En proceso</span>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+
+                <!-- Tabla de resultados -->
+                <t t-set="ready_params" t-value="analysis.parameter_analysis_ids.filtered(lambda p: p.report_status == 'ready')"/>
+                
+                <t t-if="ready_params">
+                  <h5 style="font-size: 14px; margin: 15px 0 5px 0;">Resultados:</h5>
+                  <table class="table table-bordered" 
+                        style="width:100%; font-size:11px; border-collapse:collapse;">
+                    <thead>
+                      <tr style="background-color:#2c5aa0; color: white;">
+                        <th style="padding:8px; text-align:left; width:25%;">Parámetro</th>
+                        <th style="padding:8px; text-align:left; width:25%;">Método</th>
+                        <th style="padding:8px; text-align:center; width:20%;">Resultado</th>
+                        <th style="padding:8px; text-align:left; width:30%;">Observaciones</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <t t-foreach="ready_params" t-as="parameter">
+                        <tr class="result-row">
+                          <td style="padding:8px;">
+                            <!-- Mostrar microorganismo/analito si existe, sino el nombre del parámetro -->
+                            <t t-if="parameter.microorganism">
+                              <strong><span t-esc="parameter.microorganism"/></strong>
+                            </t>
+                            <t t-else="">
+                              <strong><span t-esc="parameter.name or 'Sin nombre'"/></strong>
+                            </t>
+                          </td>
+                          <td style="padding:8px;">
+                            <span t-esc="parameter.method or 'No especificado'"/>
+                          </td>
+                          <td style="padding:8px; text-align:center; font-weight:bold;">
+                            <span t-esc="parameter.result_complete or parameter.result_value or 'Sin resultado'"/>
+                          </td>
+                          <td style="padding:8px; font-size:10px;">
+                            <span t-esc="parameter.analyst_notes or '—'"/>
+                          </td>
+                        </tr>
+                      </t>
+                    </tbody>
+                  </table>
+                </t>
+                <t t-else="">
+                  <div style="text-align: center; padding: 20px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;">
+                    <p style="margin: 0; font-style: italic; color: #856404;">
+                      No hay resultados disponibles para esta muestra en este reporte.
+                    </p>
+                  </div>
+                </t>
+
+              </div>
+            </t>
+            <!-- Mensaje si no hay análisis -->
+            <t t-if="not doc.analysis_ids">
+              <div style="text-align: center; padding: 40px; background-color: #f8f9fa; border: 1px solid #dee2e6;">
+                <p style="font-size: 16px; color: #6c757d; margin: 0;">No se han incluido análisis en este reporte.</p>
+              </div>
+            </t>
+
+            <!-- 🆕 SECCIÓN DE AUTORIZACIÓN DE CALIDAD -->
+            <t t-if="doc.is_authorized">
+              <div class="authorization-section">
+                <h3 style="font-size: 16px; margin: 0 0 15px 0; color: #28a745; text-align: center;">
+                  AUTORIZACIÓN DE CALIDAD
+                </h3>
+                
+                <table style="width: 100%; border-collapse: collapse;">
+                  <tr>
+                    <td style="width: 50%; vertical-align: top; padding: 10px; text-align: center;">
+                      <img t-att-src="image_data_uri(doc.quality_signature)" 
+                           style="max-width: 200px; max-height: 100px; border: 1px solid #28a745; padding: 5px;"/>
+                      <div style="margin-top: 10px; border-top: 2px solid #28a745; padding-top: 5px;">
+                        <strong>Firma de Autorización</strong>
+                      </div>
+                    </td>
+                    <td style="width: 50%; vertical-align: top; padding: 10px;">
+                      <div style="font-size: 12px; line-height: 1.6;">
+                        <p><strong>Autorizado por:</strong> <span t-esc="doc.quality_signature_name or 'No especificado'"/></p>
+                        <p><strong>Cargo:</strong> <span t-esc="doc.quality_signature_position or 'No especificado'"/></p>
+                        <p><strong>Fecha de Autorización:</strong> 
+                          <t t-if="doc.quality_signature_date">
+                            <t t-set="auth_date" t-value="doc.quality_signature_date"/>
+                            <t t-set="d_auth" t-value="auth_date.strftime('%d')"/>
+                            <t t-set="m_auth" t-value="auth_date.strftime('%m')"/>
+                            <t t-set="y_auth" t-value="auth_date.strftime('%Y')"/>
+                            <t t-set="h_auth" t-value="auth_date.strftime('%H:%M')"/>
+                            <span t-esc="d_auth + '/' + meses[m_auth] + '/' + y_auth + ' ' + h_auth"/>
+                          </t>
+                          <span t-else="">No especificada</span>
+                        </p>
+                        <div style="margin-top: 15px; font-style: italic; font-size: 11px; color: #495057;">
+                          Los resultados contenidos en este reporte han sido revisados y autorizados por el personal técnico responsable del control de calidad.
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+
+                <!-- Notas de calidad si existen -->
+                <t t-if="doc.quality_notes">
+                  <div style="margin-top: 15px; padding: 10px; background-color: #e8f5e8; border-left: 4px solid #28a745;">
+                    <strong>Notas de Calidad:</strong><br/>
+                    <span t-esc="doc.quality_notes"/>
+                  </div>
+                </t>
+              </div>
+            </t>
+
+            <!-- Información adicional -->
+            <div style="margin-top: 30px; font-size: 11px; color: #666;">
+              <p>
+                <strong>Tipo de Reporte:</strong>
+                <t t-if="doc.report_type == 'preliminary'">
+                  Este es un reporte preliminar que contiene resultados parciales disponibles a la fecha de emisión.
+                </t>
+                <t t-if="doc.report_type == 'final'">
+                  Este es un reporte final que contiene todos los resultados solicitados para las muestras analizadas.
+                </t>
+              </p>
+              <p style="margin-top: 10px;">
+                <em>Los análisis se realizaron conforme a los métodos indicados y bajo las condiciones establecidas en nuestros procedimientos de calidad.</em>
+              </p>
+            </div>
+
+          </div>
+        </div>
+      </t>
+    </t>
+  </template>
+</odoo>

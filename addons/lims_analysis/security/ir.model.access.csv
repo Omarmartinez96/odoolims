@@ -11,3 +11,4 @@ access_lims_quantitative_media,lims.quantitative.media,model_lims_quantitative_m
 access_lims_confirmation_media,lims.confirmation.media,model_lims_confirmation_media,base.group_user,1,1,1,1
 access_lims_confirmation_result,lims.confirmation.result,model_lims_confirmation_result,base.group_user,1,1,1,1
 access_lims_executed_quality_control,lims.executed.quality.control,model_lims_executed_quality_control,base.group_user,1,1,1,1
+access_lims_analysis_report,lims.analysis.report,model_lims_analysis_report,base.group_user,1,1,1,1

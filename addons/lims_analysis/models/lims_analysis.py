@@ -2,6 +2,8 @@ from odoo import models, fields, api
 from datetime import datetime
 from odoo.exceptions import UserError
 import logging
+from . import lims_analysis_report
+
 _logger = logging.getLogger(__name__)
 
 class LimsAnalysis(models.Model):
@@ -213,77 +215,6 @@ class LimsAnalysis(models.Model):
                 len(ready_params) == len(all_params) 
                 if all_params else False
             )
-    
-    # 🆕 MÉTODOS PARA BÚSQUEDA DESDE MÓDULO DE REPORTES
-    @api.model
-    def get_ready_for_preliminary_report(self):
-        """Buscar análisis listos para reporte preliminar"""
-        return self.search([
-            ('has_ready_parameters', '=', True)
-        ])
-    
-    @api.model 
-    def get_ready_for_final_report(self):
-        """Buscar análisis listos para reporte final"""
-        return self.search([
-            ('all_parameters_ready', '=', True)
-        ])
-    
-    @api.model
-    def get_parameters_ready_for_report(self, analysis_ids=None):
-        """Obtener parámetros específicos listos para reporte"""
-        domain = [('report_status', '=', 'ready')]
-        if analysis_ids:
-            domain.append(('analysis_id', 'in', analysis_ids))
-        
-        return self.env['lims.parameter.analysis'].search(domain)
-    
-    # 🆕 MÉTODO PARA MARCAR COMO REPORTADO
-    def mark_parameters_as_reported(self, parameter_ids=None):
-        """Marcar parámetros como ya reportados"""
-        if parameter_ids:
-            # Marcar parámetros específicos
-            params_to_mark = self.parameter_analysis_ids.filtered(
-                lambda p: p.id in parameter_ids and p.report_status == 'ready'
-            )
-        else:
-            # Marcar todos los parámetros listos
-            params_to_mark = self.parameter_analysis_ids.filtered(
-                lambda p: p.report_status == 'ready'
-            )
-        
-        if params_to_mark:
-            params_to_mark.write({'report_status': 'reported'})
-            
-            # Mensaje de confirmación nativo
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': 'Parámetros Reportados',
-                    'message': f'{len(params_to_mark)} parámetro(s) marcado(s) como reportado(s)',
-                    'type': 'success',
-                }
-            }
-    
-    # 🆕 MÉTODO PARA RESTABLECER ESTADO
-    def reset_report_status(self):
-        """Restablecer estado de reporte para correcciones"""
-        reported_params = self.parameter_analysis_ids.filtered(
-            lambda p: p.report_status == 'reported'
-        )
-        
-        if reported_params:
-            reported_params.write({'report_status': 'ready'})
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': 'Estado Restablecido',
-                    'message': f'{len(reported_params)} parámetro(s) restablecido(s) a "Listo para Reporte"',
-                    'type': 'info',
-                }
-            }
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -334,6 +265,33 @@ class LimsAnalysis(models.Model):
         
         return records
 
+    def action_create_preliminary_report(self):
+        """Crear reporte preliminar desde análisis"""
+        custody_chain = self.sample_reception_id.sample_id.custody_chain_id
+        
+        report = self.env['lims.analysis.report'].create_preliminary_report_for_chain(custody_chain.id)
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'lims.analysis.report',
+            'res_id': report.id,
+            'view_mode': 'form',
+            'target': 'current'
+        }
+
+    def action_create_final_report(self):
+        """Crear reporte final desde análisis"""
+        custody_chain = self.sample_reception_id.sample_id.custody_chain_id
+        
+        report = self.env['lims.analysis.report'].create_final_report_for_chain(custody_chain.id)
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'lims.analysis.report',
+            'res_id': report.id,
+            'view_mode': 'form',
+            'target': 'current'
+        }
 
 # 🆕 NUEVO MODELO PARA PARÁMETROS DE ANÁLISIS - CORREGIDO
 class LimsParameterAnalysis(models.Model):
