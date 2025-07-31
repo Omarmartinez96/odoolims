@@ -1458,7 +1458,7 @@ class LimsParameterAnalysis(models.Model):
                 # Determinar qué medios usar según los procesos habilitados
                 all_media = []
                 
-                # AGREGAR ESTA LÍNEA - Medios específicos para cualitativos
+                # Medios específicos para cualitativos
                 if record.qualitative_media_ids:
                     all_media.extend(record.qualitative_media_ids)
                 
@@ -1480,27 +1480,32 @@ class LimsParameterAnalysis(models.Model):
                     existing_results.unlink()
                 
                 # Crear nuevos resultados para cada medio
+                created_count = 0
                 for media in all_media:
                     if media.culture_media_batch_id:
                         batch_display = f"{media.culture_media_batch_id.culture_media_id.name} (Lote: {media.culture_media_batch_id.batch_code})"
                         
                         self.env['lims.qualitative.result'].create({
                             'parameter_analysis_id': record.id,
-                            'media_id': f"{media._name},{media.id}",  # Referencia genérica
+                            'media_id': media,  # CORREGIDO: directamente el objeto
                             'batch_display_name': batch_display,
                         })
+                        created_count += 1
                 
                 return {
                     'type': 'ir.actions.client',
                     'tag': 'display_notification',
                     'params': {
                         'title': 'Sincronización Completada',
-                        'message': f'Se crearon {len(all_media)} resultados cualitativos',
+                        'message': f'Se crearon {created_count} resultados cualitativos',
                         'type': 'success',
                     }
                 }
                 
             except Exception as e:
+                import traceback
+                print(f"ERROR DETALLADO: {str(e)}")
+                print(f"TRACEBACK: {traceback.format_exc()}")
                 return {
                     'type': 'ir.actions.client',
                     'tag': 'display_notification',
