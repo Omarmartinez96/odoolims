@@ -1453,60 +1453,48 @@ class LimsParameterAnalysis(models.Model):
 
     def sync_qualitative_results(self):
         """Botón para sincronizar resultados cualitativos manualmente"""
-        # Buscar directamente en la base de datos los medios relacionados
-        qualitative_media = self.env['lims.qualitative.media'].search([
-            ('parameter_analysis_id', '=', self.id)
-        ])
-        
-        pre_enrichment_media = self.env['lims.pre.enrichment.media'].search([
-            ('parameter_analysis_id', '=', self.id)
-        ]) if self.requires_pre_enrichment else []
-        
-        selective_media = self.env['lims.selective.enrichment.media'].search([
-            ('parameter_analysis_id', '=', self.id)
-        ]) if self.requires_selective_enrichment else []
-        
-        # Recopilar lotes únicos
-        batch_ids = set()
-        
-        for media in qualitative_media:
-            if media.culture_media_batch_id:
-                batch_ids.add(media.culture_media_batch_id.id)
-        
-        for media in pre_enrichment_media:
-            if media.culture_media_batch_id:
-                batch_ids.add(media.culture_media_batch_id.id)
-        
-        for media in selective_media:
-            if media.culture_media_batch_id:
-                batch_ids.add(media.culture_media_batch_id.id)
-        
-        # Limpiar y crear resultados
-        self.env['lims.qualitative.result'].search([
-            ('parameter_analysis_id', '=', self.id)
-        ]).unlink()
-        
-        created_count = 0
-        for batch_id in batch_ids:
-            batch = self.env['lims.culture.media.batch'].browse(batch_id)
-            batch_display = f"{batch.culture_media_id.name} (Lote: {batch.batch_code})"
-            
-            self.env['lims.qualitative.result'].create({
-                'parameter_analysis_id': self.id,
-                'culture_media_batch_id': batch_id,
-                'batch_display_name': batch_display,
-            })
-            created_count += 1
-        
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Sincronización Completada',
-                'message': f'Se crearon {created_count} resultados cualitativos',
-                'type': 'success',
-            }
-        }
+        for record in self:
+            try:
+                # Limpiar resultados existentes
+                existing_results = self.env['lims.qualitative.result'].search([
+                    ('parameter_analysis_id', '=', record.id)
+                ])
+                if existing_results:
+                    existing_results.unlink()
+                
+                # Crear nuevos resultados para cada medio cualitativo
+                for media in record.qualitative_media_ids:
+                    if media.culture_media_batch_id:
+                        batch_display = f"{media.culture_media_batch_id.culture_media_id.name} (Lote: {media.culture_media_batch_id.batch_code})"
+                        
+                        self.env['lims.qualitative.result'].create({
+                            'parameter_analysis_id': record.id,
+                            'culture_media_batch_id': media.culture_media_batch_id.id,
+                            'batch_display_name': batch_display,
+                        })
+                
+                # Mostrar mensaje de éxito
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': 'Sincronización Completada',
+                        'message': f'Se crearon {len(record.qualitative_media_ids)} resultados cualitativos',
+                        'type': 'success',
+                    }
+                }
+                
+            except Exception as e:
+                # Mostrar mensaje de error
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': 'Error en Sincronización',
+                        'message': f'Error: {str(e)}',
+                        'type': 'warning',
+                    }
+                }
 
 # 🆕 MODELO PARA DATOS CRUDOS DE DILUCIONES
 class LimsRawDilutionData(models.Model):
@@ -2209,6 +2197,75 @@ class LimsQualitativeMedia(models.Model):
             self.incubation_start_time = False
             self.incubation_end_date = False
             self.incubation_end_time = False
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Crear registros de resultados automáticamente al crear medios"""
+        records = super().create(vals_list)
+        
+        for record in records:
+            try:
+                # Verificar que tenemos el lote
+                if record.culture_media_batch_id:
+                    # Crear automáticamente un resultado para cada medio
+                    batch_display = f"{record.culture_media_batch_id.culture_media_id.name} (Lote: {record.culture_media_batch_id.batch_code})"
+                    
+                    # Verificar si ya existe un resultado para este medio
+                    existing_result = self.env['lims.qualitative.result'].search([
+                        ('parameter_analysis_id', '=', record.parameter_analysis_id.id),
+                        ('culture_media_batch_id', '=', record.culture_media_batch_id.id)
+                    ])
+                    
+                    if not existing_result:
+                        self.env['lims.qualitative.result'].create({
+                            'parameter_analysis_id': record.parameter_analysis_id.id,
+                            'culture_media_batch_id': record.culture_media_batch_id.id,
+                            'batch_display_name': batch_display,
+                        })
+            except Exception as e:
+                print(f"DEBUG: Error creando resultado: {str(e)}")
+        
+        return records
+
+    def write(self, vals):
+        """Actualizar resultado cuando se modifica el medio"""
+        result = super().write(vals)
+        
+        # Si se cambió el lote, actualizar el resultado
+        if 'culture_media_batch_id' in vals:
+            for record in self:
+                try:
+                    existing_result = self.env['lims.qualitative.result'].search([
+                        ('parameter_analysis_id', '=', record.parameter_analysis_id.id),
+                        ('culture_media_batch_id', '=', record.culture_media_batch_id.id)
+                    ])
+                    
+                    if existing_result and record.culture_media_batch_id:
+                        batch_display = f"{record.culture_media_batch_id.culture_media_id.name} (Lote: {record.culture_media_batch_id.batch_code})"
+                        existing_result.write({
+                            'batch_display_name': batch_display
+                        })
+                except Exception as e:
+                    print(f"DEBUG: Error actualizando resultado: {str(e)}")
+        
+        return result
+
+    def unlink(self):
+        """Eliminar resultados asociados al eliminar medios"""
+        try:
+            # Eliminar resultados asociados
+            for record in self:
+                results_to_delete = self.env['lims.qualitative.result'].search([
+                    ('parameter_analysis_id', '=', record.parameter_analysis_id.id),
+                    ('culture_media_batch_id', '=', record.culture_media_batch_id.id)
+                ])
+                
+                if results_to_delete:
+                    results_to_delete.unlink()
+        except Exception as e:
+            print(f"DEBUG: Error eliminando resultados: {str(e)}")
+        
+        return super().unlink()
 
 class LimsConfirmationMedia(models.Model):
     _name = 'lims.confirmation.media'
