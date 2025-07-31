@@ -126,7 +126,7 @@
                                                 <group string="📋 Información del Parámetro">
                                                     <field name="method" readonly="1"/>
                                                     <field name="category" readonly="1"/>
-                                                    <field name="parameter_id" readonly="1"/>
+                                                    <field name="microorganism" readonly="1"/>
                                                 </group>
                                                 <group string="📅 Información del Análisis">
                                                     <field name="analysis_start_date"/>
