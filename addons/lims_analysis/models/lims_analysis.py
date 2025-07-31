@@ -1498,7 +1498,7 @@ class LimsParameterAnalysis(models.Model):
             param.is_parameter_signed = bool(param.parameter_signature)
 
     def sync_qualitative_results(self):
-        """Botón para sincronizar resultados cualitativos manualmente"""
+        """Botón para sincronizar resultados cualitativos incluyendo lotes externos"""
         for record in self:
             try:
                 # Limpiar resultados existentes
@@ -1508,30 +1508,41 @@ class LimsParameterAnalysis(models.Model):
                 if existing_results:
                     existing_results.unlink()
                 
-                # Crear nuevos resultados para cada medio cualitativo
-                for media in record.qualitative_media_ids:
-                    if media.culture_media_batch_id:
-                        batch_display = f"{media.culture_media_batch_id.culture_media_id.name} (Lote: {media.culture_media_batch_id.batch_code})"
-                        
-                        self.env['lims.qualitative.result'].create({
-                            'parameter_analysis_id': record.id,
-                            'culture_media_batch_id': media.culture_media_batch_id.id,
-                            'batch_display_name': batch_display,
-                        })
+                # Crear resultados para medios INTERNOS
+                for media in record.qualitative_media_ids.filtered(lambda m: m.media_source == 'internal' and m.culture_media_batch_id):
+                    batch_display = f"{media.culture_media_batch_id.culture_media_id.name} (Lote: {media.culture_media_batch_id.batch_code})"
+                    
+                    self.env['lims.qualitative.result'].create({
+                        'parameter_analysis_id': record.id,
+                        'culture_media_batch_id': media.culture_media_batch_id.id,
+                        'batch_display_name': batch_display,
+                        'media_source': 'internal',
+                    })
                 
-                # Mostrar mensaje de éxito
+                # Crear resultados para medios EXTERNOS
+                for media in record.qualitative_media_ids.filtered(lambda m: m.media_source == 'external'):
+                    batch_display = f"{media.culture_media_name} (Ext: {media.external_batch_code})"
+                    
+                    self.env['lims.qualitative.result'].create({
+                        'parameter_analysis_id': record.id,
+                        'batch_display_name': batch_display,
+                        'media_source': 'external',
+                        'external_batch_info': f"{media.culture_media_name} - {media.external_batch_code}",
+                    })
+                
+                total_created = len(record.qualitative_media_ids)
+                
                 return {
                     'type': 'ir.actions.client',
                     'tag': 'display_notification',
                     'params': {
                         'title': 'Sincronización Completada',
-                        'message': f'Se crearon {len(record.qualitative_media_ids)} resultados cualitativos',
+                        'message': f'Se crearon {total_created} resultados (internos y externos)',
                         'type': 'success',
                     }
                 }
                 
             except Exception as e:
-                # Mostrar mensaje de error
                 return {
                     'type': 'ir.actions.client',
                     'tag': 'display_notification',
@@ -3114,10 +3125,16 @@ class LimsQualitativeResult(models.Model):
         ('not_confirmed', 'No Confirmado')
     ], string='Resultado Cualitativo')
     
-    # Observaciones adicionales
-    observations = fields.Text(
-        string='Observaciones',
-        help='Observaciones adicionales sobre este resultado'
+    # AGREGAR DESPUÉS del campo parameter_analysis_id:
+    media_source = fields.Selection([
+        ('internal', 'Lote Interno'),
+        ('external', 'Lote Externo')
+    ], string='Origen', readonly=True)
+
+    external_batch_info = fields.Char(
+        string='Info Lote Externo',
+        readonly=True,
+        help='Información del lote externo'
     )
 
 class LimsEquipmentInvolved(models.Model):

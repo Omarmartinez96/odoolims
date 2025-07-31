@@ -516,15 +516,16 @@
                                                         
                                                         <field name="qualitative_results_ids" nolabel="1" colspan="2">
                                                             <list string="Resultados por Lote" editable="bottom" create="false" delete="false">
-                                                                <field name="batch_display_name" readonly="1" string="Lote" width="40%"/>
-                                                                <field name="qualitative_result" string="Resultado" width="30%"/>
-                                                                <field name="observations" string="Observaciones" width="30%"/>
+                                                                <field name="media_source" string="Origen" width="15%" readonly="1"/>
+                                                                <field name="batch_display_name" readonly="1" string="Lote" width="50%"/>
+                                                                <field name="qualitative_result" string="Resultado" width="35%"/>
                                                             </list>
                                                             
                                                             <form string="Resultado Cualitativo por Lote">
                                                                 <group>
                                                                     <group>
-                                                                        <field name="batch_display_name" readonly="1" string="Lote de Medio"/>
+                                                                        <field name="media_source" readonly="1"/>
+                                                                        <field name="batch_display_name" readonly="1" string="Información del Lote"/>
                                                                     </group>
                                                                     <group>
                                                                         <!-- Campo vacío para balance visual -->
