@@ -773,7 +773,7 @@ class LimsParameterAnalysis(models.Model):
         string='Método'
     )
     microorganism = fields.Char(
-        string='Microorganismo/Analito'
+        string='Análisis'
     )
     unit = fields.Char(
         string='Unidad'
