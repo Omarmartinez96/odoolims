@@ -131,7 +131,7 @@
                                                 <group string="📅 Información del Análisis">
                                                     <field name="analysis_start_date"/>
                                                     <field name="analysis_commitment_date"/>
-                                                    <field name="analyst_id" placeholder="Seleccionar analista responsable"/>
+                                                    <field name="analyst_names" widget="char_tags" placeholder="Escribir nombres de analistas (separados por comas)"/>
                                                     <field name="analysis_status_checkbox" widget="radio"/>
                                                     <field name="report_status" readonly="1"/>
                                                 </group>

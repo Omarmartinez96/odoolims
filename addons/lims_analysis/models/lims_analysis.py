@@ -1128,12 +1128,11 @@ class LimsParameterAnalysis(models.Model):
         help='Formato HH:MM'
     )
 
-    analyst_id = fields.Many2one(
-        'res.users',
-        string='Analista Responsable',
-        help='Usuario responsable de realizar este análisis'
+    analyst_names = fields.Char(
+        string='Analistas Responsables',
+        help='Nombres de los analistas responsables (separados por comas)'
     )
-
+    
     equipment_involved_ids = fields.One2many(
         'lims.equipment.involved',
         'parameter_analysis_id',
