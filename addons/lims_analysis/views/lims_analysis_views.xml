@@ -781,19 +781,8 @@
                                                             </form>
                                                         </field>
                                                         
-                                                        <!-- Resumen visual de controles -->
-                                                        <div class="oe_horizontal_separator" style="margin: 15px 0;" colspan="2">
-                                                            <strong>Resumen de Controles</strong>
-                                                        </div>
-                                                        
                                                         <!-- Botones de acción masiva -->
                                                         <div class="oe_button_box" style="margin-bottom: 10px;" colspan="2">
-                                                            <button type="object" 
-                                                                    name="action_add_missing_qc" 
-                                                                    string="➕ Agregar Control Manual" 
-                                                                    class="btn-info"
-                                                                    help="Agregar control de calidad adicional"/>
-                                                            
                                                             <button type="object" 
                                                                     name="action_copy_qc_from_template" 
                                                                     string="📋 Copiar desde Plantilla" 
@@ -807,7 +796,6 @@
                                                     <group string="🔧 Equipos Involucrados" colspan="4">
                                                         <field name="equipment_involved_ids" nolabel="1" colspan="2">
                                                             <list string="Equipos Utilizados" editable="bottom" create="true" delete="true">
-                                                                <field name="sequence" invisible="1"/>
                                                                 <field name="equipment_id" string="Equipo" placeholder="Seleccionar equipo"/>
                                                                 <field name="usage" string="Uso" placeholder="Especificar uso del equipo"/>
                                                             </list>

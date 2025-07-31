@@ -1447,20 +1447,6 @@ class LimsParameterAnalysis(models.Model):
             # Solo volver a 'draft' si no está reportado
             if self.report_status != 'reported':
                 self.report_status = 'draft'
-
-    def action_add_missing_qc(self):
-        """Botón para agregar control de calidad manual"""
-        return {
-            'type': 'ir.actions.act_window',
-            'name': 'Agregar Control de Calidad',
-            'res_model': 'lims.executed.quality.control',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_parameter_analysis_id': self.id,
-                'default_control_status': 'pending'
-            }
-        }
     
     def action_copy_qc_from_template(self):
         """Copiar controles de calidad desde la plantilla del parámetro"""
