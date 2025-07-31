@@ -1458,6 +1458,10 @@ class LimsParameterAnalysis(models.Model):
                 # Determinar qué medios usar según los procesos habilitados
                 all_media = []
                 
+                # AGREGAR ESTA LÍNEA - Medios específicos para cualitativos
+                if record.qualitative_media_ids:
+                    all_media.extend(record.qualitative_media_ids)
+                
                 if record.requires_pre_enrichment and record.pre_enrichment_media_ids:
                     all_media.extend(record.pre_enrichment_media_ids)
                 
@@ -1482,7 +1486,7 @@ class LimsParameterAnalysis(models.Model):
                         
                         self.env['lims.qualitative.result'].create({
                             'parameter_analysis_id': record.id,
-                            'media_id': media.id,
+                            'media_id': f"{media._name},{media.id}",  # Referencia genérica
                             'batch_display_name': batch_display,
                         })
                 
