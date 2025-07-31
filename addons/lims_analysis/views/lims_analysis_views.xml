@@ -183,43 +183,62 @@
                                                     
                                                     <group string="Medios y Reactivos">
                                                         <field name="pre_enrichment_media_ids" nolabel="1" colspan="2">
+
                                                             <list string="Medios y Reactivos Utilizados" editable="bottom" create="true" delete="true">
+                                                                <field name="media_source" string="Origen" width="15%"/>
+                                                                <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                                                 <field name="culture_media_batch_id" 
-                                                                       string="Lote de Medio"
-                                                                       placeholder="Seleccionar lote"/>
-                                                                <field name="media_usage" 
-                                                                       string="Uso"/>
+                                                                    string="Lote Interno"
+                                                                    invisible="media_source != 'internal'"
+                                                                    width="20%"/>
+                                                                <field name="external_batch_code" 
+                                                                    string="Lote Externo" 
+                                                                    invisible="media_source != 'external'"
+                                                                    width="20%"/>
+                                                                <field name="media_usage" string="Uso" width="20%"/>
                                                                 <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                                <!-- resto de campos de incubación permanecen igual -->
                                                                 <field name="incubation_equipment" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="Equipo de incubación"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="Equipo de incubación"/>
                                                                 <field name="incubation_start_date" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="Fecha inicio"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="Fecha inicio"/>
                                                                 <field name="incubation_start_time" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="HH:MM"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="HH:MM"/>
                                                                 <field name="incubation_end_date" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="Fecha fin"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="Fecha fin"/>
                                                                 <field name="incubation_end_time" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="HH:MM"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="HH:MM"/>
                                                             </list>
                                                             
                                                             <form string="Medio/Reactivo Utilizado">
                                                                 <group>
                                                                     <group>
-                                                                        <field name="culture_media_batch_id" 
-                                                                               string="Lote de Medio"
-                                                                               placeholder="Seleccionar lote de medio"
-                                                                               options="{'no_create': True}"
-                                                                               required="1"/>
-                                                                        <field name="media_usage" 
-                                                                               string="Uso del Medio"
-                                                                               required="1"/>
+                                                                        <field name="media_source" widget="radio"/>
+                                                                        <field name="culture_media_name" 
+                                                                            placeholder="Nombre del medio de cultivo"
+                                                                            required="1"/>
                                                                     </group>
+
+                                                                    <group string="Lote del Medio">
+                                                                        <field name="culture_media_batch_id" 
+                                                                            invisible="media_source != 'internal'"
+                                                                            placeholder="Seleccionar lote interno"
+                                                                            options="{'no_create': True}"/>
+                                                                        <field name="external_batch_code" 
+                                                                            invisible="media_source != 'external'"
+                                                                            placeholder="Código del lote externo"
+                                                                            required="media_source == 'external'"/>
+                                                                    </group>
+
                                                                     <group>
+                                                                        <field name="media_usage" 
+                                                                            string="Uso del Medio"
+                                                                            required="1"/>
                                                                         <field name="requires_incubation" string="¿Requiere Incubación?"/>
                                                                     </group>
                                                                 </group>
@@ -269,43 +288,62 @@
                                                     
                                                     <group string="Medios Selectivos y Reactivos">
                                                         <field name="selective_enrichment_media_ids" nolabel="1" colspan="2">
+
                                                             <list string="Medios Selectivos Utilizados" editable="bottom" create="true" delete="true">
+                                                                <field name="media_source" string="Origen" width="15%"/>
+                                                                <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                                                 <field name="culture_media_batch_id" 
-                                                                       string="Lote de Medio"
-                                                                       placeholder="Seleccionar lote"/>
-                                                                <field name="media_usage" 
-                                                                       string="Uso"/>
+                                                                    string="Lote Interno"
+                                                                    invisible="media_source != 'internal'"
+                                                                    width="20%"/>
+                                                                <field name="external_batch_code" 
+                                                                    string="Lote Externo" 
+                                                                    invisible="media_source != 'external'"
+                                                                    width="20%"/>
+                                                                <field name="media_usage" string="Uso" width="20%"/>
                                                                 <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                                <!-- resto de campos de incubación permanecen igual -->
                                                                 <field name="incubation_equipment" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="Equipo de incubación"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="Equipo de incubación"/>
                                                                 <field name="incubation_start_date" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="Fecha inicio"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="Fecha inicio"/>
                                                                 <field name="incubation_start_time" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="HH:MM"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="HH:MM"/>
                                                                 <field name="incubation_end_date" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="Fecha fin"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="Fecha fin"/>
                                                                 <field name="incubation_end_time" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="HH:MM"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="HH:MM"/>
                                                             </list>
                                                             
                                                             <form string="Medio Selectivo Utilizado">
                                                                 <group>
                                                                     <group>
-                                                                        <field name="culture_media_batch_id" 
-                                                                               string="Lote de Medio"
-                                                                               placeholder="Seleccionar lote de medio"
-                                                                               options="{'no_create': True}"
-                                                                               required="1"/>
-                                                                        <field name="media_usage" 
-                                                                               string="Uso del Medio"
-                                                                               required="1"/>
+                                                                        <field name="media_source" widget="radio"/>
+                                                                        <field name="culture_media_name" 
+                                                                            placeholder="Nombre del medio de cultivo"
+                                                                            required="1"/>
                                                                     </group>
+
+                                                                    <group string="Lote del Medio">
+                                                                        <field name="culture_media_batch_id" 
+                                                                            invisible="media_source != 'internal'"
+                                                                            placeholder="Seleccionar lote interno"
+                                                                            options="{'no_create': True}"/>
+                                                                        <field name="external_batch_code" 
+                                                                            invisible="media_source != 'external'"
+                                                                            placeholder="Código del lote externo"
+                                                                            required="media_source == 'external'"/>
+                                                                    </group>
+
                                                                     <group>
+                                                                        <field name="media_usage" 
+                                                                            string="Uso del Medio"
+                                                                            required="1"/>
                                                                         <field name="requires_incubation" string="¿Requiere Incubación?"/>
                                                                     </group>
                                                                 </group>
@@ -379,12 +417,19 @@
                                                         invisible="result_type != 'qualitative'">
                                                         <field name="qualitative_media_ids" nolabel="1" colspan="2">
                                                             <list string="Medios para Cualitativos" editable="bottom" create="true" delete="true">
+                                                                <field name="media_source" string="Origen" width="15%"/>
+                                                                <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                                                 <field name="culture_media_batch_id" 
-                                                                    string="Lote de Medio"
-                                                                    placeholder="Seleccionar lote"/>
-                                                                <field name="media_usage" 
-                                                                    string="Uso"/>
+                                                                    string="Lote Interno"
+                                                                    invisible="media_source != 'internal'"
+                                                                    width="20%"/>
+                                                                <field name="external_batch_code" 
+                                                                    string="Lote Externo" 
+                                                                    invisible="media_source != 'external'"
+                                                                    width="20%"/>
+                                                                <field name="media_usage" string="Uso" width="20%"/>
                                                                 <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                                <!-- resto de campos de incubación permanecen igual -->
                                                                 <field name="incubation_equipment" 
                                                                     invisible="requires_incubation == False"
                                                                     placeholder="Equipo de incubación"/>
@@ -405,16 +450,27 @@
                                                             <form string="Medio para Cualitativo">
                                                                 <group>
                                                                     <group>
-                                                                        <field name="culture_media_batch_id" 
-                                                                            string="Lote de Medio"
-                                                                            placeholder="Seleccionar lote de medio"
-                                                                            options="{'no_create': True}"
+                                                                        <field name="media_source" widget="radio"/>
+                                                                        <field name="culture_media_name" 
+                                                                            placeholder="Nombre del medio de cultivo"
                                                                             required="1"/>
+                                                                    </group>
+
+                                                                    <group string="Lote del Medio">
+                                                                        <field name="culture_media_batch_id" 
+                                                                            invisible="media_source != 'internal'"
+                                                                            placeholder="Seleccionar lote interno"
+                                                                            options="{'no_create': True}"/>
+                                                                        <field name="external_batch_code" 
+                                                                            invisible="media_source != 'external'"
+                                                                            placeholder="Código del lote externo"
+                                                                            required="media_source == 'external'"/>
+                                                                    </group>
+
+                                                                    <group>
                                                                         <field name="media_usage" 
                                                                             string="Uso del Medio"
                                                                             required="1"/>
-                                                                    </group>
-                                                                    <group>
                                                                         <field name="requires_incubation" string="¿Requiere Incubación?"/>
                                                                     </group>
                                                                 </group>
@@ -489,42 +545,60 @@
                                                            invisible="result_type != 'quantitative'">
                                                         <field name="quantitative_media_ids" nolabel="1" colspan="2">
                                                             <list string="Medios para Análisis Cuantitativo" editable="bottom" create="true" delete="true">
+                                                                <field name="media_source" string="Origen" width="15%"/>
+                                                                <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                                                 <field name="culture_media_batch_id" 
-                                                                       string="Lote de Medio"
-                                                                       placeholder="Seleccionar lote"/>
-                                                                <field name="media_usage" 
-                                                                       string="Uso"/>
+                                                                    string="Lote Interno"
+                                                                    invisible="media_source != 'internal'"
+                                                                    width="20%"/>
+                                                                <field name="external_batch_code" 
+                                                                    string="Lote Externo" 
+                                                                    invisible="media_source != 'external'"
+                                                                    width="20%"/>
+                                                                <field name="media_usage" string="Uso" width="20%"/>
                                                                 <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                                <!-- resto de campos de incubación permanecen igual -->
                                                                 <field name="incubation_equipment" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="Equipo de incubación"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="Equipo de incubación"/>
                                                                 <field name="incubation_start_date" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="Fecha inicio"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="Fecha inicio"/>
                                                                 <field name="incubation_start_time" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="HH:MM"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="HH:MM"/>
                                                                 <field name="incubation_end_date" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="Fecha fin"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="Fecha fin"/>
                                                                 <field name="incubation_end_time" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="HH:MM"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="HH:MM"/>
                                                             </list>
                                                             
                                                             <form string="Medio Utilizado para Cuantitativo">
                                                                 <group>
                                                                     <group>
-                                                                        <field name="culture_media_batch_id" 
-                                                                               string="Lote de Medio"
-                                                                               placeholder="Seleccionar lote de medio"
-                                                                               options="{'no_create': True}"
-                                                                               required="1"/>
-                                                                        <field name="media_usage" 
-                                                                               string="Uso del Medio"
-                                                                               required="1"/>
+                                                                        <field name="media_source" widget="radio"/>
+                                                                        <field name="culture_media_name" 
+                                                                            placeholder="Nombre del medio de cultivo"
+                                                                            required="1"/>
                                                                     </group>
+
+                                                                    <group string="Lote del Medio">
+                                                                        <field name="culture_media_batch_id" 
+                                                                            invisible="media_source != 'internal'"
+                                                                            placeholder="Seleccionar lote interno"
+                                                                            options="{'no_create': True}"/>
+                                                                        <field name="external_batch_code" 
+                                                                            invisible="media_source != 'external'"
+                                                                            placeholder="Código del lote externo"
+                                                                            required="media_source == 'external'"/>
+                                                                    </group>
+
                                                                     <group>
+                                                                        <field name="media_usage" 
+                                                                            string="Uso del Medio"
+                                                                            required="1"/>
                                                                         <field name="requires_incubation" string="¿Requiere Incubación?"/>
                                                                     </group>
                                                                 </group>
@@ -844,42 +918,60 @@
                                                     <group string="Medios de Confirmación">
                                                         <field name="confirmation_media_ids" nolabel="1" colspan="2">
                                                             <list string="Medios para Confirmación" editable="bottom" create="true" delete="true">
+                                                                <field name="media_source" string="Origen" width="15%"/>
+                                                                <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                                                 <field name="culture_media_batch_id" 
-                                                                       string="Lote de Medio"
-                                                                       placeholder="Seleccionar lote"/>
-                                                                <field name="media_usage" 
-                                                                       string="Uso"/>
+                                                                    string="Lote Interno"
+                                                                    invisible="media_source != 'internal'"
+                                                                    width="20%"/>
+                                                                <field name="external_batch_code" 
+                                                                    string="Lote Externo" 
+                                                                    invisible="media_source != 'external'"
+                                                                    width="20%"/>
+                                                                <field name="media_usage" string="Uso" width="20%"/>
                                                                 <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                                <!-- resto de campos de incubación permanecen igual -->
                                                                 <field name="incubation_equipment" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="Equipo de incubación"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="Equipo de incubación"/>
                                                                 <field name="incubation_start_date" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="Fecha inicio"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="Fecha inicio"/>
                                                                 <field name="incubation_start_time" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="HH:MM"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="HH:MM"/>
                                                                 <field name="incubation_end_date" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="Fecha fin"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="Fecha fin"/>
                                                                 <field name="incubation_end_time" 
-                                                                       invisible="requires_incubation == False"
-                                                                       placeholder="HH:MM"/>
+                                                                    invisible="requires_incubation == False"
+                                                                    placeholder="HH:MM"/>
                                                             </list>
                                                             
                                                             <form string="Medio de Confirmación">
                                                                 <group>
                                                                     <group>
-                                                                        <field name="culture_media_batch_id" 
-                                                                               string="Lote de Medio"
-                                                                               placeholder="Seleccionar lote de medio"
-                                                                               options="{'no_create': True}"
-                                                                               required="1"/>
-                                                                        <field name="media_usage" 
-                                                                               string="Uso del Medio"
-                                                                               required="1"/>
+                                                                        <field name="media_source" widget="radio"/>
+                                                                        <field name="culture_media_name" 
+                                                                            placeholder="Nombre del medio de cultivo"
+                                                                            required="1"/>
                                                                     </group>
+
+                                                                    <group string="Lote del Medio">
+                                                                        <field name="culture_media_batch_id" 
+                                                                            invisible="media_source != 'internal'"
+                                                                            placeholder="Seleccionar lote interno"
+                                                                            options="{'no_create': True}"/>
+                                                                        <field name="external_batch_code" 
+                                                                            invisible="media_source != 'external'"
+                                                                            placeholder="Código del lote externo"
+                                                                            required="media_source == 'external'"/>
+                                                                    </group>
+
                                                                     <group>
+                                                                        <field name="media_usage" 
+                                                                            string="Uso del Medio"
+                                                                            required="1"/>
                                                                         <field name="requires_incubation" string="¿Requiere Incubación?"/>
                                                                     </group>
                                                                 </group>

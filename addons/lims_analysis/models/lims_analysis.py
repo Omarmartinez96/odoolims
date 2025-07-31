@@ -1705,13 +1705,31 @@ class LimsPreEnrichmentMedia(models.Model):
         required=True,
         ondelete='cascade'
     )
+
+    # Campo nuevo para nombre manual del medio
+    culture_media_name = fields.Char(
+        string='Nombre del Medio',
+        help='Nombre del medio de cultivo (manual o automático)'
+    )
+
+    # Campo para identificar si es interno o externo
+    media_source = fields.Selection([
+        ('internal', 'Lote Interno'),
+        ('external', 'Lote Externo')
+    ], string='Origen del Medio', default='internal', required=True)
+
+    # Campo para lote externo
+    external_batch_code = fields.Char(
+        string='Código de Lote Externo',
+        help='Código del lote proporcionado por el cliente'
+    )
+
     
     # Lote del medio (siempre requerido)
     culture_media_batch_id = fields.Many2one(
         'lims.culture.media.batch',
-        string='Lote de Medio',
-        required=True,
-        help='Lote específico del medio de cultivo utilizado'
+        string='Lote de Medio Interno',
+        help='Lote específico del medio de cultivo interno'
     )
     
     # Uso específico del medio
@@ -1797,38 +1815,61 @@ class LimsPreEnrichmentMedia(models.Model):
             else:
                 record.incubation_duration = ""
     
-    @api.depends('culture_media_batch_id', 'media_usage')
+    @api.depends('culture_media_batch_id', 'media_usage', 'culture_media_name', 'media_source', 'external_batch_code')
     def _compute_display_name(self):
         """Calcular nombre descriptivo"""
         for record in self:
-            if record.culture_media_batch_id:
+            usage_translations = {
+                'diluyente': 'Diluyente',
+                'eluyente': 'Eluyente',
+                'enriquecimiento': 'Enriquecimiento',
+                'desarrollo_selectivo': 'Desarrollo Selectivo',
+                'desarrollo_diferencial': 'Desarrollo Diferencial',
+                'desarrollo_selectivo_diferencial': 'Desarrollo Selectivo y Diferencial',
+                'pruebas_bioquimicas': 'Pruebas Bioquímicas',
+                'transporte': 'Transporte',
+                'mantenimiento': 'Mantenimiento',
+                'otro': 'Otro'
+            }
+            
+            usage_display = usage_translations.get(record.media_usage, record.media_usage)
+            
+            if record.media_source == 'internal' and record.culture_media_batch_id:
                 media_name = record.culture_media_batch_id.culture_media_id.name
                 batch_code = record.culture_media_batch_id.batch_code
-                
-                # Traducción del uso
-                usage_translations = {
-                    'diluyente': 'Diluyente',
-                    'eluyente': 'Eluyente',
-                    'enriquecimiento': 'Enriquecimiento',
-                    'desarrollo_selectivo': 'Desarrollo Selectivo',
-                    'desarrollo_diferencial': 'Desarrollo Diferencial',
-                    'desarrollo_selectivo_diferencial': 'Desarrollo Selectivo y Diferencial',
-                    'pruebas_bioquimicas': 'Pruebas Bioquímicas',
-                    'transporte': 'Transporte',
-                    'mantenimiento': 'Mantenimiento',
-                    'otro': 'Otro'
-                }
-                
-                usage_display = usage_translations.get(record.media_usage, record.media_usage)
-                name = f"{media_name} - {usage_display}"
-                
-                if batch_code:
-                    name += f" (Lote: {batch_code})"
-                    
-                record.display_name = name
+                name = f"{media_name} - {usage_display} (Lote: {batch_code})"
+            elif record.media_source == 'external':
+                media_name = record.culture_media_name or 'Medio externo'
+                batch_code = record.external_batch_code or 'Sin código'
+                name = f"{media_name} - {usage_display} (Ext: {batch_code})"
             else:
-                record.display_name = "Medio sin especificar"
+                name = "Medio sin especificar"
+                
+            record.display_name = name
     
+    @api.onchange('media_source')
+    def _onchange_media_source(self):
+        """Limpiar campos según el origen seleccionado"""
+        if self.media_source == 'internal':
+            self.external_batch_code = False
+            self.culture_media_name = False
+        elif self.media_source == 'external':
+            self.culture_media_batch_id = False
+
+    @api.onchange('culture_media_batch_id')
+    def _onchange_culture_media_batch_id(self):
+        """Auto-llenar nombre cuando se selecciona lote interno"""
+        if self.culture_media_batch_id and self.media_source == 'internal':
+            self.culture_media_name = self.culture_media_batch_id.culture_media_id.name
+
+    @api.onchange('external_batch_code', 'culture_media_name')
+    def _onchange_external_fields(self):
+        """Validar campos externos"""
+        if self.media_source == 'external':
+            if self.external_batch_code and not self.culture_media_name:
+                # Podrías agregar validación aquí si es necesario
+                pass
+
     @api.onchange('requires_incubation')
     def _onchange_requires_incubation(self):
         """Limpiar campos de incubación cuando no se requiere"""
@@ -1852,14 +1893,30 @@ class LimsSelectiveEnrichmentMedia(models.Model):
         ondelete='cascade'
     )
     
-    # Lote del medio (siempre requerido)
     culture_media_batch_id = fields.Many2one(
         'lims.culture.media.batch',
-        string='Lote de Medio',
-        required=True,
-        help='Lote específico del medio de cultivo utilizado'
+        string='Lote de Medio Interno',
+        help='Lote específico del medio de cultivo interno'
     )
-    
+        
+    # Campo nuevo para nombre manual del medio
+    culture_media_name = fields.Char(
+        string='Nombre del Medio',
+        help='Nombre del medio de cultivo (manual o automático)'
+    )
+
+    # Campo para identificar si es interno o externo
+    media_source = fields.Selection([
+        ('internal', 'Lote Interno'),
+        ('external', 'Lote Externo')
+    ], string='Origen del Medio', default='internal', required=True)
+
+    # Campo para lote externo
+    external_batch_code = fields.Char(
+        string='Código de Lote Externo',
+        help='Código del lote proporcionado por el cliente'
+    )
+
     # Uso específico del medio
     media_usage = fields.Selection([
         ('diluyente', 'Diluyente'),
@@ -1943,38 +2000,61 @@ class LimsSelectiveEnrichmentMedia(models.Model):
             else:
                 record.incubation_duration = ""
     
-    @api.depends('culture_media_batch_id', 'media_usage')
+    @api.depends('culture_media_batch_id', 'media_usage', 'culture_media_name', 'media_source', 'external_batch_code')
     def _compute_display_name(self):
         """Calcular nombre descriptivo"""
         for record in self:
-            if record.culture_media_batch_id:
+            usage_translations = {
+                'diluyente': 'Diluyente',
+                'eluyente': 'Eluyente',
+                'enriquecimiento': 'Enriquecimiento',
+                'desarrollo_selectivo': 'Desarrollo Selectivo',
+                'desarrollo_diferencial': 'Desarrollo Diferencial',
+                'desarrollo_selectivo_diferencial': 'Desarrollo Selectivo y Diferencial',
+                'pruebas_bioquimicas': 'Pruebas Bioquímicas',
+                'transporte': 'Transporte',
+                'mantenimiento': 'Mantenimiento',
+                'otro': 'Otro'
+            }
+            
+            usage_display = usage_translations.get(record.media_usage, record.media_usage)
+            
+            if record.media_source == 'internal' and record.culture_media_batch_id:
                 media_name = record.culture_media_batch_id.culture_media_id.name
                 batch_code = record.culture_media_batch_id.batch_code
-                
-                # Traducción del uso
-                usage_translations = {
-                    'diluyente': 'Diluyente',
-                    'eluyente': 'Eluyente',
-                    'enriquecimiento': 'Enriquecimiento',
-                    'desarrollo_selectivo': 'Desarrollo Selectivo',
-                    'desarrollo_diferencial': 'Desarrollo Diferencial',
-                    'desarrollo_selectivo_diferencial': 'Desarrollo Selectivo y Diferencial',
-                    'pruebas_bioquimicas': 'Pruebas Bioquímicas',
-                    'transporte': 'Transporte',
-                    'mantenimiento': 'Mantenimiento',
-                    'otro': 'Otro'
-                }
-                
-                usage_display = usage_translations.get(record.media_usage, record.media_usage)
-                name = f"{media_name} - {usage_display}"
-                
-                if batch_code:
-                    name += f" (Lote: {batch_code})"
-                    
-                record.display_name = name
+                name = f"{media_name} - {usage_display} (Lote: {batch_code})"
+            elif record.media_source == 'external':
+                media_name = record.culture_media_name or 'Medio externo'
+                batch_code = record.external_batch_code or 'Sin código'
+                name = f"{media_name} - {usage_display} (Ext: {batch_code})"
             else:
-                record.display_name = "Medio sin especificar"
-    
+                name = "Medio sin especificar"
+                
+            record.display_name = name
+        
+    @api.onchange('media_source')
+    def _onchange_media_source(self):
+        """Limpiar campos según el origen seleccionado"""
+        if self.media_source == 'internal':
+            self.external_batch_code = False
+            self.culture_media_name = False
+        elif self.media_source == 'external':
+            self.culture_media_batch_id = False
+
+    @api.onchange('culture_media_batch_id')
+    def _onchange_culture_media_batch_id(self):
+        """Auto-llenar nombre cuando se selecciona lote interno"""
+        if self.culture_media_batch_id and self.media_source == 'internal':
+            self.culture_media_name = self.culture_media_batch_id.culture_media_id.name
+
+    @api.onchange('external_batch_code', 'culture_media_name')
+    def _onchange_external_fields(self):
+        """Validar campos externos"""
+        if self.media_source == 'external':
+            if self.external_batch_code and not self.culture_media_name:
+                # Podrías agregar validación aquí si es necesario
+                pass
+
     @api.onchange('requires_incubation')
     def _onchange_requires_incubation(self):
         """Limpiar campos de incubación cuando no se requiere"""
@@ -2001,11 +2081,29 @@ class LimsQuantitativeMedia(models.Model):
     # Lote del medio (siempre requerido)
     culture_media_batch_id = fields.Many2one(
         'lims.culture.media.batch',
-        string='Lote de Medio',
-        required=True,
-        help='Lote específico del medio de cultivo utilizado'
+        string='Lote de Medio Interno',
+        help='Lote específico del medio de cultivo interno'
+        # Quitar required=True
     )
-    
+
+    # Campo nuevo para nombre manual del medio
+    culture_media_name = fields.Char(
+        string='Nombre del Medio',
+        help='Nombre del medio de cultivo (manual o automático)'
+    )
+
+    # Campo para identificar si es interno o externo
+    media_source = fields.Selection([
+        ('internal', 'Lote Interno'),
+        ('external', 'Lote Externo')
+    ], string='Origen del Medio', default='internal', required=True)
+
+    # Campo para lote externo
+    external_batch_code = fields.Char(
+        string='Código de Lote Externo',
+        help='Código del lote proporcionado por el cliente'
+    )
+
     # Uso específico del medio
     media_usage = fields.Selection([
         ('diluyente', 'Diluyente'),
@@ -2089,37 +2187,60 @@ class LimsQuantitativeMedia(models.Model):
             else:
                 record.incubation_duration = ""
     
-    @api.depends('culture_media_batch_id', 'media_usage')
+    @api.depends('culture_media_batch_id', 'media_usage', 'culture_media_name', 'media_source', 'external_batch_code')
     def _compute_display_name(self):
         """Calcular nombre descriptivo"""
         for record in self:
-            if record.culture_media_batch_id:
+            usage_translations = {
+                'diluyente': 'Diluyente',
+                'eluyente': 'Eluyente',
+                'enriquecimiento': 'Enriquecimiento',
+                'desarrollo_selectivo': 'Desarrollo Selectivo',
+                'desarrollo_diferencial': 'Desarrollo Diferencial',
+                'desarrollo_selectivo_diferencial': 'Desarrollo Selectivo y Diferencial',
+                'pruebas_bioquimicas': 'Pruebas Bioquímicas',
+                'transporte': 'Transporte',
+                'mantenimiento': 'Mantenimiento',
+                'otro': 'Otro'
+            }
+            
+            usage_display = usage_translations.get(record.media_usage, record.media_usage)
+            
+            if record.media_source == 'internal' and record.culture_media_batch_id:
                 media_name = record.culture_media_batch_id.culture_media_id.name
                 batch_code = record.culture_media_batch_id.batch_code
-                
-                # Traducción del uso
-                usage_translations = {
-                    'diluyente': 'Diluyente',
-                    'eluyente': 'Eluyente',
-                    'enriquecimiento': 'Enriquecimiento',
-                    'desarrollo_selectivo': 'Desarrollo Selectivo',
-                    'desarrollo_diferencial': 'Desarrollo Diferencial',
-                    'desarrollo_selectivo_diferencial': 'Desarrollo Selectivo y Diferencial',
-                    'pruebas_bioquimicas': 'Pruebas Bioquímicas',
-                    'transporte': 'Transporte',
-                    'mantenimiento': 'Mantenimiento',
-                    'otro': 'Otro'
-                }
-                
-                usage_display = usage_translations.get(record.media_usage, record.media_usage)
-                name = f"{media_name} - {usage_display}"
-                
-                if batch_code:
-                    name += f" (Lote: {batch_code})"
-                    
-                record.display_name = name
+                name = f"{media_name} - {usage_display} (Lote: {batch_code})"
+            elif record.media_source == 'external':
+                media_name = record.culture_media_name or 'Medio externo'
+                batch_code = record.external_batch_code or 'Sin código'
+                name = f"{media_name} - {usage_display} (Ext: {batch_code})"
             else:
-                record.display_name = "Medio sin especificar"
+                name = "Medio sin especificar"
+                
+            record.display_name = name
+
+    @api.onchange('media_source')
+    def _onchange_media_source(self):
+        """Limpiar campos según el origen seleccionado"""
+        if self.media_source == 'internal':
+            self.external_batch_code = False
+            self.culture_media_name = False
+        elif self.media_source == 'external':
+            self.culture_media_batch_id = False
+
+    @api.onchange('culture_media_batch_id')
+    def _onchange_culture_media_batch_id(self):
+        """Auto-llenar nombre cuando se selecciona lote interno"""
+        if self.culture_media_batch_id and self.media_source == 'internal':
+            self.culture_media_name = self.culture_media_batch_id.culture_media_id.name
+
+    @api.onchange('external_batch_code', 'culture_media_name')
+    def _onchange_external_fields(self):
+        """Validar campos externos"""
+        if self.media_source == 'external':
+            if self.external_batch_code and not self.culture_media_name:
+                # Podrías agregar validación aquí si es necesario
+                pass
     
     @api.onchange('requires_incubation')
     def _onchange_requires_incubation(self):
@@ -2144,14 +2265,30 @@ class LimsQualitativeMedia(models.Model):
         ondelete='cascade'
     )
     
-    # Lote del medio (siempre requerido)
     culture_media_batch_id = fields.Many2one(
         'lims.culture.media.batch',
-        string='Lote de Medio',
-        required=True,
-        help='Lote específico del medio de cultivo utilizado'
+        string='Lote de Medio Interno',
+        help='Lote específico del medio de cultivo interno'
     )
-    
+
+    # Campo nuevo para nombre manual del medio
+    culture_media_name = fields.Char(
+        string='Nombre del Medio',
+        help='Nombre del medio de cultivo (manual o automático)'
+    )
+
+    # Campo para identificar si es interno o externo
+    media_source = fields.Selection([
+        ('internal', 'Lote Interno'),
+        ('external', 'Lote Externo')
+    ], string='Origen del Medio', default='internal', required=True)
+
+    # Campo para lote externo
+    external_batch_code = fields.Char(
+        string='Código de Lote Externo',
+        help='Código del lote proporcionado por el cliente'
+    )
+
     # Uso específico del medio
     media_usage = fields.Selection([
         ('diluyente', 'Diluyente'),
@@ -2235,37 +2372,62 @@ class LimsQualitativeMedia(models.Model):
             else:
                 record.incubation_duration = ""
     
-    @api.depends('culture_media_batch_id', 'media_usage')
+    @api.depends('culture_media_batch_id', 'media_usage', 'culture_media_name', 'media_source', 'external_batch_code')
     def _compute_display_name(self):
         """Calcular nombre descriptivo"""
         for record in self:
-            if record.culture_media_batch_id:
+            usage_translations = {
+                'diluyente': 'Diluyente',
+                'eluyente': 'Eluyente',
+                'enriquecimiento': 'Enriquecimiento',
+                'desarrollo_selectivo': 'Desarrollo Selectivo',
+                'desarrollo_diferencial': 'Desarrollo Diferencial',
+                'desarrollo_selectivo_diferencial': 'Desarrollo Selectivo y Diferencial',
+                'pruebas_bioquimicas': 'Pruebas Bioquímicas',
+                'transporte': 'Transporte',
+                'mantenimiento': 'Mantenimiento',
+                'otro': 'Otro'
+            }
+            
+            usage_display = usage_translations.get(record.media_usage, record.media_usage)
+            
+            if record.media_source == 'internal' and record.culture_media_batch_id:
                 media_name = record.culture_media_batch_id.culture_media_id.name
                 batch_code = record.culture_media_batch_id.batch_code
-                
-                usage_translations = {
-                    'diluyente': 'Diluyente',
-                    'eluyente': 'Eluyente',
-                    'enriquecimiento': 'Enriquecimiento',
-                    'desarrollo_selectivo': 'Desarrollo Selectivo',
-                    'desarrollo_diferencial': 'Desarrollo Diferencial',
-                    'desarrollo_selectivo_diferencial': 'Desarrollo Selectivo y Diferencial',
-                    'pruebas_bioquimicas': 'Pruebas Bioquímicas',
-                    'transporte': 'Transporte',
-                    'mantenimiento': 'Mantenimiento',
-                    'otro': 'Otro'
-                }
-                
-                usage_display = usage_translations.get(record.media_usage, record.media_usage)
-                name = f"{media_name} - {usage_display}"
-                
-                if batch_code:
-                    name += f" (Lote: {batch_code})"
-                    
-                record.display_name = name
+                name = f"{media_name} - {usage_display} (Lote: {batch_code})"
+            elif record.media_source == 'external':
+                media_name = record.culture_media_name or 'Medio externo'
+                batch_code = record.external_batch_code or 'Sin código'
+                name = f"{media_name} - {usage_display} (Ext: {batch_code})"
             else:
-                record.display_name = "Medio sin especificar"
+                name = "Medio sin especificar"
+                
+            record.display_name = name
     
+    @api.onchange('media_source')
+    def _onchange_media_source(self):
+        """Limpiar campos según el origen seleccionado"""
+        if self.media_source == 'internal':
+            self.external_batch_code = False
+            self.culture_media_name = False
+        elif self.media_source == 'external':
+            self.culture_media_batch_id = False
+
+    @api.onchange('culture_media_batch_id')
+    def _onchange_culture_media_batch_id(self):
+        """Auto-llenar nombre cuando se selecciona lote interno"""
+        if self.culture_media_batch_id and self.media_source == 'internal':
+            self.culture_media_name = self.culture_media_batch_id.culture_media_id.name
+
+    @api.onchange('external_batch_code', 'culture_media_name')
+    def _onchange_external_fields(self):
+        """Validar campos externos"""
+        if self.media_source == 'external':
+            if self.external_batch_code and not self.culture_media_name:
+                # Podrías agregar validación aquí si es necesario
+                pass
+
+
     @api.onchange('requires_incubation')
     def _onchange_requires_incubation(self):
         """Limpiar campos de incubación cuando no se requiere"""
@@ -2361,11 +2523,28 @@ class LimsConfirmationMedia(models.Model):
     # Lote del medio (siempre requerido)
     culture_media_batch_id = fields.Many2one(
         'lims.culture.media.batch',
-        string='Lote de Medio',
-        required=True,
-        help='Lote específico del medio de cultivo utilizado'
+        string='Lote de Medio Interno',
+        help='Lote específico del medio de cultivo interno'
     )
     
+    # Campo nuevo para nombre manual del medio
+    culture_media_name = fields.Char(
+        string='Nombre del Medio',
+        help='Nombre del medio de cultivo (manual o automático)'
+    )
+
+    # Campo para identificar si es interno o externo
+    media_source = fields.Selection([
+        ('internal', 'Lote Interno'),
+        ('external', 'Lote Externo')
+    ], string='Origen del Medio', default='internal', required=True)
+
+    # Campo para lote externo
+    external_batch_code = fields.Char(
+        string='Código de Lote Externo',
+        help='Código del lote proporcionado por el cliente'
+    )
+
     # Uso específico del medio
     media_usage = fields.Selection([
         ('diluyente', 'Diluyente'),
@@ -2449,38 +2628,61 @@ class LimsConfirmationMedia(models.Model):
             else:
                 record.incubation_duration = ""
     
-    @api.depends('culture_media_batch_id', 'media_usage')
+    @api.depends('culture_media_batch_id', 'media_usage', 'culture_media_name', 'media_source', 'external_batch_code')
     def _compute_display_name(self):
         """Calcular nombre descriptivo"""
         for record in self:
-            if record.culture_media_batch_id:
+            usage_translations = {
+                'diluyente': 'Diluyente',
+                'eluyente': 'Eluyente',
+                'enriquecimiento': 'Enriquecimiento',
+                'desarrollo_selectivo': 'Desarrollo Selectivo',
+                'desarrollo_diferencial': 'Desarrollo Diferencial',
+                'desarrollo_selectivo_diferencial': 'Desarrollo Selectivo y Diferencial',
+                'pruebas_bioquimicas': 'Pruebas Bioquímicas',
+                'transporte': 'Transporte',
+                'mantenimiento': 'Mantenimiento',
+                'otro': 'Otro'
+            }
+            
+            usage_display = usage_translations.get(record.media_usage, record.media_usage)
+            
+            if record.media_source == 'internal' and record.culture_media_batch_id:
                 media_name = record.culture_media_batch_id.culture_media_id.name
                 batch_code = record.culture_media_batch_id.batch_code
-                
-                # Traducción del uso
-                usage_translations = {
-                    'diluyente': 'Diluyente',
-                    'eluyente': 'Eluyente',
-                    'enriquecimiento': 'Enriquecimiento',
-                    'desarrollo_selectivo': 'Desarrollo Selectivo',
-                    'desarrollo_diferencial': 'Desarrollo Diferencial',
-                    'desarrollo_selectivo_diferencial': 'Desarrollo Selectivo y Diferencial',
-                    'pruebas_bioquimicas': 'Pruebas Bioquímicas',
-                    'transporte': 'Transporte',
-                    'mantenimiento': 'Mantenimiento',
-                    'otro': 'Otro'
-                }
-                
-                usage_display = usage_translations.get(record.media_usage, record.media_usage)
-                name = f"{media_name} - {usage_display}"
-                
-                if batch_code:
-                    name += f" (Lote: {batch_code})"
-                    
-                record.display_name = name
+                name = f"{media_name} - {usage_display} (Lote: {batch_code})"
+            elif record.media_source == 'external':
+                media_name = record.culture_media_name or 'Medio externo'
+                batch_code = record.external_batch_code or 'Sin código'
+                name = f"{media_name} - {usage_display} (Ext: {batch_code})"
             else:
-                record.display_name = "Medio sin especificar"
+                name = "Medio sin especificar"
+                
+            record.display_name = name
     
+    @api.onchange('media_source')
+    def _onchange_media_source(self):
+        """Limpiar campos según el origen seleccionado"""
+        if self.media_source == 'internal':
+            self.external_batch_code = False
+            self.culture_media_name = False
+        elif self.media_source == 'external':
+            self.culture_media_batch_id = False
+
+    @api.onchange('culture_media_batch_id')
+    def _onchange_culture_media_batch_id(self):
+        """Auto-llenar nombre cuando se selecciona lote interno"""
+        if self.culture_media_batch_id and self.media_source == 'internal':
+            self.culture_media_name = self.culture_media_batch_id.culture_media_id.name
+
+    @api.onchange('external_batch_code', 'culture_media_name')
+    def _onchange_external_fields(self):
+        """Validar campos externos"""
+        if self.media_source == 'external':
+            if self.external_batch_code and not self.culture_media_name:
+                # Podrías agregar validación aquí si es necesario
+                pass
+
     @api.onchange('requires_incubation')
     def _onchange_requires_incubation(self):
         """Limpiar campos de incubación cuando no se requiere"""
