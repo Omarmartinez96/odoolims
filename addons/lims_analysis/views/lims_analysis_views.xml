@@ -658,7 +658,7 @@
                                                         <div class="alert alert-info" style="margin-bottom: 15px;" colspan="2">
                                                             <strong>📋 Controles de Calidad:</strong> 
                                                             Estos controles se han precargado automáticamente desde la plantilla del parámetro 
-                                                            para garantizar la calidad y confiabilidad de los resultados.
+                                                            para garantizar la calidad y confiabilidad de los resultados. Para cargar controles hacer click en Copiar desde Plantilla.
                                                         </div>
                                                         
                                                         <!-- Lista de controles de calidad ejecutados -->
