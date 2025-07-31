@@ -1325,56 +1325,11 @@ class LimsParameterAnalysis(models.Model):
         
         return {'domain': {'confirmation_equipment_id': domain}}
     
-    @api.depends('result_value', 'result_unit_selection', 'custom_unit', 'result_qualitative', 'qualitative_unit_selection', 'qualitative_custom_unit', 'result_type')
+    @api.depends('result_value')
     def _compute_result_complete(self):
-        """Calcular resultado completo (valor + unidad)"""
+        """Mostrar solo el resultado sin unidad en la lista"""
         for record in self:
-            if record.result_type == 'qualitative':
-                # Para cualitativos: resultado + unidad cualitativa
-                if record.result_value and record.qualitative_unit_selection:
-                    unit_translations = {
-                        'ausencia_presencia_25g': 'en 25g',
-                        'ausencia_presencia_100ml': 'en 100mL',
-                        'ausencia_presencia_10g': 'en 10g',
-                        'ausencia_presencia_1g': 'en 1g',
-                        'detectado_no_detectado': '',
-                        'positivo_negativo': '',
-                        'custom': record.qualitative_custom_unit or ''
-                    }
-                    unit = unit_translations.get(record.qualitative_unit_selection, '')
-                    if unit:
-                        record.result_complete = f"{record.result_value} {unit}".strip()
-                    else:
-                        record.result_complete = record.result_value
-                else:
-                    record.result_complete = record.result_value or ''
-                    
-            elif record.result_type == 'quantitative':
-                # Para cuantitativos: resultado + unidad cuantitativa
-                if record.result_value:
-                    if record.result_unit_selection and record.result_unit_selection != 'custom':
-                        # Unidades predefinidas
-                        unit_translations = {
-                            'ufc_g': 'UFC/g',
-                            'ufc_ml': 'UFC/mL',
-                            'nmp_g': 'NMP/g',
-                            'nmp_ml': 'NMP/mL',
-                            'ufc_100ml': 'UFC/100mL',
-                            'nmp_100ml': 'NMP/100mL',
-                            'mg_kg': 'mg/kg',
-                            'mg_l': 'mg/L'
-                        }
-                        unit = unit_translations.get(record.result_unit_selection, '')
-                        record.result_complete = f"{record.result_value} {unit}".strip()
-                    elif record.result_unit_selection == 'custom' and record.custom_unit:
-                        # Unidad personalizada
-                        record.result_complete = f"{record.result_value} {record.custom_unit}".strip()
-                    else:
-                        record.result_complete = record.result_value
-                else:
-                    record.result_complete = ''
-            else:
-                record.result_complete = record.result_value or ''
+            record.result_complete = record.result_value or ''
     
     @api.onchange('result_qualitative', 'qualitative_unit_selection', 'qualitative_custom_unit')
     def _onchange_qualitative_result_with_unit(self):
@@ -1412,7 +1367,49 @@ class LimsParameterAnalysis(models.Model):
                 self.result_value = f"{result_text} {unit}".strip()
             else:
                 self.result_value = result_text
+        elif self.result_qualitative:
+            # Solo resultado sin unidad
+            qualitative_map = {
+                'detected': 'Detectado',
+                'not_detected': 'No Detectado',
+                'positive': 'Positivo',
+                'negative': 'Negativo',
+                'presence': 'Presencia',
+                'absence': 'Ausencia',
+                'growth': 'Crecimiento',
+                'no_growth': 'Sin Crecimiento',
+                'confirmed': 'Confirmado',
+                'not_confirmed': 'No Confirmado'
+            }
+            self.result_value = qualitative_map.get(self.result_qualitative, self.result_qualitative)
     
+    @api.onchange('result_unit_selection', 'custom_unit')
+    def _onchange_quantitative_unit(self):
+        """Auto-completar unidad en resultado cuantitativo"""
+        if self.result_type == 'quantitative' and self.result_value:
+            # Extraer solo el número/valor sin unidad previa
+            result_base = self.result_value.split()[0] if self.result_value else ''
+            
+            if self.result_unit_selection and self.result_unit_selection != 'custom':
+                # Unidades predefinidas
+                unit_translations = {
+                    'ufc_g': 'UFC/g',
+                    'ufc_ml': 'UFC/mL',
+                    'nmp_g': 'NMP/g',
+                    'nmp_ml': 'NMP/mL',
+                    'ufc_100ml': 'UFC/100mL',
+                    'nmp_100ml': 'NMP/100mL',
+                    'mg_kg': 'mg/kg',
+                    'mg_l': 'mg/L'
+                }
+                unit = unit_translations.get(self.result_unit_selection, '')
+                if result_base and unit:
+                    self.result_value = f"{result_base} {unit}".strip()
+            elif self.result_unit_selection == 'custom' and self.custom_unit:
+                # Unidad personalizada
+                if result_base:
+                    self.result_value = f"{result_base} {self.custom_unit}".strip()
+
     @api.onchange('qualitative_unit_selection')
     def _onchange_qualitative_unit_selection(self):
         """Limpiar unidad personalizada si no se selecciona 'custom'"""
