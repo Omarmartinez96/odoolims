@@ -670,7 +670,7 @@
                                                                 <field name="actual_result" string="Resultado Obtenido" width="15%"/>
                                                                 
                                                                 <!-- Estado con decoraciones visuales -->
-                                                                <field name="control_status" string="Estado" width="12%"
+                                                                <field name="control_status" string="Estado" width="20%"
                                                                        decoration-success="control_status == 'passed'"
                                                                        decoration-warning="control_status == 'in_progress'"
                                                                        decoration-danger="control_status == 'failed'"
@@ -678,12 +678,7 @@
                                                                 
                                                                 <!-- Información de ejecución -->
                                                                 <field name="execution_date" string="Fecha" width="10%"/>
-                                                                <field name="executed_by" string="Ejecutado por" width="15%"/>
-                                                                
-                                                                <!-- Campos ocultos para funcionalidad -->
-                                                                <field name="sequence" invisible="1"/>
-                                                                <field name="execution_time" invisible="1"/>
-                                                                <field name="days_since_execution" invisible="1"/>
+                                                                <field name="executed_by" string="Realizado Por" width="15%"/>            
                                                             </list>
                                                             
                                                             <!-- Formulario detallado para cada control -->
@@ -793,7 +788,7 @@
                                                     </group>
 
                                                     <!-- TABLA DE EQUIPOS INVOLUCRADOS -->
-                                                    <group string="🔧 Equipos Involucrados" colspan="4">
+                                                    <group string="🔧 Otros Equipos Involucrados" colspan="4">
                                                         <field name="equipment_involved_ids" nolabel="1" colspan="2">
                                                             <list string="Equipos Utilizados" editable="bottom" create="true" delete="true">
                                                                 <field name="equipment_id" string="Equipo" placeholder="Seleccionar equipo"/>
