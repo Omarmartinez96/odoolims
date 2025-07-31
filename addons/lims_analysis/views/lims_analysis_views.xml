@@ -481,6 +481,49 @@
                                                             placeholder="Se completará automáticamente al seleccionar resultado y unidad"/>
                                                     </group>
 
+                                                    <!-- TABLA DE RESULTADOS CUALITATIVOS POR LOTE -->
+                                                    <group string="📋 Resultados por Lote de Medio" 
+                                                        invisible="result_type != 'qualitative'">
+                                                        
+                                                        <!-- Botón para sincronizar resultados manualmente -->
+                                                        <div class="oe_button_box" style="margin-bottom: 10px;">
+                                                            <button name="sync_qualitative_results" 
+                                                                    type="object" 
+                                                                    string="🔄 Sincronizar Resultados" 
+                                                                    class="btn-primary"
+                                                                    help="Generar resultados automáticamente para cada medio utilizado"/>
+                                                        </div>
+                                                        
+                                                        <field name="qualitative_results_ids" nolabel="1" colspan="2">
+                                                            <list string="Resultados por Lote" editable="bottom" create="false" delete="false">
+                                                                <field name="batch_display_name" readonly="1" string="Lote" width="40%"/>
+                                                                <field name="qualitative_result" string="Resultado" width="30%"/>
+                                                                <field name="observations" string="Observaciones" width="30%"/>
+                                                            </list>
+                                                            
+                                                            <form string="Resultado Cualitativo por Lote">
+                                                                <group>
+                                                                    <group>
+                                                                        <field name="batch_display_name" readonly="1" string="Lote de Medio"/>
+                                                                        <field name="media_id" invisible="1"/>
+                                                                    </group>
+                                                                    <group>
+                                                                        <!-- Campo vacío para balance visual -->
+                                                                    </group>
+                                                                </group>
+                                                                
+                                                                <group string="📊 Resultado Cualitativo">
+                                                                    <field name="qualitative_result" required="1"/>
+                                                                </group>
+                                                                
+                                                                <group string="📝 Observaciones Adicionales">
+                                                                    <field name="observations" nolabel="1"
+                                                                        placeholder="Observaciones adicionales sobre este resultado..."/>
+                                                                </group>
+                                                            </form>
+                                                        </field>
+                                                    </group>
+
                                                     <!-- PARA CUANTITATIVOS: TABLA DE MEDIOS PRIMERO -->
                                                     <group string="🧪 Medios Utilizados en el Análisis" 
                                                            invisible="result_type != 'quantitative'">

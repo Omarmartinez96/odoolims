@@ -14,3 +14,4 @@ access_lims_executed_quality_control,lims.executed.quality.control,model_lims_ex
 access_lims_analysis_report,lims.analysis.report,model_lims_analysis_report,base.group_user,1,1,1,1
 access_lims_revision_wizard,lims.revision.request.wizard,model_lims_revision_request_wizard,,1,1,1,1
 access_lims_signature_wizard,lims.sample.signature.wizard,model_lims_sample_signature_wizard,,1,1,1,1
+access_lims_qualitative_result,lims.qualitative.result,model_lims_qualitative_result,base.group_user,1,1,1,1
