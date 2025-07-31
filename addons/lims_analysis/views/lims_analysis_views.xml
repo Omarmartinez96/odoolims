@@ -184,7 +184,8 @@
                                                     <group string="Medios y Reactivos">
                                                         <field name="pre_enrichment_media_ids" nolabel="1" colspan="2">
 
-                                                            <list string="Medios y Reactivos Utilizados" editable="bottom" create="true" delete="true">
+                                                            <list string="Medios y Reactivos Utilizados" editable="bottom" create="true" delete="true" 
+                                                                  decoration-bf="1" class="o_list_table_compact">
                                                                 <field name="media_source" string="Origen" width="15%"/>
                                                                 <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                                                 <field name="culture_media_batch_id" 
@@ -289,7 +290,8 @@
                                                     <group string="Medios Selectivos y Reactivos">
                                                         <field name="selective_enrichment_media_ids" nolabel="1" colspan="2">
 
-                                                            <list string="Medios Selectivos Utilizados" editable="bottom" create="true" delete="true">
+                                                            <list string="Medios Selectivos Utilizados" editable="bottom" create="true" delete="true" 
+                                                                  decoration-bf="1" class="o_list_table_compact">
                                                                 <field name="media_source" string="Origen" width="15%"/>
                                                                 <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                                                 <field name="culture_media_batch_id" 
@@ -416,7 +418,8 @@
                                                     <group string="🧪 Medios para Análisis Cualitativos" 
                                                         invisible="result_type != 'qualitative'">
                                                         <field name="qualitative_media_ids" nolabel="1" colspan="2">
-                                                            <list string="Medios para Cualitativos" editable="bottom" create="true" delete="true">
+                                                            <list string="Medios para Cualitativos" editable="bottom" create="true" delete="true" 
+                                                                  decoration-bf="1" class="o_list_table_compact">
                                                                 <field name="media_source" string="Origen" width="15%"/>
                                                                 <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                                                 <field name="culture_media_batch_id" 
@@ -544,7 +547,8 @@
                                                     <group string="🧪 Medios Utilizados en el Análisis" 
                                                            invisible="result_type != 'quantitative'">
                                                         <field name="quantitative_media_ids" nolabel="1" colspan="2">
-                                                            <list string="Medios para Análisis Cuantitativo" editable="bottom" create="true" delete="true">
+                                                            <list string="Medios para Análisis Cuantitativo" editable="bottom" create="true" delete="true" 
+                                                                  decoration-bf="1" class="o_list_table_compact">
                                                                 <field name="media_source" string="Origen" width="15%"/>
                                                                 <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                                                 <field name="culture_media_batch_id" 
@@ -917,7 +921,8 @@
                                                     
                                                     <group string="Medios de Confirmación">
                                                         <field name="confirmation_media_ids" nolabel="1" colspan="2">
-                                                            <list string="Medios para Confirmación" editable="bottom" create="true" delete="true">
+                                                            <list string="Medios para Confirmación" editable="bottom" create="true" delete="true" 
+                                                                  decoration-bf="1" class="o_list_table_compact">
                                                                 <field name="media_source" string="Origen" width="15%"/>
                                                                 <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                                                 <field name="culture_media_batch_id" 
