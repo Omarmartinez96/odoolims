@@ -844,7 +844,7 @@ class LimsParameterAnalysis(models.Model):
 
     # 🆕 CAMPOS PARA PRE-ENRIQUECIMIENTO
     pre_enrichment_environment = fields.Selection([
-        ('triangulo_esteril', 'Triángulo Estéril'),
+        ('ambiente_aseptico', 'Ambiente aséptico'),
         ('campana_flujo', 'Campana de Flujo Laminar'),
         ('campana_bioseguridad', 'Campana de Bioseguridad'),
         ('mesa_trabajo', 'Mesa de Trabajo'),
@@ -952,7 +952,7 @@ class LimsParameterAnalysis(models.Model):
     
     # CAMPOS PARA ENRIQUECIMIENTO SELECTIVO
     selective_enrichment_environment = fields.Selection([
-        ('triangulo_esteril', 'Triángulo Estéril'),
+        ('ambiente_aseptico', 'Ambiente aséptico'),
         ('campana_flujo', 'Campana de Flujo Laminar'),
         ('campana_bioseguridad', 'Campana de Bioseguridad'),
         ('mesa_trabajo', 'Mesa de Trabajo'),
@@ -990,7 +990,7 @@ class LimsParameterAnalysis(models.Model):
 
     # 🆕 CAMPOS PARA CONFIRMACIÓN
     confirmation_environment = fields.Selection([
-        ('triangulo_esteril', 'Triángulo Estéril'),
+        ('ambiente_aseptico', 'Ambiente aséptico'),
         ('campana_flujo', 'Campana de Flujo Laminar'),
         ('campana_bioseguridad', 'Campana de Bioseguridad'),
         ('mesa_trabajo', 'Mesa de Trabajo'),
@@ -1082,7 +1082,7 @@ class LimsParameterAnalysis(models.Model):
     )
 
     quantitative_environment = fields.Selection([
-        ('triangulo_esteril', 'Triángulo Estéril'),
+        ('ambiente_aseptico', 'Ambiente aséptico'),
         ('campana_flujo', 'Campana de Flujo Laminar'),
         ('campana_bioseguridad', 'Campana de Bioseguridad'),
         ('mesa_trabajo', 'Mesa de Trabajo'),
@@ -1106,7 +1106,7 @@ class LimsParameterAnalysis(models.Model):
 
     # 🆕 CAMPOS DE AMBIENTE PARA CUALITATIVOS
     qualitative_environment = fields.Selection([
-        ('triangulo_esteril', 'Triángulo Estéril'),
+        ('ambiente_aseptico', 'Ambiente aséptico'),
         ('campana_flujo', 'Campana de Flujo Laminar'),
         ('campana_bioseguridad', 'Campana de Bioseguridad'),
         ('mesa_trabajo', 'Mesa de Trabajo'),
