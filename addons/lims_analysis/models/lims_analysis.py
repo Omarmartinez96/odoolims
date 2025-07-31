@@ -848,6 +848,7 @@ class LimsParameterAnalysis(models.Model):
         ('campana_flujo', 'Campana de Flujo Laminar'),
         ('campana_bioseguridad', 'Campana de Bioseguridad'),
         ('mesa_trabajo', 'Mesa de Trabajo'),
+        ('no_aplica', 'N/A'),
     ], string='Ambiente de Procesamiento')
 
     pre_enrichment_equipment_id = fields.Many2one(
@@ -956,6 +957,7 @@ class LimsParameterAnalysis(models.Model):
         ('campana_flujo', 'Campana de Flujo Laminar'),
         ('campana_bioseguridad', 'Campana de Bioseguridad'),
         ('mesa_trabajo', 'Mesa de Trabajo'),
+        ('no_aplica', 'N/A'),
     ], string='Ambiente de Procesamiento Selectivo')
 
     selective_enrichment_equipment_id = fields.Many2one(
@@ -994,6 +996,7 @@ class LimsParameterAnalysis(models.Model):
         ('campana_flujo', 'Campana de Flujo Laminar'),
         ('campana_bioseguridad', 'Campana de Bioseguridad'),
         ('mesa_trabajo', 'Mesa de Trabajo'),
+        ('no_aplica', 'N/A'),
     ], string='Ambiente de Procesamiento de Confirmación')
 
     confirmation_equipment_id = fields.Many2one(
@@ -1086,6 +1089,7 @@ class LimsParameterAnalysis(models.Model):
         ('campana_flujo', 'Campana de Flujo Laminar'),
         ('campana_bioseguridad', 'Campana de Bioseguridad'),
         ('mesa_trabajo', 'Mesa de Trabajo'),
+        ('no_aplica', 'N/A'),
     ], string='Ambiente de Procesamiento Cuantitativo')
 
     quantitative_equipment_id = fields.Many2one(
@@ -1110,6 +1114,7 @@ class LimsParameterAnalysis(models.Model):
         ('campana_flujo', 'Campana de Flujo Laminar'),
         ('campana_bioseguridad', 'Campana de Bioseguridad'),
         ('mesa_trabajo', 'Mesa de Trabajo'),
+        ('no_aplica', 'N/A'),
     ], string='Ambiente de Procesamiento Cualitativo')
 
     qualitative_equipment_id = fields.Many2one(
