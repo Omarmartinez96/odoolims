@@ -1072,11 +1072,11 @@ class LimsParameterAnalysis(models.Model):
         string='Controles de Calidad Ejecutados'
     )
 
-    qualitative_results_ids = fields.One2many(
-        'lims.qualitative.result',
-        'parameter_analysis_id',
-        string='Resultados Cualitativos'
-    )
+    # qualitative_results_ids = fields.One2many(
+    #     'lims.qualitative.result',
+    #     'parameter_analysis_id',
+    #     string='Resultados Cualitativos'
+    # )
 
     qualitative_media_ids = fields.One2many(
         'lims.qualitative.media',
@@ -1497,61 +1497,61 @@ class LimsParameterAnalysis(models.Model):
         for param in self:
             param.is_parameter_signed = bool(param.parameter_signature)
 
-    def sync_qualitative_results(self):
-        """Botón para sincronizar resultados cualitativos incluyendo lotes externos"""
-        for record in self:
-            try:
-                # Limpiar resultados existentes
-                existing_results = self.env['lims.qualitative.result'].search([
-                    ('parameter_analysis_id', '=', record.id)
-                ])
-                if existing_results:
-                    existing_results.unlink()
+    # def sync_qualitative_results(self):
+    #     """Botón para sincronizar resultados cualitativos incluyendo lotes externos"""
+    #     for record in self:
+    #         try:
+    #             # Limpiar resultados existentes
+    #             existing_results = self.env['lims.qualitative.result'].search([
+    #                 ('parameter_analysis_id', '=', record.id)
+    #             ])
+    #             if existing_results:
+    #                 existing_results.unlink()
                 
-                # Crear resultados para medios INTERNOS
-                for media in record.qualitative_media_ids.filtered(lambda m: m.media_source == 'internal' and m.culture_media_batch_id):
-                    batch_display = f"{media.culture_media_batch_id.culture_media_id.name} (Lote: {media.culture_media_batch_id.batch_code})"
+    #             # Crear resultados para medios INTERNOS
+    #             for media in record.qualitative_media_ids.filtered(lambda m: m.media_source == 'internal' and m.culture_media_batch_id):
+    #                 batch_display = f"{media.culture_media_batch_id.culture_media_id.name} (Lote: {media.culture_media_batch_id.batch_code})"
                     
-                    self.env['lims.qualitative.result'].create({
-                        'parameter_analysis_id': record.id,
-                        'culture_media_batch_id': media.culture_media_batch_id.id,
-                        'batch_display_name': batch_display,
-                        'media_source': 'internal',
-                    })
+    #                 self.env['lims.qualitative.result'].create({
+    #                     'parameter_analysis_id': record.id,
+    #                     'culture_media_batch_id': media.culture_media_batch_id.id,
+    #                     'batch_display_name': batch_display,
+    #                     'media_source': 'internal',
+    #                 })
                 
-                # Crear resultados para medios EXTERNOS
-                for media in record.qualitative_media_ids.filtered(lambda m: m.media_source == 'external'):
-                    batch_display = f"{media.culture_media_name} (Ext: {media.external_batch_code})"
+    #             # Crear resultados para medios EXTERNOS
+    #             for media in record.qualitative_media_ids.filtered(lambda m: m.media_source == 'external'):
+    #                 batch_display = f"{media.culture_media_name} (Ext: {media.external_batch_code})"
                     
-                    self.env['lims.qualitative.result'].create({
-                        'parameter_analysis_id': record.id,
-                        'batch_display_name': batch_display,
-                        'media_source': 'external',
-                        'external_batch_info': f"{media.culture_media_name} - {media.external_batch_code}",
-                    })
+    #                 self.env['lims.qualitative.result'].create({
+    #                     'parameter_analysis_id': record.id,
+    #                     'batch_display_name': batch_display,
+    #                     'media_source': 'external',
+    #                     'external_batch_info': f"{media.culture_media_name} - {media.external_batch_code}",
+    #                 })
                 
-                total_created = len(record.qualitative_media_ids)
+    #             total_created = len(record.qualitative_media_ids)
                 
-                return {
-                    'type': 'ir.actions.client',
-                    'tag': 'display_notification',
-                    'params': {
-                        'title': 'Sincronización Completada',
-                        'message': f'Se crearon {total_created} resultados (internos y externos)',
-                        'type': 'success',
-                    }
-                }
+    #             return {
+    #                 'type': 'ir.actions.client',
+    #                 'tag': 'display_notification',
+    #                 'params': {
+    #                     'title': 'Sincronización Completada',
+    #                     'message': f'Se crearon {total_created} resultados (internos y externos)',
+    #                     'type': 'success',
+    #                 }
+    #             }
                 
-            except Exception as e:
-                return {
-                    'type': 'ir.actions.client',
-                    'tag': 'display_notification',
-                    'params': {
-                        'title': 'Error en Sincronización',
-                        'message': f'Error: {str(e)}',
-                        'type': 'warning',
-                    }
-                }
+    #         except Exception as e:
+    #             return {
+    #                 'type': 'ir.actions.client',
+    #                 'tag': 'display_notification',
+    #                 'params': {
+    #                     'title': 'Error en Sincronización',
+    #                     'message': f'Error: {str(e)}',
+    #                     'type': 'warning',
+    #                 }
+    #             }
 
     @api.onchange('quantitative_environment')
     def _onchange_quantitative_environment(self):
@@ -1807,7 +1807,20 @@ class LimsPreEnrichmentMedia(models.Model):
         compute='_compute_display_name',
         store=True
     )
-    
+
+    qualitative_result = fields.Selection([
+        ('detected', 'Detectado'),
+        ('not_detected', 'No Detectado'),
+        ('positive', 'Positivo'),
+        ('negative', 'Negativo'),
+        ('presence', 'Presencia'),
+        ('absence', 'Ausencia'),
+        ('growth', 'Crecimiento'),
+        ('no_growth', 'Sin Crecimiento'),
+        ('confirmed', 'Confirmado'),
+        ('not_confirmed', 'No Confirmado')
+    ], string='Resultado (Si Aplica)', help='Resultado obtenido en este medio')
+
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
     def _compute_incubation_duration(self):
         """Calcular duración de incubación"""
@@ -1993,6 +2006,19 @@ class LimsSelectiveEnrichmentMedia(models.Model):
         store=True
     )
     
+    qualitative_result = fields.Selection([
+        ('detected', 'Detectado'),
+        ('not_detected', 'No Detectado'),
+        ('positive', 'Positivo'),
+        ('negative', 'Negativo'),
+        ('presence', 'Presencia'),
+        ('absence', 'Ausencia'),
+        ('growth', 'Crecimiento'),
+        ('no_growth', 'Sin Crecimiento'),
+        ('confirmed', 'Confirmado'),
+        ('not_confirmed', 'No Confirmado')
+    ], string='Resultado (Si Aplica)', help='Resultado obtenido en este medio')
+
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
     def _compute_incubation_duration(self):
         """Calcular duración de incubación"""
@@ -2180,6 +2206,19 @@ class LimsQuantitativeMedia(models.Model):
         store=True
     )
     
+    qualitative_result = fields.Selection([
+        ('detected', 'Detectado'),
+        ('not_detected', 'No Detectado'),
+        ('positive', 'Positivo'),
+        ('negative', 'Negativo'),
+        ('presence', 'Presencia'),
+        ('absence', 'Ausencia'),
+        ('growth', 'Crecimiento'),
+        ('no_growth', 'Sin Crecimiento'),
+        ('confirmed', 'Confirmado'),
+        ('not_confirmed', 'No Confirmado')
+    ], string='Resultado (Si Aplica)', help='Resultado obtenido en este medio')
+
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
     def _compute_incubation_duration(self):
         """Calcular duración de incubación"""
@@ -2365,6 +2404,19 @@ class LimsQualitativeMedia(models.Model):
         store=True
     )
     
+    qualitative_result = fields.Selection([
+        ('detected', 'Detectado'),
+        ('not_detected', 'No Detectado'),
+        ('positive', 'Positivo'),
+        ('negative', 'Negativo'),
+        ('presence', 'Presencia'),
+        ('absence', 'Ausencia'),
+        ('growth', 'Crecimiento'),
+        ('no_growth', 'Sin Crecimiento'),
+        ('confirmed', 'Confirmado'),
+        ('not_confirmed', 'No Confirmado')
+    ], string='Resultado (Si Aplica)', help='Resultado obtenido en este medio')
+
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
     def _compute_incubation_duration(self):
         """Calcular duración de incubación"""
@@ -2621,6 +2673,19 @@ class LimsConfirmationMedia(models.Model):
         store=True
     )
     
+    qualitative_result = fields.Selection([
+        ('detected', 'Detectado'),
+        ('not_detected', 'No Detectado'),
+        ('positive', 'Positivo'),
+        ('negative', 'Negativo'),
+        ('presence', 'Presencia'),
+        ('absence', 'Ausencia'),
+        ('growth', 'Crecimiento'),
+        ('no_growth', 'Sin Crecimiento'),
+        ('confirmed', 'Confirmado'),
+        ('not_confirmed', 'No Confirmado')
+    ], string='Resultado (Si Aplica)', help='Resultado obtenido en este medio')
+
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
     def _compute_incubation_duration(self):
         """Calcular duración de incubación"""
@@ -3082,60 +3147,60 @@ class LimsExecutedQualityControl(models.Model):
         if self.qc_type_id and self.qc_type_id.default_expected_result:
             self.expected_result = self.qc_type_id.default_expected_result
 
-class LimsQualitativeResult(models.Model):
-    _name = 'lims.qualitative.result'
-    _description = 'Resultados Cualitativos por Lote'
-    _rec_name = 'batch_display_name'
-    _order = 'batch_display_name'
+# class LimsQualitativeResult(models.Model):
+#     _name = 'lims.qualitative.result'
+#     _description = 'Resultados Cualitativos por Lote'
+#     _rec_name = 'batch_display_name'
+#     _order = 'batch_display_name'
 
-    parameter_analysis_id = fields.Many2one(
-        'lims.parameter.analysis',
-        string='Parámetro de Análisis',
-        required=True,
-        ondelete='cascade'
-    )
+#     parameter_analysis_id = fields.Many2one(
+#         'lims.parameter.analysis',
+#         string='Parámetro de Análisis',
+#         required=True,
+#         ondelete='cascade'
+#     )
     
-    # Simplificado - solo referencia al lote de medio
-    culture_media_batch_id = fields.Many2one(
-        'lims.culture.media.batch',
-        string='Lote de Medio',
-        required=True,
-        help='Lote específico del medio de cultivo utilizado'
-    )
+#     # Simplificado - solo referencia al lote de medio
+#     culture_media_batch_id = fields.Many2one(
+#         'lims.culture.media.batch',
+#         string='Lote de Medio',
+#         required=True,
+#         help='Lote específico del medio de cultivo utilizado'
+#     )
     
-    # Información del lote (copiada automáticamente)
-    batch_display_name = fields.Char(
-        string='Lote de Medio',
-        required=True,
-        readonly=True,
-        help='Formato: "Nombre del Medio (Lote: Código)"'
-    )
+#     # Información del lote (copiada automáticamente)
+#     batch_display_name = fields.Char(
+#         string='Lote de Medio',
+#         required=True,
+#         readonly=True,
+#         help='Formato: "Nombre del Medio (Lote: Código)"'
+#     )
     
-    # RESULTADO CUALITATIVO
-    qualitative_result = fields.Selection([
-        ('detected', 'Detectado'),
-        ('not_detected', 'No Detectado'),
-        ('positive', 'Positivo'),
-        ('negative', 'Negativo'),
-        ('presence', 'Presencia'),
-        ('absence', 'Ausencia'),
-        ('growth', 'Crecimiento'),
-        ('no_growth', 'Sin Crecimiento'),
-        ('confirmed', 'Confirmado'),
-        ('not_confirmed', 'No Confirmado')
-    ], string='Resultado Cualitativo')
+#     # RESULTADO CUALITATIVO
+#     qualitative_result = fields.Selection([
+#         ('detected', 'Detectado'),
+#         ('not_detected', 'No Detectado'),
+#         ('positive', 'Positivo'),
+#         ('negative', 'Negativo'),
+#         ('presence', 'Presencia'),
+#         ('absence', 'Ausencia'),
+#         ('growth', 'Crecimiento'),
+#         ('no_growth', 'Sin Crecimiento'),
+#         ('confirmed', 'Confirmado'),
+#         ('not_confirmed', 'No Confirmado')
+#     ], string='Resultado Cualitativo')
     
-    # AGREGAR DESPUÉS del campo parameter_analysis_id:
-    media_source = fields.Selection([
-        ('internal', 'Lote Interno'),
-        ('external', 'Lote Externo')
-    ], string='Origen', readonly=True)
+#     # AGREGAR DESPUÉS del campo parameter_analysis_id:
+#     media_source = fields.Selection([
+#         ('internal', 'Lote Interno'),
+#         ('external', 'Lote Externo')
+#     ], string='Origen', readonly=True)
 
-    external_batch_info = fields.Char(
-        string='Info Lote Externo',
-        readonly=True,
-        help='Información del lote externo'
-    )
+#     external_batch_info = fields.Char(
+#         string='Info Lote Externo',
+#         readonly=True,
+#         help='Información del lote externo'
+#     )
 
 class LimsEquipmentInvolved(models.Model):
     _name = 'lims.equipment.involved'

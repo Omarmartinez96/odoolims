@@ -184,8 +184,7 @@
                                                     <group string="Medios y Reactivos">
                                                         <field name="pre_enrichment_media_ids" nolabel="1" colspan="2">
 
-                                                            <list string="Medios y Reactivos Utilizados" editable="bottom" create="true" delete="true" 
-                                                                  decoration-bf="1" class="o_list_table_compact">
+                                                            <list string="Medios y Reactivos Utilizados" create="true" delete="true" edit="true">
                                                                 <field name="media_source" string="Origen" width="15%"/>
                                                                 <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                                                 <field name="culture_media_batch_id" 
@@ -214,6 +213,7 @@
                                                                 <field name="incubation_end_time" 
                                                                     invisible="requires_incubation == False"
                                                                     placeholder="HH:MM"/>
+                                                                <field name="qualitative_result" string="Resultado (Si Aplica)" optional="show"/>
                                                             </list>
                                                             
                                                             <form string="Medio/Reactivo Utilizado">
@@ -234,6 +234,10 @@
                                                                             invisible="media_source != 'external'"
                                                                             placeholder="Código del lote externo"
                                                                             required="media_source == 'external'"/>
+                                                                    </group>
+
+                                                                    <group string="🧪 Resultado en este Medio (Si Aplica)">
+                                                                        <field name="qualitative_result"/>
                                                                     </group>
 
                                                                     <group>
@@ -290,8 +294,7 @@
                                                     <group string="Medios Selectivos y Reactivos">
                                                         <field name="selective_enrichment_media_ids" nolabel="1" colspan="2">
 
-                                                            <list string="Medios Selectivos Utilizados" editable="bottom" create="true" delete="true" 
-                                                                  decoration-bf="1" class="o_list_table_compact">
+                                                            <list string="Medios Selectivos Utilizados" create="true" delete="true" edit="true">
                                                                 <field name="media_source" string="Origen" width="15%"/>
                                                                 <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                                                 <field name="culture_media_batch_id" 
@@ -320,6 +323,7 @@
                                                                 <field name="incubation_end_time" 
                                                                     invisible="requires_incubation == False"
                                                                     placeholder="HH:MM"/>
+                                                                <field name="qualitative_result" string="Resultado (Si Aplica)" optional="show"/>
                                                             </list>
                                                             
                                                             <form string="Medio Selectivo Utilizado">
@@ -340,6 +344,10 @@
                                                                             invisible="media_source != 'external'"
                                                                             placeholder="Código del lote externo"
                                                                             required="media_source == 'external'"/>
+                                                                    </group>
+
+                                                                    <group string="🧪 Resultado en este Medio (Si Aplica)">
+                                                                        <field name="qualitative_result"/>
                                                                     </group>
 
                                                                     <group>
@@ -418,8 +426,7 @@
                                                     <group string="🧪 Medios para Análisis Cualitativos" 
                                                         invisible="result_type != 'qualitative'">
                                                         <field name="qualitative_media_ids" nolabel="1" colspan="2">
-                                                            <list string="Medios para Cualitativos" editable="bottom" create="true" delete="true" 
-                                                                  decoration-bf="1" class="o_list_table_compact">
+                                                            <list string="Medios para Cualitativos" create="true" delete="true" edit="true">
                                                                 <field name="media_source" string="Origen" width="15%"/>
                                                                 <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                                                 <field name="culture_media_batch_id" 
@@ -448,6 +455,7 @@
                                                                 <field name="incubation_end_time" 
                                                                     invisible="requires_incubation == False"
                                                                     placeholder="HH:MM"/>
+                                                                <field name="qualitative_result" string="Resultado (Si Aplica)" optional="show"/>
                                                             </list>
                                                             
                                                             <form string="Medio para Cualitativo">
@@ -468,6 +476,10 @@
                                                                             invisible="media_source != 'external'"
                                                                             placeholder="Código del lote externo"
                                                                             required="media_source == 'external'"/>
+                                                                    </group>
+
+                                                                    <group string="🧪 Resultado en este Medio (Si Aplica)">
+                                                                        <field name="qualitative_result"/>
                                                                     </group>
 
                                                                     <group>
@@ -501,51 +513,11 @@
                                                         </field>
                                                     </group>
 
-                                                    <!-- TABLA DE RESULTADOS CUALITATIVOS POR LOTE -->
-                                                    <group string="📋 Resultados por Lote de Medio" 
-                                                        invisible="result_type != 'qualitative'">
-                                                        
-                                                        <!-- Botón para sincronizar resultados manualmente -->
-                                                        <div class="oe_button_box" style="margin-bottom: 10px;">
-                                                            <button name="sync_qualitative_results" 
-                                                                    type="object" 
-                                                                    string="🔄 Sincronizar Resultados" 
-                                                                    class="btn-primary"
-                                                                    help="Generar resultados automáticamente para cada medio utilizado"/>
-                                                        </div>
-                                                        
-                                                        <field name="qualitative_results_ids" nolabel="1" colspan="2">
-                                                            <list string="Resultados por Lote" editable="bottom" create="false" delete="false">
-                                                                <field name="media_source" string="Origen" width="15%" readonly="1"/>
-                                                                <field name="batch_display_name" readonly="1" string="Lote" width="50%"/>
-                                                                <field name="qualitative_result" string="Resultado" width="35%"/>
-                                                            </list>
-                                                            
-                                                            <form string="Resultado Cualitativo por Lote">
-                                                                <group>
-                                                                    <group>
-                                                                        <field name="media_source" readonly="1"/>
-                                                                        <field name="batch_display_name" readonly="1" string="Información del Lote"/>
-                                                                    </group>
-                                                                    <group>
-                                                                        <!-- Campo vacío para balance visual -->
-                                                                    </group>
-                                                                </group>
-                                                                
-                                                                <group string="📊 Resultado Cualitativo">
-                                                                    <field name="qualitative_result" required="1"/>
-                                                                </group>
-                                                                
-                                                            </form>
-                                                        </field>
-                                                    </group>
-
                                                     <!-- PARA CUANTITATIVOS: TABLA DE MEDIOS PRIMERO -->
                                                     <group string="🧪 Medios Utilizados en el Análisis" 
                                                            invisible="result_type != 'quantitative'">
                                                         <field name="quantitative_media_ids" nolabel="1" colspan="2">
-                                                            <list string="Medios para Análisis Cuantitativo" editable="bottom" create="true" delete="true" 
-                                                                  decoration-bf="1" class="o_list_table_compact">
+                                                            <list string="Medios para Análisis Cuantitativo" create="true" delete="true" edit="true">
                                                                 <field name="media_source" string="Origen" width="15%"/>
                                                                 <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                                                 <field name="culture_media_batch_id" 
@@ -574,6 +546,7 @@
                                                                 <field name="incubation_end_time" 
                                                                     invisible="requires_incubation == False"
                                                                     placeholder="HH:MM"/>
+                                                                <field name="qualitative_result" string="Resultado (Si Aplica)" optional="show"/>
                                                             </list>
                                                             
                                                             <form string="Medio Utilizado para Cuantitativo">
@@ -594,6 +567,10 @@
                                                                             invisible="media_source != 'external'"
                                                                             placeholder="Código del lote externo"
                                                                             required="media_source == 'external'"/>
+                                                                    </group>
+
+                                                                    <group string="🧪 Resultado en este Medio (Si Aplica)">
+                                                                        <field name="qualitative_result"/>
                                                                     </group>
 
                                                                     <group>
@@ -915,8 +892,7 @@
                                                     
                                                     <group string="Medios de Confirmación">
                                                         <field name="confirmation_media_ids" nolabel="1" colspan="2">
-                                                            <list string="Medios para Confirmación" editable="bottom" create="true" delete="true" 
-                                                                  decoration-bf="1" class="o_list_table_compact">
+                                                            <list string="Medios para Confirmación" create="true" delete="true" edit="true">
                                                                 <field name="media_source" string="Origen" width="15%"/>
                                                                 <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                                                 <field name="culture_media_batch_id" 
@@ -945,6 +921,7 @@
                                                                 <field name="incubation_end_time" 
                                                                     invisible="requires_incubation == False"
                                                                     placeholder="HH:MM"/>
+                                                                <field name="qualitative_result" string="Resultado (Si Aplica)" optional="show"/>
                                                             </list>
                                                             
                                                             <form string="Medio de Confirmación">
@@ -965,6 +942,10 @@
                                                                             invisible="media_source != 'external'"
                                                                             placeholder="Código del lote externo"
                                                                             required="media_source == 'external'"/>
+                                                                    </group>
+
+                                                                    <group string="🧪 Resultado en este Medio (Si Aplica)">
+                                                                        <field name="qualitative_result"/>
                                                                     </group>
 
                                                                     <group>
@@ -997,46 +978,7 @@
                                                             </form>
                                                         </field>
                                                     </group>
-                                                    
-                                                    <!-- TABLA DE RESULTADOS DE CONFIRMACIÓN -->
-                                                    <group string="📋 Resultados de Confirmación" 
-                                                           invisible="confirmation_media_ids == False">
-                                                        
-                                                        <!-- Botón para sincronizar resultados manualmente -->
-                                                        <div class="oe_button_box" style="margin-bottom: 10px;">
-                                                            <button name="sync_confirmation_results" 
-                                                                    type="object" 
-                                                                    string="🔄 Sincronizar Resultados" 
-                                                                    class="btn-primary"
-                                                                    help="Generar resultados automáticamente para cada medio agregado"/>
-                                                        </div>
-                                                        
-                                                        <field name="confirmation_results_ids" nolabel="1" colspan="2">
-                                                            <list string="Resultados por Lote" editable="bottom" create="false" delete="false">
-                                                                <field name="batch_display_name" readonly="1" string="Lote" width="40%"/>
-                                                                <field name="result" string="Resultado del Crecimiento" placeholder="Ej: Positivo, Negativo, Crecimiento característico, etc." width="60%"/>
-                                                            </list>
-                                                            
-                                                            <form string="Resultado de Confirmación">
-                                                                <group>
-                                                                    <group>
-                                                                        <field name="batch_display_name" readonly="1" string="Lote de Medio"/>
-                                                                        <field name="confirmation_media_id" invisible="1"/>
-                                                                    </group>
-                                                                    <group>
-                                                                        <!-- Campo vacío para balance visual -->
-                                                                    </group>
-                                                                </group>
-                                                                
-                                                                <group string="📊 Resultado del Crecimiento">
-                                                                    <field name="result" nolabel="1" 
-                                                                           placeholder="Describa el resultado observado: Positivo, Negativo, Crecimiento característico, cambio de color, etc."/>
-                                                                </group>
-                                                                
-                                                            </form>
-                                                        </field>
-                                                    </group>
-                                                    
+                                                                                                        
                                                 </page>
 
                                             </notebook>
