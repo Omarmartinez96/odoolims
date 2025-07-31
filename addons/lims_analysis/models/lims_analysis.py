@@ -1453,91 +1453,60 @@ class LimsParameterAnalysis(models.Model):
 
     def sync_qualitative_results(self):
         """Botón para sincronizar resultados cualitativos manualmente"""
-        for record in self:
-            try:
-                # FORZAR GUARDADO DE CAMBIOS PENDIENTES PRIMERO
-                if record._context.get('params') and not record.exists():
-                    # Si es un registro nuevo, necesitamos guardarlo primero
-                    record._cr.commit()
-                
-                # Recargar el registro para asegurar que tenemos los datos más recientes
-                record.invalidate_cache()
-                record = record.browse(record.id)
-                
-                # Recopilar todos los lotes de medios utilizados
-                batch_ids = set()
-                
-                print(f"DEBUG: qualitative_media_ids count: {len(record.qualitative_media_ids)}")
-                print(f"DEBUG: pre_enrichment_media_ids count: {len(record.pre_enrichment_media_ids)}")
-                print(f"DEBUG: selective_enrichment_media_ids count: {len(record.selective_enrichment_media_ids)}")
-                
-                # De medios específicos para cualitativos
-                for media in record.qualitative_media_ids:
-                    if media.culture_media_batch_id:
-                        batch_ids.add(media.culture_media_batch_id.id)
-                        print(f"DEBUG: Agregado batch desde qualitative: {media.culture_media_batch_id.batch_code}")
-                
-                # De pre-enriquecimiento
-                if record.requires_pre_enrichment:
-                    for media in record.pre_enrichment_media_ids:
-                        if media.culture_media_batch_id:
-                            batch_ids.add(media.culture_media_batch_id.id)
-                            print(f"DEBUG: Agregado batch desde pre-enrichment: {media.culture_media_batch_id.batch_code}")
-                
-                # De enriquecimiento selectivo
-                if record.requires_selective_enrichment:
-                    for media in record.selective_enrichment_media_ids:
-                        if media.culture_media_batch_id:
-                            batch_ids.add(media.culture_media_batch_id.id)
-                            print(f"DEBUG: Agregado batch desde selective: {media.culture_media_batch_id.batch_code}")
-                
-                print(f"DEBUG: Total unique batches found: {len(batch_ids)}")
-                
-                # Limpiar resultados existentes
-                existing_results = self.env['lims.qualitative.result'].search([
-                    ('parameter_analysis_id', '=', record.id)
-                ])
-                if existing_results:
-                    existing_results.unlink()
-                    print(f"DEBUG: Eliminated {len(existing_results)} existing results")
-                
-                # Crear nuevos resultados para cada lote único
-                created_count = 0
-                for batch_id in batch_ids:
-                    batch = self.env['lims.culture.media.batch'].browse(batch_id)
-                    batch_display = f"{batch.culture_media_id.name} (Lote: {batch.batch_code})"
-                    
-                    result = self.env['lims.qualitative.result'].create({
-                        'parameter_analysis_id': record.id,
-                        'culture_media_batch_id': batch_id,
-                        'batch_display_name': batch_display,
-                    })
-                    created_count += 1
-                    print(f"DEBUG: Created result for batch: {batch_display}")
-                
-                return {
-                    'type': 'ir.actions.client',
-                    'tag': 'display_notification',
-                    'params': {
-                        'title': 'Sincronización Completada',
-                        'message': f'Se crearon {created_count} resultados cualitativos',
-                        'type': 'success',
-                    }
-                }
-                
-            except Exception as e:
-                import traceback
-                print(f"ERROR DETALLADO: {str(e)}")
-                print(f"TRACEBACK: {traceback.format_exc()}")
-                return {
-                    'type': 'ir.actions.client',
-                    'tag': 'display_notification',
-                    'params': {
-                        'title': 'Error en Sincronización',
-                        'message': f'Error: {str(e)}',
-                        'type': 'warning',
-                    }
-                }
+        # Buscar directamente en la base de datos los medios relacionados
+        qualitative_media = self.env['lims.qualitative.media'].search([
+            ('parameter_analysis_id', '=', self.id)
+        ])
+        
+        pre_enrichment_media = self.env['lims.pre.enrichment.media'].search([
+            ('parameter_analysis_id', '=', self.id)
+        ]) if self.requires_pre_enrichment else []
+        
+        selective_media = self.env['lims.selective.enrichment.media'].search([
+            ('parameter_analysis_id', '=', self.id)
+        ]) if self.requires_selective_enrichment else []
+        
+        # Recopilar lotes únicos
+        batch_ids = set()
+        
+        for media in qualitative_media:
+            if media.culture_media_batch_id:
+                batch_ids.add(media.culture_media_batch_id.id)
+        
+        for media in pre_enrichment_media:
+            if media.culture_media_batch_id:
+                batch_ids.add(media.culture_media_batch_id.id)
+        
+        for media in selective_media:
+            if media.culture_media_batch_id:
+                batch_ids.add(media.culture_media_batch_id.id)
+        
+        # Limpiar y crear resultados
+        self.env['lims.qualitative.result'].search([
+            ('parameter_analysis_id', '=', self.id)
+        ]).unlink()
+        
+        created_count = 0
+        for batch_id in batch_ids:
+            batch = self.env['lims.culture.media.batch'].browse(batch_id)
+            batch_display = f"{batch.culture_media_id.name} (Lote: {batch.batch_code})"
+            
+            self.env['lims.qualitative.result'].create({
+                'parameter_analysis_id': self.id,
+                'culture_media_batch_id': batch_id,
+                'batch_display_name': batch_display,
+            })
+            created_count += 1
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Sincronización Completada',
+                'message': f'Se crearon {created_count} resultados cualitativos',
+                'type': 'success',
+            }
+        }
 
 # 🆕 MODELO PARA DATOS CRUDOS DE DILUCIONES
 class LimsRawDilutionData(models.Model):
