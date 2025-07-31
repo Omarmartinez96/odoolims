@@ -536,10 +536,6 @@
                                                                     <field name="qualitative_result" required="1"/>
                                                                 </group>
                                                                 
-                                                                <group string="📝 Observaciones Adicionales">
-                                                                    <field name="observations" nolabel="1"
-                                                                        placeholder="Observaciones adicionales sobre este resultado..."/>
-                                                                </group>
                                                             </form>
                                                         </field>
                                                     </group>
@@ -683,9 +679,6 @@
                                                                     </group>
                                                                 </group>
                                                                 
-                                                                <group>
-                                                                    <field name="observations" nolabel="1"/>
-                                                                </group>
                                                             </form>
                                                         </field>
                                                         
@@ -1040,10 +1033,6 @@
                                                                            placeholder="Describa el resultado observado: Positivo, Negativo, Crecimiento característico, cambio de color, etc."/>
                                                                 </group>
                                                                 
-                                                                <group string="📝 Observaciones Adicionales">
-                                                                    <field name="observations" nolabel="1"
-                                                                           placeholder="Observaciones adicionales sobre este resultado..."/>
-                                                                </group>
                                                             </form>
                                                         </field>
                                                     </group>
