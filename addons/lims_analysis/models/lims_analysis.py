@@ -1455,22 +1455,26 @@ class LimsParameterAnalysis(models.Model):
         """Botón para sincronizar resultados cualitativos manualmente"""
         for record in self:
             try:
-                # Determinar qué medios usar según los procesos habilitados
-                all_media = []
+                # Recopilar todos los lotes de medios utilizados
+                batch_ids = set()
                 
-                # Medios específicos para cualitativos
+                # De medios específicos para cualitativos
                 if record.qualitative_media_ids:
-                    all_media.extend(record.qualitative_media_ids)
+                    for media in record.qualitative_media_ids:
+                        if media.culture_media_batch_id:
+                            batch_ids.add(media.culture_media_batch_id.id)
                 
+                # De pre-enriquecimiento
                 if record.requires_pre_enrichment and record.pre_enrichment_media_ids:
-                    all_media.extend(record.pre_enrichment_media_ids)
+                    for media in record.pre_enrichment_media_ids:
+                        if media.culture_media_batch_id:
+                            batch_ids.add(media.culture_media_batch_id.id)
                 
+                # De enriquecimiento selectivo
                 if record.requires_selective_enrichment and record.selective_enrichment_media_ids:
-                    all_media.extend(record.selective_enrichment_media_ids)
-                
-                # Si no hay procesos específicos pero hay medios cuantitativos, usarlos
-                if not all_media and record.quantitative_media_ids:
-                    all_media.extend(record.quantitative_media_ids)
+                    for media in record.selective_enrichment_media_ids:
+                        if media.culture_media_batch_id:
+                            batch_ids.add(media.culture_media_batch_id.id)
                 
                 # Limpiar resultados existentes
                 existing_results = self.env['lims.qualitative.result'].search([
@@ -1479,18 +1483,18 @@ class LimsParameterAnalysis(models.Model):
                 if existing_results:
                     existing_results.unlink()
                 
-                # Crear nuevos resultados para cada medio
+                # Crear nuevos resultados para cada lote único
                 created_count = 0
-                for media in all_media:
-                    if media.culture_media_batch_id:
-                        batch_display = f"{media.culture_media_batch_id.culture_media_id.name} (Lote: {media.culture_media_batch_id.batch_code})"
-                        
-                        self.env['lims.qualitative.result'].create({
-                            'parameter_analysis_id': record.id,
-                            'media_id': media,  # CORREGIDO: directamente el objeto
-                            'batch_display_name': batch_display,
-                        })
-                        created_count += 1
+                for batch_id in batch_ids:
+                    batch = self.env['lims.culture.media.batch'].browse(batch_id)
+                    batch_display = f"{batch.culture_media_id.name} (Lote: {batch.batch_code})"
+                    
+                    self.env['lims.qualitative.result'].create({
+                        'parameter_analysis_id': record.id,
+                        'culture_media_batch_id': batch_id,
+                        'batch_display_name': batch_display,
+                    })
+                    created_count += 1
                 
                 return {
                     'type': 'ir.actions.client',
@@ -2742,7 +2746,6 @@ class LimsExecutedQualityControl(models.Model):
         if self.qc_type_id and self.qc_type_id.default_expected_result:
             self.expected_result = self.qc_type_id.default_expected_result
 
-# 🆕 MODELO PARA RESULTADOS CUALITATIVOS
 class LimsQualitativeResult(models.Model):
     _name = 'lims.qualitative.result'
     _description = 'Resultados Cualitativos por Lote'
@@ -2756,15 +2759,12 @@ class LimsQualitativeResult(models.Model):
         ondelete='cascade'
     )
     
-    # Referencia genérica al medio utilizado
-    media_id = fields.Reference(
-        selection=[
-            ('lims.pre.enrichment.media', 'Medio de Pre-enriquecimiento'),
-            ('lims.selective.enrichment.media', 'Medio Selectivo'),
-            ('lims.quantitative.media', 'Medio Cuantitativo'),
-        ],
-        string='Medio Utilizado',
-        required=True
+    # Simplificado - solo referencia al lote de medio
+    culture_media_batch_id = fields.Many2one(
+        'lims.culture.media.batch',
+        string='Lote de Medio',
+        required=True,
+        help='Lote específico del medio de cultivo utilizado'
     )
     
     # Información del lote (copiada automáticamente)
