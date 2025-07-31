@@ -16,3 +16,4 @@ access_lims_revision_wizard,lims.revision.request.wizard,model_lims_revision_req
 access_lims_signature_wizard,lims.sample.signature.wizard,model_lims_sample_signature_wizard,,1,1,1,1
 access_lims_qualitative_result,lims.qualitative.result,model_lims_qualitative_result,base.group_user,1,1,1,1
 access_lims_qualitative_media,lims.qualitative.media,model_lims_qualitative_media,base.group_user,1,1,1,1
+access_lims_equipment_involved,lims.equipment.involved,model_lims_equipment_involved,base.group_user,1,1,1,1

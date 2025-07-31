@@ -131,6 +131,7 @@
                                                 <group string="📅 Información del Análisis">
                                                     <field name="analysis_start_date"/>
                                                     <field name="analysis_commitment_date"/>
+                                                    <field name="analyst_id" placeholder="Seleccionar analista responsable"/>
                                                     <field name="analysis_status_checkbox" widget="radio"/>
                                                     <field name="report_status" readonly="1"/>
                                                 </group>
@@ -800,6 +801,25 @@
                                                                     help="Copiar controles desde la plantilla del parámetro"/>
                                                         </div>
                                                         
+                                                    </group>
+
+                                                    <!-- TABLA DE EQUIPOS INVOLUCRADOS -->
+                                                    <group string="🔧 Equipos Involucrados" colspan="4">
+                                                        <field name="equipment_involved_ids" nolabel="1" colspan="2">
+                                                            <list string="Equipos Utilizados" editable="bottom" create="true" delete="true">
+                                                                <field name="sequence" invisible="1"/>
+                                                                <field name="equipment_id" string="Equipo" placeholder="Seleccionar equipo"/>
+                                                                <field name="usage" string="Uso" placeholder="Especificar uso del equipo"/>
+                                                            </list>
+                                                            
+                                                            <form string="Equipo Involucrado">
+                                                                <group>
+                                                                    <field name="equipment_id" required="1"/>
+                                                                    <field name="usage" required="1" placeholder="Ej: Incubación, Preparación, Análisis, etc."/>
+                                                                    <field name="sequence"/>
+                                                                </group>
+                                                            </form>
+                                                        </field>
                                                     </group>
 
                                                 </page>

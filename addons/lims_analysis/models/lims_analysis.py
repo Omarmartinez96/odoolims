@@ -1128,6 +1128,18 @@ class LimsParameterAnalysis(models.Model):
         help='Formato HH:MM'
     )
 
+    analyst_id = fields.Many2one(
+        'res.users',
+        string='Analista Responsable',
+        help='Usuario responsable de realizar este análisis'
+    )
+
+    equipment_involved_ids = fields.One2many(
+        'lims.equipment.involved',
+        'parameter_analysis_id',
+        string='Equipos Involucrados'
+    )
+
     def sync_confirmation_results(self):
         """Botón para sincronizar resultados de confirmación manualmente"""
         for record in self:
@@ -2917,4 +2929,34 @@ class LimsQualitativeResult(models.Model):
     observations = fields.Text(
         string='Observaciones',
         help='Observaciones adicionales sobre este resultado'
+    )
+
+class LimsEquipmentInvolved(models.Model):
+    _name = 'lims.equipment.involved'
+    _description = 'Equipos Involucrados en el Análisis'
+    _rec_name = 'equipment_id'
+    _order = 'sequence, equipment_id'
+
+    parameter_analysis_id = fields.Many2one(
+        'lims.parameter.analysis',
+        string='Parámetro de Análisis',
+        required=True,
+        ondelete='cascade'
+    )
+    
+    equipment_id = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo',
+        required=True
+    )
+    
+    usage = fields.Char(
+        string='Uso',
+        required=True,
+        help='Especificar cómo se utilizó el equipo'
+    )
+    
+    sequence = fields.Integer(
+        string='Secuencia',
+        default=10
     )
