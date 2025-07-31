@@ -1455,26 +1455,43 @@ class LimsParameterAnalysis(models.Model):
         """Botón para sincronizar resultados cualitativos manualmente"""
         for record in self:
             try:
+                # FORZAR GUARDADO DE CAMBIOS PENDIENTES PRIMERO
+                if record._context.get('params') and not record.exists():
+                    # Si es un registro nuevo, necesitamos guardarlo primero
+                    record._cr.commit()
+                
+                # Recargar el registro para asegurar que tenemos los datos más recientes
+                record.invalidate_cache()
+                record = record.browse(record.id)
+                
                 # Recopilar todos los lotes de medios utilizados
                 batch_ids = set()
                 
+                print(f"DEBUG: qualitative_media_ids count: {len(record.qualitative_media_ids)}")
+                print(f"DEBUG: pre_enrichment_media_ids count: {len(record.pre_enrichment_media_ids)}")
+                print(f"DEBUG: selective_enrichment_media_ids count: {len(record.selective_enrichment_media_ids)}")
+                
                 # De medios específicos para cualitativos
-                if record.qualitative_media_ids:
-                    for media in record.qualitative_media_ids:
-                        if media.culture_media_batch_id:
-                            batch_ids.add(media.culture_media_batch_id.id)
+                for media in record.qualitative_media_ids:
+                    if media.culture_media_batch_id:
+                        batch_ids.add(media.culture_media_batch_id.id)
+                        print(f"DEBUG: Agregado batch desde qualitative: {media.culture_media_batch_id.batch_code}")
                 
                 # De pre-enriquecimiento
-                if record.requires_pre_enrichment and record.pre_enrichment_media_ids:
+                if record.requires_pre_enrichment:
                     for media in record.pre_enrichment_media_ids:
                         if media.culture_media_batch_id:
                             batch_ids.add(media.culture_media_batch_id.id)
+                            print(f"DEBUG: Agregado batch desde pre-enrichment: {media.culture_media_batch_id.batch_code}")
                 
                 # De enriquecimiento selectivo
-                if record.requires_selective_enrichment and record.selective_enrichment_media_ids:
+                if record.requires_selective_enrichment:
                     for media in record.selective_enrichment_media_ids:
                         if media.culture_media_batch_id:
                             batch_ids.add(media.culture_media_batch_id.id)
+                            print(f"DEBUG: Agregado batch desde selective: {media.culture_media_batch_id.batch_code}")
+                
+                print(f"DEBUG: Total unique batches found: {len(batch_ids)}")
                 
                 # Limpiar resultados existentes
                 existing_results = self.env['lims.qualitative.result'].search([
@@ -1482,6 +1499,7 @@ class LimsParameterAnalysis(models.Model):
                 ])
                 if existing_results:
                     existing_results.unlink()
+                    print(f"DEBUG: Eliminated {len(existing_results)} existing results")
                 
                 # Crear nuevos resultados para cada lote único
                 created_count = 0
@@ -1489,12 +1507,13 @@ class LimsParameterAnalysis(models.Model):
                     batch = self.env['lims.culture.media.batch'].browse(batch_id)
                     batch_display = f"{batch.culture_media_id.name} (Lote: {batch.batch_code})"
                     
-                    self.env['lims.qualitative.result'].create({
+                    result = self.env['lims.qualitative.result'].create({
                         'parameter_analysis_id': record.id,
                         'culture_media_batch_id': batch_id,
                         'batch_display_name': batch_display,
                     })
                     created_count += 1
+                    print(f"DEBUG: Created result for batch: {batch_display}")
                 
                 return {
                     'type': 'ir.actions.client',
