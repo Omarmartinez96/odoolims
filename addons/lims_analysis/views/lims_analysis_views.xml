@@ -484,21 +484,6 @@
                                                         </field>
                                                     </group>
 
-                                                    <!-- RESULTADO CUALITATIVO -->
-                                                    <group string="📊 Resultado Cualitativo" 
-                                                        invisible="result_type != 'qualitative'">
-                                                        <field name="result_qualitative"/>
-                                                        <field name="qualitative_unit_selection" string="Unidad/Base"/>
-                                                        <field name="qualitative_custom_unit" 
-                                                            placeholder="Especificar unidad personalizada"
-                                                            invisible="qualitative_unit_selection != 'custom'"
-                                                            colspan="2"/>
-                                                        <field name="result_value" 
-                                                            class="o_field_highlight"
-                                                            style="font-size: 16px;"
-                                                            placeholder="Se completará automáticamente al seleccionar resultado y unidad"/>
-                                                    </group>
-
                                                     <!-- PARA CUANTITATIVOS: TABLA DE MEDIOS PRIMERO -->
                                                     <group string="🧪 Medios Utilizados en el Análisis" 
                                                            invisible="result_type != 'quantitative'">
@@ -625,20 +610,6 @@
                                                             </form>
                                                         </field>
                                                         
-                                                    </group>
-                                                    
-                                                    <!-- RESULTADO FINAL MANUAL (PARA CUANTITATIVO) -->
-                                                    <group string="📋 Resultado Final" 
-                                                           invisible="result_type != 'quantitative'">
-                                                        <field name="result_value" 
-                                                               class="o_field_highlight"
-                                                               style="font-size: 16px;"
-                                                               placeholder="Ingrese el resultado final manualmente"/>
-                                                        <field name="result_unit_selection"/>
-                                                        <field name="custom_unit" 
-                                                               placeholder="Especificar unidad"
-                                                               invisible="result_unit_selection != 'custom'"
-                                                               colspan="2"/>
                                                     </group>
                                                     
                                                     <!-- CAMPOS ESPECÍFICOS POR TIPO (PARA QUÍMICO Y FÍSICO) -->
@@ -818,6 +789,36 @@
                                                                 </group>
                                                             </form>
                                                         </field>
+                                                    </group>
+
+                                                    <!-- RESULTADO CUALITATIVO -->
+                                                    <group string="📊 Resultado Cualitativo" 
+                                                        invisible="result_type != 'qualitative'">
+                                                        <field name="result_qualitative"/>
+                                                        <field name="qualitative_unit_selection" string="Unidad/Base"/>
+                                                        <field name="qualitative_custom_unit" 
+                                                            placeholder="Especificar unidad personalizada"
+                                                            invisible="qualitative_unit_selection != 'custom'"
+                                                            colspan="2"/>
+                                                        <field name="result_value" 
+                                                            class="o_field_highlight"
+                                                            style="font-size: 16px;"
+                                                            placeholder="Se completará automáticamente al seleccionar resultado y unidad"/>
+                                                    </group>
+
+
+                                                    <!-- RESULTADO FINAL MANUAL (PARA CUANTITATIVO) -->
+                                                    <group string="📋 Resultado Final" 
+                                                           invisible="result_type != 'quantitative'">
+                                                        <field name="result_value" 
+                                                               class="o_field_highlight"
+                                                               style="font-size: 16px;"
+                                                               placeholder="Ingrese el resultado final manualmente"/>
+                                                        <field name="result_unit_selection"/>
+                                                        <field name="custom_unit" 
+                                                               placeholder="Especificar unidad"
+                                                               invisible="result_unit_selection != 'custom'"
+                                                               colspan="2"/>
                                                     </group>
 
                                                 </page>
