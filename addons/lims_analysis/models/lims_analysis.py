@@ -1075,6 +1075,12 @@ class LimsParameterAnalysis(models.Model):
         string='Resultados Cualitativos'
     )
 
+    qualitative_media_ids = fields.One2many(
+        'lims.qualitative.media',
+        'parameter_analysis_id',
+        string='Medios Utilizados para Cualitativos'
+    )
+
     def sync_confirmation_results(self):
         """Botón para sincronizar resultados de confirmación manualmente"""
         for record in self:
@@ -2025,6 +2031,151 @@ class LimsQuantitativeMedia(models.Model):
                 batch_code = record.culture_media_batch_id.batch_code
                 
                 # Traducción del uso
+                usage_translations = {
+                    'diluyente': 'Diluyente',
+                    'eluyente': 'Eluyente',
+                    'enriquecimiento': 'Enriquecimiento',
+                    'desarrollo_selectivo': 'Desarrollo Selectivo',
+                    'desarrollo_diferencial': 'Desarrollo Diferencial',
+                    'desarrollo_selectivo_diferencial': 'Desarrollo Selectivo y Diferencial',
+                    'pruebas_bioquimicas': 'Pruebas Bioquímicas',
+                    'transporte': 'Transporte',
+                    'mantenimiento': 'Mantenimiento',
+                    'otro': 'Otro'
+                }
+                
+                usage_display = usage_translations.get(record.media_usage, record.media_usage)
+                name = f"{media_name} - {usage_display}"
+                
+                if batch_code:
+                    name += f" (Lote: {batch_code})"
+                    
+                record.display_name = name
+            else:
+                record.display_name = "Medio sin especificar"
+    
+    @api.onchange('requires_incubation')
+    def _onchange_requires_incubation(self):
+        """Limpiar campos de incubación cuando no se requiere"""
+        if not self.requires_incubation:
+            self.incubation_equipment = False
+            self.incubation_start_date = False
+            self.incubation_start_time = False
+            self.incubation_end_date = False
+            self.incubation_end_time = False
+
+class LimsQualitativeMedia(models.Model):
+    _name = 'lims.qualitative.media'
+    _description = 'Medios Utilizados en Análisis Cualitativos'
+    _rec_name = 'display_name'
+    _order = 'culture_media_batch_id, media_usage'
+
+    parameter_analysis_id = fields.Many2one(
+        'lims.parameter.analysis',
+        string='Parámetro de Análisis',
+        required=True,
+        ondelete='cascade'
+    )
+    
+    # Lote del medio (siempre requerido)
+    culture_media_batch_id = fields.Many2one(
+        'lims.culture.media.batch',
+        string='Lote de Medio',
+        required=True,
+        help='Lote específico del medio de cultivo utilizado'
+    )
+    
+    # Uso específico del medio
+    media_usage = fields.Selection([
+        ('diluyente', 'Diluyente'),
+        ('eluyente', 'Eluyente'),
+        ('enriquecimiento', 'Enriquecimiento'),
+        ('desarrollo_selectivo', 'Desarrollo Selectivo'),
+        ('desarrollo_diferencial', 'Desarrollo Diferencial'),
+        ('desarrollo_selectivo_diferencial', 'Desarrollo Selectivo y Diferencial'),
+        ('pruebas_bioquimicas', 'Pruebas Bioquímicas'),
+        ('transporte', 'Transporte'),
+        ('mantenimiento', 'Mantenimiento'),
+        ('otro', 'Otro')
+    ], string='Uso del Medio', required=True, default='desarrollo_selectivo')
+    
+    # CAMPOS DE INCUBACIÓN
+    requires_incubation = fields.Boolean(
+        string='Requiere Incubación',
+        default=True,
+        help='Marcar si este medio requiere incubación'
+    )
+    
+    incubation_equipment = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo de Incubación',
+        domain=[('equipment_type', '=', 'incubadora')],
+        help='Equipo específico utilizado para incubación'
+    )
+    
+    incubation_start_date = fields.Date(
+        string='Fecha Inicio Incubación'
+    )
+    
+    incubation_start_time = fields.Char(
+        string='Hora Inicio',
+        help='Formato HH:MM'
+    )
+    
+    incubation_end_date = fields.Date(
+        string='Fecha Fin Incubación'
+    )
+    
+    incubation_end_time = fields.Char(
+        string='Hora Fin',
+        help='Formato HH:MM'
+    )
+    
+    # NOTAS
+    preparation_notes = fields.Text(
+        string='Notas de Preparación',
+        help='Instrucciones especiales, observaciones, etc.'
+    )
+    
+    # CAMPOS CALCULADOS
+    incubation_duration = fields.Char(
+        string='Duración de Incubación',
+        compute='_compute_incubation_duration',
+        help='Duración calculada automáticamente'
+    )
+    
+    display_name = fields.Char(
+        string='Descripción',
+        compute='_compute_display_name',
+        store=True
+    )
+    
+    @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
+    def _compute_incubation_duration(self):
+        """Calcular duración de incubación"""
+        for record in self:
+            if record.incubation_start_date and record.incubation_end_date:
+                start_date = record.incubation_start_date
+                end_date = record.incubation_end_date
+                duration = (end_date - start_date).days
+                
+                if duration == 0:
+                    record.incubation_duration = "Mismo día"
+                elif duration == 1:
+                    record.incubation_duration = "24 horas"
+                else:
+                    record.incubation_duration = f"{duration * 24} horas"
+            else:
+                record.incubation_duration = ""
+    
+    @api.depends('culture_media_batch_id', 'media_usage')
+    def _compute_display_name(self):
+        """Calcular nombre descriptivo"""
+        for record in self:
+            if record.culture_media_batch_id:
+                media_name = record.culture_media_batch_id.culture_media_id.name
+                batch_code = record.culture_media_batch_id.batch_code
+                
                 usage_translations = {
                     'diluyente': 'Diluyente',
                     'eluyente': 'Eluyente',
