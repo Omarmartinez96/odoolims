@@ -336,22 +336,7 @@
 
                                                 <!-- TAB DE RESULTADOS -->
                                                 <page string="📊 Resultados">
-                                                    
-                                                    <!-- RESULTADO CUALITATIVO -->
-                                                    <group string="📊 Resultado Cualitativo" 
-                                                        invisible="result_type != 'qualitative'">
-                                                        <field name="result_qualitative"/>
-                                                        <field name="qualitative_unit_selection" string="Unidad/Base"/>
-                                                        <field name="qualitative_custom_unit" 
-                                                            placeholder="Especificar unidad personalizada"
-                                                            invisible="qualitative_unit_selection != 'custom'"
-                                                            colspan="2"/>
-                                                        <field name="result_value" 
-                                                            class="o_field_highlight"
-                                                            style="font-size: 16px;"
-                                                            placeholder="Se completará automáticamente al seleccionar resultado y unidad"/>
-                                                    </group>
-
+                            
                                                     <!-- TABLA DE MEDIOS PARA CUALITATIVOS -->
                                                     <group string="🧪 Medios para Análisis Cualitativos" 
                                                         invisible="result_type != 'qualitative'">
@@ -528,6 +513,21 @@
                                                                 </group>
                                                             </form>
                                                         </field>
+                                                    </group>
+
+                                                    <!-- RESULTADO CUALITATIVO -->
+                                                    <group string="📊 Resultado Cualitativo" 
+                                                        invisible="result_type != 'qualitative'">
+                                                        <field name="result_qualitative"/>
+                                                        <field name="qualitative_unit_selection" string="Unidad/Base"/>
+                                                        <field name="qualitative_custom_unit" 
+                                                            placeholder="Especificar unidad personalizada"
+                                                            invisible="qualitative_unit_selection != 'custom'"
+                                                            colspan="2"/>
+                                                        <field name="result_value" 
+                                                            class="o_field_highlight"
+                                                            style="font-size: 16px;"
+                                                            placeholder="Se completará automáticamente al seleccionar resultado y unidad"/>
                                                     </group>
 
                                                     <!-- DATOS CRUDOS DE DILUCIONES (SOLO PARA MICROBIOLOGÍA Y CUANTITATIVO) -->
