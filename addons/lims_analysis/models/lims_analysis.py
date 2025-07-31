@@ -1081,6 +1081,53 @@ class LimsParameterAnalysis(models.Model):
         string='Medios Utilizados para Cualitativos'
     )
 
+    quantitative_environment = fields.Selection([
+        ('triangulo_esteril', 'Triángulo Estéril'),
+        ('campana_flujo', 'Campana de Flujo Laminar'),
+        ('campana_bioseguridad', 'Campana de Bioseguridad'),
+        ('mesa_trabajo', 'Mesa de Trabajo'),
+    ], string='Ambiente de Procesamiento Cuantitativo')
+
+    quantitative_equipment_id = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo Específico para Cuantitativo',
+        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]",
+        help='Equipo específico utilizado para el análisis cuantitativo'
+    )
+
+    quantitative_processing_date = fields.Date(
+        string='Fecha de Procesamiento Cuantitativo'
+    )
+
+    quantitative_processing_time = fields.Char(
+        string='Hora de Procesamiento Cuantitativo',
+        help='Formato HH:MM'
+    )
+
+    # 🆕 CAMPOS DE AMBIENTE PARA CUALITATIVOS
+    qualitative_environment = fields.Selection([
+        ('triangulo_esteril', 'Triángulo Estéril'),
+        ('campana_flujo', 'Campana de Flujo Laminar'),
+        ('campana_bioseguridad', 'Campana de Bioseguridad'),
+        ('mesa_trabajo', 'Mesa de Trabajo'),
+    ], string='Ambiente de Procesamiento Cualitativo')
+
+    qualitative_equipment_id = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo Específico para Cualitativo',
+        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]",
+        help='Equipo específico utilizado para el análisis cualitativo'
+    )
+
+    qualitative_processing_date = fields.Date(
+        string='Fecha de Procesamiento Cualitativo'
+    )
+
+    qualitative_processing_time = fields.Char(
+        string='Hora de Procesamiento Cualitativo',
+        help='Formato HH:MM'
+    )
+
     def sync_confirmation_results(self):
         """Botón para sincronizar resultados de confirmación manualmente"""
         for record in self:
@@ -1495,6 +1542,38 @@ class LimsParameterAnalysis(models.Model):
                         'type': 'warning',
                     }
                 }
+
+    @api.onchange('quantitative_environment')
+    def _onchange_quantitative_environment(self):
+        """Limpiar equipo cuando cambia el ambiente cuantitativo"""
+        if self.quantitative_environment not in ['campana_flujo', 'campana_bioseguridad']:
+            self.quantitative_equipment_id = False
+        
+        # Actualizar dominio del equipo según el ambiente
+        if self.quantitative_environment == 'campana_flujo':
+            domain = [('equipment_type', '=', 'campana_flujo')]
+        elif self.quantitative_environment == 'campana_bioseguridad':
+            domain = [('equipment_type', '=', 'campana_bioseguridad')]
+        else:
+            domain = []
+        
+        return {'domain': {'quantitative_equipment_id': domain}}
+
+    @api.onchange('qualitative_environment')
+    def _onchange_qualitative_environment(self):
+        """Limpiar equipo cuando cambia el ambiente cualitativo"""
+        if self.qualitative_environment not in ['campana_flujo', 'campana_bioseguridad']:
+            self.qualitative_equipment_id = False
+        
+        # Actualizar dominio del equipo según el ambiente
+        if self.qualitative_environment == 'campana_flujo':
+            domain = [('equipment_type', '=', 'campana_flujo')]
+        elif self.qualitative_environment == 'campana_bioseguridad':
+            domain = [('equipment_type', '=', 'campana_bioseguridad')]
+        else:
+            domain = []
+        
+        return {'domain': {'qualitative_equipment_id': domain}}
 
 # 🆕 MODELO PARA DATOS CRUDOS DE DILUCIONES
 class LimsRawDilutionData(models.Model):

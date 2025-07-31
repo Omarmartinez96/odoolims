@@ -447,6 +447,42 @@
                                                         </field>
                                                     </group>
 
+                                                    <!-- AMBIENTE DE PROCESAMIENTO CUALITATIVO -->
+                                                    <group string="🏭 Ambiente de Procesamiento Cualitativo" 
+                                                        invisible="result_type != 'qualitative'">
+                                                        <field name="qualitative_environment" widget="radio"/>
+                                                    </group>
+
+                                                    <group string="🔧 Equipo Utilizado para Cualitativo" 
+                                                        invisible="result_type != 'qualitative' or qualitative_environment not in ['campana_flujo', 'campana_bioseguridad']">
+                                                        <field name="qualitative_equipment_id" 
+                                                            placeholder="Seleccionar equipo específico"/>
+                                                    </group>
+
+                                                    <group string="📅 Fechas del Proceso Cualitativo" 
+                                                        invisible="result_type != 'qualitative'">
+                                                        <field name="qualitative_processing_date"/>
+                                                        <field name="qualitative_processing_time" placeholder="HH:MM"/>
+                                                    </group>
+
+                                                    <!-- AMBIENTE DE PROCESAMIENTO CUANTITATIVO -->
+                                                    <group string="🏭 Ambiente de Procesamiento Cuantitativo" 
+                                                        invisible="result_type != 'quantitative'">
+                                                        <field name="quantitative_environment" widget="radio"/>
+                                                    </group>
+
+                                                    <group string="🔧 Equipo Utilizado para Cuantitativo" 
+                                                        invisible="result_type != 'quantitative' or quantitative_environment not in ['campana_flujo', 'campana_bioseguridad']">
+                                                        <field name="quantitative_equipment_id" 
+                                                            placeholder="Seleccionar equipo específico"/>
+                                                    </group>
+
+                                                    <group string="📅 Fechas del Proceso Cuantitativo" 
+                                                        invisible="result_type != 'quantitative'">
+                                                        <field name="quantitative_processing_date"/>
+                                                        <field name="quantitative_processing_time" placeholder="HH:MM"/>
+                                                    </group>
+
                                                     <!-- PARA CUANTITATIVOS: TABLA DE MEDIOS PRIMERO -->
                                                     <group string="🧪 Medios Utilizados en el Análisis" 
                                                            invisible="result_type != 'quantitative'">
@@ -515,20 +551,7 @@
                                                         </field>
                                                     </group>
 
-                                                    <!-- RESULTADO CUALITATIVO -->
-                                                    <group string="📊 Resultado Cualitativo" 
-                                                        invisible="result_type != 'qualitative'">
-                                                        <field name="result_qualitative"/>
-                                                        <field name="qualitative_unit_selection" string="Unidad/Base"/>
-                                                        <field name="qualitative_custom_unit" 
-                                                            placeholder="Especificar unidad personalizada"
-                                                            invisible="qualitative_unit_selection != 'custom'"
-                                                            colspan="2"/>
-                                                        <field name="result_value" 
-                                                            class="o_field_highlight"
-                                                            style="font-size: 16px;"
-                                                            placeholder="Se completará automáticamente al seleccionar resultado y unidad"/>
-                                                    </group>
+
 
                                                     <!-- DATOS CRUDOS DE DILUCIONES (SOLO PARA MICROBIOLOGÍA Y CUANTITATIVO) -->
                                                     <group string="🧪 Datos Crudos de Diluciones" 
