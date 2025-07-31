@@ -1130,7 +1130,7 @@ class LimsParameterAnalysis(models.Model):
 
     analyst_names = fields.Char(
         string='Analistas Responsables',
-        help='Nombres de los analistas responsables (separados por comas)'
+        help='Firma (Iniciales separadas por comas)'
     )
     
     equipment_involved_ids = fields.One2many(
