@@ -19,6 +19,37 @@
           p {
             font-family: "DejaVu Sans", sans-serif !important;
           }
+          
+          /* Evitar page-breaks dentro de las filas */
+          .order-line-row {
+            page-break-inside: avoid;
+            break-inside: avoid;
+          }
+
+          /* Forzar page-break antes del header si es necesario */
+          .table-header {
+            page-break-inside: avoid;
+            break-inside: avoid;
+          }
+
+          /* Controlar espacio para descripciones largas */
+          .description-cell {
+            max-width: 40%;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+          }
+          
+          /* Limitar altura máxima por fila */
+          .order-line-row td {
+            max-height: 200px;
+            vertical-align: top;
+          }
+          
+          /* Asegurar que la tabla mantenga su estructura */
+          .lines-table {
+            table-layout: fixed;
+            width: 100%;
+          }
         </style>
       </t>
 
@@ -153,9 +184,9 @@
             </table>
 
             <!-- Tabla de líneas -->
-            <table class="table table-borderless mt-2"
+            <table class="table table-borderless lines-table mt-2"
                   style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0;">
-              <thead>
+              <thead class="table-header">
                 <tr style="background-color:rgb(218,227,243);">
                   <th style="width:40%; padding:4px 2px; text-align:left;"><strong>Descripción</strong></th>
                   <th style="width:10%; padding:4px 2px; text-align:center;"><strong>Cantidad</strong></th>
@@ -165,15 +196,25 @@
                 </tr>
               </thead>
               <tbody>
+                <t t-set="max_desc_length" t-value="400"/>
                 <t t-foreach="doc.order_line" t-as="line">
-                  <tr>
-                    <td style="padding:4px 2px; vertical-align:top;">
-                      <strong><span t-esc="line.product_id.display_name"/></strong>
-                      <t t-foreach="(line.product_id.description_sale or line.product_id.name or '').split('\n')" t-as="ln">
-                        <t t-if="ln.strip()">
-                          <div style="font-size:14px; margin:0;">
-                            <span t-esc="ln.strip()"/>
-                          </div>
+                  <tr class="order-line-row">
+                    <td class="description-cell" style="padding:4px 2px; vertical-align:top;">
+                      <strong><span t-esc="line.product_id.display_name"/></strong><br/>
+                      <t t-set="full_desc" t-value="line.product_id.description_sale or line.product_id.name or ''"/>
+                      <t t-if="len(full_desc) > max_desc_length">
+                        <t t-set="truncated_desc" t-value="full_desc[:max_desc_length] + '...'"/>
+                        <div style="font-size:12px; margin:2px 0; line-height:1.4;">
+                          <span t-esc="truncated_desc"/>
+                        </div>
+                      </t>
+                      <t t-else="">
+                        <t t-foreach="full_desc.split('\n')" t-as="ln">
+                          <t t-if="ln.strip()">
+                            <div style="font-size:12px; margin:2px 0; line-height:1.4;">
+                              <span t-esc="ln.strip()"/>
+                            </div>
+                          </t>
                         </t>
                       </t>
                     </td>
