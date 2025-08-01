@@ -237,6 +237,12 @@
                             <span t-esc="ln.strip()"/>
                           </div>
                         </t>
+                        <!-- Mostrar notas de la línea si existen -->
+                        <t t-if="line.name and line.name != line.product_id.display_name">
+                          <div style="font-size:10px; margin-top:4px; color:#666; font-style:italic;">
+                            <strong>Nota:</strong> <span t-esc="line.name"/>
+                          </div>
+                        </t>
                       </t>
                     </td>
                     <td style="width:11.25%; padding:4px 2px; text-align:center; font-size:11px; vertical-align:top;">
@@ -303,8 +309,8 @@
             </div>
 
             <!-- Total en letra centrado -->
-            <div style="clear:both; margin-top:20px; font-size:12px; text-align:center;">
-              <span t-esc="doc.currency_id.amount_to_text(doc.amount_total).upper()"/>
+            <div style="clear:both; margin-top:30px; padding-top:10px; font-size:12px; text-align:center;">
+              <em><span t-esc="doc.currency_id.amount_to_text(doc.amount_total).upper()"/></em>
             </div>
 
             <!-- Términos de pago izquierda -->
