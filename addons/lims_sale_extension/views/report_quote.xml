@@ -206,58 +206,51 @@
               </tbody>
             </table>
 
-            <!-- Tabla de líneas -->
-            <table class="table table-borderless lines-table mt-2"
-                  style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0; page-break-inside: auto; table-layout: fixed;">
-              <thead class="table-header">
-                <tr style="background-color:rgb(218,227,243); height: 35px; page-break-after: avoid; position: relative;">
+            <!-- Tabla de líneas - Header fijo -->
+            <table class="table table-borderless" style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0; margin-bottom:5px;">
+              <thead>
+                <tr style="background-color:rgb(218,227,243); height: 35px;">
                   <th style="width:55%; padding:8px 4px; text-align:left; vertical-align:middle;"><strong>Descripción</strong></th>
-                  <th class="numeric-column" style="padding:8px 4px; text-align:center; vertical-align:middle;"><strong>Cant.</strong></th>
-                  <th class="numeric-column" style="padding:8px 4px; text-align:right; vertical-align:middle;"><strong>Precio unit.</strong></th>
-                  <th class="numeric-column" style="padding:8px 4px; text-align:right; vertical-align:middle;"><strong>Desc.</strong></th>
-                  <th class="numeric-column" style="padding:8px 4px; text-align:right; vertical-align:middle;"><strong>Subtotal</strong></th>
+                  <th style="width:11.25%; padding:8px 4px; text-align:center; vertical-align:middle;"><strong>Cant.</strong></th>
+                  <th style="width:11.25%; padding:8px 4px; text-align:right; vertical-align:middle;"><strong>Precio unit.</strong></th>
+                  <th style="width:11.25%; padding:8px 4px; text-align:right; vertical-align:middle;"><strong>Desc.</strong></th>
+                  <th style="width:11.25%; padding:8px 4px; text-align:right; vertical-align:middle;"><strong>Subtotal</strong></th>
                 </tr>
               </thead>
-              <tbody>
-                <t t-foreach="doc.order_line" t-as="line">
-                  <tr class="order-line-row" style="page-break-inside: auto; page-break-after: auto;">
-                    <td class="description-cell" style="padding:4px 2px; vertical-align:top;">
+            </table>
+
+            <!-- Tabla individual por línea -->
+            <t t-foreach="doc.order_line" t-as="line">
+              <table class="table table-borderless" style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0; margin-bottom:2px; page-break-inside:avoid;">
+                <tbody>
+                  <tr>
+                    <td style="width:55%; padding:4px 2px; vertical-align:top; border:1px solid #ddd;">
                       <strong><span t-esc="line.product_id.display_name"/></strong><br/>
                       <t t-set="full_desc" t-value="line.product_id.description_sale or line.product_id.name or ''"/>
-                      <t t-set="max_lines" t-value="8"/>
-                      <t t-set="desc_lines" t-value="full_desc.split('\n')[:max_lines]"/>
-                      <t t-foreach="desc_lines" t-as="ln">
+                      <t t-foreach="full_desc.split('\n')" t-as="ln">
                         <t t-if="ln.strip()">
                           <div style="font-size:11px; margin:1px 0; line-height:1.3;">
                             <span t-esc="ln.strip()"/>
                           </div>
                         </t>
                       </t>
-                      <t t-if="len(full_desc.split('\n')) > max_lines">
-                        <div style="font-size:10px; color:#666; font-style:italic; margin-top:2px;">
-                          ... y <span t-esc="len(full_desc.split('\n')) - max_lines"/> líneas más
-                        </div>
-                      </t>
                     </td>
-                    <td class="numeric-column" style="padding:4px 2px; text-align:center;">
-                      <span t-field="line.product_uom_qty"
-                            t-field-options="{'widget':'float','precision':0}"/>
+                    <td style="width:11.25%; padding:4px 2px; text-align:center; border:1px solid #ddd; font-size:11px;">
+                      <span t-field="line.product_uom_qty" t-field-options="{'widget':'float','precision':0}"/>
                     </td>
-                    <td class="numeric-column" style="padding:4px 2px; text-align:right;">
-                      <span t-field="line.price_unit"
-                            t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    <td style="width:11.25%; padding:4px 2px; text-align:right; border:1px solid #ddd; font-size:11px;">
+                      <span t-field="line.price_unit" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                     </td>
-                    <td class="numeric-column" style="padding:4px 2px; text-align:right;">
-                      <span t-esc="('%.2f' % line.discount) + '%'" />
+                    <td style="width:11.25%; padding:4px 2px; text-align:right; border:1px solid #ddd; font-size:11px;">
+                      <span t-esc="('%.2f' % line.discount) + '%'"/>
                     </td>
-                    <td class="numeric-column" style="padding:4px 2px; text-align:right;">
-                      <span t-field="line.price_subtotal"
-                            t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    <td style="width:11.25%; padding:4px 2px; text-align:right; border:1px solid #ddd; font-size:11px;">
+                      <span t-field="line.price_subtotal" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                     </td>
                   </tr>
-                </t>
-              </tbody>
-            </table>
+                </tbody>
+              </table>
+            </t>
 
             <!-- Separador para evitar conflictos -->
             <div class="content-separator"></div>
