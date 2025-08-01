@@ -219,13 +219,31 @@
               </thead>
             </table>
 
-            <!-- Tabla individual por línea -->
-            <t t-foreach="doc.order_line" t-as="line">
-              <table class="table table-borderless" style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0; margin-bottom:2px; page-break-inside:avoid;">
-                <tbody>
-                  <tr>
+            <!-- Tabla consolidada sin bordes -->
+            <table class="table table-borderless" style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0; margin-top:5px;">
+              <tbody>
+                <t t-foreach="doc.order_line" t-as="line">
+                  <tr style="page-break-inside:avoid;">
                     <td style="width:55%; padding:4px 2px; vertical-align:top;">
-                      <strong><span t-esc="line.product_id.display_name"/></strong><br/>
+                      <!-- Primera sub-fila: título + datos numéricos -->
+                      <div style="display:flex; align-items:flex-start; margin-bottom:2px;">
+                        <div style="flex:1;">
+                          <strong><span t-esc="line.product_id.display_name"/></strong>
+                        </div>
+                        <div style="width:11.25%; text-align:center; font-size:11px; margin-left:10px;">
+                          <span t-field="line.product_uom_qty" t-field-options="{'widget':'float','precision':0}"/>
+                        </div>
+                        <div style="width:11.25%; text-align:right; font-size:11px; margin-left:10px;">
+                          <span t-field="line.price_unit" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                        </div>
+                        <div style="width:11.25%; text-align:right; font-size:11px; margin-left:10px;">
+                          <span t-esc="('%.2f' % line.discount) + '%'"/>
+                        </div>
+                        <div style="width:11.25%; text-align:right; font-size:11px; margin-left:10px;">
+                          <span t-field="line.price_subtotal" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                        </div>
+                      </div>
+                      <!-- Descripción completa debajo -->
                       <t t-set="full_desc" t-value="line.product_id.description_sale or line.product_id.name or ''"/>
                       <t t-foreach="full_desc.split('\n')" t-as="ln">
                         <t t-if="ln.strip()">
@@ -235,30 +253,20 @@
                         </t>
                       </t>
                     </td>
-                    <td style="width:11.25%; padding:4px 2px; text-align:center; font-size:11px;">
-                      <span t-field="line.product_uom_qty" t-field-options="{'widget':'float','precision':0}"/>
-                    </td>
-                    <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px;">
-                      <span t-field="line.price_unit" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                    </td>
-                    <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px;">
-                      <span t-esc="('%.2f' % line.discount) + '%'"/>
-                    </td>
-                    <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px;">
-                      <span t-field="line.price_subtotal" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                    </td>
+                    <!-- Celdas vacías para mantener estructura -->
+                    <td style="width:11.25%;"></td>
+                    <td style="width:11.25%;"></td>
+                    <td style="width:11.25%;"></td>
+                    <td style="width:11.25%;"></td>
                   </tr>
-                </tbody>
-              </table>
-            </t>
-
-            <!-- Línea de fin de cotización -->
-            <table class="table table-borderless" style="width:100%; font-size:12px; border-collapse:collapse; border-spacing:0; margin-top:5px;">
-              <tr style="background-color:rgb(218,227,243); height: 25px;">
-                <td style="width:100%; padding:6px 4px; text-align:center; vertical-align:middle;">
-                  <strong>— FIN DE COTIZACIÓN —</strong>
-                </td>
-              </tr>
+                </t>
+                <!-- Fila de fin de cotización -->
+                <tr>
+                  <td colspan="5" style="background-color:rgb(218,227,243); height: 25px; padding:6px 4px; text-align:center; vertical-align:middle;">
+                    <strong>— FIN DE COTIZACIÓN —</strong>
+                  </td>
+                </tr>
+              </tbody>
             </table>
 
             <!-- Separador para evitar conflictos -->
@@ -266,13 +274,6 @@
 
             <!-- Totales -->
             <div class="totals-section" style="width:100%; margin-top:20px;">
-              <!-- Total en letra - lado izquierdo -->
-              <div style="width:48%; float:left; font-size:12px; color:#666; padding-top:20px;">
-                <strong>Total en letra:</strong><br/>
-                <span t-esc="doc.currency_id.amount_to_text(doc.amount_total).upper()"/>
-              </div>
-              
-              <!-- Tabla de totales - lado derecho -->
               <table style="width:50%; float:right; font-size:12px; border-collapse:collapse;">
                 <!-- Subtotal -->
                 <tr>
@@ -308,21 +309,27 @@
               </table>
             </div>
 
-            <!-- Términos de pago -->
-            <div style="margin-top:10px; font-size:12px;">
+            <!-- Total en letra centrado -->
+            <div style="clear:both; margin-top:20px; font-size:12px; text-align:center;">
+              <strong>Total en letra:</strong> 
+              <span t-esc="doc.currency_id.amount_to_text(doc.amount_total).upper()"/>
+            </div>
+
+            <!-- Términos de pago centrado -->
+            <div style="margin-top:20px; font-size:12px; text-align:center;">
               <strong>Términos de pago:</strong> <span t-esc="doc.payment_term_id.name"/>
             </div>
 
-            <!-- Notas de símbolos -->
-            <div style="margin-top:20px; font-size:10px;">
+            <!-- Notas de símbolos centrado -->
+            <div style="margin-top:20px; font-size:10px; text-align:center;">
               <em>* Acreditado, ** Subrogado</em>
             </div>
 
-            <!-- Emitido por y firma -->
-            <div style="margin-top:60px;"/>
-            <p style="font-size:12px;">
+            <!-- Emitido por centrado -->
+            <div style="margin-top:20px; font-size:12px; text-align:center;">
               <strong>Emitido por:</strong> <span t-esc="doc.user_id.name"/>
-            </p>
+            </div>
+
             <div class="row mt-4">
               <div class="col-12" style="text-align:center; padding-top:180px;">
                 <t t-if="doc.signature">
