@@ -22,8 +22,8 @@
           
           /* Evitar page-breaks dentro de las filas */
           .order-line-row {
-            page-break-inside: avoid;
-            break-inside: avoid;
+            orphans: 3;
+            windows: 3;
           }
 
           /* Forzar que el header siempre aparezca en nueva página si se separa */
@@ -31,6 +31,8 @@
             page-break-inside: avoid;
             break-inside: avoid;
             page-break-after: avoid;
+            orphans: 0;
+            windows: 0;
           }
           
           /* Evitar que las filas se separen del header */
@@ -206,9 +208,9 @@
 
             <!-- Tabla de líneas -->
             <table class="table table-borderless lines-table mt-2"
-                  style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0;">
-              <thead class="table-header table-header-repeat">
-                <tr style="background-color:rgb(218,227,243); height: 35px;">
+                  style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0; page-break-inside: auto; table-layout: fixed;">
+              <thead class="table-header">
+                <tr style="background-color:rgb(218,227,243); height: 35px; page-break-after: avoid; position: relative;">
                   <th style="width:55%; padding:8px 4px; text-align:left; vertical-align:middle;"><strong>Descripción</strong></th>
                   <th class="numeric-column" style="padding:8px 4px; text-align:center; vertical-align:middle;"><strong>Cant.</strong></th>
                   <th class="numeric-column" style="padding:8px 4px; text-align:right; vertical-align:middle;"><strong>Precio unit.</strong></th>
@@ -218,7 +220,7 @@
               </thead>
               <tbody>
                 <t t-foreach="doc.order_line" t-as="line">
-                  <tr class="order-line-row">
+                  <tr class="order-line-row" style="page-break-inside: auto; page-break-after: auto;">
                     <td class="description-cell" style="padding:4px 2px; vertical-align:top;">
                       <strong><span t-esc="line.product_id.display_name"/></strong><br/>
                       <t t-set="full_desc" t-value="line.product_id.description_sale or line.product_id.name or ''"/>
@@ -304,14 +306,6 @@
             <!-- Notas de símbolos -->
             <div style="margin-top:20px; font-size:10px;">
               <em>* Acreditado, ** Subrogado</em>
-            </div>
-
-
-            <!-- Notas de símbolos -->
-            <div class="row mt-2" style="font-size:10px;">
-              <div class="col-12" style="text-align:left;">
-                <em>* Acreditado, ** Subrogado</em>
-              </div>
             </div>
 
             <!-- Emitido por y firma -->
