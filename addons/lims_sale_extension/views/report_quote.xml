@@ -225,7 +225,7 @@
                 <t t-foreach="doc.order_line" t-as="line">
                   <tr style="page-break-inside:avoid;">
                     <td style="width:55%; padding:4px 2px; vertical-align:top;">
-                      <!-- Título del producto en línea separada -->
+                      <!-- Título del producto -->
                       <div style="margin-bottom:4px;">
                         <strong><span t-esc="line.product_id.display_name"/></strong>
                       </div>
@@ -239,17 +239,25 @@
                         </t>
                       </t>
                     </td>
-                    <td style="width:11.25%; padding:4px 2px; text-align:center; font-size:11px;">
-                      <span t-field="line.product_uom_qty" t-field-options="{'widget':'float','precision':0}"/>
+                    <td style="width:11.25%; padding:4px 2px; text-align:center; font-size:11px; vertical-align:top;">
+                      <t t-if="line_index == 0">
+                        <span t-field="line.product_uom_qty" t-field-options="{'widget':'float','precision':0}"/>
+                      </t>
                     </td>
-                    <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px;">
-                      <span t-field="line.price_unit" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px; vertical-align:top;">
+                      <t t-if="line_index == 0">
+                        <span t-field="line.price_unit" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                      </t>
                     </td>
-                    <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px;">
-                      <span t-esc="('%.2f' % line.discount) + '%'"/>
+                    <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px; vertical-align:top;">
+                      <t t-if="line_index == 0">
+                        <span t-esc="('%.2f' % line.discount) + '%'"/>
+                      </t>
                     </td>
-                    <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px;">
-                      <span t-field="line.price_subtotal" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px; vertical-align:top;">
+                      <t t-if="line_index == 0">
+                        <span t-field="line.price_subtotal" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                      </t>
                     </td>
                   </tr>
                 </t>
@@ -319,7 +327,7 @@
             </div>
 
             <div class="row mt-4">
-              <div class="col-12" style="text-align:center; padding-top:180px;">
+              <div class="col-12" style="text-align:center; padding-top:60px;">
                 <t t-if="doc.signature">
                   <img t-attf-src="data:image/png;base64,{{ doc.signature.decode('utf-8') }}"
                       style="max-height:100px; max-width:300px;"/>
@@ -335,11 +343,12 @@
                           este documento. Las confirmaciones verbales deberán ser documentadas por escrito.</strong>
                 </p>
               </div>
+            </div>
 
-              <!-- Notas de símbolos al final -->
-              <div style="margin-top:20px; font-size:10px; text-align:left;">
-                <em>* Acreditado, ** Subrogado</em>
-              </div>
+            <!-- Notas de símbolos separadas -->
+            <div style="margin-top:20px; font-size:10px; text-align:left;">
+              <em>* Acreditado, ** Subrogado</em>
+            </div>
 
               <!-- Notas y políticas -->
               <div class="page" style="page-break-before:always;">
