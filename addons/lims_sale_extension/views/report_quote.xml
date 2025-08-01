@@ -34,15 +34,20 @@
 
           /* Controlar espacio para descripciones largas */
           .description-cell {
-            max-width: 40%;
+            width: 55%;
             word-wrap: break-word;
             overflow-wrap: break-word;
           }
           
-          /* Limitar altura máxima por fila */
+          /* Limitar altura máxima por fila - removido para permitir contenido completo */
           .order-line-row td {
-            max-height: 200px;
             vertical-align: top;
+          }
+          
+          /* Hacer más pequeñas las columnas numéricas */
+          .numeric-column {
+            font-size: 11px;
+            width: 11.25%;
           }
           
           /* Asegurar que la tabla mantenga su estructura */
@@ -188,48 +193,39 @@
                   style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0;">
               <thead class="table-header">
                 <tr style="background-color:rgb(218,227,243);">
-                  <th style="width:40%; padding:4px 2px; text-align:left;"><strong>Descripción</strong></th>
-                  <th style="width:10%; padding:4px 2px; text-align:center;"><strong>Cantidad</strong></th>
-                  <th style="width:15%; padding:4px 2px; text-align:right;"><strong>Precio unitario</strong></th>
-                  <th style="width:15%; padding:4px 2px; text-align:right;"><strong>Descuento</strong></th>
-                  <th style="width:20%; padding:4px 2px; text-align:right;"><strong>Subtotal</strong></th>
+                  <th style="width:55%; padding:4px 2px; text-align:left;"><strong>Descripción</strong></th>
+                  <th class="numeric-column" style="padding:4px 2px; text-align:center;"><strong>Cant.</strong></th>
+                  <th class="numeric-column" style="padding:4px 2px; text-align:right;"><strong>Precio unit.</strong></th>
+                  <th class="numeric-column" style="padding:4px 2px; text-align:right;"><strong>Desc.</strong></th>
+                  <th class="numeric-column" style="padding:4px 2px; text-align:right;"><strong>Subtotal</strong></th>
                 </tr>
               </thead>
               <tbody>
-                <t t-set="max_desc_length" t-value="400"/>
                 <t t-foreach="doc.order_line" t-as="line">
                   <tr class="order-line-row">
                     <td class="description-cell" style="padding:4px 2px; vertical-align:top;">
                       <strong><span t-esc="line.product_id.display_name"/></strong><br/>
                       <t t-set="full_desc" t-value="line.product_id.description_sale or line.product_id.name or ''"/>
-                      <t t-if="len(full_desc) > max_desc_length">
-                        <t t-set="truncated_desc" t-value="full_desc[:max_desc_length] + '...'"/>
-                        <div style="font-size:12px; margin:2px 0; line-height:1.4;">
-                          <span t-esc="truncated_desc"/>
-                        </div>
-                      </t>
-                      <t t-else="">
-                        <t t-foreach="full_desc.split('\n')" t-as="ln">
-                          <t t-if="ln.strip()">
-                            <div style="font-size:12px; margin:2px 0; line-height:1.4;">
-                              <span t-esc="ln.strip()"/>
-                            </div>
-                          </t>
+                      <t t-foreach="full_desc.split('\n')" t-as="ln">
+                        <t t-if="ln.strip()">
+                          <div style="font-size:11px; margin:1px 0; line-height:1.3;">
+                            <span t-esc="ln.strip()"/>
+                          </div>
                         </t>
                       </t>
                     </td>
-                    <td style="padding:4px 2px; text-align:center;">
+                    <td class="numeric-column" style="padding:4px 2px; text-align:center;">
                       <span t-field="line.product_uom_qty"
                             t-field-options="{'widget':'float','precision':0}"/>
                     </td>
-                    <td style="padding:4px 2px; text-align:right;">
+                    <td class="numeric-column" style="padding:4px 2px; text-align:right;">
                       <span t-field="line.price_unit"
                             t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                     </td>
-                    <td style="padding:4px 2px; text-align:right;">
+                    <td class="numeric-column" style="padding:4px 2px; text-align:right;">
                       <span t-esc="('%.2f' % line.discount) + '%'" />
                     </td>
-                    <td style="padding:4px 2px; text-align:right;">
+                    <td class="numeric-column" style="padding:4px 2px; text-align:right;">
                       <span t-field="line.price_subtotal"
                             t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                     </td>
