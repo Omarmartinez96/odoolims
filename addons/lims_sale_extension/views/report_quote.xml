@@ -312,7 +312,6 @@
 
             <!-- Total en letra centrado -->
             <div style="clear:both; margin-top:20px; font-size:12px; text-align:center;">
-              <strong>Total en letra:</strong> 
               <span t-esc="doc.currency_id.amount_to_text(doc.amount_total).upper()"/>
             </div>
 
@@ -324,6 +323,11 @@
             <!-- Emitido por izquierda -->
             <div style="margin-top:10px; font-size:12px; text-align:left;">
               <strong>Emitido por:</strong> <span t-esc="doc.user_id.name"/>
+            </div>
+
+            <!-- Notas de símbolos separadas -->
+            <div style="margin-top:20px; font-size:10px; text-align:left;">
+              <em>* Acreditado, ** Subrogado</em>
             </div>
 
             <!-- Campo de firma separado -->
@@ -344,11 +348,6 @@
                           este documento. Las confirmaciones verbales deberán ser documentadas por escrito.</strong>
                 </p>
               </div>
-            </div>
-
-            <!-- Notas de símbolos separadas -->
-            <div style="margin-top:20px; font-size:10px; text-align:left;">
-              <em>* Acreditado, ** Subrogado</em>
             </div>
 
             <!-- Notas y políticas -->
