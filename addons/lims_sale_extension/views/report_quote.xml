@@ -225,25 +225,11 @@
                 <t t-foreach="doc.order_line" t-as="line">
                   <tr style="page-break-inside:avoid;">
                     <td style="width:55%; padding:4px 2px; vertical-align:top;">
-                      <!-- Primera sub-fila: título + datos numéricos -->
-                      <div style="display:flex; align-items:flex-start; margin-bottom:2px;">
-                        <div style="flex:1;">
-                          <strong><span t-esc="line.product_id.display_name"/></strong>
-                        </div>
-                        <div style="width:11.25%; text-align:center; font-size:11px; margin-left:10px;">
-                          <span t-field="line.product_uom_qty" t-field-options="{'widget':'float','precision':0}"/>
-                        </div>
-                        <div style="width:11.25%; text-align:right; font-size:11px; margin-left:10px;">
-                          <span t-field="line.price_unit" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                        </div>
-                        <div style="width:11.25%; text-align:right; font-size:11px; margin-left:10px;">
-                          <span t-esc="('%.2f' % line.discount) + '%'"/>
-                        </div>
-                        <div style="width:11.25%; text-align:right; font-size:11px; margin-left:10px;">
-                          <span t-field="line.price_subtotal" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                        </div>
+                      <!-- Título del producto en línea separada -->
+                      <div style="margin-bottom:4px;">
+                        <strong><span t-esc="line.product_id.display_name"/></strong>
                       </div>
-                      <!-- Descripción completa debajo -->
+                      <!-- Descripción completa -->
                       <t t-set="full_desc" t-value="line.product_id.description_sale or line.product_id.name or ''"/>
                       <t t-foreach="full_desc.split('\n')" t-as="ln">
                         <t t-if="ln.strip()">
@@ -253,11 +239,18 @@
                         </t>
                       </t>
                     </td>
-                    <!-- Celdas vacías para mantener estructura -->
-                    <td style="width:11.25%;"></td>
-                    <td style="width:11.25%;"></td>
-                    <td style="width:11.25%;"></td>
-                    <td style="width:11.25%;"></td>
+                    <td style="width:11.25%; padding:4px 2px; text-align:center; font-size:11px;">
+                      <span t-field="line.product_uom_qty" t-field-options="{'widget':'float','precision':0}"/>
+                    </td>
+                    <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px;">
+                      <span t-field="line.price_unit" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    </td>
+                    <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px;">
+                      <span t-esc="('%.2f' % line.discount) + '%'"/>
+                    </td>
+                    <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px;">
+                      <span t-field="line.price_subtotal" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    </td>
                   </tr>
                 </t>
                 <!-- Fila de fin de cotización -->
@@ -315,18 +308,13 @@
               <span t-esc="doc.currency_id.amount_to_text(doc.amount_total).upper()"/>
             </div>
 
-            <!-- Términos de pago centrado -->
-            <div style="margin-top:20px; font-size:12px; text-align:center;">
+            <!-- Términos de pago izquierda -->
+            <div style="margin-top:10px; font-size:12px; text-align:left;">
               <strong>Términos de pago:</strong> <span t-esc="doc.payment_term_id.name"/>
             </div>
 
-            <!-- Notas de símbolos centrado -->
-            <div style="margin-top:20px; font-size:10px; text-align:center;">
-              <em>* Acreditado, ** Subrogado</em>
-            </div>
-
-            <!-- Emitido por centrado -->
-            <div style="margin-top:20px; font-size:12px; text-align:center;">
+            <!-- Emitido por izquierda -->
+            <div style="margin-top:10px; font-size:12px; text-align:left;">
               <strong>Emitido por:</strong> <span t-esc="doc.user_id.name"/>
             </div>
 
@@ -346,6 +334,11 @@
                           acepta expresamente las condiciones y políticas de servicio detalladas en 
                           este documento. Las confirmaciones verbales deberán ser documentadas por escrito.</strong>
                 </p>
+              </div>
+
+              <!-- Notas de símbolos al final -->
+              <div style="margin-top:20px; font-size:10px; text-align:left;">
+                <em>* Acreditado, ** Subrogado</em>
               </div>
 
               <!-- Notas y políticas -->
