@@ -253,7 +253,7 @@
                  </tr>
 
                  <!-- Mostrar notas asociadas a este producto -->
-                 <t t-set="product_notes" t-value="doc.order_line.filtered(lambda l: l.display_type == 'line_note' and l.sequence > line.sequence and l.sequence < (line.sequence + 10))"/>
+                 <t t-set="product_notes" t-value="doc.order_line.filtered(lambda l: l.display_type == 'line_note' and l.sequence &gt; line.sequence and l.sequence &lt; (line.sequence + 10))"/>
                  <t t-foreach="product_notes" t-as="note">
                    <tr>
                      <td style="width:55%; padding:4px 2px; vertical-align:top;">
