@@ -205,68 +205,77 @@
                 </tr>
               </tbody>
             </table>
+<!-- Tabla de líneas - Header fijo -->
+           <table class="table table-borderless" style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0; margin-bottom:5px;">
+             <thead>
+               <tr style="background-color:rgb(218,227,243); height: 35px;">
+                 <th style="width:55%; padding:8px 4px; text-align:left; vertical-align:middle;"><strong>Descripción</strong></th>
+                 <th style="width:11.25%; padding:8px 4px; text-align:center; vertical-align:middle;"><strong>Cant.</strong></th>
+                 <th style="width:11.25%; padding:8px 4px; text-align:right; vertical-align:middle;"><strong>Precio unit.</strong></th>
+                 <th style="width:11.25%; padding:8px 4px; text-align:right; vertical-align:middle;"><strong>Desc.</strong></th>
+                 <th style="width:11.25%; padding:8px 4px; text-align:right; vertical-align:middle;"><strong>Subtotal</strong></th>
+               </tr>
+             </thead>
+           </table>
 
-            <!-- Tabla de líneas - Header fijo -->
-            <table class="table table-borderless" style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0; margin-bottom:5px;">
-              <thead>
-                <tr style="background-color:rgb(218,227,243); height: 35px;">
-                  <th style="width:55%; padding:8px 4px; text-align:left; vertical-align:middle;"><strong>Descripción</strong></th>
-                  <th style="width:11.25%; padding:8px 4px; text-align:center; vertical-align:middle;"><strong>Cant.</strong></th>
-                  <th style="width:11.25%; padding:8px 4px; text-align:right; vertical-align:middle;"><strong>Precio unit.</strong></th>
-                  <th style="width:11.25%; padding:8px 4px; text-align:right; vertical-align:middle;"><strong>Desc.</strong></th>
-                  <th style="width:11.25%; padding:8px 4px; text-align:right; vertical-align:middle;"><strong>Subtotal</strong></th>
-                </tr>
-              </thead>
-            </table>
+           <!-- Tabla consolidada sin bordes -->
+           <table class="table table-borderless" style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0; margin-top:5px;">
+             <tbody>
+               <t t-foreach="doc.order_line.filtered(lambda l: l.display_type != 'line_note')" t-as="line">
+                 <tr style="page-break-inside:avoid;">
+                   <td style="width:55%; padding:4px 2px; vertical-align:top;">
+                     <!-- Título del producto -->
+                     <div style="margin-bottom:4px;">
+                       <strong><span t-esc="line.product_id.display_name"/></strong>
+                     </div>
+                     <!-- Descripción completa -->
+                     <t t-set="full_desc" t-value="line.product_id.description_sale or line.product_id.name or ''"/>
+                     <t t-foreach="full_desc.split('\n')" t-as="ln">
+                       <t t-if="ln.strip()">
+                         <div style="font-size:11px; margin:1px 0; line-height:1.3;">
+                           <span t-esc="ln.strip()"/>
+                         </div>
+                       </t>
+                     </t>
+                   </td>
+                   <td style="width:11.25%; padding:4px 2px; text-align:center; font-size:11px; vertical-align:top;">
+                       <span t-field="line.product_uom_qty" t-field-options="{'widget':'float','precision':0}"/>
+                   </td>
+                   <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px; vertical-align:top;">
+                       <span t-field="line.price_unit" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                   </td>
+                   <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px; vertical-align:top;">
+                       <span t-esc="('%.2f' % line.discount) + '%'"/>
+                   </td>
+                   <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px; vertical-align:top;">
+                       <span t-field="line.price_subtotal" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                   </td>
+                 </tr>
 
-            <!-- Tabla consolidada sin bordes -->
-            <table class="table table-borderless" style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0; margin-top:5px;">
-              <tbody>
-                <t t-foreach="doc.order_line" t-as="line">
-                  <tr style="page-break-inside:avoid;">
-                    <td style="width:55%; padding:4px 2px; vertical-align:top;">
-                      <!-- Título del producto -->
-                      <div style="margin-bottom:4px;">
-                        <strong><span t-esc="line.product_id.display_name"/></strong>
-                      </div>
-                      <!-- Descripción completa -->
-                      <t t-set="full_desc" t-value="line.product_id.description_sale or line.product_id.name or ''"/>
-                      <t t-foreach="full_desc.split('\n')" t-as="ln">
-                        <t t-if="ln.strip()">
-                          <div style="font-size:11px; margin:1px 0; line-height:1.3;">
-                            <span t-esc="ln.strip()"/>
-                          </div>
-                        </t>
-                        <!-- Mostrar notas de la línea si existen -->
-                        <t t-if="line.name and line.name != line.product_id.display_name">
-                          <div style="font-size:10px; margin-top:4px; color:#666; font-style:italic;">
-                            <strong>Nota:</strong> <span t-esc="line.name"/>
-                          </div>
-                        </t>
-                      </t>
-                    </td>
-                    <td style="width:11.25%; padding:4px 2px; text-align:center; font-size:11px; vertical-align:top;">
-                        <span t-field="line.product_uom_qty" t-field-options="{'widget':'float','precision':0}"/>
-                    </td>
-                    <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px; vertical-align:top;">
-                        <span t-field="line.price_unit" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                    </td>
-                    <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px; vertical-align:top;">
-                        <span t-esc="('%.2f' % line.discount) + '%'"/>
-                    </td>
-                    <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px; vertical-align:top;">
-                        <span t-field="line.price_subtotal" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                    </td>
-                  </tr>
-                </t>
-                <!-- Fila de fin de cotización -->
-                <tr>
-                  <td colspan="5" style="background-color:rgb(218,227,243); height: 25px; padding:6px 4px; text-align:center; vertical-align:middle;">
-                    <strong>— FIN DE COTIZACIÓN —</strong>
-                  </td>
-                </tr>
-              </tbody>
-            </table>
+                 <!-- Mostrar notas asociadas a este producto -->
+                 <t t-set="product_notes" t-value="doc.order_line.filtered(lambda l: l.display_type == 'line_note' and l.sequence > line.sequence and l.sequence < (line.sequence + 10))"/>
+                 <t t-foreach="product_notes" t-as="note">
+                   <tr>
+                     <td style="width:55%; padding:4px 2px; vertical-align:top;">
+                       <div style="font-size:10px; margin-top:2px; color:#666; font-style:italic;">
+                         <strong>Nota:</strong> <span t-esc="note.name"/>
+                       </div>
+                     </td>
+                     <td colspan="4" style="text-align:center; font-size:10px; color:#999;">
+                       — nota —
+                     </td>
+                   </tr>
+                 </t>
+
+               </t>
+               <!-- Fila de fin de cotización -->
+               <tr>
+                 <td colspan="5" style="background-color:rgb(218,227,243); height: 25px; padding:6px 4px; text-align:center; vertical-align:middle;">
+                   <strong>— FIN DE COTIZACIÓN —</strong>
+                 </td>
+               </tr>
+             </tbody>
+           </table>
 
             <!-- Separador para evitar conflictos -->
             <div class="content-separator"></div>
