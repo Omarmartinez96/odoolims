@@ -240,24 +240,16 @@
                       </t>
                     </td>
                     <td style="width:11.25%; padding:4px 2px; text-align:center; font-size:11px; vertical-align:top;">
-                      <t t-if="line_index == 0">
                         <span t-field="line.product_uom_qty" t-field-options="{'widget':'float','precision':0}"/>
-                      </t>
                     </td>
                     <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px; vertical-align:top;">
-                      <t t-if="line_index == 0">
                         <span t-field="line.price_unit" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                      </t>
                     </td>
                     <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px; vertical-align:top;">
-                      <t t-if="line_index == 0">
                         <span t-esc="('%.2f' % line.discount) + '%'"/>
-                      </t>
                     </td>
                     <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px; vertical-align:top;">
-                      <t t-if="line_index == 0">
                         <span t-field="line.price_subtotal" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
-                      </t>
                     </td>
                   </tr>
                 </t>
