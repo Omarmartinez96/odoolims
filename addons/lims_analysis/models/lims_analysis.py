@@ -1842,9 +1842,9 @@ class LimsPreEnrichmentMedia(models.Model):
     )
 
     days_remaining = fields.Integer(
-        string='Días Restantes',
+        string='Horas Restantes',
         compute='_compute_days_remaining',
-        help='Días restantes para finalizar incubación'
+        help='Horas restantes para finalizar incubación'
     )
 
     is_overdue = fields.Boolean(
@@ -1967,15 +1967,38 @@ class LimsPreEnrichmentMedia(models.Model):
                 record.incubation_status = 'not_started'
                 record.is_overdue = False
 
-    @api.depends('incubation_end_date')
+    @api.depends('incubation_end_date', 'incubation_end_time')
     def _compute_days_remaining(self):
-        """Calcular días restantes"""
-        today = fields.Date.context_today(self)
+        """Calcular horas restantes"""
+        from datetime import datetime, timedelta
         
         for record in self:
-            if record.incubation_end_date and record.incubation_status == 'active':
-                delta = record.incubation_end_date - today
-                record.days_remaining = delta.days
+            if (record.incubation_end_date and record.incubation_end_time and 
+                record.incubation_status == 'active'):
+                
+                try:
+                    # Combinar fecha y hora de finalización
+                    end_date_str = f"{record.incubation_end_date} {record.incubation_end_time}"
+                    end_datetime = datetime.strptime(end_date_str, '%Y-%m-%d %H:%M')
+                    
+                    # Obtener fecha/hora actual
+                    now = datetime.now()
+                    
+                    # Calcular diferencia en horas
+                    delta = end_datetime - now
+                    hours_remaining = int(delta.total_seconds() / 3600)
+                    
+                    # Si es negativo, mostrar 0
+                    record.days_remaining = max(0, hours_remaining)
+                    
+                except (ValueError, TypeError):
+                    # Si hay error en formato de hora, calcular solo con fecha
+                    if record.incubation_end_date:
+                        today = fields.Date.context_today(record)
+                        delta = record.incubation_end_date - today
+                        record.days_remaining = max(0, delta.days * 24)  # Convertir días a horas
+                    else:
+                        record.days_remaining = 0
             else:
                 record.days_remaining = 0
 
@@ -2157,9 +2180,9 @@ class LimsSelectiveEnrichmentMedia(models.Model):
     )
 
     days_remaining = fields.Integer(
-        string='Días Restantes',
+        string='Horas Restantes',
         compute='_compute_days_remaining',
-        help='Días restantes para finalizar incubación'
+        help='Horas restantes para finalizar incubación'
     )
 
     is_overdue = fields.Boolean(
@@ -2282,15 +2305,38 @@ class LimsSelectiveEnrichmentMedia(models.Model):
                 record.incubation_status = 'not_started'
                 record.is_overdue = False
 
-    @api.depends('incubation_end_date')
+    @api.depends('incubation_end_date', 'incubation_end_time')
     def _compute_days_remaining(self):
-        """Calcular días restantes"""
-        today = fields.Date.context_today(self)
+        """Calcular horas restantes"""
+        from datetime import datetime, timedelta
         
         for record in self:
-            if record.incubation_end_date and record.incubation_status == 'active':
-                delta = record.incubation_end_date - today
-                record.days_remaining = delta.days
+            if (record.incubation_end_date and record.incubation_end_time and 
+                record.incubation_status == 'active'):
+                
+                try:
+                    # Combinar fecha y hora de finalización
+                    end_date_str = f"{record.incubation_end_date} {record.incubation_end_time}"
+                    end_datetime = datetime.strptime(end_date_str, '%Y-%m-%d %H:%M')
+                    
+                    # Obtener fecha/hora actual
+                    now = datetime.now()
+                    
+                    # Calcular diferencia en horas
+                    delta = end_datetime - now
+                    hours_remaining = int(delta.total_seconds() / 3600)
+                    
+                    # Si es negativo, mostrar 0
+                    record.days_remaining = max(0, hours_remaining)
+                    
+                except (ValueError, TypeError):
+                    # Si hay error en formato de hora, calcular solo con fecha
+                    if record.incubation_end_date:
+                        today = fields.Date.context_today(record)
+                        delta = record.incubation_end_date - today
+                        record.days_remaining = max(0, delta.days * 24)  # Convertir días a horas
+                    else:
+                        record.days_remaining = 0
             else:
                 record.days_remaining = 0
 
@@ -2474,9 +2520,9 @@ class LimsQuantitativeMedia(models.Model):
     )
 
     days_remaining = fields.Integer(
-        string='Días Restantes',
+        string='Horas Restantes',
         compute='_compute_days_remaining',
-        help='Días restantes para finalizar incubación'
+        help='Horas restantes para finalizar incubación'
     )
 
     is_overdue = fields.Boolean(
@@ -2599,15 +2645,38 @@ class LimsQuantitativeMedia(models.Model):
                 record.incubation_status = 'not_started'
                 record.is_overdue = False
 
-    @api.depends('incubation_end_date')
+    @api.depends('incubation_end_date', 'incubation_end_time')
     def _compute_days_remaining(self):
-        """Calcular días restantes"""
-        today = fields.Date.context_today(self)
+        """Calcular horas restantes"""
+        from datetime import datetime, timedelta
         
         for record in self:
-            if record.incubation_end_date and record.incubation_status == 'active':
-                delta = record.incubation_end_date - today
-                record.days_remaining = delta.days
+            if (record.incubation_end_date and record.incubation_end_time and 
+                record.incubation_status == 'active'):
+                
+                try:
+                    # Combinar fecha y hora de finalización
+                    end_date_str = f"{record.incubation_end_date} {record.incubation_end_time}"
+                    end_datetime = datetime.strptime(end_date_str, '%Y-%m-%d %H:%M')
+                    
+                    # Obtener fecha/hora actual
+                    now = datetime.now()
+                    
+                    # Calcular diferencia en horas
+                    delta = end_datetime - now
+                    hours_remaining = int(delta.total_seconds() / 3600)
+                    
+                    # Si es negativo, mostrar 0
+                    record.days_remaining = max(0, hours_remaining)
+                    
+                except (ValueError, TypeError):
+                    # Si hay error en formato de hora, calcular solo con fecha
+                    if record.incubation_end_date:
+                        today = fields.Date.context_today(record)
+                        delta = record.incubation_end_date - today
+                        record.days_remaining = max(0, delta.days * 24)  # Convertir días a horas
+                    else:
+                        record.days_remaining = 0
             else:
                 record.days_remaining = 0
 
@@ -2789,9 +2858,9 @@ class LimsQualitativeMedia(models.Model):
     )
 
     days_remaining = fields.Integer(
-        string='Días Restantes',
+        string='Horas Restantes',
         compute='_compute_days_remaining',
-        help='Días restantes para finalizar incubación'
+        help='Horas restantes para finalizar incubación'
     )
 
     is_overdue = fields.Boolean(
@@ -2915,17 +2984,40 @@ class LimsQualitativeMedia(models.Model):
                 record.incubation_status = 'not_started'
                 record.is_overdue = False
 
-        @api.depends('incubation_end_date')
-        def _compute_days_remaining(self):
-            """Calcular días restantes"""
-            today = fields.Date.context_today(self)
-            
-            for record in self:
-                if record.incubation_end_date and record.incubation_status == 'active':
-                    delta = record.incubation_end_date - today
-                    record.days_remaining = delta.days
-                else:
-                    record.days_remaining = 0
+    @api.depends('incubation_end_date', 'incubation_end_time')
+    def _compute_days_remaining(self):
+        """Calcular horas restantes"""
+        from datetime import datetime, timedelta
+        
+        for record in self:
+            if (record.incubation_end_date and record.incubation_end_time and 
+                record.incubation_status == 'active'):
+                
+                try:
+                    # Combinar fecha y hora de finalización
+                    end_date_str = f"{record.incubation_end_date} {record.incubation_end_time}"
+                    end_datetime = datetime.strptime(end_date_str, '%Y-%m-%d %H:%M')
+                    
+                    # Obtener fecha/hora actual
+                    now = datetime.now()
+                    
+                    # Calcular diferencia en horas
+                    delta = end_datetime - now
+                    hours_remaining = int(delta.total_seconds() / 3600)
+                    
+                    # Si es negativo, mostrar 0
+                    record.days_remaining = max(0, hours_remaining)
+                    
+                except (ValueError, TypeError):
+                    # Si hay error en formato de hora, calcular solo con fecha
+                    if record.incubation_end_date:
+                        today = fields.Date.context_today(record)
+                        delta = record.incubation_end_date - today
+                        record.days_remaining = max(0, delta.days * 24)  # Convertir días a horas
+                    else:
+                        record.days_remaining = 0
+            else:
+                record.days_remaining = 0
 
         def action_mark_completed(self):
             """Marcar incubación como completada"""
@@ -3175,9 +3267,9 @@ class LimsConfirmationMedia(models.Model):
     )
 
     days_remaining = fields.Integer(
-        string='Días Restantes',
+        string='Horas Restantes',
         compute='_compute_days_remaining',
-        help='Días restantes para finalizar incubación'
+        help='Horas restantes para finalizar incubación'
     )
 
     is_overdue = fields.Boolean(
@@ -3300,15 +3392,38 @@ class LimsConfirmationMedia(models.Model):
                 record.incubation_status = 'not_started'
                 record.is_overdue = False
 
-    @api.depends('incubation_end_date')
+    @api.depends('incubation_end_date', 'incubation_end_time')
     def _compute_days_remaining(self):
-        """Calcular días restantes"""
-        today = fields.Date.context_today(self)
+        """Calcular horas restantes"""
+        from datetime import datetime, timedelta
         
         for record in self:
-            if record.incubation_end_date and record.incubation_status == 'active':
-                delta = record.incubation_end_date - today
-                record.days_remaining = delta.days
+            if (record.incubation_end_date and record.incubation_end_time and 
+                record.incubation_status == 'active'):
+                
+                try:
+                    # Combinar fecha y hora de finalización
+                    end_date_str = f"{record.incubation_end_date} {record.incubation_end_time}"
+                    end_datetime = datetime.strptime(end_date_str, '%Y-%m-%d %H:%M')
+                    
+                    # Obtener fecha/hora actual
+                    now = datetime.now()
+                    
+                    # Calcular diferencia en horas
+                    delta = end_datetime - now
+                    hours_remaining = int(delta.total_seconds() / 3600)
+                    
+                    # Si es negativo, mostrar 0
+                    record.days_remaining = max(0, hours_remaining)
+                    
+                except (ValueError, TypeError):
+                    # Si hay error en formato de hora, calcular solo con fecha
+                    if record.incubation_end_date:
+                        today = fields.Date.context_today(record)
+                        delta = record.incubation_end_date - today
+                        record.days_remaining = max(0, delta.days * 24)  # Convertir días a horas
+                    else:
+                        record.days_remaining = 0
             else:
                 record.days_remaining = 0
 
