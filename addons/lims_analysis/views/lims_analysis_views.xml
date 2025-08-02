@@ -285,7 +285,8 @@
                                                                     <button name="action_mark_completed" 
                                                                             type="object" 
                                                                             string="✅ Marcar Completada" 
-                                                                            class="btn-success"/>
+                                                                            class="btn-success"
+                                                                            context="{'active_model': 'lims.pre.enrichment.media'}"/>
                                                                 </div>
 
                                                                 <group string="📝 Notas de Preparación">
@@ -418,7 +419,8 @@
                                                                     <button name="action_mark_completed" 
                                                                             type="object" 
                                                                             string="✅ Marcar Completada" 
-                                                                            class="btn-success"/>
+                                                                            class="btn-success"
+                                                                            context="{'active_model': 'lims.pre.enrichment.media'}"/>
                                                                 </div>
 
                                                                 <group string="📝 Notas de Preparación">
@@ -550,7 +552,8 @@
                                                                     <button name="action_mark_completed" 
                                                                             type="object" 
                                                                             string="✅ Marcar Completada" 
-                                                                            class="btn-success"/>
+                                                                            class="btn-success"
+                                                                            context="{'active_model': 'lims.pre.enrichment.media'}"/>
                                                                 </div>
 
                                                                 <group string="📝 Notas de Preparación">
@@ -705,7 +708,8 @@
                                                                     <button name="action_mark_completed" 
                                                                             type="object" 
                                                                             string="✅ Marcar Completada" 
-                                                                            class="btn-success"/>
+                                                                            class="btn-success"
+                                                                            context="{'active_model': 'lims.pre.enrichment.media'}"/>
                                                                 </div>
 
                                                                 <group string="📝 Notas de Preparación">
@@ -819,7 +823,8 @@
                                                                     <button name="action_mark_completed" 
                                                                             type="object" 
                                                                             string="✅ Marcar Completada" 
-                                                                            class="btn-success"/>
+                                                                            class="btn-success"
+                                                                            context="{'active_model': 'lims.pre.enrichment.media'}"/>
                                                                 </div>
 
                                                                 <group string="📝 Notas de Preparación">
