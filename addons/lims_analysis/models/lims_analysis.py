@@ -1996,6 +1996,21 @@ def _compute_incubation_status(self):
             }
         }
 
+    @api.onchange('incubation_start_date', 'incubation_end_date', 'requires_incubation', 'incubation_end_date_real')
+    def _onchange_incubation_dates(self):
+        """Recalcular estado cuando cambien las fechas"""
+        self._compute_incubation_status()
+        self._compute_days_remaining()
+
+    def action_refresh_status(self):
+        """Botón para refrescar estado manualmente"""
+        self._compute_incubation_status()
+        self._compute_days_remaining()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+        }
+
     @api.onchange('requires_incubation')
     def _onchange_requires_incubation(self):
         """Limpiar campos de incubación cuando no se requiere"""
@@ -2294,6 +2309,21 @@ def _compute_incubation_status(self):
                 'message': f'Muestra {self.sample_code} retirada de incubadora',
                 'type': 'success',
             }
+        }
+
+    @api.onchange('incubation_start_date', 'incubation_end_date', 'requires_incubation', 'incubation_end_date_real')
+    def _onchange_incubation_dates(self):
+        """Recalcular estado cuando cambien las fechas"""
+        self._compute_incubation_status()
+        self._compute_days_remaining()
+
+    def action_refresh_status(self):
+        """Botón para refrescar estado manualmente"""
+        self._compute_incubation_status()
+        self._compute_days_remaining()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
         }
 
     @api.onchange('requires_incubation')
@@ -2598,6 +2628,21 @@ def _compute_incubation_status(self):
             }
         }
 
+    @api.onchange('incubation_start_date', 'incubation_end_date', 'requires_incubation', 'incubation_end_date_real')
+    def _onchange_incubation_dates(self):
+        """Recalcular estado cuando cambien las fechas"""
+        self._compute_incubation_status()
+        self._compute_days_remaining()
+
+    def action_refresh_status(self):
+        """Botón para refrescar estado manualmente"""
+        self._compute_incubation_status()
+        self._compute_days_remaining()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+        }
+
     @api.onchange('requires_incubation')
     def _onchange_requires_incubation(self):
         """Limpiar campos de incubación cuando no se requiere"""
@@ -2898,6 +2943,21 @@ class LimsQualitativeMedia(models.Model):
                     'type': 'success',
                 }
             }
+
+    @api.onchange('incubation_start_date', 'incubation_end_date', 'requires_incubation', 'incubation_end_date_real')
+    def _onchange_incubation_dates(self):
+        """Recalcular estado cuando cambien las fechas"""
+        self._compute_incubation_status()
+        self._compute_days_remaining()
+
+    def action_refresh_status(self):
+        """Botón para refrescar estado manualmente"""
+        self._compute_incubation_status()
+        self._compute_days_remaining()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
+        }
 
     @api.onchange('requires_incubation')
     def _onchange_requires_incubation(self):
@@ -3267,6 +3327,21 @@ def _compute_incubation_status(self):
                 'message': f'Muestra {self.sample_code} retirada de incubadora',
                 'type': 'success',
             }
+        }
+
+    @api.onchange('incubation_start_date', 'incubation_end_date', 'requires_incubation', 'incubation_end_date_real')
+    def _onchange_incubation_dates(self):
+        """Recalcular estado cuando cambien las fechas"""
+        self._compute_incubation_status()
+        self._compute_days_remaining()
+
+    def action_refresh_status(self):
+        """Botón para refrescar estado manualmente"""
+        self._compute_incubation_status()
+        self._compute_days_remaining()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'reload',
         }
 
     @api.onchange('requires_incubation')

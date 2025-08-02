@@ -269,11 +269,23 @@
                                                                             invisible="incubation_status != 'active'"/>
                                                                         <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
                                                                     </group>
+                                                                    
+                                                                    <group>
+                                                                        <field name="incubation_end_date_real"/>
+                                                                        <field name="incubation_end_time_real" placeholder="HH:MM"/>
+                                                                        <button name="action_refresh_status" 
+                                                                                type="object" 
+                                                                                string="🔄 Calcular Estado" 
+                                                                                class="btn-info"/>
+                                                                    </group>
+
                                                                     <group>
                                                                         <field name="incubation_end_date_real"/>
                                                                         <field name="incubation_end_time_real" placeholder="HH:MM"/>
                                                                     </group>
                                                                 </group>
+
+
 
                                                                 <group string="🧪 Resultado en este Medio (Si Aplica)">
                                                                     <field name="qualitative_result"/>
@@ -393,6 +405,16 @@
                                                                             invisible="incubation_status != 'active'"/>
                                                                         <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
                                                                     </group>
+
+                                                                    <group>
+                                                                        <field name="incubation_end_date_real"/>
+                                                                        <field name="incubation_end_time_real" placeholder="HH:MM"/>
+                                                                        <button name="action_refresh_status" 
+                                                                                type="object" 
+                                                                                string="🔄 Calcular Estado" 
+                                                                                class="btn-info"/>
+                                                                    </group>
+
                                                                     <group>
                                                                         <field name="incubation_end_date_real"/>
                                                                         <field name="incubation_end_time_real" placeholder="HH:MM"/>
@@ -516,6 +538,16 @@
                                                                             invisible="incubation_status != 'active'"/>
                                                                         <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
                                                                     </group>
+
+                                                                    <group>
+                                                                        <field name="incubation_end_date_real"/>
+                                                                        <field name="incubation_end_time_real" placeholder="HH:MM"/>
+                                                                        <button name="action_refresh_status" 
+                                                                                type="object" 
+                                                                                string="🔄 Calcular Estado" 
+                                                                                class="btn-info"/>
+                                                                    </group>
+
                                                                     <group>
                                                                         <field name="incubation_end_date_real"/>
                                                                         <field name="incubation_end_time_real" placeholder="HH:MM"/>
@@ -662,6 +694,16 @@
                                                                             invisible="incubation_status != 'active'"/>
                                                                         <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
                                                                     </group>
+
+                                                                    <group>
+                                                                        <field name="incubation_end_date_real"/>
+                                                                        <field name="incubation_end_time_real" placeholder="HH:MM"/>
+                                                                        <button name="action_refresh_status" 
+                                                                                type="object" 
+                                                                                string="🔄 Calcular Estado" 
+                                                                                class="btn-info"/>
+                                                                    </group>
+
                                                                     <group>
                                                                         <field name="incubation_end_date_real"/>
                                                                         <field name="incubation_end_time_real" placeholder="HH:MM"/>
@@ -767,6 +809,16 @@
                                                                             invisible="incubation_status != 'active'"/>
                                                                         <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
                                                                     </group>
+
+                                                                    <group>
+                                                                        <field name="incubation_end_date_real"/>
+                                                                        <field name="incubation_end_time_real" placeholder="HH:MM"/>
+                                                                        <button name="action_refresh_status" 
+                                                                                type="object" 
+                                                                                string="🔄 Calcular Estado" 
+                                                                                class="btn-info"/>
+                                                                    </group>
+
                                                                     <group>
                                                                         <field name="incubation_end_date_real"/>
                                                                         <field name="incubation_end_time_real" placeholder="HH:MM"/>
