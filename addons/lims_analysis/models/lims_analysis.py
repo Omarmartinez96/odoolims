@@ -1821,6 +1821,53 @@ class LimsPreEnrichmentMedia(models.Model):
         ('not_confirmed', 'No Confirmado')
     ], string='Resultado (Si Aplica)', help='Resultado obtenido en este medio')
 
+    # CAMPOS PARA SEGUIMIENTO DE INCUBACIÓN
+    incubation_status = fields.Selection([
+        ('not_started', 'No Iniciada'),
+        ('active', 'En Incubación'),
+        ('completed', 'Completada'),
+        ('overdue', 'Vencida')
+    ], string='Estado de Incubación', 
+    compute='_compute_incubation_status', 
+    store=True)
+
+    incubation_end_date_real = fields.Date(
+        string='Fecha Real de Finalización',
+        help='Fecha real cuando se retiró de la incubadora'
+    )
+
+    incubation_end_time_real = fields.Char(
+        string='Hora Real de Finalización',
+        help='Hora real cuando se retiró (formato HH:MM)'
+    )
+
+    days_remaining = fields.Integer(
+        string='Días Restantes',
+        compute='_compute_days_remaining',
+        help='Días restantes para finalizar incubación'
+    )
+
+    is_overdue = fields.Boolean(
+        string='Vencida',
+        compute='_compute_incubation_status',
+        store=True
+    )
+
+    # Campo para identificar muestras en incubación
+    sample_code = fields.Char(
+        string='Código de Muestra',
+        related='parameter_analysis_id.analysis_id.sample_code',
+        store=True,
+        readonly=True
+    )
+
+    analysis_parameter_name = fields.Char(
+        string='Parámetro',
+        related='parameter_analysis_id.name',
+        store=True,
+        readonly=True
+    )
+
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
     def _compute_incubation_duration(self):
         """Calcular duración de incubación"""
@@ -1893,6 +1940,61 @@ class LimsPreEnrichmentMedia(models.Model):
             if self.external_batch_code and not self.culture_media_name:
                 # Podrías agregar validación aquí si es necesario
                 pass
+
+@api.depends('incubation_start_date', 'incubation_end_date', 'incubation_end_date_real', 'requires_incubation')
+def _compute_incubation_status(self):
+    """Calcular estado de incubación"""
+    today = fields.Date.context_today(self)
+    
+    for record in self:
+        if not record.requires_incubation:
+            record.incubation_status = 'not_started'
+            record.is_overdue = False
+        elif record.incubation_end_date_real:
+            record.incubation_status = 'completed'
+            record.is_overdue = False
+        elif record.incubation_start_date and record.incubation_end_date:
+            if record.incubation_start_date <= today <= record.incubation_end_date:
+                record.incubation_status = 'active'
+                record.is_overdue = False
+            elif today > record.incubation_end_date:
+                record.incubation_status = 'overdue'
+                record.is_overdue = True
+            else:
+                record.incubation_status = 'not_started'
+                record.is_overdue = False
+        else:
+            record.incubation_status = 'not_started'
+            record.is_overdue = False
+
+    @api.depends('incubation_end_date')
+    def _compute_days_remaining(self):
+        """Calcular días restantes"""
+        today = fields.Date.context_today(self)
+        
+        for record in self:
+            if record.incubation_end_date and record.incubation_status == 'active':
+                delta = record.incubation_end_date - today
+                record.days_remaining = delta.days
+            else:
+                record.days_remaining = 0
+
+    def action_mark_completed(self):
+        """Marcar incubación como completada"""
+        self.write({
+            'incubation_end_date_real': fields.Date.context_today(self),
+            'incubation_end_time_real': fields.Datetime.now().strftime('%H:%M')
+        })
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Incubación Completada',
+                'message': f'Muestra {self.sample_code} retirada de incubadora',
+                'type': 'success',
+            }
+        }
 
     @api.onchange('requires_incubation')
     def _onchange_requires_incubation(self):
@@ -2019,6 +2121,53 @@ class LimsSelectiveEnrichmentMedia(models.Model):
         ('not_confirmed', 'No Confirmado')
     ], string='Resultado (Si Aplica)', help='Resultado obtenido en este medio')
 
+    # CAMPOS PARA SEGUIMIENTO DE INCUBACIÓN
+    incubation_status = fields.Selection([
+        ('not_started', 'No Iniciada'),
+        ('active', 'En Incubación'),
+        ('completed', 'Completada'),
+        ('overdue', 'Vencida')
+    ], string='Estado de Incubación', 
+    compute='_compute_incubation_status', 
+    store=True)
+
+    incubation_end_date_real = fields.Date(
+        string='Fecha Real de Finalización',
+        help='Fecha real cuando se retiró de la incubadora'
+    )
+
+    incubation_end_time_real = fields.Char(
+        string='Hora Real de Finalización',
+        help='Hora real cuando se retiró (formato HH:MM)'
+    )
+
+    days_remaining = fields.Integer(
+        string='Días Restantes',
+        compute='_compute_days_remaining',
+        help='Días restantes para finalizar incubación'
+    )
+
+    is_overdue = fields.Boolean(
+        string='Vencida',
+        compute='_compute_incubation_status',
+        store=True
+    )
+
+    # Campo para identificar muestras en incubación
+    sample_code = fields.Char(
+        string='Código de Muestra',
+        related='parameter_analysis_id.analysis_id.sample_code',
+        store=True,
+        readonly=True
+    )
+
+    analysis_parameter_name = fields.Char(
+        string='Parámetro',
+        related='parameter_analysis_id.name',
+        store=True,
+        readonly=True
+    )
+
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
     def _compute_incubation_duration(self):
         """Calcular duración de incubación"""
@@ -2091,6 +2240,61 @@ class LimsSelectiveEnrichmentMedia(models.Model):
             if self.external_batch_code and not self.culture_media_name:
                 # Podrías agregar validación aquí si es necesario
                 pass
+
+@api.depends('incubation_start_date', 'incubation_end_date', 'incubation_end_date_real', 'requires_incubation')
+def _compute_incubation_status(self):
+    """Calcular estado de incubación"""
+    today = fields.Date.context_today(self)
+    
+    for record in self:
+        if not record.requires_incubation:
+            record.incubation_status = 'not_started'
+            record.is_overdue = False
+        elif record.incubation_end_date_real:
+            record.incubation_status = 'completed'
+            record.is_overdue = False
+        elif record.incubation_start_date and record.incubation_end_date:
+            if record.incubation_start_date <= today <= record.incubation_end_date:
+                record.incubation_status = 'active'
+                record.is_overdue = False
+            elif today > record.incubation_end_date:
+                record.incubation_status = 'overdue'
+                record.is_overdue = True
+            else:
+                record.incubation_status = 'not_started'
+                record.is_overdue = False
+        else:
+            record.incubation_status = 'not_started'
+            record.is_overdue = False
+
+    @api.depends('incubation_end_date')
+    def _compute_days_remaining(self):
+        """Calcular días restantes"""
+        today = fields.Date.context_today(self)
+        
+        for record in self:
+            if record.incubation_end_date and record.incubation_status == 'active':
+                delta = record.incubation_end_date - today
+                record.days_remaining = delta.days
+            else:
+                record.days_remaining = 0
+
+    def action_mark_completed(self):
+        """Marcar incubación como completada"""
+        self.write({
+            'incubation_end_date_real': fields.Date.context_today(self),
+            'incubation_end_time_real': fields.Datetime.now().strftime('%H:%M')
+        })
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Incubación Completada',
+                'message': f'Muestra {self.sample_code} retirada de incubadora',
+                'type': 'success',
+            }
+        }
 
     @api.onchange('requires_incubation')
     def _onchange_requires_incubation(self):
@@ -2219,6 +2423,53 @@ class LimsQuantitativeMedia(models.Model):
         ('not_confirmed', 'No Confirmado')
     ], string='Resultado (Si Aplica)', help='Resultado obtenido en este medio')
 
+    # CAMPOS PARA SEGUIMIENTO DE INCUBACIÓN
+    incubation_status = fields.Selection([
+        ('not_started', 'No Iniciada'),
+        ('active', 'En Incubación'),
+        ('completed', 'Completada'),
+        ('overdue', 'Vencida')
+    ], string='Estado de Incubación', 
+    compute='_compute_incubation_status', 
+    store=True)
+
+    incubation_end_date_real = fields.Date(
+        string='Fecha Real de Finalización',
+        help='Fecha real cuando se retiró de la incubadora'
+    )
+
+    incubation_end_time_real = fields.Char(
+        string='Hora Real de Finalización',
+        help='Hora real cuando se retiró (formato HH:MM)'
+    )
+
+    days_remaining = fields.Integer(
+        string='Días Restantes',
+        compute='_compute_days_remaining',
+        help='Días restantes para finalizar incubación'
+    )
+
+    is_overdue = fields.Boolean(
+        string='Vencida',
+        compute='_compute_incubation_status',
+        store=True
+    )
+
+    # Campo para identificar muestras en incubación
+    sample_code = fields.Char(
+        string='Código de Muestra',
+        related='parameter_analysis_id.analysis_id.sample_code',
+        store=True,
+        readonly=True
+    )
+
+    analysis_parameter_name = fields.Char(
+        string='Parámetro',
+        related='parameter_analysis_id.name',
+        store=True,
+        readonly=True
+    )
+
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
     def _compute_incubation_duration(self):
         """Calcular duración de incubación"""
@@ -2292,6 +2543,61 @@ class LimsQuantitativeMedia(models.Model):
                 # Podrías agregar validación aquí si es necesario
                 pass
     
+@api.depends('incubation_start_date', 'incubation_end_date', 'incubation_end_date_real', 'requires_incubation')
+def _compute_incubation_status(self):
+    """Calcular estado de incubación"""
+    today = fields.Date.context_today(self)
+    
+    for record in self:
+        if not record.requires_incubation:
+            record.incubation_status = 'not_started'
+            record.is_overdue = False
+        elif record.incubation_end_date_real:
+            record.incubation_status = 'completed'
+            record.is_overdue = False
+        elif record.incubation_start_date and record.incubation_end_date:
+            if record.incubation_start_date <= today <= record.incubation_end_date:
+                record.incubation_status = 'active'
+                record.is_overdue = False
+            elif today > record.incubation_end_date:
+                record.incubation_status = 'overdue'
+                record.is_overdue = True
+            else:
+                record.incubation_status = 'not_started'
+                record.is_overdue = False
+        else:
+            record.incubation_status = 'not_started'
+            record.is_overdue = False
+
+    @api.depends('incubation_end_date')
+    def _compute_days_remaining(self):
+        """Calcular días restantes"""
+        today = fields.Date.context_today(self)
+        
+        for record in self:
+            if record.incubation_end_date and record.incubation_status == 'active':
+                delta = record.incubation_end_date - today
+                record.days_remaining = delta.days
+            else:
+                record.days_remaining = 0
+
+    def action_mark_completed(self):
+        """Marcar incubación como completada"""
+        self.write({
+            'incubation_end_date_real': fields.Date.context_today(self),
+            'incubation_end_time_real': fields.Datetime.now().strftime('%H:%M')
+        })
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Incubación Completada',
+                'message': f'Muestra {self.sample_code} retirada de incubadora',
+                'type': 'success',
+            }
+        }
+
     @api.onchange('requires_incubation')
     def _onchange_requires_incubation(self):
         """Limpiar campos de incubación cuando no se requiere"""
@@ -2417,6 +2723,53 @@ class LimsQualitativeMedia(models.Model):
         ('not_confirmed', 'No Confirmado')
     ], string='Resultado (Si Aplica)', help='Resultado obtenido en este medio')
 
+    # CAMPOS PARA SEGUIMIENTO DE INCUBACIÓN
+    incubation_status = fields.Selection([
+        ('not_started', 'No Iniciada'),
+        ('active', 'En Incubación'),
+        ('completed', 'Completada'),
+        ('overdue', 'Vencida')
+    ], string='Estado de Incubación', 
+    compute='_compute_incubation_status', 
+    store=True)
+
+    incubation_end_date_real = fields.Date(
+        string='Fecha Real de Finalización',
+        help='Fecha real cuando se retiró de la incubadora'
+    )
+
+    incubation_end_time_real = fields.Char(
+        string='Hora Real de Finalización',
+        help='Hora real cuando se retiró (formato HH:MM)'
+    )
+
+    days_remaining = fields.Integer(
+        string='Días Restantes',
+        compute='_compute_days_remaining',
+        help='Días restantes para finalizar incubación'
+    )
+
+    is_overdue = fields.Boolean(
+        string='Vencida',
+        compute='_compute_incubation_status',
+        store=True
+    )
+
+    # Campo para identificar muestras en incubación
+    sample_code = fields.Char(
+        string='Código de Muestra',
+        related='parameter_analysis_id.analysis_id.sample_code',
+        store=True,
+        readonly=True
+    )
+
+    analysis_parameter_name = fields.Char(
+        string='Parámetro',
+        related='parameter_analysis_id.name',
+        store=True,
+        readonly=True
+    )
+
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
     def _compute_incubation_duration(self):
         """Calcular duración de incubación"""
@@ -2490,6 +2843,61 @@ class LimsQualitativeMedia(models.Model):
                 # Podrías agregar validación aquí si es necesario
                 pass
 
+
+    @api.depends('incubation_start_date', 'incubation_end_date', 'incubation_end_date_real', 'requires_incubation')
+    def _compute_incubation_status(self):
+        """Calcular estado de incubación"""
+        today = fields.Date.context_today(self)
+        
+        for record in self:
+            if not record.requires_incubation:
+                record.incubation_status = 'not_started'
+                record.is_overdue = False
+            elif record.incubation_end_date_real:
+                record.incubation_status = 'completed'
+                record.is_overdue = False
+            elif record.incubation_start_date and record.incubation_end_date:
+                if record.incubation_start_date <= today <= record.incubation_end_date:
+                    record.incubation_status = 'active'
+                    record.is_overdue = False
+                elif today > record.incubation_end_date:
+                    record.incubation_status = 'overdue'
+                    record.is_overdue = True
+                else:
+                    record.incubation_status = 'not_started'
+                    record.is_overdue = False
+            else:
+                record.incubation_status = 'not_started'
+                record.is_overdue = False
+
+        @api.depends('incubation_end_date')
+        def _compute_days_remaining(self):
+            """Calcular días restantes"""
+            today = fields.Date.context_today(self)
+            
+            for record in self:
+                if record.incubation_end_date and record.incubation_status == 'active':
+                    delta = record.incubation_end_date - today
+                    record.days_remaining = delta.days
+                else:
+                    record.days_remaining = 0
+
+        def action_mark_completed(self):
+            """Marcar incubación como completada"""
+            self.write({
+                'incubation_end_date_real': fields.Date.context_today(self),
+                'incubation_end_time_real': fields.Datetime.now().strftime('%H:%M')
+            })
+            
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Incubación Completada',
+                    'message': f'Muestra {self.sample_code} retirada de incubadora',
+                    'type': 'success',
+                }
+            }
 
     @api.onchange('requires_incubation')
     def _onchange_requires_incubation(self):
@@ -2686,6 +3094,53 @@ class LimsConfirmationMedia(models.Model):
         ('not_confirmed', 'No Confirmado')
     ], string='Resultado (Si Aplica)', help='Resultado obtenido en este medio')
 
+    # CAMPOS PARA SEGUIMIENTO DE INCUBACIÓN
+    incubation_status = fields.Selection([
+        ('not_started', 'No Iniciada'),
+        ('active', 'En Incubación'),
+        ('completed', 'Completada'),
+        ('overdue', 'Vencida')
+    ], string='Estado de Incubación', 
+    compute='_compute_incubation_status', 
+    store=True)
+
+    incubation_end_date_real = fields.Date(
+        string='Fecha Real de Finalización',
+        help='Fecha real cuando se retiró de la incubadora'
+    )
+
+    incubation_end_time_real = fields.Char(
+        string='Hora Real de Finalización',
+        help='Hora real cuando se retiró (formato HH:MM)'
+    )
+
+    days_remaining = fields.Integer(
+        string='Días Restantes',
+        compute='_compute_days_remaining',
+        help='Días restantes para finalizar incubación'
+    )
+
+    is_overdue = fields.Boolean(
+        string='Vencida',
+        compute='_compute_incubation_status',
+        store=True
+    )
+
+    # Campo para identificar muestras en incubación
+    sample_code = fields.Char(
+        string='Código de Muestra',
+        related='parameter_analysis_id.analysis_id.sample_code',
+        store=True,
+        readonly=True
+    )
+
+    analysis_parameter_name = fields.Char(
+        string='Parámetro',
+        related='parameter_analysis_id.name',
+        store=True,
+        readonly=True
+    )
+
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
     def _compute_incubation_duration(self):
         """Calcular duración de incubación"""
@@ -2758,6 +3213,61 @@ class LimsConfirmationMedia(models.Model):
             if self.external_batch_code and not self.culture_media_name:
                 # Podrías agregar validación aquí si es necesario
                 pass
+
+@api.depends('incubation_start_date', 'incubation_end_date', 'incubation_end_date_real', 'requires_incubation')
+def _compute_incubation_status(self):
+    """Calcular estado de incubación"""
+    today = fields.Date.context_today(self)
+    
+    for record in self:
+        if not record.requires_incubation:
+            record.incubation_status = 'not_started'
+            record.is_overdue = False
+        elif record.incubation_end_date_real:
+            record.incubation_status = 'completed'
+            record.is_overdue = False
+        elif record.incubation_start_date and record.incubation_end_date:
+            if record.incubation_start_date <= today <= record.incubation_end_date:
+                record.incubation_status = 'active'
+                record.is_overdue = False
+            elif today > record.incubation_end_date:
+                record.incubation_status = 'overdue'
+                record.is_overdue = True
+            else:
+                record.incubation_status = 'not_started'
+                record.is_overdue = False
+        else:
+            record.incubation_status = 'not_started'
+            record.is_overdue = False
+
+    @api.depends('incubation_end_date')
+    def _compute_days_remaining(self):
+        """Calcular días restantes"""
+        today = fields.Date.context_today(self)
+        
+        for record in self:
+            if record.incubation_end_date and record.incubation_status == 'active':
+                delta = record.incubation_end_date - today
+                record.days_remaining = delta.days
+            else:
+                record.days_remaining = 0
+
+    def action_mark_completed(self):
+        """Marcar incubación como completada"""
+        self.write({
+            'incubation_end_date_real': fields.Date.context_today(self),
+            'incubation_end_time_real': fields.Datetime.now().strftime('%H:%M')
+        })
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Incubación Completada',
+                'message': f'Muestra {self.sample_code} retirada de incubadora',
+                'type': 'success',
+            }
+        }
 
     @api.onchange('requires_incubation')
     def _onchange_requires_incubation(self):

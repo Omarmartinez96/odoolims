@@ -265,6 +265,29 @@
                                                                     <field name="qualitative_result"/>
                                                                 </group>
 
+                                                                <group string="📊 Estado de Incubación" 
+                                                                    invisible="requires_incubation == False">
+                                                                    <group>
+                                                                        <field name="incubation_status" readonly="1"/>
+                                                                        <field name="days_remaining" readonly="1" 
+                                                                            invisible="incubation_status != 'active'"/>
+                                                                        <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
+                                                                    </group>
+                                                                    <group>
+                                                                        <field name="incubation_end_date_real"/>
+                                                                        <field name="incubation_end_time_real" placeholder="HH:MM"/>
+                                                                    </group>
+                                                                </group>
+
+                                                                <!-- Botón para marcar completada -->
+                                                                <div class="oe_button_box" 
+                                                                    invisible="incubation_status != 'active'">
+                                                                    <button name="action_mark_completed" 
+                                                                            type="object" 
+                                                                            string="✅ Marcar Completada" 
+                                                                            class="btn-success"/>
+                                                                </div>
+
                                                                 <group string="📝 Notas de Preparación">
                                                                     <field name="preparation_notes" nolabel="1"
                                                                            placeholder="Instrucciones especiales, observaciones, etc..."/>
@@ -374,6 +397,29 @@
                                                                 <group string="🧪 Resultado en este Medio (Si Aplica)">
                                                                     <field name="qualitative_result"/>
                                                                 </group>
+
+                                                                <group string="📊 Estado de Incubación" 
+                                                                    invisible="requires_incubation == False">
+                                                                    <group>
+                                                                        <field name="incubation_status" readonly="1"/>
+                                                                        <field name="days_remaining" readonly="1" 
+                                                                            invisible="incubation_status != 'active'"/>
+                                                                        <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
+                                                                    </group>
+                                                                    <group>
+                                                                        <field name="incubation_end_date_real"/>
+                                                                        <field name="incubation_end_time_real" placeholder="HH:MM"/>
+                                                                    </group>
+                                                                </group>
+
+                                                                <!-- Botón para marcar completada -->
+                                                                <div class="oe_button_box" 
+                                                                    invisible="incubation_status != 'active'">
+                                                                    <button name="action_mark_completed" 
+                                                                            type="object" 
+                                                                            string="✅ Marcar Completada" 
+                                                                            class="btn-success"/>
+                                                                </div>
 
                                                                 <group string="📝 Notas de Preparación">
                                                                     <field name="preparation_notes" nolabel="1"
@@ -507,6 +553,29 @@
                                                                     <field name="qualitative_result"/>
                                                                 </group>
 
+                                                                <group string="📊 Estado de Incubación" 
+                                                                    invisible="requires_incubation == False">
+                                                                    <group>
+                                                                        <field name="incubation_status" readonly="1"/>
+                                                                        <field name="days_remaining" readonly="1" 
+                                                                            invisible="incubation_status != 'active'"/>
+                                                                        <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
+                                                                    </group>
+                                                                    <group>
+                                                                        <field name="incubation_end_date_real"/>
+                                                                        <field name="incubation_end_time_real" placeholder="HH:MM"/>
+                                                                    </group>
+                                                                </group>
+
+                                                                <!-- Botón para marcar completada -->
+                                                                <div class="oe_button_box" 
+                                                                    invisible="incubation_status != 'active'">
+                                                                    <button name="action_mark_completed" 
+                                                                            type="object" 
+                                                                            string="✅ Marcar Completada" 
+                                                                            class="btn-success"/>
+                                                                </div>
+
                                                                 <group string="📝 Notas de Preparación">
                                                                     <field name="preparation_notes" nolabel="1"
                                                                         placeholder="Instrucciones especiales, observaciones, etc..."/>
@@ -597,6 +666,29 @@
                                                                 <group string="🧪 Resultado en este Medio (Si Aplica)">
                                                                     <field name="qualitative_result"/>
                                                                 </group>
+
+                                                                <group string="📊 Estado de Incubación" 
+                                                                    invisible="requires_incubation == False">
+                                                                    <group>
+                                                                        <field name="incubation_status" readonly="1"/>
+                                                                        <field name="days_remaining" readonly="1" 
+                                                                            invisible="incubation_status != 'active'"/>
+                                                                        <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
+                                                                    </group>
+                                                                    <group>
+                                                                        <field name="incubation_end_date_real"/>
+                                                                        <field name="incubation_end_time_real" placeholder="HH:MM"/>
+                                                                    </group>
+                                                                </group>
+
+                                                                <!-- Botón para marcar completada -->
+                                                                <div class="oe_button_box" 
+                                                                    invisible="incubation_status != 'active'">
+                                                                    <button name="action_mark_completed" 
+                                                                            type="object" 
+                                                                            string="✅ Marcar Completada" 
+                                                                            class="btn-success"/>
+                                                                </div>
 
                                                                 <group string="📝 Notas de Preparación">
                                                                     <field name="preparation_notes" nolabel="1"
@@ -972,6 +1064,29 @@
                                                                 <group string="🧪 Resultado en este Medio (Si Aplica)">
                                                                     <field name="qualitative_result"/>
                                                                 </group>
+
+                                                                <group string="📊 Estado de Incubación" 
+                                                                    invisible="requires_incubation == False">
+                                                                    <group>
+                                                                        <field name="incubation_status" readonly="1"/>
+                                                                        <field name="days_remaining" readonly="1" 
+                                                                            invisible="incubation_status != 'active'"/>
+                                                                        <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
+                                                                    </group>
+                                                                    <group>
+                                                                        <field name="incubation_end_date_real"/>
+                                                                        <field name="incubation_end_time_real" placeholder="HH:MM"/>
+                                                                    </group>
+                                                                </group>
+
+                                                                <!-- Botón para marcar completada -->
+                                                                <div class="oe_button_box" 
+                                                                    invisible="incubation_status != 'active'">
+                                                                    <button name="action_mark_completed" 
+                                                                            type="object" 
+                                                                            string="✅ Marcar Completada" 
+                                                                            class="btn-success"/>
+                                                                </div>
 
                                                                 <group string="📝 Notas de Preparación">
                                                                     <field name="preparation_notes" nolabel="1"
