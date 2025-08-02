@@ -261,10 +261,6 @@
                                                                     </group>
                                                                 </group>
                                                                 
-                                                                <group string="🧪 Resultado en este Medio (Si Aplica)">
-                                                                    <field name="qualitative_result"/>
-                                                                </group>
-
                                                                 <group string="📊 Estado de Incubación" 
                                                                     invisible="requires_incubation == False">
                                                                     <group>
@@ -277,6 +273,10 @@
                                                                         <field name="incubation_end_date_real"/>
                                                                         <field name="incubation_end_time_real" placeholder="HH:MM"/>
                                                                     </group>
+                                                                </group>
+
+                                                                <group string="🧪 Resultado en este Medio (Si Aplica)">
+                                                                    <field name="qualitative_result"/>
                                                                 </group>
 
                                                                 <group string="📝 Notas de Preparación">
@@ -385,10 +385,6 @@
                                                                     </group>
                                                                 </group>
 
-                                                                <group string="🧪 Resultado en este Medio (Si Aplica)">
-                                                                    <field name="qualitative_result"/>
-                                                                </group>
-
                                                                 <group string="📊 Estado de Incubación" 
                                                                     invisible="requires_incubation == False">
                                                                     <group>
@@ -401,6 +397,10 @@
                                                                         <field name="incubation_end_date_real"/>
                                                                         <field name="incubation_end_time_real" placeholder="HH:MM"/>
                                                                     </group>
+                                                                </group>
+
+                                                                <group string="🧪 Resultado en este Medio (Si Aplica)">
+                                                                    <field name="qualitative_result"/>
                                                                 </group>
 
                                                                 <group string="📝 Notas de Preparación">
@@ -508,10 +508,6 @@
                                                                     </group>
                                                                 </group>
                                                                 
-                                                                <group string="🧪 Resultado en este Medio (Si Aplica)">
-                                                                    <field name="qualitative_result"/>
-                                                                </group>
-
                                                                 <group string="📊 Estado de Incubación" 
                                                                     invisible="requires_incubation == False">
                                                                     <group>
@@ -524,6 +520,10 @@
                                                                         <field name="incubation_end_date_real"/>
                                                                         <field name="incubation_end_time_real" placeholder="HH:MM"/>
                                                                     </group>
+                                                                </group>
+
+                                                                <group string="🧪 Resultado en este Medio (Si Aplica)">
+                                                                    <field name="qualitative_result"/>
                                                                 </group>
 
                                                                 <group string="📝 Notas de Preparación">
@@ -654,10 +654,6 @@
                                                                     </group>
                                                                 </group>
                                                                 
-                                                                <group string="🧪 Resultado en este Medio (Si Aplica)">
-                                                                    <field name="qualitative_result"/>
-                                                                </group>
-
                                                                 <group string="📊 Estado de Incubación" 
                                                                     invisible="requires_incubation == False">
                                                                     <group>
@@ -670,6 +666,10 @@
                                                                         <field name="incubation_end_date_real"/>
                                                                         <field name="incubation_end_time_real" placeholder="HH:MM"/>
                                                                     </group>
+                                                                </group>
+
+                                                                <group string="🧪 Resultado en este Medio (Si Aplica)">
+                                                                    <field name="qualitative_result"/>
                                                                 </group>
 
                                                                 <group string="📝 Notas de Preparación">
@@ -759,10 +759,6 @@
                                                                     </group>
                                                                 </group>
                                                                 
-                                                                <group string="🧪 Resultado en este Medio (Si Aplica)">
-                                                                    <field name="qualitative_result"/>
-                                                                </group>
-
                                                                 <group string="📊 Estado de Incubación" 
                                                                     invisible="requires_incubation == False">
                                                                     <group>
@@ -775,6 +771,10 @@
                                                                         <field name="incubation_end_date_real"/>
                                                                         <field name="incubation_end_time_real" placeholder="HH:MM"/>
                                                                     </group>
+                                                                </group>
+
+                                                                <group string="🧪 Resultado en este Medio (Si Aplica)">
+                                                                    <field name="qualitative_result"/>
                                                                 </group>
 
                                                                 <group string="📝 Notas de Preparación">
