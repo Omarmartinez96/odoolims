@@ -279,16 +279,6 @@
                                                                     </group>
                                                                 </group>
 
-                                                                <!-- Botón para marcar completada -->
-                                                                <div class="oe_button_box" 
-                                                                    invisible="incubation_status != 'active'">
-                                                                    <button name="action_mark_completed" 
-                                                                            type="object" 
-                                                                            string="✅ Marcar Completada" 
-                                                                            class="btn-success"
-                                                                            context="{'active_model': 'lims.pre.enrichment.media'}"/>
-                                                                </div>
-
                                                                 <group string="📝 Notas de Preparación">
                                                                     <field name="preparation_notes" nolabel="1"
                                                                            placeholder="Instrucciones especiales, observaciones, etc..."/>
@@ -413,16 +403,6 @@
                                                                     </group>
                                                                 </group>
 
-                                                                <!-- Botón para marcar completada -->
-                                                                <div class="oe_button_box" 
-                                                                    invisible="incubation_status != 'active'">
-                                                                    <button name="action_mark_completed" 
-                                                                            type="object" 
-                                                                            string="✅ Marcar Completada" 
-                                                                            class="btn-success"
-                                                                            context="{'active_model': 'lims.selective.enrichment.media'}"/>
-                                                                </div>
-
                                                                 <group string="📝 Notas de Preparación">
                                                                     <field name="preparation_notes" nolabel="1"
                                                                            placeholder="Instrucciones especiales, observaciones, etc..."/>
@@ -545,16 +525,6 @@
                                                                         <field name="incubation_end_time_real" placeholder="HH:MM"/>
                                                                     </group>
                                                                 </group>
-
-                                                                <!-- Botón para marcar completada -->
-                                                                <div class="oe_button_box" 
-                                                                    invisible="incubation_status != 'active'">
-                                                                    <button name="action_mark_completed" 
-                                                                            type="object" 
-                                                                            string="✅ Marcar Completada" 
-                                                                            class="btn-success"
-                                                                            context="{'active_model': 'lims.qualitative.media'}"/>
-                                                                </div>
 
                                                                 <group string="📝 Notas de Preparación">
                                                                     <field name="preparation_notes" nolabel="1"
@@ -702,16 +672,6 @@
                                                                     </group>
                                                                 </group>
 
-                                                                <!-- Botón para marcar completada -->
-                                                                <div class="oe_button_box" 
-                                                                    invisible="incubation_status != 'active'">
-                                                                    <button name="action_mark_completed" 
-                                                                            type="object" 
-                                                                            string="✅ Marcar Completada" 
-                                                                            class="btn-success"
-                                                                            context="{'active_model': 'lims.quantitative.media'}"/>
-                                                                </div>
-
                                                                 <group string="📝 Notas de Preparación">
                                                                     <field name="preparation_notes" nolabel="1"
                                                                         placeholder="Instrucciones especiales, observaciones, etc..."/>
@@ -816,16 +776,6 @@
                                                                         <field name="incubation_end_time_real" placeholder="HH:MM"/>
                                                                     </group>
                                                                 </group>
-
-                                                                <!-- Botón para marcar completada -->
-                                                                <div class="oe_button_box" 
-                                                                    invisible="incubation_status != 'active'">
-                                                                    <button name="action_mark_completed" 
-                                                                            type="object" 
-                                                                            string="✅ Marcar Completada" 
-                                                                            class="btn-success"
-                                                                            context="{'active_model': 'lims.confirmation.media'}"/>
-                                                                </div>
 
                                                                 <group string="📝 Notas de Preparación">
                                                                     <field name="preparation_notes" nolabel="1"
