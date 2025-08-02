@@ -420,7 +420,7 @@
                                                                             type="object" 
                                                                             string="✅ Marcar Completada" 
                                                                             class="btn-success"
-                                                                            context="{'active_model': 'lims.pre.enrichment.media'}"/>
+                                                                            context="{'active_model': 'lims.selective.enrichment.media'}"/>
                                                                 </div>
 
                                                                 <group string="📝 Notas de Preparación">
@@ -553,7 +553,7 @@
                                                                             type="object" 
                                                                             string="✅ Marcar Completada" 
                                                                             class="btn-success"
-                                                                            context="{'active_model': 'lims.pre.enrichment.media'}"/>
+                                                                            context="{'active_model': 'lims.qualitative.media'}"/>
                                                                 </div>
 
                                                                 <group string="📝 Notas de Preparación">
@@ -709,7 +709,7 @@
                                                                             type="object" 
                                                                             string="✅ Marcar Completada" 
                                                                             class="btn-success"
-                                                                            context="{'active_model': 'lims.pre.enrichment.media'}"/>
+                                                                            context="{'active_model': 'lims.quantitative.media'}"/>
                                                                 </div>
 
                                                                 <group string="📝 Notas de Preparación">
@@ -824,7 +824,7 @@
                                                                             type="object" 
                                                                             string="✅ Marcar Completada" 
                                                                             class="btn-success"
-                                                                            context="{'active_model': 'lims.pre.enrichment.media'}"/>
+                                                                            context="{'active_model': 'lims.confirmation.media'}"/>
                                                                 </div>
 
                                                                 <group string="📝 Notas de Preparación">
