@@ -19,26 +19,30 @@
         'lims_sample_reception', 
     ],
     'data': [
-        # PRIMERO: Datos básicos y seguridad
+        # PASO 1: Datos básicos y seguridad
         'data/sequences.xml',
-        'data/cron_jobs.xml', 
         'security/ir.model.access.csv',
         
-        # SEGUNDO: Reportes (para que las vistas puedan referenciarlos)
+        # PASO 2: Vistas que definen elementos base (menús raíz y configuración)
+        'views/lims_culture_media_qc_views.xml',  # Define menu_lims_analysis_root
+        
+        # PASO 3: Vistas de modelos principales
+        'views/lims_analysis_views.xml',  # Vistas principales de análisis
+        'views/lims_equipment_views.xml',  # Vistas de equipos
+        'views/lims_culture_media_batch_views.xml',  # Vistas de lotes de medios
+        
+        # PASO 4: Vistas que referencian elementos base y reportes
+        'views/lims_analysis_report_views.xml',  # Referencia menu_lims_analysis_root
+        
+        # PASO 5: Wizards (dependen de modelos principales)
+        'views/wizard_views.xml',
+        
+        # PASO 6: Reportes (al final para que las vistas puedan referenciarlos)
         'report/report_analysis_results.xml',
         'report/report_analysis_action.xml',
         
-        # TERCERO: Vistas básicas que definen menús principales
-        'views/lims_analysis_views.xml',  # Define menu_lims_analysis_config
-        'views/lims_equipment_views.xml',
-        
-        # CUARTO: Vistas que definen acciones
-        'views/lims_culture_media_batch_views.xml',  # Define action_culture_media_batches
-        
-        # QUINTO: Vistas que referencian reportes y acciones
-        'views/lims_analysis_report_views.xml',  # Referencia reportes
-        'views/wizard_views.xml',  # Referencia reportes
-        'views/lims_culture_media_qc_views.xml',  # Referencia menús y acciones
+        # PASO 7: Trabajos programados (al final)
+        'data/cron_jobs.xml',
     ],
     'installable': True,
     'application': True,
