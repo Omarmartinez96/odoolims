@@ -1969,50 +1969,32 @@ class LimsPreEnrichmentMedia(models.Model):
 
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
     def _compute_time_remaining(self):
-        """Calcular tiempo restante basado en duración total y tiempo transcurrido"""
+        """Mostrar duración total de incubación programada"""
         from datetime import datetime
         
         for record in self:
             if (record.incubation_start_date and record.incubation_start_time and 
-                record.incubation_end_date and record.incubation_end_time and 
-                record.incubation_status == 'active'):
+                record.incubation_end_date and record.incubation_end_time):
                 
                 try:
-                    # Combinar fecha y hora de INICIO
-                    start_date_str = f"{record.incubation_start_date} {record.incubation_start_time}"
-                    start_datetime = datetime.strptime(start_date_str, '%Y-%m-%d %H:%M')
+                    # Fecha/hora de inicio
+                    start_str = f"{record.incubation_start_date} {record.incubation_start_time}"
+                    start_datetime = datetime.strptime(start_str, '%Y-%m-%d %H:%M')
                     
-                    # Combinar fecha y hora de FIN
-                    end_date_str = f"{record.incubation_end_date} {record.incubation_end_time}"
-                    end_datetime = datetime.strptime(end_date_str, '%Y-%m-%d %H:%M')
+                    # Fecha/hora de fin
+                    end_str = f"{record.incubation_end_date} {record.incubation_end_time}"
+                    end_datetime = datetime.strptime(end_str, '%Y-%m-%d %H:%M')
                     
-                    # Calcular duración TOTAL programada
-                    total_duration = end_datetime - start_datetime
+                    # Calcular duración total
+                    duration = end_datetime - start_datetime
+                    total_minutes = int(duration.total_seconds() / 60)
                     
-                    # Obtener hora actual
-                    now = datetime.now()
-                    
-                    # Calcular tiempo transcurrido desde inicio
-                    if now >= start_datetime:
-                        elapsed_time = now - start_datetime
-                        remaining_time = total_duration - elapsed_time
-                    else:
-                        # Aún no ha comenzado
-                        remaining_time = total_duration
-                    
-                    if remaining_time.total_seconds() > 0:
-                        # Tiempo restante positivo
-                        total_minutes = int(remaining_time.total_seconds() / 60)
+                    if total_minutes > 0:
                         hours = total_minutes // 60
                         minutes = total_minutes % 60
-                        
-                        if hours > 0:
-                            record.time_remaining = f"{hours}h {minutes}min"
-                        else:
-                            record.time_remaining = f"{minutes}min"
+                        record.time_remaining = f"{hours}h {minutes}min"
                     else:
-                        # Ya vencido
-                        record.time_remaining = "Vencido"
+                        record.time_remaining = "Error: Fin antes de inicio"
                     
                 except (ValueError, TypeError):
                     record.time_remaining = "Error en formato"
@@ -2321,52 +2303,35 @@ class LimsSelectiveEnrichmentMedia(models.Model):
             else:
                 record.incubation_status = 'not_started'
                 record.is_overdue = False
+
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
     def _compute_time_remaining(self):
-        """Calcular tiempo restante basado en duración total y tiempo transcurrido"""
+        """Mostrar duración total de incubación programada"""
         from datetime import datetime
         
         for record in self:
             if (record.incubation_start_date and record.incubation_start_time and 
-                record.incubation_end_date and record.incubation_end_time and 
-                record.incubation_status == 'active'):
+                record.incubation_end_date and record.incubation_end_time):
                 
                 try:
-                    # Combinar fecha y hora de INICIO
-                    start_date_str = f"{record.incubation_start_date} {record.incubation_start_time}"
-                    start_datetime = datetime.strptime(start_date_str, '%Y-%m-%d %H:%M')
+                    # Fecha/hora de inicio
+                    start_str = f"{record.incubation_start_date} {record.incubation_start_time}"
+                    start_datetime = datetime.strptime(start_str, '%Y-%m-%d %H:%M')
                     
-                    # Combinar fecha y hora de FIN
-                    end_date_str = f"{record.incubation_end_date} {record.incubation_end_time}"
-                    end_datetime = datetime.strptime(end_date_str, '%Y-%m-%d %H:%M')
+                    # Fecha/hora de fin
+                    end_str = f"{record.incubation_end_date} {record.incubation_end_time}"
+                    end_datetime = datetime.strptime(end_str, '%Y-%m-%d %H:%M')
                     
-                    # Calcular duración TOTAL programada
-                    total_duration = end_datetime - start_datetime
+                    # Calcular duración total
+                    duration = end_datetime - start_datetime
+                    total_minutes = int(duration.total_seconds() / 60)
                     
-                    # Obtener hora actual
-                    now = datetime.now()
-                    
-                    # Calcular tiempo transcurrido desde inicio
-                    if now >= start_datetime:
-                        elapsed_time = now - start_datetime
-                        remaining_time = total_duration - elapsed_time
-                    else:
-                        # Aún no ha comenzado
-                        remaining_time = total_duration
-                    
-                    if remaining_time.total_seconds() > 0:
-                        # Tiempo restante positivo
-                        total_minutes = int(remaining_time.total_seconds() / 60)
+                    if total_minutes > 0:
                         hours = total_minutes // 60
                         minutes = total_minutes % 60
-                        
-                        if hours > 0:
-                            record.time_remaining = f"{hours}h {minutes}min"
-                        else:
-                            record.time_remaining = f"{minutes}min"
+                        record.time_remaining = f"{hours}h {minutes}min"
                     else:
-                        # Ya vencido
-                        record.time_remaining = "Vencido"
+                        record.time_remaining = "Error: Fin antes de inicio"
                     
                 except (ValueError, TypeError):
                     record.time_remaining = "Error en formato"
@@ -2680,50 +2645,32 @@ class LimsQuantitativeMedia(models.Model):
 
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
     def _compute_time_remaining(self):
-        """Calcular tiempo restante basado en duración total y tiempo transcurrido"""
+        """Mostrar duración total de incubación programada"""
         from datetime import datetime
         
         for record in self:
             if (record.incubation_start_date and record.incubation_start_time and 
-                record.incubation_end_date and record.incubation_end_time and 
-                record.incubation_status == 'active'):
+                record.incubation_end_date and record.incubation_end_time):
                 
                 try:
-                    # Combinar fecha y hora de INICIO
-                    start_date_str = f"{record.incubation_start_date} {record.incubation_start_time}"
-                    start_datetime = datetime.strptime(start_date_str, '%Y-%m-%d %H:%M')
+                    # Fecha/hora de inicio
+                    start_str = f"{record.incubation_start_date} {record.incubation_start_time}"
+                    start_datetime = datetime.strptime(start_str, '%Y-%m-%d %H:%M')
                     
-                    # Combinar fecha y hora de FIN
-                    end_date_str = f"{record.incubation_end_date} {record.incubation_end_time}"
-                    end_datetime = datetime.strptime(end_date_str, '%Y-%m-%d %H:%M')
+                    # Fecha/hora de fin
+                    end_str = f"{record.incubation_end_date} {record.incubation_end_time}"
+                    end_datetime = datetime.strptime(end_str, '%Y-%m-%d %H:%M')
                     
-                    # Calcular duración TOTAL programada
-                    total_duration = end_datetime - start_datetime
+                    # Calcular duración total
+                    duration = end_datetime - start_datetime
+                    total_minutes = int(duration.total_seconds() / 60)
                     
-                    # Obtener hora actual
-                    now = datetime.now()
-                    
-                    # Calcular tiempo transcurrido desde inicio
-                    if now >= start_datetime:
-                        elapsed_time = now - start_datetime
-                        remaining_time = total_duration - elapsed_time
-                    else:
-                        # Aún no ha comenzado
-                        remaining_time = total_duration
-                    
-                    if remaining_time.total_seconds() > 0:
-                        # Tiempo restante positivo
-                        total_minutes = int(remaining_time.total_seconds() / 60)
+                    if total_minutes > 0:
                         hours = total_minutes // 60
                         minutes = total_minutes % 60
-                        
-                        if hours > 0:
-                            record.time_remaining = f"{hours}h {minutes}min"
-                        else:
-                            record.time_remaining = f"{minutes}min"
+                        record.time_remaining = f"{hours}h {minutes}min"
                     else:
-                        # Ya vencido
-                        record.time_remaining = "Vencido"
+                        record.time_remaining = "Error: Fin antes de inicio"
                     
                 except (ValueError, TypeError):
                     record.time_remaining = "Error en formato"
@@ -3036,50 +2983,32 @@ class LimsQualitativeMedia(models.Model):
 
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
     def _compute_time_remaining(self):
-        """Calcular tiempo restante basado en duración total y tiempo transcurrido"""
+        """Mostrar duración total de incubación programada"""
         from datetime import datetime
         
         for record in self:
             if (record.incubation_start_date and record.incubation_start_time and 
-                record.incubation_end_date and record.incubation_end_time and 
-                record.incubation_status == 'active'):
+                record.incubation_end_date and record.incubation_end_time):
                 
                 try:
-                    # Combinar fecha y hora de INICIO
-                    start_date_str = f"{record.incubation_start_date} {record.incubation_start_time}"
-                    start_datetime = datetime.strptime(start_date_str, '%Y-%m-%d %H:%M')
+                    # Fecha/hora de inicio
+                    start_str = f"{record.incubation_start_date} {record.incubation_start_time}"
+                    start_datetime = datetime.strptime(start_str, '%Y-%m-%d %H:%M')
                     
-                    # Combinar fecha y hora de FIN
-                    end_date_str = f"{record.incubation_end_date} {record.incubation_end_time}"
-                    end_datetime = datetime.strptime(end_date_str, '%Y-%m-%d %H:%M')
+                    # Fecha/hora de fin
+                    end_str = f"{record.incubation_end_date} {record.incubation_end_time}"
+                    end_datetime = datetime.strptime(end_str, '%Y-%m-%d %H:%M')
                     
-                    # Calcular duración TOTAL programada
-                    total_duration = end_datetime - start_datetime
+                    # Calcular duración total
+                    duration = end_datetime - start_datetime
+                    total_minutes = int(duration.total_seconds() / 60)
                     
-                    # Obtener hora actual
-                    now = datetime.now()
-                    
-                    # Calcular tiempo transcurrido desde inicio
-                    if now >= start_datetime:
-                        elapsed_time = now - start_datetime
-                        remaining_time = total_duration - elapsed_time
-                    else:
-                        # Aún no ha comenzado
-                        remaining_time = total_duration
-                    
-                    if remaining_time.total_seconds() > 0:
-                        # Tiempo restante positivo
-                        total_minutes = int(remaining_time.total_seconds() / 60)
+                    if total_minutes > 0:
                         hours = total_minutes // 60
                         minutes = total_minutes % 60
-                        
-                        if hours > 0:
-                            record.time_remaining = f"{hours}h {minutes}min"
-                        else:
-                            record.time_remaining = f"{minutes}min"
+                        record.time_remaining = f"{hours}h {minutes}min"
                     else:
-                        # Ya vencido
-                        record.time_remaining = "Vencido"
+                        record.time_remaining = "Error: Fin antes de inicio"
                     
                 except (ValueError, TypeError):
                     record.time_remaining = "Error en formato"
@@ -3461,50 +3390,32 @@ class LimsConfirmationMedia(models.Model):
 
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
     def _compute_time_remaining(self):
-        """Calcular tiempo restante basado en duración total y tiempo transcurrido"""
+        """Mostrar duración total de incubación programada"""
         from datetime import datetime
         
         for record in self:
             if (record.incubation_start_date and record.incubation_start_time and 
-                record.incubation_end_date and record.incubation_end_time and 
-                record.incubation_status == 'active'):
+                record.incubation_end_date and record.incubation_end_time):
                 
                 try:
-                    # Combinar fecha y hora de INICIO
-                    start_date_str = f"{record.incubation_start_date} {record.incubation_start_time}"
-                    start_datetime = datetime.strptime(start_date_str, '%Y-%m-%d %H:%M')
+                    # Fecha/hora de inicio
+                    start_str = f"{record.incubation_start_date} {record.incubation_start_time}"
+                    start_datetime = datetime.strptime(start_str, '%Y-%m-%d %H:%M')
                     
-                    # Combinar fecha y hora de FIN
-                    end_date_str = f"{record.incubation_end_date} {record.incubation_end_time}"
-                    end_datetime = datetime.strptime(end_date_str, '%Y-%m-%d %H:%M')
+                    # Fecha/hora de fin
+                    end_str = f"{record.incubation_end_date} {record.incubation_end_time}"
+                    end_datetime = datetime.strptime(end_str, '%Y-%m-%d %H:%M')
                     
-                    # Calcular duración TOTAL programada
-                    total_duration = end_datetime - start_datetime
+                    # Calcular duración total
+                    duration = end_datetime - start_datetime
+                    total_minutes = int(duration.total_seconds() / 60)
                     
-                    # Obtener hora actual
-                    now = datetime.now()
-                    
-                    # Calcular tiempo transcurrido desde inicio
-                    if now >= start_datetime:
-                        elapsed_time = now - start_datetime
-                        remaining_time = total_duration - elapsed_time
-                    else:
-                        # Aún no ha comenzado
-                        remaining_time = total_duration
-                    
-                    if remaining_time.total_seconds() > 0:
-                        # Tiempo restante positivo
-                        total_minutes = int(remaining_time.total_seconds() / 60)
+                    if total_minutes > 0:
                         hours = total_minutes // 60
                         minutes = total_minutes % 60
-                        
-                        if hours > 0:
-                            record.time_remaining = f"{hours}h {minutes}min"
-                        else:
-                            record.time_remaining = f"{minutes}min"
+                        record.time_remaining = f"{hours}h {minutes}min"
                     else:
-                        # Ya vencido
-                        record.time_remaining = "Vencido"
+                        record.time_remaining = "Error: Fin antes de inicio"
                     
                 except (ValueError, TypeError):
                     record.time_remaining = "Error en formato"
