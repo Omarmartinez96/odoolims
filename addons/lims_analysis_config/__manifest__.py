@@ -26,7 +26,7 @@
         'views/lims_culture_media_qc_views.xml',
     ],
     'installable': True,
-    'application': True,  # Es un módulo de configuración, no aplicación
+    'application': True,  
     'auto_install': False,
     'license': 'LGPL-3',
 }
