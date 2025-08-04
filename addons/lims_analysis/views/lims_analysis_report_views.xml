@@ -579,7 +579,7 @@
         <!-- ========== MENÚ ÚNICO SIMPLIFICADO ========== -->
         <menuitem id="menu_analysis_reports_unified" 
                 name="📊 Reportes de Análisis" 
-                parent="menu_lims_analysis_root" 
+                parent="lims_analysis_config.menu_lims_analysis_config_root"
                 action="action_analysis_for_reports" 
                 sequence="20"/>
 

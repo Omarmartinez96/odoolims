@@ -50,5 +50,10 @@
                   parent="menu_lims_analysis_config" 
                   action="action_lims_lab_equipment" 
                   sequence="40"/>
+
+        <menuitem id="menu_lims_analysis_root" 
+                  name="Análisis de Muestras" 
+                  parent="menu_lims_analysis_config_root" 
+                  sequence="50"/>
     </data>
 </odoo>

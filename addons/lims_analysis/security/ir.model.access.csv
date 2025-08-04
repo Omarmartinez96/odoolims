@@ -1,10 +1,7 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_lims_culture_media_qc,lims.culture.media.qc,model_lims_culture_media_qc,base.group_user,1,1,1,1
-access_lims_culture_media_batch,lims.culture.media.batch,model_lims_culture_media_batch,base.group_user,1,1,1,1
 access_lims_analysis,lims.analysis,model_lims_analysis,base.group_user,1,1,1,1
 access_lims_parameter_analysis,lims.parameter.analysis,model_lims_parameter_analysis,base.group_user,1,1,1,1
 access_lims_raw_dilution_data,lims.raw.dilution.data,model_lims_raw_dilution_data,base.group_user,1,1,1,1
-access_lims_lab_equipment,lims.lab.equipment,model_lims_lab_equipment,base.group_user,1,1,1,1
 access_lims_pre_enrichment_media,lims.pre.enrichment.media,model_lims_pre_enrichment_media,base.group_user,1,1,1,1
 access_lims_selective_enrichment_media,lims.selective.enrichment.media,model_lims_selective_enrichment_media,base.group_user,1,1,1,1
 access_lims_quantitative_media,lims.quantitative.media,model_lims_quantitative_media,base.group_user,1,1,1,1
