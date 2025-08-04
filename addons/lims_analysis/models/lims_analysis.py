@@ -1841,10 +1841,10 @@ class LimsPreEnrichmentMedia(models.Model):
         help='Hora real cuando se retiró (formato HH:MM)'
     )
 
-    days_remaining = fields.Integer(
-        string='Horas Restantes',
-        compute='_compute_days_remaining',
-        help='Horas restantes para finalizar incubación'
+    time_remaining = fields.Char(
+        string='Tiempo Restante',
+        compute='_compute_time_remaining',
+        help='Tiempo restante para finalizar incubación (horas y minutos)'
     )
 
     is_overdue = fields.Boolean(
@@ -1968,9 +1968,9 @@ class LimsPreEnrichmentMedia(models.Model):
                 record.is_overdue = False
 
     @api.depends('incubation_end_date', 'incubation_end_time')
-    def _compute_days_remaining(self):
-        """Calcular horas restantes"""
-        from datetime import datetime, timedelta
+    def _compute_time_remaining(self):
+        """Calcular tiempo restante en horas y minutos"""
+        from datetime import datetime
         
         for record in self:
             if (record.incubation_end_date and record.incubation_end_time and 
@@ -1984,23 +1984,27 @@ class LimsPreEnrichmentMedia(models.Model):
                     # Obtener fecha/hora actual
                     now = datetime.now()
                     
-                    # Calcular diferencia en horas
+                    # Calcular diferencia
                     delta = end_datetime - now
-                    hours_remaining = int(delta.total_seconds() / 3600)
                     
-                    # Si es negativo, mostrar 0
-                    record.days_remaining = max(0, hours_remaining)
+                    if delta.total_seconds() > 0:
+                        # Tiempo restante positivo
+                        total_minutes = int(delta.total_seconds() / 60)
+                        hours = total_minutes // 60
+                        minutes = total_minutes % 60
+                        
+                        if hours > 0:
+                            record.time_remaining = f"{hours}h {minutes}min"
+                        else:
+                            record.time_remaining = f"{minutes}min"
+                    else:
+                        # Ya vencido
+                        record.time_remaining = "Vencido"
                     
                 except (ValueError, TypeError):
-                    # Si hay error en formato de hora, calcular solo con fecha
-                    if record.incubation_end_date:
-                        today = fields.Date.context_today(record)
-                        delta = record.incubation_end_date - today
-                        record.days_remaining = max(0, delta.days * 24)  # Convertir días a horas
-                    else:
-                        record.days_remaining = 0
+                    record.time_remaining = "Error en formato"
             else:
-                record.days_remaining = 0
+                record.time_remaining = ""
 
     def action_mark_completed(self):
         """Marcar incubación como completada"""
@@ -2023,12 +2027,12 @@ class LimsPreEnrichmentMedia(models.Model):
     def _onchange_incubation_dates(self):
         """Recalcular estado cuando cambien las fechas"""
         self._compute_incubation_status()
-        self._compute_days_remaining()
+        self._compute_time_remaining()
 
     def action_refresh_status(self):
         """Botón para refrescar estado manualmente"""
         self._compute_incubation_status()
-        self._compute_days_remaining()
+        self._compute_time_remaining()
         return {
             'type': 'ir.actions.client',
             'tag': 'reload',
@@ -2179,10 +2183,10 @@ class LimsSelectiveEnrichmentMedia(models.Model):
         help='Hora real cuando se retiró (formato HH:MM)'
     )
 
-    days_remaining = fields.Integer(
-        string='Horas Restantes',
-        compute='_compute_days_remaining',
-        help='Horas restantes para finalizar incubación'
+    time_remaining = fields.Char(
+        string='Tiempo Restante',
+        compute='_compute_time_remaining',
+        help='Tiempo restante para finalizar incubación (horas y minutos)'
     )
 
     is_overdue = fields.Boolean(
@@ -2306,9 +2310,9 @@ class LimsSelectiveEnrichmentMedia(models.Model):
                 record.is_overdue = False
 
     @api.depends('incubation_end_date', 'incubation_end_time')
-    def _compute_days_remaining(self):
-        """Calcular horas restantes"""
-        from datetime import datetime, timedelta
+    def _compute_time_remaining(self):
+        """Calcular tiempo restante en horas y minutos"""
+        from datetime import datetime
         
         for record in self:
             if (record.incubation_end_date and record.incubation_end_time and 
@@ -2322,23 +2326,27 @@ class LimsSelectiveEnrichmentMedia(models.Model):
                     # Obtener fecha/hora actual
                     now = datetime.now()
                     
-                    # Calcular diferencia en horas
+                    # Calcular diferencia
                     delta = end_datetime - now
-                    hours_remaining = int(delta.total_seconds() / 3600)
                     
-                    # Si es negativo, mostrar 0
-                    record.days_remaining = max(0, hours_remaining)
+                    if delta.total_seconds() > 0:
+                        # Tiempo restante positivo
+                        total_minutes = int(delta.total_seconds() / 60)
+                        hours = total_minutes // 60
+                        minutes = total_minutes % 60
+                        
+                        if hours > 0:
+                            record.time_remaining = f"{hours}h {minutes}min"
+                        else:
+                            record.time_remaining = f"{minutes}min"
+                    else:
+                        # Ya vencido
+                        record.time_remaining = "Vencido"
                     
                 except (ValueError, TypeError):
-                    # Si hay error en formato de hora, calcular solo con fecha
-                    if record.incubation_end_date:
-                        today = fields.Date.context_today(record)
-                        delta = record.incubation_end_date - today
-                        record.days_remaining = max(0, delta.days * 24)  # Convertir días a horas
-                    else:
-                        record.days_remaining = 0
+                    record.time_remaining = "Error en formato"
             else:
-                record.days_remaining = 0
+                record.time_remaining = ""
 
     def action_mark_completed(self):
         """Marcar incubación como completada"""
@@ -2361,12 +2369,12 @@ class LimsSelectiveEnrichmentMedia(models.Model):
     def _onchange_incubation_dates(self):
         """Recalcular estado cuando cambien las fechas"""
         self._compute_incubation_status()
-        self._compute_days_remaining()
+        self._compute_time_remaining()
 
     def action_refresh_status(self):
         """Botón para refrescar estado manualmente"""
         self._compute_incubation_status()
-        self._compute_days_remaining()
+        self._compute_time_remaining()
         return {
             'type': 'ir.actions.client',
             'tag': 'reload',
@@ -2519,10 +2527,10 @@ class LimsQuantitativeMedia(models.Model):
         help='Hora real cuando se retiró (formato HH:MM)'
     )
 
-    days_remaining = fields.Integer(
-        string='Horas Restantes',
-        compute='_compute_days_remaining',
-        help='Horas restantes para finalizar incubación'
+    time_remaining = fields.Char(
+        string='Tiempo Restante',
+        compute='_compute_time_remaining',
+        help='Tiempo restante para finalizar incubación (horas y minutos)'
     )
 
     is_overdue = fields.Boolean(
@@ -2646,9 +2654,9 @@ class LimsQuantitativeMedia(models.Model):
                 record.is_overdue = False
 
     @api.depends('incubation_end_date', 'incubation_end_time')
-    def _compute_days_remaining(self):
-        """Calcular horas restantes"""
-        from datetime import datetime, timedelta
+    def _compute_time_remaining(self):
+        """Calcular tiempo restante en horas y minutos"""
+        from datetime import datetime
         
         for record in self:
             if (record.incubation_end_date and record.incubation_end_time and 
@@ -2662,23 +2670,27 @@ class LimsQuantitativeMedia(models.Model):
                     # Obtener fecha/hora actual
                     now = datetime.now()
                     
-                    # Calcular diferencia en horas
+                    # Calcular diferencia
                     delta = end_datetime - now
-                    hours_remaining = int(delta.total_seconds() / 3600)
                     
-                    # Si es negativo, mostrar 0
-                    record.days_remaining = max(0, hours_remaining)
+                    if delta.total_seconds() > 0:
+                        # Tiempo restante positivo
+                        total_minutes = int(delta.total_seconds() / 60)
+                        hours = total_minutes // 60
+                        minutes = total_minutes % 60
+                        
+                        if hours > 0:
+                            record.time_remaining = f"{hours}h {minutes}min"
+                        else:
+                            record.time_remaining = f"{minutes}min"
+                    else:
+                        # Ya vencido
+                        record.time_remaining = "Vencido"
                     
                 except (ValueError, TypeError):
-                    # Si hay error en formato de hora, calcular solo con fecha
-                    if record.incubation_end_date:
-                        today = fields.Date.context_today(record)
-                        delta = record.incubation_end_date - today
-                        record.days_remaining = max(0, delta.days * 24)  # Convertir días a horas
-                    else:
-                        record.days_remaining = 0
+                    record.time_remaining = "Error en formato"
             else:
-                record.days_remaining = 0
+                record.time_remaining = ""
 
     def action_mark_completed(self):
         """Marcar incubación como completada"""
@@ -2701,12 +2713,12 @@ class LimsQuantitativeMedia(models.Model):
     def _onchange_incubation_dates(self):
         """Recalcular estado cuando cambien las fechas"""
         self._compute_incubation_status()
-        self._compute_days_remaining()
+        self._compute_time_remaining()
 
     def action_refresh_status(self):
         """Botón para refrescar estado manualmente"""
         self._compute_incubation_status()
-        self._compute_days_remaining()
+        self._compute_time_remaining()
         return {
             'type': 'ir.actions.client',
             'tag': 'reload',
@@ -2857,10 +2869,10 @@ class LimsQualitativeMedia(models.Model):
         help='Hora real cuando se retiró (formato HH:MM)'
     )
 
-    days_remaining = fields.Integer(
-        string='Horas Restantes',
-        compute='_compute_days_remaining',
-        help='Horas restantes para finalizar incubación'
+    time_remaining = fields.Char(
+        string='Tiempo Restante',
+        compute='_compute_time_remaining',
+        help='Tiempo restante para finalizar incubación (horas y minutos)'
     )
 
     is_overdue = fields.Boolean(
@@ -2985,9 +2997,9 @@ class LimsQualitativeMedia(models.Model):
                 record.is_overdue = False
 
     @api.depends('incubation_end_date', 'incubation_end_time')
-    def _compute_days_remaining(self):
-        """Calcular horas restantes"""
-        from datetime import datetime, timedelta
+    def _compute_time_remaining(self):
+        """Calcular tiempo restante en horas y minutos"""
+        from datetime import datetime
         
         for record in self:
             if (record.incubation_end_date and record.incubation_end_time and 
@@ -3001,23 +3013,27 @@ class LimsQualitativeMedia(models.Model):
                     # Obtener fecha/hora actual
                     now = datetime.now()
                     
-                    # Calcular diferencia en horas
+                    # Calcular diferencia
                     delta = end_datetime - now
-                    hours_remaining = int(delta.total_seconds() / 3600)
                     
-                    # Si es negativo, mostrar 0
-                    record.days_remaining = max(0, hours_remaining)
+                    if delta.total_seconds() > 0:
+                        # Tiempo restante positivo
+                        total_minutes = int(delta.total_seconds() / 60)
+                        hours = total_minutes // 60
+                        minutes = total_minutes % 60
+                        
+                        if hours > 0:
+                            record.time_remaining = f"{hours}h {minutes}min"
+                        else:
+                            record.time_remaining = f"{minutes}min"
+                    else:
+                        # Ya vencido
+                        record.time_remaining = "Vencido"
                     
                 except (ValueError, TypeError):
-                    # Si hay error en formato de hora, calcular solo con fecha
-                    if record.incubation_end_date:
-                        today = fields.Date.context_today(record)
-                        delta = record.incubation_end_date - today
-                        record.days_remaining = max(0, delta.days * 24)  # Convertir días a horas
-                    else:
-                        record.days_remaining = 0
+                    record.time_remaining = "Error en formato"
             else:
-                record.days_remaining = 0
+                record.time_remaining = ""
 
         def action_mark_completed(self):
             """Marcar incubación como completada"""
@@ -3040,12 +3056,12 @@ class LimsQualitativeMedia(models.Model):
     def _onchange_incubation_dates(self):
         """Recalcular estado cuando cambien las fechas"""
         self._compute_incubation_status()
-        self._compute_days_remaining()
+        self._compute_time_remaining()
 
     def action_refresh_status(self):
         """Botón para refrescar estado manualmente"""
         self._compute_incubation_status()
-        self._compute_days_remaining()
+        self._compute_time_remaining()
         return {
             'type': 'ir.actions.client',
             'tag': 'reload',
@@ -3266,10 +3282,10 @@ class LimsConfirmationMedia(models.Model):
         help='Hora real cuando se retiró (formato HH:MM)'
     )
 
-    days_remaining = fields.Integer(
-        string='Horas Restantes',
-        compute='_compute_days_remaining',
-        help='Horas restantes para finalizar incubación'
+    time_remaining = fields.Char(
+        string='Tiempo Restante',
+        compute='_compute_time_remaining',
+        help='Tiempo restante para finalizar incubación (horas y minutos)'
     )
 
     is_overdue = fields.Boolean(
@@ -3393,9 +3409,9 @@ class LimsConfirmationMedia(models.Model):
                 record.is_overdue = False
 
     @api.depends('incubation_end_date', 'incubation_end_time')
-    def _compute_days_remaining(self):
-        """Calcular horas restantes"""
-        from datetime import datetime, timedelta
+    def _compute_time_remaining(self):
+        """Calcular tiempo restante en horas y minutos"""
+        from datetime import datetime
         
         for record in self:
             if (record.incubation_end_date and record.incubation_end_time and 
@@ -3409,23 +3425,27 @@ class LimsConfirmationMedia(models.Model):
                     # Obtener fecha/hora actual
                     now = datetime.now()
                     
-                    # Calcular diferencia en horas
+                    # Calcular diferencia
                     delta = end_datetime - now
-                    hours_remaining = int(delta.total_seconds() / 3600)
                     
-                    # Si es negativo, mostrar 0
-                    record.days_remaining = max(0, hours_remaining)
+                    if delta.total_seconds() > 0:
+                        # Tiempo restante positivo
+                        total_minutes = int(delta.total_seconds() / 60)
+                        hours = total_minutes // 60
+                        minutes = total_minutes % 60
+                        
+                        if hours > 0:
+                            record.time_remaining = f"{hours}h {minutes}min"
+                        else:
+                            record.time_remaining = f"{minutes}min"
+                    else:
+                        # Ya vencido
+                        record.time_remaining = "Vencido"
                     
                 except (ValueError, TypeError):
-                    # Si hay error en formato de hora, calcular solo con fecha
-                    if record.incubation_end_date:
-                        today = fields.Date.context_today(record)
-                        delta = record.incubation_end_date - today
-                        record.days_remaining = max(0, delta.days * 24)  # Convertir días a horas
-                    else:
-                        record.days_remaining = 0
+                    record.time_remaining = "Error en formato"
             else:
-                record.days_remaining = 0
+                record.time_remaining = ""
 
     def action_mark_completed(self):
         """Marcar incubación como completada"""
@@ -3448,12 +3468,12 @@ class LimsConfirmationMedia(models.Model):
     def _onchange_incubation_dates(self):
         """Recalcular estado cuando cambien las fechas"""
         self._compute_incubation_status()
-        self._compute_days_remaining()
+        self._compute_time_remaining()
 
     def action_refresh_status(self):
         """Botón para refrescar estado manualmente"""
         self._compute_incubation_status()
-        self._compute_days_remaining()
+        self._compute_time_remaining()
         return {
             'type': 'ir.actions.client',
             'tag': 'reload',

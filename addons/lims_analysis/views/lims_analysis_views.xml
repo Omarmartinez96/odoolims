@@ -265,8 +265,7 @@
                                                                     invisible="requires_incubation == False">
                                                                     <group>
                                                                         <field name="incubation_status" readonly="1"/>
-                                                                        <field name="days_remaining" readonly="1" 
-                                                                            string="Horas Restantes"
+                                                                        <field name="time_remaining" readonly="1" 
                                                                             invisible="incubation_status != 'active'"/>
                                                                         <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
                                                                     </group>
@@ -393,8 +392,7 @@
                                                                     invisible="requires_incubation == False">
                                                                     <group>
                                                                         <field name="incubation_status" readonly="1"/>
-                                                                        <field name="days_remaining" readonly="1" 
-                                                                            string="Horas Restantes"
+                                                                        <field name="time_remaining" readonly="1" 
                                                                             invisible="incubation_status != 'active'"/>
                                                                         <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
                                                                     </group>
@@ -518,8 +516,7 @@
                                                                     invisible="requires_incubation == False">
                                                                     <group>
                                                                         <field name="incubation_status" readonly="1"/>
-                                                                        <field name="days_remaining" readonly="1" 
-                                                                            string="Horas Restantes"
+                                                                        <field name="time_remaining" readonly="1" 
                                                                             invisible="incubation_status != 'active'"/>
                                                                         <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
                                                                     </group>
@@ -666,8 +663,7 @@
                                                                     invisible="requires_incubation == False">
                                                                     <group>
                                                                         <field name="incubation_status" readonly="1"/>
-                                                                        <field name="days_remaining" readonly="1" 
-                                                                            string="Horas Restantes"
+                                                                        <field name="time_remaining" readonly="1" 
                                                                             invisible="incubation_status != 'active'"/>
                                                                         <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
                                                                     </group>
@@ -773,8 +769,7 @@
                                                                     invisible="requires_incubation == False">
                                                                     <group>
                                                                         <field name="incubation_status" readonly="1"/>
-                                                                        <field name="days_remaining" readonly="1" 
-                                                                            string="Horas Restantes"
+                                                                        <field name="time_remaining" readonly="1" 
                                                                             invisible="incubation_status != 'active'"/>
                                                                         <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
                                                                     </group>
