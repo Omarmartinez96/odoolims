@@ -19,12 +19,15 @@
     'data': [
         'security/ir.model.access.csv',
         'data/sequences.xml',
+        # Primero: Vistas básicas
         'views/lims_sample_reception_views.xml',
-        'views/lims_custody_chain_reception_views.xml',
+        # Segundo: Reportes
         'report/report_sample_reception_action.xml',
         'report/report_sample_reception.xml',
         'report/report_mass_reception_action.xml',
         'report/report_mass_reception.xml',
+        # Tercero: Vistas que referencian a los reportes
+        'views/lims_custody_chain_reception_views.xml',
     ],
     'installable': True,
     'application': True,
