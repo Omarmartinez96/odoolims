@@ -10,7 +10,7 @@
         - Controlar estados de recepción
     ''',
     'category': 'LIMS',
-    'author': 'Omar Martinez',
+    'author': 'Omar Martinez.',
     'depends': [
         'base',
         'lims_customer',
