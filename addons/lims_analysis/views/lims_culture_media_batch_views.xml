@@ -44,5 +44,11 @@
                   parent="menu_lims_analysis_root" 
                   action="action_lims_analysis" 
                   sequence="10"/>
+
+        <menuitem id="menu_lims_lab_equipment" 
+                  name="Equipos de Laboratorio" 
+                  parent="menu_lims_analysis_config" 
+                  action="action_lims_lab_equipment" 
+                  sequence="40"/>
     </data>
 </odoo>
