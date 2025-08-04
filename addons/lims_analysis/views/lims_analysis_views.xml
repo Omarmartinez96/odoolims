@@ -1098,39 +1098,6 @@
             </field>
         </record>
 
-
-        <!-- ========== ACCIÓN PARA ANÁLISIS ORIGINAL ========== -->
-        <record id="action_lims_analysis" model="ir.actions.act_window">
-            <field name="name">Análisis de Muestras</field>
-            <field name="res_model">lims.analysis</field>
-            <field name="view_mode">list,form</field>
-            <field name="search_view_id" ref="view_lims_analysis_search"/>
-            <field name="context">{'group_by': 'custody_chain_id'}</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    No hay análisis disponibles
-                </p>
-                <p>
-                    Los análisis se crean automáticamente desde muestras recibidas y se organizan por cadena de custodia.
-                </p>
-            </field>
-        </record>
-
-        <!-- ========== ACCIÓN PARA PARÁMETROS DE ANÁLISIS ========== -->
-        <record id="action_parameter_analysis" model="ir.actions.act_window">
-            <field name="name">Parámetros de Análisis</field>
-            <field name="res_model">lims.parameter.analysis</field>
-            <field name="view_mode">list,form</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    No hay parámetros de análisis
-                </p>
-                <p>
-                    Los parámetros se crean automáticamente al crear análisis
-                </p>
-            </field>
-        </record>
-
         <record id="view_lims_analysis_search" model="ir.ui.view">
             <field name="name">lims.analysis.search</field>
             <field name="model">lims.analysis</field>
@@ -1162,6 +1129,38 @@
                                 context="{'group_by': 'customer_id'}"/>
                     </group>
                 </search>
+            </field>
+        </record>
+
+        <!-- ========== ACCIÓN PARA ANÁLISIS ORIGINAL ========== -->
+        <record id="action_lims_analysis" model="ir.actions.act_window">
+            <field name="name">Análisis de Muestras</field>
+            <field name="res_model">lims.analysis</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id" ref="view_lims_analysis_search"/>
+            <field name="context">{'group_by': 'custody_chain_id'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No hay análisis disponibles
+                </p>
+                <p>
+                    Los análisis se crean automáticamente desde muestras recibidas y se organizan por cadena de custodia.
+                </p>
+            </field>
+        </record>
+
+        <!-- ========== ACCIÓN PARA PARÁMETROS DE ANÁLISIS ========== -->
+        <record id="action_parameter_analysis" model="ir.actions.act_window">
+            <field name="name">Parámetros de Análisis</field>
+            <field name="res_model">lims.parameter.analysis</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No hay parámetros de análisis
+                </p>
+                <p>
+                    Los parámetros se crean automáticamente al crear análisis
+                </p>
             </field>
         </record>
 
