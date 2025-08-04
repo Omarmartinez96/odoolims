@@ -17,43 +17,28 @@
             </field>
         </record>
 
-        <!-- ========== MENÚS ========== -->
-        <menuitem id="menu_lims_analysis_root" 
-                  name="Análisis de Muestras" 
-                  sequence="20"/>
+        <!-- ========== SOLO MENÚS DE CONFIGURACIÓN ========== -->
+        <menuitem id="menu_lims_analysis_config_root" 
+                  name="Configuración LIMS" 
+                  sequence="15"/>
                   
-        <menuitem id="menu_lims_analysis_config" 
-                  name="⚙️ Configuración" 
-                  parent="menu_lims_analysis_root" 
-                  sequence="90"/>
-
-        <menuitem id="menu_culture_media_with_qc" 
-                name="Medios de Cultivo" 
-                parent="menu_lims_analysis_config" 
-                action="lims_reception.action_lims_culture_media" 
-                sequence="5"/>
+        <menuitem id="menu_lims_lab_equipment" 
+                  name="Equipos de Laboratorio" 
+                  parent="menu_lims_analysis_config_root" 
+                  action="action_lims_lab_equipment" 
+                  sequence="10"/>
 
         <menuitem id="menu_culture_media_batches" 
                   name="Medios Preparados" 
-                  parent="menu_lims_analysis_config" 
-                  action="action_culture_media_batches" 
-                  sequence="10"/>
-
-        <menuitem id="menu_lims_analysis" 
-                  name="Análisis" 
-                  parent="menu_lims_analysis_root" 
-                  action="action_lims_analysis" 
-                  sequence="10"/>
-
-        <menuitem id="menu_lims_lab_equipment" 
-                  name="Equipos de Laboratorio" 
-                  parent="menu_lims_analysis_config" 
-                  action="action_lims_lab_equipment" 
-                  sequence="40"/>
-
-        <menuitem id="menu_lims_analysis_root" 
-                  name="Análisis de Muestras" 
                   parent="menu_lims_analysis_config_root" 
-                  sequence="50"/>
+                  action="action_culture_media_batches" 
+                  sequence="20"/>
+
+        <menuitem id="menu_culture_media_with_qc" 
+                name="Medios de Cultivo" 
+                parent="menu_lims_analysis_config_root" 
+                action="lims_reception.action_lims_culture_media" 
+                sequence="30"/>
+
     </data>
 </odoo>
