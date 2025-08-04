@@ -54,7 +54,15 @@
             <field name="model">lims.analysis</field>
             <field name="arch" type="xml">
                 <form string="Análisis de Muestra">
-                    <header>                        
+                    <header>                       
+                        <!-- SOLO botones de análisis, NO de firma -->
+                        <button name="action_complete_analysis"
+                                type="object"
+                                string="✅ Completar Análisis"
+                                class="btn-success"
+                                invisible="analysis_state != 'in_progress'"
+                                confirm="¿Marcar análisis como completado?"/>
+                        
                         <field name="analysis_state" widget="statusbar" statusbar_visible="draft,in_progress,completed,validated"/>
                     </header>
                     
@@ -1137,6 +1145,11 @@
             <field name="name">Análisis de Muestras</field>
             <field name="res_model">lims.analysis</field>
             <field name="view_mode">list,form</field>
+            <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_lims_analysis_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_lims_analysis_form')})
+            ]"/>
             <field name="search_view_id" ref="view_lims_analysis_search"/>
             <field name="context">{'group_by': 'custody_chain_id'}</field>
             <field name="help" type="html">
@@ -1144,7 +1157,8 @@
                     No hay análisis disponibles
                 </p>
                 <p>
-                    Los análisis se crean automáticamente desde muestras recibidas y se organizan por cadena de custodia.
+                    Los análisis se crean automáticamente desde muestras recibidas.
+                    <br/>Usa este menú para <strong>capturar resultados</strong> de laboratorio.
                 </p>
             </field>
         </record>
@@ -1180,10 +1194,16 @@
                   sequence="20"/>
 
         <menuitem id="menu_lims_analysis" 
-                  name="Análisis" 
-                  parent="menu_lims_analysis_root" 
-                  action="action_lims_analysis" 
-                  sequence="10"/>
+                name="🔬 Captura de Resultados" 
+                parent="menu_lims_analysis_root" 
+                action="action_lims_analysis" 
+                sequence="10"/>
+
+        <menuitem id="menu_analysis_reports_unified" 
+                name="📋 Firmas y Reportes" 
+                parent="menu_lims_analysis_root"
+                action="action_analysis_for_reports" 
+                sequence="20"/>
 
     </data>
 </odoo>
