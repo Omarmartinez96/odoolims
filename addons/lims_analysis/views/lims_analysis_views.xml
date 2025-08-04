@@ -1174,5 +1174,16 @@
             <field name="code">action = env['lims.analysis'].action_clean_orphan_records()</field>
         </record>
 
+        <!-- ========== MENÚ DE ANÁLISIS ========== -->
+        <menuitem id="menu_lims_analysis_root" 
+                  name="Análisis de Muestras" 
+                  sequence="20"/>
+
+        <menuitem id="menu_lims_analysis" 
+                  name="Análisis" 
+                  parent="menu_lims_analysis_root" 
+                  action="action_lims_analysis" 
+                  sequence="10"/>
+
     </data>
 </odoo>
