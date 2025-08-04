@@ -9,13 +9,6 @@ class LimsSampleReception(models.Model):
     _rec_name = 'sample_code'
     _order = 'reception_date desc, create_date desc'
 
-    # En models/lims_sample_reception.py, después de los campos existentes:
-    parameter_ids = fields.One2many(
-        related='sample_id.parameter_ids',
-        string='Parámetros de la Muestra',
-        readonly=False
-)
-
     # Relación con la muestra original
     sample_id = fields.Many2one(
         'lims.sample',
@@ -64,7 +57,6 @@ class LimsSampleReception(models.Model):
     )
     
     # 🆕 CHECKLIST DE RECEPCIÓN
-    
     check_conditions = fields.Selection([
         ('si', 'Sí'),
         ('no', 'No'),
@@ -172,6 +164,14 @@ class LimsSampleReception(models.Model):
         default=lambda self: self.env.user
     )
     
+    # Relación con parámetros (MOVIDO AQUÍ)
+    parameter_ids = fields.One2many(
+        related='sample_id.parameter_ids',
+        string='Parámetros de la Muestra',
+        readonly=False
+    )
+    
+    # MÉTODOS DE LimsSampleReception
     @api.depends('check_conditions', 'check_temperature', 
                 'check_container', 'check_volume', 'check_preservation')
     def _compute_can_change_state(self):
@@ -310,6 +310,7 @@ class LimsSampleReception(models.Model):
         return result
 
 
+# CLASE 2: Herencia de LimsSample
 class LimsSample(models.Model):
     _inherit = 'lims.sample'
     
@@ -343,8 +344,6 @@ class LimsSample(models.Model):
                 'view_mode': 'form',
                 'target': 'current',
             }
-        
-    # En models/lims_sample_reception.py, al final de la clase LimsSample:
 
     sample_reception_state = fields.Char(
         string='Estado Recepción',
@@ -368,18 +367,8 @@ class LimsSample(models.Model):
             else:
                 record.sample_reception_state = 'No recibida'
 
-    def write(self, vals):
-        """Override write para actualizar estado en muestra"""
-        result = super().write(vals)
-        
-        # Si se cambió el estado de recepción, forzar recálculo en la muestra
-        if 'reception_state' in vals:
-            for record in self:
-                if record.sample_id:
-                    record.sample_id._compute_sample_reception_state()
-        
-        return result
-    
+
+# CLASE 3: Herencia de LimsCustodyChain  
 class LimsCustodyChain(models.Model):
     _inherit = 'lims.custody_chain'
     
