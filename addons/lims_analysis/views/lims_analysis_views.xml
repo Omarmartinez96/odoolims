@@ -1164,13 +1164,6 @@
             </field>
         </record>
 
-        <!-- ========== MENÚS ========== -->
-        <menuitem id="menu_lims_analysis" 
-                  name="Análisis" 
-                  parent="menu_lims_analysis_root" 
-                  action="action_lims_analysis" 
-                  sequence="10"/>
-
         <!-- Acción para limpiar huérfanos -->
         <record id="action_clean_orphans" model="ir.actions.server">
             <field name="name">🧹 Limpiar Registros Huérfanos</field>

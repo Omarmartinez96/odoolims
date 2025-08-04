@@ -39,5 +39,10 @@
                   action="action_culture_media_batches" 
                   sequence="10"/>
 
+        <menuitem id="menu_lims_analysis" 
+                  name="Análisis" 
+                  parent="menu_lims_analysis_root" 
+                  action="action_lims_analysis" 
+                  sequence="10"/>
     </data>
 </odoo>
