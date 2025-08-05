@@ -455,7 +455,6 @@
             <field name="name">Análisis de Muestras</field>
             <field name="res_model">lims.analysis.v2</field>
             <field name="view_mode">kanban,list,form</field>
-            <field name="create">false</field>
             <field name="view_ids" eval="[
                 (5, 0, 0),
                 (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_lims_analysis_v2_kanban')}),
