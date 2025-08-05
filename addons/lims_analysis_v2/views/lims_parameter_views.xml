@@ -777,13 +777,10 @@
                                 <group string="🔢 Resultado Cuantitativo" 
                                        invisible="result_type != 'quantitative'">
                                     <field name="result_numeric"/>
-                                    <field name="result_unit"/>
                                     <field name="result_unit_selection"/>
                                     <field name="custom_unit" 
                                            placeholder="Especificar unidad"
                                            invisible="result_unit_selection != 'custom'"/>
-                                    <field name="below_detection_limit"/>
-                                    <field name="above_quantification_limit"/>
                                 </group>
 
                                 <!-- RESULTADO PRINCIPAL -->
