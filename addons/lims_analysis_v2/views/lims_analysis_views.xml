@@ -508,5 +508,16 @@
             </field>
         </record>
 
+        <!-- ========== MENÚS ========== -->
+        <menuitem id="menu_lims_analysis_v2_root" 
+                  name="Análisis LIMS v2" 
+                  sequence="25"/>
+
+        <menuitem id="menu_lims_analysis_v2_main" 
+                name="🔬 Análisis de Muestras" 
+                parent="menu_lims_analysis_v2_root" 
+                action="action_lims_analysis_v2" 
+                sequence="10"/>
+
     </data>
 </odoo>
