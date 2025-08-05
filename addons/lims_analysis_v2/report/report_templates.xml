@@ -1454,36 +1454,33 @@
                     width: 80px;
                     text-align: right;
                 }
+                .sample-break {
+                    page-break-before: always;
+                }
             </style>
 
             <!-- HEADER FIJO -->
-            <div class="header" style="padding: 10px 20px;">
-                <table class="header-table">
+            <div class="header" style="padding: 15px 20px;">
+                <table style="width: 100%; border-collapse: collapse;">
                     <tr>
-                        <td class="logo-section">
+                        <td style="width: 20%; text-align: left; vertical-align: middle;">
                             <!-- LOGO DE LA EMPRESA -->
                             <t t-if="company.logo">
                                 <img t-att-src="image_data_uri(company.logo)"
-                                    style="max-height: 60px; max-width: 80px; width: auto;"/>
+                                    style="max-height: 50px; width: auto;"/>
                             </t>
                         </td>
-                        <td class="center-section">
-                            <div class="company-info">Laboratorio de Microbiología</div>
-                            <div class="company-info">PROTEUS</div>
-                            <div class="company-details">
-                                Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.
-                            </div>
-                            <div class="company-details">
-                                E-mail: contacto@proteuslaboratorio.com // Teléfono: (664) 973-8185
-                            </div>
-                            <div class="form-info">FOR-022 Rev. 03 / PROC-006</div>
-                            <div class="form-info">Documento controlado, prohibida su reproducción parcial o total sin autorización.</div>
-                            <div class="form-info">Accreditation #108644</div>
+                        <td style="width: 60%; text-align: center; vertical-align: middle;">
+                            <!-- TÍTULO DINÁMICO SEGÚN IDIOMA -->
+                            <h2 style="font-size: 18px; font-weight: bold; margin: 0; border: 2px solid #000; padding: 8px; background-color: #f0f0f0;">
+                                <t t-if="language == 'es'">INFORME DE ENSAYO</t>
+                                <t t-else="">TEST REPORT</t>
+                            </h2>
                         </td>
-                        <td class="right-section">
-                            <!-- LOGOS DE ILAC -->
-                            <div style="font-size: 8px; text-align: center; color: #666;">
-                                [ILAC Logos]
+                        <td style="width: 20%; text-align: right; vertical-align: middle;">
+                            <!-- LOGOS ILAC -->
+                            <div style="font-size: 10px; color: #666; border: 1px solid #ccc; padding: 5px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                                [ILAC LOGOS]
                             </div>
                         </td>
                     </tr>
@@ -1524,18 +1521,12 @@
 
             <!-- CONTENIDO PRINCIPAL -->
             <t t-foreach="docs" t-as="analysis">
-                <div class="page">
+                <div t-att-class="'page' + (' sample-break' if analysis_index > 0 else '')">
                     
                     <!-- Variables de configuración -->
                     <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
                     <t t-set="language" t-value="report_config.get('language', 'es')"/>
                     <t t-set="status" t-value="report_config.get('status', 'final')"/>
-                    
-                    <!-- TÍTULO DEL REPORTE -->
-                    <div class="report-title">
-                        <t t-if="language == 'es'">INFORME DE ENSAYO</t>
-                        <t t-else="">TEST REPORT</t>
-                    </div>
 
                     <!-- INFORMACIÓN SUPERIOR -->
                     <table class="info-grid">
