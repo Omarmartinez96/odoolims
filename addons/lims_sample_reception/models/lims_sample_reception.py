@@ -389,10 +389,6 @@ class LimsCustodyChain(models.Model):
         string='Pendientes',
         compute='_compute_reception_stats'
     )
-    reception_progress = fields.Float(
-        string='Progreso (%)',
-        compute='_compute_reception_stats'
-    )
 
     reception_status_display = fields.Char(
         string='Estado General',
@@ -542,7 +538,6 @@ class LimsCustodyChain(models.Model):
             record.samples_received = received
             record.samples_rejected = rejected
             record.samples_pending = pending
-            record.reception_progress = (received + rejected) * 100.0 / total if total > 0 else 0.0
             
             # Determinar estado general
             if total == 0:

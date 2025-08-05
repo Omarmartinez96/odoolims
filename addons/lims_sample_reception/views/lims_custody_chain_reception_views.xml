@@ -19,7 +19,6 @@
                     <field name="samples_received" decoration-success="samples_received > 0"/>
                     <field name="samples_rejected" decoration-danger="samples_rejected > 0"/>
                     <field name="samples_pending" decoration-warning="samples_pending > 0"/>
-                    <field name="reception_progress" widget="percentage"/>
                     
                     <!-- Estado general computado -->
                     <field name="reception_status_display" decoration-success="reception_status_display == 'Completo'" 
@@ -94,12 +93,6 @@
                                         <field name="samples_pending"/>
                                     </div>
                                     <small>⏳ Pendientes</small>
-                                </div>
-                            </div>
-                            <div class="row mt-2">
-                                <div class="col-12 text-center">
-                                    <strong>Progreso de Recepción: </strong>
-                                    <field name="reception_progress" widget="percentage"/>
                                 </div>
                             </div>
                         </div>
