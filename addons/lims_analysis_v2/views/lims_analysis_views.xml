@@ -14,26 +14,7 @@
                     
                     <!-- Campos invisibles para agrupación -->
                     <field name="custody_chain_id" invisible="1"/>
-                    
-                    <!-- Header con información de la cadena -->
-                    <header>
-                        <button name="action_mass_print_preliminary_report" 
-                                type="object" 
-                                string="📋 Reporte Preliminar" 
-                                class="btn-primary"/>
-                        <button name="action_mass_print_final_report" 
-                                type="object" 
-                                string="📄 Reporte Final" 
-                                class="btn-success"/>
-                        <button name="action_mass_print_report_for_signing" 
-                                type="object" 
-                                string="✍️ Para Firma Manual" 
-                                class="btn-info"/>
-                        <button name="action_mass_mark_as_reported" 
-                                type="object" 
-                                string="✅ Marcar Reportado" 
-                                class="btn-secondary"/>
-                    </header>
+                
                     
                     <!-- Información de la cadena (visible en el grupo) -->
                     <field name="custody_chain_code" string="Cadena"/>
@@ -115,29 +96,6 @@
                                 class="btn-info"
                                 invisible="signature_state != 'signed'"
                                 confirm="¿Está seguro de solicitar una revisión? Esto cancelará la firma actual."/>
-                        
-                        <!-- Botones de reportes -->
-                        <button name="generate_preliminary_report"
-                                type="object"
-                                string="📋 Reporte Preliminar"
-                                class="btn-primary"
-                                invisible="has_ready_parameters == False"/>
-                        
-                        <button name="generate_final_report"
-                                type="object"
-                                string="📄 Reporte Final"
-                                class="btn-success"
-                                invisible="all_parameters_ready == False"/>
-                        
-                        <button name="generate_signing_report"
-                                type="object"
-                                string="📄 Para Firma Manual"
-                                class="btn-info"
-                                invisible="signature_state != 'signed'"/>
-                        
-                        <!-- StatusBar -->
-                        <field name="analysis_state" widget="statusbar" statusbar_visible="draft,in_progress,completed,validated"/>
-                    </header>
                     
                     <sheet>
                         <!-- Título -->
