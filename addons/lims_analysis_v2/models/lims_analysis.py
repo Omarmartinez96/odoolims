@@ -654,13 +654,23 @@ class LimsAnalysisV2(models.Model):
         language = report_config.get('language', 'es')
         status = report_config.get('status', 'final')
         
-        # Usar templates existentes por ahora, solo cambiar bioburden
-        if report_type == 'bioburden':
-            template_ref = 'lims_analysis_v2.action_report_bioburden'
-        elif status == 'preliminary':
-            template_ref = 'lims_analysis_v2.action_report_analysis_preliminary'
-        else:
-            template_ref = 'lims_analysis_v2.action_report_analysis_final'
+        # Determinar templates específicos para cada tipo
+        report_templates = {
+            'bioburden': 'lims_analysis_v2.action_report_bioburden',
+            'viable_particles': 'lims_analysis_v2.action_report_viable_particles',
+            'endotoxin': 'lims_analysis_v2.action_report_endotoxin',
+            'general_ilac': 'lims_analysis_v2.action_report_general_ilac',
+            'general_no_ilac': 'lims_analysis_v2.action_report_general_no_ilac',
+        }
+        
+        # Si no existe template específico, usar uno por defecto según el estado
+        template_ref = report_templates.get(report_type)
+        
+        if not template_ref:
+            if status == 'preliminary':
+                template_ref = 'lims_analysis_v2.action_report_analysis_preliminary'
+            else:
+                template_ref = 'lims_analysis_v2.action_report_analysis_final'
         
         # Agregar contexto para el template
         context = {
@@ -671,7 +681,6 @@ class LimsAnalysisV2(models.Model):
         }
         
         return self.env.ref(template_ref).with_context(context).report_action(analyses)
-
     # ===============================================
     # === MÉTODOS ESPECÍFICOS PARA BIOBURDEN ===
     # ===============================================
@@ -703,4 +712,136 @@ class LimsAnalysisV2(models.Model):
             'status': 'preliminary',
             'language': 'es',
             'report_type': 'bioburden'
+        })
+    
+    # ===============================================
+    # === MÉTODOS PARA PARTÍCULAS VIABLES ===
+    # ===============================================
+    @api.model
+    def action_mass_print_viable_particles_final(self, analysis_ids):
+        """Acción específica para Partículas Viables Final"""
+        analyses = self.browse(analysis_ids)
+        ready_analyses = analyses.filtered('all_parameters_ready')
+        
+        if not ready_analyses:
+            raise UserError('No hay análisis completados para reporte de Partículas Viables.')
+        
+        return self.generate_custom_report(ready_analyses.ids, {
+            'status': 'final',
+            'language': 'es',
+            'report_type': 'viable_particles'
+        })
+
+    @api.model  
+    def action_mass_print_viable_particles_preliminary(self, analysis_ids):
+        """Acción específica para Partículas Viables Preliminar"""
+        analyses = self.browse(analysis_ids)
+        ready_analyses = analyses.filtered('has_ready_parameters')
+        
+        if not ready_analyses:
+            raise UserError('No hay análisis con parámetros listos para reporte preliminar de Partículas Viables.')
+        
+        return self.generate_custom_report(ready_analyses.ids, {
+            'status': 'preliminary',
+            'language': 'es',
+            'report_type': 'viable_particles'
+        })
+
+    # ===============================================
+    # === MÉTODOS PARA ENDOTOXINAS ===
+    # ===============================================
+    @api.model
+    def action_mass_print_endotoxin_final(self, analysis_ids):
+        """Acción específica para Endotoxinas Final"""
+        analyses = self.browse(analysis_ids)
+        ready_analyses = analyses.filtered('all_parameters_ready')
+        
+        if not ready_analyses:
+            raise UserError('No hay análisis completados para reporte de Endotoxinas.')
+        
+        return self.generate_custom_report(ready_analyses.ids, {
+            'status': 'final',
+            'language': 'es',
+            'report_type': 'endotoxin'
+        })
+
+    @api.model  
+    def action_mass_print_endotoxin_preliminary(self, analysis_ids):
+        """Acción específica para Endotoxinas Preliminar"""
+        analyses = self.browse(analysis_ids)
+        ready_analyses = analyses.filtered('has_ready_parameters')
+        
+        if not ready_analyses:
+            raise UserError('No hay análisis con parámetros listos para reporte preliminar de Endotoxinas.')
+        
+        return self.generate_custom_report(ready_analyses.ids, {
+            'status': 'preliminary',
+            'language': 'es',
+            'report_type': 'endotoxin'
+        })
+
+    # ===============================================
+    # === MÉTODOS PARA GENERAL ILAC ===
+    # ===============================================
+    @api.model
+    def action_mass_print_general_ilac_final(self, analysis_ids):
+        """Acción específica para General ILAC Final"""
+        analyses = self.browse(analysis_ids)
+        ready_analyses = analyses.filtered('all_parameters_ready')
+        
+        if not ready_analyses:
+            raise UserError('No hay análisis completados para reporte General ILAC.')
+        
+        return self.generate_custom_report(ready_analyses.ids, {
+            'status': 'final',
+            'language': 'es',
+            'report_type': 'general_ilac'
+        })
+
+    @api.model  
+    def action_mass_print_general_ilac_preliminary(self, analysis_ids):
+        """Acción específica para General ILAC Preliminar"""
+        analyses = self.browse(analysis_ids)
+        ready_analyses = analyses.filtered('has_ready_parameters')
+        
+        if not ready_analyses:
+            raise UserError('No hay análisis con parámetros listos para reporte preliminar General ILAC.')
+        
+        return self.generate_custom_report(ready_analyses.ids, {
+            'status': 'preliminary',
+            'language': 'es',
+            'report_type': 'general_ilac'
+        })
+
+    # ===============================================
+    # === MÉTODOS PARA GENERAL SIN ILAC ===
+    # ===============================================
+    @api.model
+    def action_mass_print_general_no_ilac_final(self, analysis_ids):
+        """Acción específica para General sin ILAC Final"""
+        analyses = self.browse(analysis_ids)
+        ready_analyses = analyses.filtered('all_parameters_ready')
+        
+        if not ready_analyses:
+            raise UserError('No hay análisis completados para reporte General sin ILAC.')
+        
+        return self.generate_custom_report(ready_analyses.ids, {
+            'status': 'final',
+            'language': 'es',
+            'report_type': 'general_no_ilac'
+        })
+
+    @api.model  
+    def action_mass_print_general_no_ilac_preliminary(self, analysis_ids):
+        """Acción específica para General sin ILAC Preliminar"""
+        analyses = self.browse(analysis_ids)
+        ready_analyses = analyses.filtered('has_ready_parameters')
+        
+        if not ready_analyses:
+            raise UserError('No hay análisis con parámetros listos para reporte preliminar General sin ILAC.')
+        
+        return self.generate_custom_report(ready_analyses.ids, {
+            'status': 'preliminary',
+            'language': 'es',
+            'report_type': 'general_no_ilac'
         })

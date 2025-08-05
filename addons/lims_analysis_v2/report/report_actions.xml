@@ -46,5 +46,49 @@
             <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
         </record>
 
+        <!-- ========== REPORTE PARTÍCULAS VIABLES ========== -->
+        <record id="action_report_viable_particles" model="ir.actions.report">
+            <field name="name">Informe de Ensayo - Partículas Viables</field>
+            <field name="model">lims.analysis.v2</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">lims_analysis_v2.report_viable_particles_template</field>
+            <field name="report_file">lims_analysis_v2.report_viable_particles_template</field>
+            <field name="print_report_name">'Particulas Viables - ' + (object.custody_chain_code or 'Sin código') + '.pdf'</field>
+            <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
+        </record>
+
+        <!-- ========== REPORTE ENDOTOXINAS ========== -->
+        <record id="action_report_endotoxin" model="ir.actions.report">
+            <field name="name">Informe de Ensayo - Endotoxinas</field>
+            <field name="model">lims.analysis.v2</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">lims_analysis_v2.report_endotoxin_template</field>
+            <field name="report_file">lims_analysis_v2.report_endotoxin_template</field>
+            <field name="print_report_name">'Endotoxinas - ' + (object.custody_chain_code or 'Sin código') + '.pdf'</field>
+            <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
+        </record>
+
+        <!-- ========== REPORTE GENERAL ILAC ========== -->
+        <record id="action_report_general_ilac" model="ir.actions.report">
+            <field name="name">Informe de Ensayo - General ILAC</field>
+            <field name="model">lims.analysis.v2</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">lims_analysis_v2.report_general_ilac_template</field>
+            <field name="report_file">lims_analysis_v2.report_general_ilac_template</field>
+            <field name="print_report_name">'Informe ILAC - ' + (object.custody_chain_code or 'Sin código') + '.pdf'</field>
+            <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
+        </record>
+
+        <!-- ========== REPORTE GENERAL SIN ILAC ========== -->
+        <record id="action_report_general_no_ilac" model="ir.actions.report">
+            <field name="name">Informe de Ensayo - General sin ILAC</field>
+            <field name="model">lims.analysis.v2</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">lims_analysis_v2.report_general_no_ilac_template</field>
+            <field name="report_file">lims_analysis_v2.report_general_no_ilac_template</field>
+            <field name="print_report_name">'Informe General - ' + (object.custody_chain_code or 'Sin código') + '.pdf'</field>
+            <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
+        </record>
+
     </data>
 </odoo>

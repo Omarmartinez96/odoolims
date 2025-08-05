@@ -871,4 +871,234 @@
         </t>
     </template>
 
+    <!-- ========== TEMPLATE PARTÍCULAS VIABLES ========== -->
+    <template id="report_viable_particles_template">
+        <t t-call="lims_analysis_v2.report_analysis_base_template">
+            <t t-foreach="docs" t-as="analysis">
+                <div class="page">
+                    <div class="main-content">
+                        
+                        <!-- Variables de configuración -->
+                        <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
+                        <t t-set="language" t-value="report_config.get('language', 'es')"/>
+                        <t t-set="status" t-value="report_config.get('status', 'final')"/>
+                        
+                        <!-- Título según idioma y estado -->
+                        <div style="text-align: center; margin: 20px 0 30px 0;">
+                            <h1 style="font-size: 24px; font-weight: bold; margin: 0;">
+                                <t t-if="language == 'es' and status == 'final'">
+                                    INFORME DE ENSAYO - PARTÍCULAS VIABLES
+                                </t>
+                                <t t-elif="language == 'es' and status == 'preliminary'">
+                                    INFORME PRELIMINAR - PARTÍCULAS VIABLES
+                                </t>
+                                <t t-elif="language == 'en' and status == 'final'">
+                                    TEST REPORT - VIABLE PARTICLES
+                                </t>
+                                <t t-elif="language == 'en' and status == 'preliminary'">
+                                    PRELIMINARY TEST REPORT - VIABLE PARTICLES
+                                </t>
+                            </h1>
+                        </div>
+
+                        <!-- Badge especial para Partículas Viables -->
+                        <div style="text-align: center; margin: 20px 0; padding: 15px; background-color: #e8f0ff; border: 2px solid #007bff; border-radius: 10px;">
+                            <h2 style="color: #007bff; margin: 0;">
+                                🔬 
+                                <t t-if="language == 'es'">PARTÍCULAS VIABLES</t>
+                                <t t-else="">VIABLE PARTICLES</t>
+                            </h2>
+                            <p style="margin: 5px 0 0 0; font-style: italic;">
+                                <t t-if="language == 'es'">Recuento de partículas microbianas en aire</t>
+                                <t t-else="">Microbial particle count in air</t>
+                            </p>
+                        </div>
+
+                        <!-- Información básica (copiada y adaptada) -->
+                        <table class="table table-borderless mt-1" style="width:100%; font-size:14px; border-collapse:collapse;">
+                            <t t-set="meses_es" t-value="{
+                                '01':'Ene','02':'Feb','03':'Mar','04':'Abr',
+                                '05':'May','06':'Jun','07':'Jul','08':'Ago',
+                                '09':'Sep','10':'Oct','11':'Nov','12':'Dic'
+                            }"/>
+                            <t t-set="meses_en" t-value="{
+                                '01':'Jan','02':'Feb','03':'Mar','04':'Apr',
+                                '05':'May','06':'Jun','07':'Jul','08':'Aug',
+                                '09':'Sep','10':'Oct','11':'Nov','12':'Dec'
+                            }"/>
+                            <t t-set="meses" t-value="meses_es if language == 'es' else meses_en"/>
+                            
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%; padding:4px;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Cadena de Custodia:</t>
+                                            <t t-else="">Chain of Custody:</t>
+                                        </strong> 
+                                        <span t-esc="analysis.custody_chain_code"/>
+                                    </td>
+                                    <td style="width:50%; padding:4px; text-align:right;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Fecha de emisión:</t>
+                                            <t t-else="">Issue Date:</t>
+                                        </strong>
+                                        <t t-set="today" t-value="datetime.datetime.now()"/>
+                                        <t t-set="d_today" t-value="today.strftime('%d')"/>
+                                        <t t-set="m_today" t-value="today.strftime('%m')"/>
+                                        <t t-set="y_today" t-value="today.strftime('%Y')"/>
+                                        <span t-esc="d_today + '/' + meses[m_today] + '/' + y_today"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:4px;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Cliente:</t>
+                                            <t t-else="">Customer:</t>
+                                        </strong> 
+                                        <span t-esc="analysis.customer_id.name"/>
+                                    </td>
+                                    <td style="padding:4px; text-align:right;">
+                                        <t t-if="status == 'preliminary'">
+                                            <span class="preliminary-badge">
+                                                <t t-if="language == 'es'">PRELIMINAR</t>
+                                                <t t-else="">PRELIMINARY</t>
+                                            </span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="final-badge">
+                                                <t t-if="language == 'es'">FINAL</t>
+                                                <t t-else="">FINAL</t>
+                                            </span>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:4px;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Muestra:</t>
+                                            <t t-else="">Sample:</t>
+                                        </strong> 
+                                        <span t-esc="analysis.sample_code"/> - <span t-esc="analysis.sample_identifier"/>
+                                    </td>
+                                    <td style="padding:4px; text-align:right;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Fecha de Recepción:</t>
+                                            <t t-else="">Reception Date:</t>
+                                        </strong>
+                                        <t t-if="analysis.reception_date">
+                                            <t t-set="r_date" t-value="analysis.reception_date"/>
+                                            <t t-set="d_reception" t-value="r_date.strftime('%d')"/>
+                                            <t t-set="m_reception" t-value="r_date.strftime('%m')"/>
+                                            <t t-set="y_reception" t-value="r_date.strftime('%Y')"/>
+                                            <span t-esc="d_reception + '/' + meses[m_reception] + '/' + y_reception"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Separador -->
+                        <hr style="margin: 20px 0; border: 1px solid;"/>
+
+                        <!-- Resultados específicos de Partículas Viables -->
+                        <div class="sample-section">
+                            <div class="header-title">
+                                <t t-if="language == 'es'">Muestra:</t>
+                                <t t-else="">Sample:</t>
+                                <span t-esc="analysis.sample_code"/> - <span t-esc="analysis.sample_identifier"/>
+                            </div>
+
+                            <!-- Filtrar parámetros relevantes -->
+                            <t t-set="particles_params" t-value="analysis.parameter_analysis_ids.filtered(lambda p: (p.report_status == 'ready' if status == 'preliminary' else p.report_status in ['ready', 'reported']))"/>
+                            
+                            <t t-if="particles_params">
+                                <h5 style="font-size: 14px; margin: 15px 0 5px 0;">
+                                    <t t-if="language == 'es'">Resultados de Partículas Viables:</t>
+                                    <t t-else="">Viable Particles Results:</t>
+                                </h5>
+                                <table class="table table-bordered" style="width:100%; font-size:11px; border-collapse:collapse;">
+                                    <thead>
+                                        <tr style="background-color:#007bff; color: white;">
+                                            <th style="padding:8px; text-align:left; width:30%;">
+                                                <t t-if="language == 'es'">Parámetro</t>
+                                                <t t-else="">Parameter</t>
+                                            </th>
+                                            <th style="padding:8px; text-align:left; width:25%;">
+                                                <t t-if="language == 'es'">Método</t>
+                                                <t t-else="">Method</t>
+                                            </th>
+                                            <th style="padding:8px; text-align:center; width:20%;">
+                                                <t t-if="language == 'es'">Resultado</t>
+                                                <t t-else="">Result</t>
+                                            </th>
+                                            <th style="padding:8px; text-align:left; width:25%;">
+                                                <t t-if="language == 'es'">Observaciones</t>
+                                                <t t-else="">Observations</t>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="particles_params" t-as="parameter">
+                                            <tr class="result-row">
+                                                <td style="padding:8px;">
+                                                    <strong>
+                                                        <span t-esc="parameter.name or parameter.microorganism or 'Sin especificar'"/>
+                                                    </strong>
+                                                </td>
+                                                <td style="padding:8px;">
+                                                    <span t-esc="parameter.method or 'No especificado'"/>
+                                                </td>
+                                                <td style="padding:8px; text-align:center; font-weight:bold; color: #007bff;">
+                                                    <span t-esc="parameter.result_complete or parameter.result_value or 'Sin resultado'"/>
+                                                </td>
+                                                <td style="padding:8px; font-size:10px;">
+                                                    <span t-esc="parameter.analyst_notes or '—'"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </t>
+                            <t t-else="">
+                                <div style="text-align: center; padding: 20px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;">
+                                    <p style="margin: 0; font-style: italic; color: #856404;">
+                                        <t t-if="language == 'es'">No hay resultados de partículas viables disponibles.</t>
+                                        <t t-else="">No viable particles results available.</t>
+                                    </p>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- Información adicional -->
+                        <div style="margin-top: 30px; font-size: 11px; color: #666;">
+                            <p>
+                                <strong>
+                                    <t t-if="language == 'es'">Método de Ensayo:</t>
+                                    <t t-else="">Test Method:</t>
+                                </strong> 
+                                <t t-if="language == 'es'">
+                                    Muestreo activo de aire según normas farmacéuticas aplicables.
+                                </t>
+                                <t t-else="">
+                                    Active air sampling according to applicable pharmaceutical standards.
+                                </t>
+                            </p>
+                            <p style="margin-top: 10px;">
+                                <em>
+                                    <t t-if="language == 'es'">
+                                        Los análisis se realizaron bajo condiciones controladas y validadas.
+                                    </t>
+                                    <t t-else="">
+                                        Analyses were performed under controlled and validated conditions.
+                                    </t>
+                                </em>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
 </odoo>
