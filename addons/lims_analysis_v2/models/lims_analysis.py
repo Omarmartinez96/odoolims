@@ -352,7 +352,7 @@ class LimsAnalysisV2(models.Model):
     def action_sign_sample(self):
         """Abrir wizard de firma"""
         finalized_params = self.parameter_analysis_ids.filtered(
-            lambda p: p.analysis_status == 'completed'
+            lambda p: p.analysis_status_checkbox == 'finalizado'
         )
         
         if not finalized_params:

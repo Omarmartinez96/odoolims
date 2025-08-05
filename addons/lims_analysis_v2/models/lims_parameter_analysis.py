@@ -164,6 +164,13 @@ class LimsParameterAnalysisV2(models.Model):
         help='Resultado por encima del límite de cuantificación'
     )
     
+    # Estado mejorado con checkbox
+    analysis_status_checkbox = fields.Selection([
+        ('sin_procesar', 'Sin Procesar'),
+        ('en_proceso', 'En Proceso'),
+        ('finalizado', 'Finalizado')
+    ], string='Estado del Análisis', default='sin_procesar', required=True)
+
     # ===============================================
     # === ESTADO DE REPORTE ===
     # ===============================================
@@ -494,3 +501,32 @@ class LimsParameterAnalysisV2(models.Model):
                 'type': 'success',
             }
         }
+    
+    @api.onchange('analysis_status_checkbox')
+    def _onchange_analysis_status_checkbox(self):
+        """Sincronizar con el campo analysis_status original si existe"""
+        # Mapeo entre checkbox y estado original
+        status_mapping = {
+            'sin_procesar': 'draft',
+            'en_proceso': 'in_progress', 
+            'finalizado': 'completed'
+        }
+        
+        if self.analysis_status_checkbox:
+            mapped_status = status_mapping.get(self.analysis_status_checkbox)
+            if mapped_status:
+                self.analysis_status = mapped_status
+
+    @api.onchange('result_value', 'analysis_status_checkbox')
+    def _onchange_check_report_ready(self):
+        """Detectar automáticamente cuando el parámetro está listo para reporte"""
+        if (self.result_value and 
+            self.result_value.strip() and 
+            self.analysis_status_checkbox == 'finalizado'):
+            # Solo cambiar a 'ready' si estaba en 'draft'
+            if self.report_status == 'draft':
+                self.report_status = 'ready'
+        else:
+            # Solo volver a 'draft' si no está reportado
+            if self.report_status != 'reported':
+                self.report_status = 'draft'

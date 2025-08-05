@@ -41,13 +41,26 @@
                                        decoration-info="report_status == 'reported'"
                                        decoration-muted="report_status == 'draft'"/>
                             </group>
+
+                            <!-- Configuración automática de procesos según categoría y tipo -->
+                            <group string="🔧 Configuración de Procesos" invisible="category != 'microbiological'">
+                                <div class="alert alert-info" style="margin-bottom: 10px;" colspan="4">
+                                    <strong>ℹ️ Configuración Automática:</strong> 
+                                    Selecciona los procesos que requiere este parámetro para mostrar las pestañas correspondientes.
+                                </div>
+                                <field name="requires_pre_enrichment" invisible="result_type != 'qualitative'"/>
+                                <field name="requires_selective_enrichment" invisible="result_type != 'qualitative'"/>
+                                <field name="requires_confirmation"/>
+                                <field name="requires_ph_adjustment"/>
+                            </group>
+
                         </group>
 
                         <!-- Notebook principal -->
                         <notebook>
                             
                             <!-- TAB DE PROCESOS REQUERIDOS -->
-                            <page string="🧪 Procesos Requeridos" invisible="category != 'microbiological'">
+                            <page string="🧪 Configuración de Procesos" invisible="category != 'microbiological'">
                                 <group string="Procesos Necesarios para este Parámetro" colspan="4">
                                     <field name="requires_pre_enrichment"/>
                                     <field name="requires_selective_enrichment"/>
@@ -57,7 +70,7 @@
                                 
                                 <!-- Configuración de ambientes por proceso -->
                                 <group string="🏭 Ambientes de Procesamiento" colspan="4">
-                                    <group string="Pre-enriquecimiento" invisible="requires_pre_enrichment == False">
+                                    <page string="🔬 Pre-enriquecimiento" invisible="requires_pre_enrichment == False or category != 'microbiological'">
                                         <field name="pre_enrichment_environment" widget="radio"/>
                                         <field name="pre_enrichment_equipment_id" 
                                                invisible="pre_enrichment_environment not in ['campana_flujo', 'campana_bioseguridad']"/>
