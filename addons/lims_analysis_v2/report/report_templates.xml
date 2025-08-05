@@ -1393,7 +1393,7 @@
                 </div>
 
                 <!-- CRITICAL: Article wrapper con márgenes correctos -->
-                <div class="article" style="margin-top: 95px; margin-bottom: 65px;">
+                <div class="article">
                     
                     <!-- CSS ESPECÍFICO PARA WKHTMLTOPDF -->
                     <style type="text/css">
@@ -1410,53 +1410,7 @@
                             line-height: 1.2;
                         }
                         
-                        /* CRITICAL: Media print para wkhtmltopdf */
-                        @media print {
-                            .header {
-                                position: fixed !important;
-                                top: 0 !important;
-                                left: 0 !important;
-                                right: 0 !important;
-                                width: 100% !important;
-                                height: 85px !important;
-                                z-index: 1000 !important;
-                                background-color: white !important;
-                                -webkit-print-color-adjust: exact !important;
-                                padding: 10px 15px !important;
-                            }
-                            
-                            .footer {
-                                position: fixed !important;
-                                bottom: 0 !important;
-                                left: 0 !important;
-                                right: 0 !important;
-                                width: 100% !important;
-                                height: 55px !important;
-                                z-index: 1000 !important;
-                                background-color: white !important;
-                                -webkit-print-color-adjust: exact !important;
-                                padding: 5px 15px !important;
-                            }
-                            
-                            .article {
-                                /* Márgenes deben ser MAYORES que las alturas de header/footer */
-                                margin-top: 95px !important;
-                                margin-bottom: 65px !important;
-                                padding: 0 15px !important;
-                            }
-                            
-                            .page {
-                                page-break-inside: auto !important;
-                                page-break-after: auto !important;
-                            }
-                            
-                            /* Page break para múltiples muestras */
-                            .sample-break {
-                                page-break-before: always !important;
-                            }
-                        }
-                        
-                        /* Estilos específicos del reporte */
+                        /* Estilos específicos del reporte SOLAMENTE */
                         .section-header {
                             background-color: #d3d3d3;
                             font-weight: bold;
@@ -1522,6 +1476,10 @@
                             width: 50%;
                             vertical-align: top;
                             padding: 0 5px;
+                        }
+                        
+                        .sample-break {
+                            page-break-before: always;
                         }
                     </style>
 
