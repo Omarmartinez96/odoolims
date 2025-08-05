@@ -350,41 +350,6 @@ class LimsSample(models.Model):
         compute='_compute_sample_reception_state'
     )
 
-    @api.depends('sample_ids', 'sample_ids.sample_reception_state')
-    def _compute_reception_stats(self):
-        """Calcular estadísticas de recepción"""
-        for record in self:
-            total = len(record.sample_ids)
-            received = rejected = pending = 0
-            
-            for sample in record.sample_ids:
-                reception = self.env['lims.sample.reception'].search([
-                    ('sample_id', '=', sample.id)
-                ], limit=1)
-                
-                if reception:
-                    if reception.reception_state == 'recibida':
-                        received += 1
-                    elif reception.reception_state == 'rechazada':
-                        rejected += 1
-                    else:
-                        pending += 1
-                else:
-                    pending += 1
-            
-            record.samples_total = total
-            record.samples_received = received
-            record.samples_rejected = rejected
-            record.samples_pending = pending
-            if total == 0:
-                record.reception_status_display = 'Sin Muestras'
-            elif pending == total:
-                record.reception_status_display = 'Sin Procesar'
-            elif pending == 0:
-                record.reception_status_display = 'Completo'
-            else:
-                record.reception_status_display = 'En Proceso'
-            record.reception_progress = (received + rejected) * 100.0 / total if total > 0 else 0.0
 
     def _compute_sample_reception_state(self):
         """Mostrar estado de recepción de la muestra"""
@@ -426,6 +391,11 @@ class LimsCustodyChain(models.Model):
     )
     reception_progress = fields.Float(
         string='Progreso (%)',
+        compute='_compute_reception_stats'
+    )
+
+    reception_status_display = fields.Char(
+        string='Estado General',
         compute='_compute_reception_stats'
     )
 
@@ -545,3 +515,41 @@ class LimsCustodyChain(models.Model):
             'target': 'new',
             'context': ctx,
         }
+    
+    @api.depends('sample_ids')
+    def _compute_reception_stats(self):
+        """Calcular estadísticas de recepción"""
+        for record in self:
+            total = len(record.sample_ids)
+            received = rejected = pending = 0
+            
+            for sample in record.sample_ids:
+                reception = self.env['lims.sample.reception'].search([
+                    ('sample_id', '=', sample.id)
+                ], limit=1)
+                
+                if reception:
+                    if reception.reception_state == 'recibida':
+                        received += 1
+                    elif reception.reception_state == 'rechazada':
+                        rejected += 1
+                    else:
+                        pending += 1
+                else:
+                    pending += 1
+            
+            record.samples_total = total
+            record.samples_received = received
+            record.samples_rejected = rejected
+            record.samples_pending = pending
+            record.reception_progress = (received + rejected) * 100.0 / total if total > 0 else 0.0
+            
+            # Determinar estado general
+            if total == 0:
+                record.reception_status_display = 'Sin Muestras'
+            elif pending == total:
+                record.reception_status_display = 'Sin Procesar'
+            elif pending == 0:
+                record.reception_status_display = 'Completo'
+            else:
+                record.reception_status_display = 'En Proceso'
