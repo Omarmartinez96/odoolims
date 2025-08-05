@@ -86,18 +86,9 @@
                                 </div>
                             </div>
                             <div class="row mt-2">
-                                <div class="col-12">
-                                    <div class="progress">
-                                        <div class="progress-bar bg-success" 
-                                            role="progressbar" 
-                                            t-attf-style="width: {{record.reception_progress.raw_value}}%"
-                                            t-attf-aria-valuenow="{{record.reception_progress.raw_value}}" 
-                                            aria-valuemin="0" 
-                                            aria-valuemax="100">
-                                            <field name="reception_progress"/>%
-                                        </div>
-                                    </div>
-                                    <small class="text-muted">Progreso de Recepción</small>
+                                <div class="col-12 text-center">
+                                    <strong>Progreso de Recepción: </strong>
+                                    <field name="reception_progress" widget="percentage"/>
                                 </div>
                             </div>
                         </div>
