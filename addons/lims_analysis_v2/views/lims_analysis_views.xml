@@ -530,5 +530,28 @@
                 action="action_lims_analysis_v2" 
                 sequence="10"/>
 
+        <!-- ========== ACCIONES ESPECÍFICAS DE BIOBURDEN ========== -->
+        <record id="action_mass_bioburden_final_es" model="ir.actions.server">
+            <field name="name">🦠 Bioburden - Informe Final</field>
+            <field name="model_id" ref="model_lims_analysis_v2"/>
+            <field name="binding_model_id" ref="model_lims_analysis_v2"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+        action = model.action_mass_print_bioburden_final(records.ids)
+            </field>
+        </record>
+
+        <record id="action_mass_bioburden_prelim_es" model="ir.actions.server">
+            <field name="name">🦠 Bioburden - Preliminar</field>
+            <field name="model_id" ref="model_lims_analysis_v2"/>
+            <field name="binding_model_id" ref="model_lims_analysis_v2"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+        action = model.action_mass_print_bioburden_preliminary(records.ids)
+            </field>
+        </record>
+
     </data>
 </odoo>

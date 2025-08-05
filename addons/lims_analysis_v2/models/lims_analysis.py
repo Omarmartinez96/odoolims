@@ -641,3 +641,66 @@ class LimsAnalysisV2(models.Model):
                 'type': 'success',
             }
         }
+    
+    # ===============================================
+    # === NUEVO MÉTODO BASE PARA REPORTES PERSONALIZADOS ===
+    # ===============================================
+    @api.model
+    def generate_custom_report(self, analysis_ids, report_config):
+        """Generar reporte personalizado según configuración"""
+        analyses = self.browse(analysis_ids)
+        
+        report_type = report_config.get('report_type', 'general_ilac')
+        language = report_config.get('language', 'es')
+        status = report_config.get('status', 'final')
+        
+        # Usar templates existentes por ahora, solo cambiar bioburden
+        if report_type == 'bioburden':
+            template_ref = 'lims_analysis_v2.action_report_bioburden'
+        elif status == 'preliminary':
+            template_ref = 'lims_analysis_v2.action_report_analysis_preliminary'
+        else:
+            template_ref = 'lims_analysis_v2.action_report_analysis_final'
+        
+        # Agregar contexto para el template
+        context = {
+            'report_type': report_type,
+            'language': language,
+            'status': status,
+            'custom_report_config': report_config
+        }
+        
+        return self.env.ref(template_ref).with_context(context).report_action(analyses)
+
+    # ===============================================
+    # === MÉTODOS ESPECÍFICOS PARA BIOBURDEN ===
+    # ===============================================
+    @api.model
+    def action_mass_print_bioburden_final(self, analysis_ids):
+        """Acción específica para Bioburden Final español"""
+        analyses = self.browse(analysis_ids)
+        ready_analyses = analyses.filtered('all_parameters_ready')
+        
+        if not ready_analyses:
+            raise UserError('No hay análisis completados para reporte de Bioburden.')
+        
+        return self.generate_custom_report(ready_analyses.ids, {
+            'status': 'final',
+            'language': 'es',
+            'report_type': 'bioburden'
+        })
+
+    @api.model  
+    def action_mass_print_bioburden_preliminary(self, analysis_ids):
+        """Acción específica para Bioburden Preliminar español"""
+        analyses = self.browse(analysis_ids)
+        ready_analyses = analyses.filtered('has_ready_parameters')
+        
+        if not ready_analyses:
+            raise UserError('No hay análisis con parámetros listos para reporte preliminar de Bioburden.')
+        
+        return self.generate_custom_report(ready_analyses.ids, {
+            'status': 'preliminary',
+            'language': 'es',
+            'report_type': 'bioburden'
+        })

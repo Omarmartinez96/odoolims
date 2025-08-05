@@ -35,5 +35,16 @@
             <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
         </record>
 
+        <!-- ========== REPORTE BIOBURDEN ========== -->
+        <record id="action_report_bioburden" model="ir.actions.report">
+            <field name="name">Informe de Ensayo - Bioburden</field>
+            <field name="model">lims.analysis.v2</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">lims_analysis_v2.report_bioburden_template</field>
+            <field name="report_file">lims_analysis_v2.report_bioburden_template</field>
+            <field name="print_report_name">'Bioburden - ' + (object.custody_chain_code or 'Sin código') + '.pdf'</field>
+            <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
+        </record>
+
     </data>
 </odoo>
