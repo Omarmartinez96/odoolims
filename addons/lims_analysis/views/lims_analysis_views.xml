@@ -2,7 +2,9 @@
 <odoo>
     <data>
         
-        <!-- ========== VISTA LISTA DE ANÁLISIS MODIFICADA ========== -->
+        <!-- ========== TODAS LAS VISTAS PRIMERO ========== -->
+        
+        <!-- ========== VISTA LISTA DE ANÁLISIS ========== -->
         <record id="view_lims_analysis_list" model="ir.ui.view">
             <field name="name">lims.analysis.list</field>
             <field name="model">lims.analysis</field>
@@ -48,7 +50,7 @@
             </field>
         </record>
 
-        <!-- ========== VISTA FORMULARIO DE ANÁLISIS MODIFICADA ========== -->
+        <!-- ========== VISTA FORMULARIO DE ANÁLISIS ========== -->
         <record id="view_lims_analysis_form" model="ir.ui.view">
             <field name="name">lims.analysis.form</field>
             <field name="model">lims.analysis</field>
@@ -205,96 +207,8 @@
                                                                     width="20%"/>
                                                                 <field name="media_usage" string="Uso" width="20%"/>
                                                                 <field name="requires_incubation" string="¿Requiere Incubación?"/>
-                                                                <!-- resto de campos de incubación permanecen igual -->
-                                                                <field name="incubation_equipment" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="Equipo de incubación"/>
-                                                                <field name="incubation_start_date" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="Fecha inicio"/>
-                                                                <field name="incubation_start_time" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="HH:MM"/>
-                                                                <field name="incubation_end_date" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="Fecha fin"/>
-                                                                <field name="incubation_end_time" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="HH:MM"/>
                                                                 <field name="qualitative_result" string="Resultado (Si Aplica)" optional="show"/>
                                                             </list>
-                                                            
-                                                            <form string="Medio/Reactivo Utilizado">
-                                                                <group>
-                                                                    <group>
-                                                                        <field name="media_source" widget="radio"/>
-                                                                        <field name="culture_media_name" 
-                                                                            placeholder="Nombre del medio de cultivo"
-                                                                            required="1"/>
-                                                                    </group>
-
-                                                                    <group string="Lote del Medio">
-                                                                        <field name="culture_media_batch_id" 
-                                                                            invisible="media_source != 'internal'"
-                                                                            placeholder="Seleccionar lote interno"
-                                                                            options="{'no_create': True}"/>
-                                                                        <field name="external_batch_code" 
-                                                                            invisible="media_source != 'external'"
-                                                                            placeholder="Código del lote externo"
-                                                                            required="media_source == 'external'"/>
-                                                                    </group>
-
-
-
-                                                                    <group>
-                                                                        <field name="media_usage" 
-                                                                            string="Uso del Medio"
-                                                                            required="1"/>
-                                                                        <field name="requires_incubation" string="¿Requiere Incubación?"/>
-                                                                    </group>
-                                                                </group>
-                                                                
-                                                                <!-- Incubación cuando se requiere -->
-                                                                <group string="🌡️ Incubación" 
-                                                                       invisible="requires_incubation == False">
-                                                                    <group>
-                                                                        <field name="incubation_equipment" 
-                                                                               placeholder="Equipo utilizado"/>
-                                                                        <field name="incubation_start_date"/>
-                                                                        <field name="incubation_start_time" placeholder="HH:MM"/>
-                                                                    </group>
-                                                                    <group>
-                                                                        <field name="incubation_end_date"/>
-                                                                        <field name="incubation_end_time" placeholder="HH:MM"/>
-                                                                    </group>
-                                                                </group>
-                                                                
-                                                                <group string="📊 Estado de Incubación" 
-                                                                    invisible="requires_incubation == False">
-                                                                    <group>
-                                                                        <field name="incubation_status" readonly="1"/>
-                                                                        <field name="time_remaining" readonly="1" 
-                                                                            invisible="incubation_status != 'active'"/>
-                                                                        <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
-                                                                    </group>
-
-                                                                    <group>
-                                                                        <field name="incubation_end_date_real"/>
-                                                                        <field name="incubation_end_time_real" placeholder="HH:MM"/>
-                                                                    </group>
-                                                                </group>
-
-
-
-                                                                <group string="🧪 Resultado en este Medio (Si Aplica)">
-                                                                    <field name="qualitative_result"/>
-                                                                </group>
-
-                                                                <group string="📝 Notas de Preparación">
-                                                                    <field name="preparation_notes" nolabel="1"
-                                                                           placeholder="Instrucciones especiales, observaciones, etc..."/>
-                                                                </group>
-                                                            </form>
                                                         </field>
                                                     </group>
                                                     
@@ -334,92 +248,8 @@
                                                                     width="20%"/>
                                                                 <field name="media_usage" string="Uso" width="20%"/>
                                                                 <field name="requires_incubation" string="¿Requiere Incubación?"/>
-                                                                <!-- resto de campos de incubación permanecen igual -->
-                                                                <field name="incubation_equipment" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="Equipo de incubación"/>
-                                                                <field name="incubation_start_date" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="Fecha inicio"/>
-                                                                <field name="incubation_start_time" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="HH:MM"/>
-                                                                <field name="incubation_end_date" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="Fecha fin"/>
-                                                                <field name="incubation_end_time" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="HH:MM"/>
                                                                 <field name="qualitative_result" string="Resultado (Si Aplica)" optional="show"/>
                                                             </list>
-                                                            
-                                                            <form string="Medio Selectivo Utilizado">
-                                                                <group>
-                                                                    <group>
-                                                                        <field name="media_source" widget="radio"/>
-                                                                        <field name="culture_media_name" 
-                                                                            placeholder="Nombre del medio de cultivo"
-                                                                            required="1"/>
-                                                                    </group>
-
-                                                                    <group string="Lote del Medio">
-                                                                        <field name="culture_media_batch_id" 
-                                                                            invisible="media_source != 'internal'"
-                                                                            placeholder="Seleccionar lote interno"
-                                                                            options="{'no_create': True}"/>
-                                                                        <field name="external_batch_code" 
-                                                                            invisible="media_source != 'external'"
-                                                                            placeholder="Código del lote externo"
-                                                                            required="media_source == 'external'"/>
-                                                                    </group>
-
-                                                                    <group>
-                                                                        <field name="media_usage" 
-                                                                            string="Uso del Medio"
-                                                                            required="1"/>
-                                                                        <field name="requires_incubation" string="¿Requiere Incubación?"/>
-                                                                    </group>
-                                                                </group>
-                                                                
-                                                                <!-- Incubación cuando se requiere -->
-                                                                <group string="🌡️ Incubación" 
-                                                                       invisible="requires_incubation == False">
-                                                                    <group>
-                                                                        <field name="incubation_equipment" 
-                                                                               placeholder="Equipo utilizado"/>
-                                                                        <field name="incubation_start_date"/>
-                                                                        <field name="incubation_start_time" placeholder="HH:MM"/>
-                                                                    </group>
-                                                                    <group>
-                                                                        <field name="incubation_end_date"/>
-                                                                        <field name="incubation_end_time" placeholder="HH:MM"/>
-                                                                    </group>
-                                                                </group>
-
-                                                                <group string="📊 Estado de Incubación" 
-                                                                    invisible="requires_incubation == False">
-                                                                    <group>
-                                                                        <field name="incubation_status" readonly="1"/>
-                                                                        <field name="time_remaining" readonly="1" 
-                                                                            invisible="incubation_status != 'active'"/>
-                                                                        <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
-                                                                    </group>
-
-                                                                    <group>
-                                                                        <field name="incubation_end_date_real"/>
-                                                                        <field name="incubation_end_time_real" placeholder="HH:MM"/>
-                                                                    </group>
-                                                                </group>
-
-                                                                <group string="🧪 Resultado en este Medio (Si Aplica)">
-                                                                    <field name="qualitative_result"/>
-                                                                </group>
-
-                                                                <group string="📝 Notas de Preparación">
-                                                                    <field name="preparation_notes" nolabel="1"
-                                                                           placeholder="Instrucciones especiales, observaciones, etc..."/>
-                                                                </group>
-                                                            </form>
                                                         </field>
                                                     </group>
                                                     
@@ -458,92 +288,8 @@
                                                                     width="20%"/>
                                                                 <field name="media_usage" string="Uso" width="20%"/>
                                                                 <field name="requires_incubation" string="¿Requiere Incubación?"/>
-                                                                <!-- resto de campos de incubación permanecen igual -->
-                                                                <field name="incubation_equipment" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="Equipo de incubación"/>
-                                                                <field name="incubation_start_date" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="Fecha inicio"/>
-                                                                <field name="incubation_start_time" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="HH:MM"/>
-                                                                <field name="incubation_end_date" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="Fecha fin"/>
-                                                                <field name="incubation_end_time" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="HH:MM"/>
                                                                 <field name="qualitative_result" string="Resultado (Si Aplica)" optional="show"/>
                                                             </list>
-                                                            
-                                                            <form string="Medio de Confirmación">
-                                                                <group>
-                                                                    <group>
-                                                                        <field name="media_source" widget="radio"/>
-                                                                        <field name="culture_media_name" 
-                                                                            placeholder="Nombre del medio de cultivo"
-                                                                            required="1"/>
-                                                                    </group>
-
-                                                                    <group string="Lote del Medio">
-                                                                        <field name="culture_media_batch_id" 
-                                                                            invisible="media_source != 'internal'"
-                                                                            placeholder="Seleccionar lote interno"
-                                                                            options="{'no_create': True}"/>
-                                                                        <field name="external_batch_code" 
-                                                                            invisible="media_source != 'external'"
-                                                                            placeholder="Código del lote externo"
-                                                                            required="media_source == 'external'"/>
-                                                                    </group>
-
-                                                                    <group>
-                                                                        <field name="media_usage" 
-                                                                            string="Uso del Medio"
-                                                                            required="1"/>
-                                                                        <field name="requires_incubation" string="¿Requiere Incubación?"/>
-                                                                    </group>
-                                                                </group>
-                                                                
-                                                                <!-- Incubación cuando se requiere -->
-                                                                <group string="🌡️ Incubación" 
-                                                                       invisible="requires_incubation == False">
-                                                                    <group>
-                                                                        <field name="incubation_equipment" 
-                                                                               placeholder="Equipo utilizado"/>
-                                                                        <field name="incubation_start_date"/>
-                                                                        <field name="incubation_start_time" placeholder="HH:MM"/>
-                                                                    </group>
-                                                                    <group>
-                                                                        <field name="incubation_end_date"/>
-                                                                        <field name="incubation_end_time" placeholder="HH:MM"/>
-                                                                    </group>
-                                                                </group>
-                                                                
-                                                                <group string="📊 Estado de Incubación" 
-                                                                    invisible="requires_incubation == False">
-                                                                    <group>
-                                                                        <field name="incubation_status" readonly="1"/>
-                                                                        <field name="time_remaining" readonly="1" 
-                                                                            invisible="incubation_status != 'active'"/>
-                                                                        <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
-                                                                    </group>
-
-                                                                    <group>
-                                                                        <field name="incubation_end_date_real"/>
-                                                                        <field name="incubation_end_time_real" placeholder="HH:MM"/>
-                                                                    </group>
-                                                                </group>
-
-                                                                <group string="🧪 Resultado en este Medio (Si Aplica)">
-                                                                    <field name="qualitative_result"/>
-                                                                </group>
-
-                                                                <group string="📝 Notas de Preparación">
-                                                                    <field name="preparation_notes" nolabel="1"
-                                                                           placeholder="Instrucciones especiales, observaciones, etc..."/>
-                                                                </group>
-                                                            </form>
                                                         </field>
                                                     </group>
                                                                                                         
@@ -605,92 +351,8 @@
                                                                     width="20%"/>
                                                                 <field name="media_usage" string="Uso" width="20%"/>
                                                                 <field name="requires_incubation" string="¿Requiere Incubación?"/>
-                                                                <!-- resto de campos de incubación permanecen igual -->
-                                                                <field name="incubation_equipment" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="Equipo de incubación"/>
-                                                                <field name="incubation_start_date" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="Fecha inicio"/>
-                                                                <field name="incubation_start_time" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="HH:MM"/>
-                                                                <field name="incubation_end_date" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="Fecha fin"/>
-                                                                <field name="incubation_end_time" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="HH:MM"/>
                                                                 <field name="qualitative_result" string="Resultado (Si Aplica)" optional="show"/>
                                                             </list>
-                                                            
-                                                            <form string="Medio para Cualitativo">
-                                                                <group>
-                                                                    <group>
-                                                                        <field name="media_source" widget="radio"/>
-                                                                        <field name="culture_media_name" 
-                                                                            placeholder="Nombre del medio de cultivo"
-                                                                            required="1"/>
-                                                                    </group>
-
-                                                                    <group string="Lote del Medio">
-                                                                        <field name="culture_media_batch_id" 
-                                                                            invisible="media_source != 'internal'"
-                                                                            placeholder="Seleccionar lote interno"
-                                                                            options="{'no_create': True}"/>
-                                                                        <field name="external_batch_code" 
-                                                                            invisible="media_source != 'external'"
-                                                                            placeholder="Código del lote externo"
-                                                                            required="media_source == 'external'"/>
-                                                                    </group>
-
-                                                                    <group>
-                                                                        <field name="media_usage" 
-                                                                            string="Uso del Medio"
-                                                                            required="1"/>
-                                                                        <field name="requires_incubation" string="¿Requiere Incubación?"/>
-                                                                    </group>
-                                                                </group>
-                                                                
-                                                                <!-- Incubación cuando se requiere -->
-                                                                <group string="🌡️ Incubación" 
-                                                                    invisible="requires_incubation == False">
-                                                                    <group>
-                                                                        <field name="incubation_equipment" 
-                                                                            placeholder="Equipo utilizado"/>
-                                                                        <field name="incubation_start_date"/>
-                                                                        <field name="incubation_start_time" placeholder="HH:MM"/>
-                                                                    </group>
-                                                                    <group>
-                                                                        <field name="incubation_end_date"/>
-                                                                        <field name="incubation_end_time" placeholder="HH:MM"/>
-                                                                    </group>
-                                                                </group>
-                                                                
-                                                                <group string="📊 Estado de Incubación" 
-                                                                    invisible="requires_incubation == False">
-                                                                    <group>
-                                                                        <field name="incubation_status" readonly="1"/>
-                                                                        <field name="time_remaining" readonly="1" 
-                                                                            invisible="incubation_status != 'active'"/>
-                                                                        <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
-                                                                    </group>
-
-                                                                    <group>
-                                                                        <field name="incubation_end_date_real"/>
-                                                                        <field name="incubation_end_time_real" placeholder="HH:MM"/>
-                                                                    </group>
-                                                                </group>
-
-                                                                <group string="🧪 Resultado en este Medio (Si Aplica)">
-                                                                    <field name="qualitative_result"/>
-                                                                </group>
-
-                                                                <group string="📝 Notas de Preparación">
-                                                                    <field name="preparation_notes" nolabel="1"
-                                                                        placeholder="Instrucciones especiales, observaciones, etc..."/>
-                                                                </group>
-                                                            </form>
                                                         </field>
                                                     </group>
 
@@ -711,96 +373,10 @@
                                                                     width="20%"/>
                                                                 <field name="media_usage" string="Uso" width="20%"/>
                                                                 <field name="requires_incubation" string="¿Requiere Incubación?"/>
-                                                                <!-- resto de campos de incubación permanecen igual -->
-                                                                <field name="incubation_equipment" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="Equipo de incubación"/>
-                                                                <field name="incubation_start_date" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="Fecha inicio"/>
-                                                                <field name="incubation_start_time" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="HH:MM"/>
-                                                                <field name="incubation_end_date" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="Fecha fin"/>
-                                                                <field name="incubation_end_time" 
-                                                                    invisible="requires_incubation == False"
-                                                                    placeholder="HH:MM"/>
                                                                 <field name="qualitative_result" string="Resultado (Si Aplica)" optional="show"/>
                                                             </list>
-                                                            
-                                                            <form string="Medio Utilizado para Cuantitativo">
-                                                                <group>
-                                                                    <group>
-                                                                        <field name="media_source" widget="radio"/>
-                                                                        <field name="culture_media_name" 
-                                                                            placeholder="Nombre del medio de cultivo"
-                                                                            required="1"/>
-                                                                    </group>
-
-                                                                    <group string="Lote del Medio">
-                                                                        <field name="culture_media_batch_id" 
-                                                                            invisible="media_source != 'internal'"
-                                                                            placeholder="Seleccionar lote interno"
-                                                                            options="{'no_create': True}"/>
-                                                                        <field name="external_batch_code" 
-                                                                            invisible="media_source != 'external'"
-                                                                            placeholder="Código del lote externo"
-                                                                            required="media_source == 'external'"/>
-                                                                    </group>
-
-                                                                    <group>
-                                                                        <field name="media_usage" 
-                                                                            string="Uso del Medio"
-                                                                            required="1"/>
-                                                                        <field name="requires_incubation" string="¿Requiere Incubación?"/>
-                                                                    </group>
-                                                                </group>
-                                                                
-                                                                <!-- Incubación cuando se requiere -->
-                                                                <group string="🌡️ Incubación" 
-                                                                       invisible="requires_incubation == False">
-                                                                    <group>
-                                                                        <field name="incubation_equipment" 
-                                                                               placeholder="Equipo utilizado"/>
-                                                                        <field name="incubation_start_date"/>
-                                                                        <field name="incubation_start_time" placeholder="HH:MM"/>
-                                                                    </group>
-                                                                    <group>
-                                                                        <field name="incubation_end_date"/>
-                                                                        <field name="incubation_end_time" placeholder="HH:MM"/>
-                                                                    </group>
-                                                                </group>
-                                                                
-                                                                <group string="📊 Estado de Incubación" 
-                                                                    invisible="requires_incubation == False">
-                                                                    <group>
-                                                                        <field name="incubation_status" readonly="1"/>
-                                                                        <field name="time_remaining" readonly="1" 
-                                                                            invisible="incubation_status != 'active'"/>
-                                                                        <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
-                                                                    </group>
-
-                                                                    <group>
-                                                                        <field name="incubation_end_date_real"/>
-                                                                        <field name="incubation_end_time_real" placeholder="HH:MM"/>
-                                                                    </group>
-                                                                </group>
-
-                                                                <group string="🧪 Resultado en este Medio (Si Aplica)">
-                                                                    <field name="qualitative_result"/>
-                                                                </group>
-
-                                                                <group string="📝 Notas de Preparación">
-                                                                    <field name="preparation_notes" nolabel="1"
-                                                                           placeholder="Instrucciones especiales, observaciones, etc..."/>
-                                                                </group>
-                                                            </form>
                                                         </field>
                                                     </group>
-
-
 
                                                     <!-- DATOS CRUDOS DE DILUCIONES (SOLO PARA MICROBIOLOGÍA Y CUANTITATIVO) -->
                                                     <group string="🧪 Datos Crudos de Diluciones" 
@@ -825,34 +401,6 @@
                                                                 <!-- Resultado calculado -->
                                                                 <field name="calculated_result" readonly="1" width="30%"/>
                                                             </list>
-                                                            
-                                                            <form string="Datos de Dilución">
-                                                                <group>
-                                                                    <group>
-                                                                        <field name="method_type"/>
-                                                                        <field name="dilution_factor"/>
-                                                                    </group>
-                                                                    <group>
-                                                                        <field name="calculated_result" readonly="1"/>
-                                                                    </group>
-                                                                </group>
-                                                                
-                                                                <!-- CAMPOS ESPECÍFICOS POR TIPO -->
-                                                                <group string="Datos Específicos">
-                                                                    <!-- PARA UFC -->
-                                                                    <group string="Recuento en Placa" invisible="method_type != 'ufc'">
-                                                                        <field name="ufc_count"/>
-                                                                    </group>
-                                                                    
-                                                                    <!-- PARA NMP -->
-                                                                    <group string="Número Más Probable" invisible="method_type != 'nmp'">
-                                                                        <field name="positive_tubes"/>
-                                                                        <field name="total_tubes"/>
-                                                                        <field name="nmp_result" placeholder="Ej: 110 NMP/100mL (consultar tabla)"/>
-                                                                    </group>
-                                                                </group>
-                                                                
-                                                            </form>
                                                         </field>
                                                         
                                                     </group>
@@ -880,7 +428,6 @@
                                                         <field name="analyst_notes" 
                                                                placeholder="Observaciones técnicas del análisis..."/>
                                                     </group>
-
 
                                                     <!-- 🆕 SECCIÓN DE CONTROL DE CALIDAD -->
                                                     <group string="🔬 Control de Calidad" colspan="4">
@@ -911,100 +458,6 @@
                                                                 <field name="execution_date" string="Fecha" width="10%"/>
                                                                 <field name="executed_by" string="Realizado Por" width="15%"/>            
                                                             </list>
-                                                            
-                                                            <!-- Formulario detallado para cada control -->
-                                                            <form string="Control de Calidad">
-                                                                <header>
-                                                                    <!-- Botones de acción rápida -->
-                                                                    <button name="action_start_control" 
-                                                                            type="object" 
-                                                                            string="🔄 Iniciar Control" 
-                                                                            class="btn-info"
-                                                                            invisible="control_status != 'pending'"
-                                                                            help="Marcar como en proceso"/>
-                                                                    
-                                                                    <button name="action_mark_passed" 
-                                                                            type="object" 
-                                                                            string="✅ Marcar Exitoso" 
-                                                                            class="btn-success"
-                                                                            invisible="control_status in ['passed', 'not_applicable']"
-                                                                            help="Marcar control como exitoso"/>
-                                                                    
-                                                                    <button name="action_mark_failed" 
-                                                                            type="object" 
-                                                                            string="❌ Marcar Fallido" 
-                                                                            class="btn-danger"
-                                                                            invisible="control_status in ['failed', 'not_applicable']"
-                                                                            help="Marcar control como fallido"/>
-                                                                    
-                                                                    <button name="action_reset_control" 
-                                                                            type="object" 
-                                                                            string="🔄 Restablecer" 
-                                                                            class="btn-secondary"
-                                                                            invisible="control_status == 'pending'"
-                                                                            help="Restablecer a estado pendiente"/>
-                                                                    
-                                                                    <!-- Estado del control -->
-                                                                    <field name="control_status" widget="statusbar" 
-                                                                           statusbar_visible="pending,in_progress,passed,failed"/>
-                                                                </header>
-                                                                
-                                                                <sheet>
-                                                                    <!-- Título del control -->
-                                                                    <div class="oe_title">
-                                                                        <h1>
-                                                                            <field name="display_name" readonly="1"/>
-                                                                        </h1>
-                                                                    </div>
-                                                                    
-                                                                    <!-- Información básica del control -->
-                                                                    <group>
-                                                                        <group string="📋 Información del Control">
-                                                                            <field name="qc_type_id" 
-                                                                                   options="{'no_create': True}"
-                                                                                   required="1"/>
-                                                                            <field name="expected_result" required="1"/>
-                                                                            <field name="sequence"/>
-                                                                        </group>
-                                                                        <group string="📊 Resultado Obtenido">
-                                                                            <field name="actual_result" 
-                                                                                   placeholder="Ingrese el resultado obtenido"/>
-                                                                            <field name="control_status"/>
-                                                                        </group>
-                                                                    </group>
-                                                                    
-                                                                    <!-- Información de ejecución -->
-                                                                    <group string="🕐 Información de Ejecución">
-                                                                        <group>
-                                                                            <field name="execution_date"/>
-                                                                            <field name="execution_time" placeholder="HH:MM"/>
-                                                                            <field name="executed_by"/>
-                                                                        </group>
-                                                                        <group>
-                                                                            <field name="days_since_execution" readonly="1"/>
-                                                                            <field name="method_used" 
-                                                                                   placeholder="Método o procedimiento utilizado"/>
-                                                                        </group>
-                                                                    </group>
-                                                                    
-                                                                    <!-- Detalles técnicos -->
-                                                                    <group string="🔬 Detalles Técnicos">
-                                                                        <group>
-                                                                            <field name="equipment_used" 
-                                                                                   placeholder="Equipo utilizado (opcional)"/>
-                                                                            <field name="culture_media_batch_id" 
-                                                                                   placeholder="Lote de medio utilizado (opcional)"/>
-                                                                        </group>
-                                                                    </group>
-                                                                    
-                                                                    <!-- Notas y observaciones -->
-                                                                    <group string="📝 Notas y Observaciones">
-                                                                        <field name="notes" nolabel="1" 
-                                                                               placeholder="Observaciones adicionales sobre la ejecución del control, incidencias, desviaciones, etc..."/>
-                                                                    </group>
-                                                                    
-                                                                </sheet>
-                                                            </form>
                                                         </field>
                                                         
                                                         <!-- Botones de acción masiva -->
@@ -1025,14 +478,6 @@
                                                                 <field name="equipment_id" string="Equipo" placeholder="Seleccionar equipo"/>
                                                                 <field name="usage" string="Uso" placeholder="Especificar uso del equipo"/>
                                                             </list>
-                                                            
-                                                            <form string="Equipo Involucrado">
-                                                                <group>
-                                                                    <field name="equipment_id" required="1"/>
-                                                                    <field name="usage" required="1" placeholder="Ej: Incubación, Preparación, Análisis, etc."/>
-                                                                    <field name="sequence"/>
-                                                                </group>
-                                                            </form>
                                                         </field>
                                                     </group>
 
@@ -1050,7 +495,6 @@
                                                             style="font-size: 16px;"
                                                             placeholder="Se completará automáticamente al seleccionar resultado y unidad"/>
                                                     </group>
-
 
                                                     <!-- RESULTADO FINAL MANUAL (PARA CUANTITATIVO) -->
                                                     <group string="📋 Resultado Final" 
@@ -1081,7 +525,7 @@
             </field>
         </record>
 
-        <!-- ========== VISTA PARA PARÁMETROS DE ANÁLISIS MODIFICADA ========== -->
+        <!-- ========== VISTA PARA PARÁMETROS DE ANÁLISIS ========== -->
         <record id="view_parameter_analysis_list" model="ir.ui.view">
             <field name="name">lims.parameter.analysis.list</field>
             <field name="model">lims.parameter.analysis</field>
@@ -1092,7 +536,6 @@
                     <field name="microorganism"/>
                     <field name="analysis_status"/>
                     <field name="analysis_status_checkbox"/>
-                    <!-- 🆕 NUEVA COLUMNA ESTADO DE REPORTE -->
                     <field name="report_status" 
                            decoration-success="report_status == 'ready'"
                            decoration-info="report_status == 'reported'"
@@ -1103,6 +546,184 @@
                     <field name="qualitative_custom_unit"/>
                     <field name="analysis_start_date"/>
                 </list>
+            </field>
+        </record>
+
+        <!-- ========== VISTA CONSOLIDADA DE ANÁLISIS POR CADENA ========== -->
+        <record id="view_analysis_consolidated_list" model="ir.ui.view">
+            <field name="name">lims.analysis.consolidated.list</field>
+            <field name="model">lims.analysis</field>
+            <field name="arch" type="xml">
+                <list string="Análisis por Cadena de Custodia" default_group_by="custody_chain_id" create="false">
+                    <field name="custody_chain_id" invisible="1"/>
+                    <field name="custody_chain_code" string="Cadena"/>
+                    <field name="customer_id" string="Cliente"/>
+                    <field name="sample_code"/>
+                    <field name="sample_identifier"/>
+                    <field name="reception_date" string="Fecha Recepción"/>
+                    <field name="revision_number" string="Rev." width="50px"/>
+                    <field name="is_revision" string="🔄" widget="boolean_toggle" width="30px"/>
+                    <field name="ready_parameters_count" string="Listos"/>
+                    <field name="total_parameters_count" string="Total"/>
+                    <field name="has_ready_parameters" string="📊 Tiene Listos" widget="boolean_toggle"/>
+                    <field name="all_parameters_ready" string="✅ Todo Listo" widget="boolean_toggle"/>
+                    <field name="signature_state" string="✍️ Firma" 
+                        decoration-success="signature_state == 'signed'"
+                        decoration-warning="signature_state == 'cancelled'"
+                        decoration-muted="signature_state == 'not_signed'"/>
+                    <field name="report_status_summary" string="Estado Parámetros"/>
+                </list>
+            </field>
+        </record>
+
+        <record id="view_analysis_consolidated_form" model="ir.ui.view">
+            <field name="name">lims.analysis.consolidated.form</field>
+            <field name="model">lims.analysis</field>
+            <field name="arch" type="xml">
+                <form string="Análisis - Vista de Reportes">
+                    <header>
+                        <!-- BOTONES DE FIRMA EXISTENTES -->
+                        <button name="action_sign_sample"
+                                type="object"
+                                string="✍️ Firmar Muestra"
+                                class="btn-warning"
+                                invisible="signature_state != 'not_signed'"
+                                confirm="Se abrirá el wizard de firma. ¿Continuar?"/>
+                        
+                        <button name="action_cancel_signature"
+                                type="object"
+                                string="❌ Cancelar Firma"
+                                class="btn-danger"
+                                invisible="can_cancel_signature == False"
+                                confirm="¿Está seguro de cancelar la firma? Los parámetros volverán a estado borrador."/>
+
+                        <button name="action_undo_cancellation"
+                                type="object"
+                                string="🔄 Deshacer Cancelación"
+                                class="btn-info"
+                                invisible="signature_state != 'cancelled'"
+                                confirm="¿Deshacer la cancelación? La muestra volverá a estar lista para firmar."/>
+
+                        <button name="action_request_revision"
+                                type="object"
+                                string="🔄 Solicitar Revisión"
+                                class="btn-info"
+                                invisible="signature_state != 'signed'"
+                                confirm="¿Está seguro de solicitar una revisión? Esto cancelará la firma actual."/>
+                        
+                        <field name="signature_state" widget="statusbar" statusbar_visible="not_signed,signed"/>
+                    </header>
+                    
+                    <sheet>
+                        <!-- Información de la cadena -->
+                        <group>
+                            <group string="Información de la Cadena">
+                                <field name="custody_chain_code" readonly="1"/>
+                                <field name="customer_id" readonly="1"/>
+                                <field name="reception_date" readonly="1"/>
+                            </group>
+                            <group string="Estado de Reportes">
+                                <field name="ready_parameters_count" readonly="1"/>
+                                <field name="total_parameters_count" readonly="1"/>
+                                <field name="has_ready_parameters" readonly="1"/>
+                                <field name="all_parameters_ready" readonly="1"/>
+                            </group>
+                        </group>
+                        
+                        <!-- SECCIÓN DE FIRMA -->
+                        <group string="✍️ Estado de Firma" invisible="signature_state == 'not_signed'">
+                            <group>
+                                <field name="sample_signature_name" readonly="1"/>
+                                <field name="sample_signature_position" readonly="1"/>
+                                <field name="sample_signature_date" readonly="1"/>
+                            </group>
+                            <group invisible="signature_state != 'cancelled'">
+                                <field name="signature_cancelled_by" readonly="1"/>
+                                <field name="signature_cancelled_date" readonly="1"/>
+                                <field name="signature_cancellation_reason" readonly="1"/>
+                            </group>
+                        </group>
+                        
+                        <!-- Información de esta muestra específica -->
+                        <group string="Esta Muestra">
+                            <field name="sample_code" readonly="1"/>
+                            <field name="sample_identifier" readonly="1"/>
+                            <field name="analysis_state" readonly="1"/>
+                        </group>
+                        
+                        <!-- Lista de parámetros de esta muestra -->
+                        <field name="parameter_analysis_ids" readonly="1">
+                            <list>
+                                <field name="name"/>
+                                <field name="microorganism"/>
+                                <field name="report_status"/>
+                                <field name="result_complete"/>
+                                <field name="analysis_status_checkbox"/>
+                            </list>
+                        </field>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ========== VISTA DE BÚSQUEDA CON FILTROS ========== -->
+        <record id="view_analysis_reports_search" model="ir.ui.view">
+            <field name="name">lims.analysis.reports.search</field>
+            <field name="model">lims.analysis</field>
+            <field name="arch" type="xml">
+                <search string="Buscar Análisis para Reportes">
+                    <field name="sample_code"/>
+                    <field name="custody_chain_code"/>
+                    <field name="customer_id"/>
+                    
+                    <filter string="📋 Con Parámetros Listos" 
+                            name="with_ready_params"
+                            domain="[('has_ready_parameters', '=', True)]"/>
+                    
+                    <filter string="📊 Con Parámetros Reportados" 
+                            name="has_reported"
+                            domain="[('parameter_analysis_ids.report_status', '=', 'reported')]"/>
+                    
+                    <filter string="🔄 Todos los Estados" 
+                            name="all_states"
+                            domain="[]"/>
+                    
+                    <separator/>
+                    
+                    <filter string="🔄 Solo Revisiones" 
+                            name="only_revisions"
+                            domain="[('is_revision', '=', True)]"/>
+                    
+                    <filter string="📋 Solo Originales" 
+                            name="only_originals"
+                            domain="[('is_revision', '=', False)]"/>
+                    
+                    <filter string="🔢 Con Revisiones" 
+                            name="with_revisions"
+                            domain="[('revision_ids', '!=', False)]"/>
+                    
+                    <separator/>
+                    
+                    <filter string="✍️ Firmadas" 
+                            name="signed"
+                            domain="[('signature_state', '=', 'signed')]"/>
+                    
+                    <filter string="⏸️ Sin Firmar" 
+                            name="not_signed"
+                            domain="[('signature_state', '=', 'not_signed')]"/>
+                    
+                    <group expand="0" string="Agrupar Por">
+                        <filter string="Cadena de Custodia" 
+                                name="group_chain"
+                                context="{'group_by': 'custody_chain_id'}"/>
+                        <filter string="Estado de Firma"
+                                name="group_signature"
+                                context="{'group_by': 'signature_state'}"/>
+                        <filter string="Tipo (Original/Revisión)"
+                                name="group_revision_type"
+                                context="{'group_by': 'is_revision'}"/>
+                    </group>
+                </search>
             </field>
         </record>
 
@@ -1140,6 +761,8 @@
             </field>
         </record>
 
+        <!-- ========== TODAS LAS ACCIONES DESPUÉS ========== -->
+
         <!-- ========== ACCIÓN PARA ANÁLISIS ORIGINAL ========== -->
         <record id="action_lims_analysis" model="ir.actions.act_window">
             <field name="name">Análisis de Muestras</field>
@@ -1163,6 +786,28 @@
             </field>
         </record>
 
+        <!-- ========== ACCIÓN PRINCIPAL CONSOLIDADA ========== -->
+        <record id="action_analysis_for_reports" model="ir.actions.act_window">
+            <field name="name">Reportes de Análisis</field>
+            <field name="res_model">lims.analysis</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_analysis_consolidated_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_analysis_consolidated_form')})
+            ]"/>            
+            <field name="search_view_id" ref="view_analysis_reports_search"/>
+            <field name="context">{'group_by': 'custody_chain_id'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No hay análisis disponibles
+                </p>
+                <p>
+                    Los análisis aparecerán aquí organizados por cadena de custodia.
+                </p>
+            </field>
+        </record>
+
         <!-- ========== ACCIÓN PARA PARÁMETROS DE ANÁLISIS ========== -->
         <record id="action_parameter_analysis" model="ir.actions.act_window">
             <field name="name">Parámetros de Análisis</field>
@@ -1178,6 +823,51 @@
             </field>
         </record>
 
+        <!-- ========== ACCIONES DE SERVIDOR ========== -->
+        <record id="action_print_preliminary_report" model="ir.actions.server">
+            <field name="name">📋 Imprimir Reporte Preliminar</field>
+            <field name="model_id" ref="model_lims_analysis"/>
+            <field name="binding_model_id" ref="model_lims_analysis"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+        action = model.action_mass_print_preliminary_report(records.ids)
+            </field>
+        </record>
+
+        <record id="action_print_final_report" model="ir.actions.server">
+            <field name="name">📄 Imprimir Reporte Final</field>
+            <field name="model_id" ref="model_lims_analysis"/>
+            <field name="binding_model_id" ref="model_lims_analysis"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+        action = model.action_mass_print_final_report(records.ids)
+            </field>
+        </record>
+
+        <record id="action_print_report_for_signing" model="ir.actions.server">
+            <field name="name">✍️ Imprimir Reporte para Firmar</field>
+            <field name="model_id" ref="model_lims_analysis"/>
+            <field name="binding_model_id" ref="model_lims_analysis"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+        action = model.action_mass_print_report_for_signing(records.ids)
+            </field>
+        </record>
+
+        <record id="action_mark_as_reported" model="ir.actions.server">
+            <field name="name">✅ Marcar como Reportado</field>
+            <field name="model_id" ref="model_lims_analysis"/>
+            <field name="binding_model_id" ref="model_lims_analysis"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+        action = model.action_mass_mark_as_reported(records.ids)
+            </field>
+        </record>
+
         <!-- Acción para limpiar huérfanos -->
         <record id="action_clean_orphans" model="ir.actions.server">
             <field name="name">🧹 Limpiar Registros Huérfanos</field>
@@ -1187,6 +877,8 @@
             <field name="state">code</field>
             <field name="code">action = env['lims.analysis'].action_clean_orphan_records()</field>
         </record>
+
+        <!-- ========== TODOS LOS MENÚS AL FINAL ========== -->
 
         <!-- ========== MENÚ DE ANÁLISIS ========== -->
         <menuitem id="menu_lims_analysis_root" 

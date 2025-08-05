@@ -2,14 +2,14 @@
 <odoo>
     <data>
         
+        <!-- ========== TODAS LAS VISTAS PRIMERO ========== -->
+        
         <!-- ========== VISTA FORMULARIO PRINCIPAL ========== -->
         <record id="view_analysis_report_form" model="ir.ui.view">
             <field name="name">lims.analysis.report.form</field>
             <field name="model">lims.analysis.report</field>
             <field name="arch" type="xml">
                 <form string="Reporte de Análisis">
-
-                    
                     <sheet>
                         <!-- Título del reporte -->
                         <div class="oe_title">
@@ -138,6 +138,7 @@
                 </form>
             </field>
         </record>
+
         <!-- ========== VISTA FORMULARIO PARA AUTORIZACIÓN ========== -->
         <record id="view_analysis_report_quality_auth_form" model="ir.ui.view">
             <field name="name">lims.analysis.report.quality.auth.form</field>
@@ -213,6 +214,7 @@
                 </form>
             </field>
         </record>
+
         <!-- ========== VISTA LISTA ========== -->
         <record id="view_analysis_report_list" model="ir.ui.view">
             <field name="name">lims.analysis.report.list</field>
@@ -249,6 +251,7 @@
                 </list>
             </field>
         </record>
+
         <!-- ========== VISTA BÚSQUEDA ========== -->
         <record id="view_analysis_report_search" model="ir.ui.view">
             <field name="name">lims.analysis.report.search</field>
@@ -323,6 +326,8 @@
                 </search>
             </field>
         </record>
+
+        <!-- ========== TODAS LAS ACCIONES DESPUÉS ========== -->
         
         <!-- ========== ACCIÓN PRINCIPAL ========== -->
         <record id="action_analysis_reports" model="ir.actions.act_window">
@@ -377,256 +382,9 @@
             </field>
         </record>
 
-        <!-- ========== NUEVA VISTA CONSOLIDADA DE ANÁLISIS POR CADENA ========== -->
-        <record id="view_analysis_consolidated_list" model="ir.ui.view">
-            <field name="name">lims.analysis.consolidated.list</field>
-            <field name="model">lims.analysis</field>
-            <field name="arch" type="xml">
-                <list string="Análisis por Cadena de Custodia" default_group_by="custody_chain_id" create="false">
-                    <field name="custody_chain_id" invisible="1"/>
-                    <field name="custody_chain_code" string="Cadena"/>
-                    <field name="customer_id" string="Cliente"/>
-                    <field name="sample_code"/>
-                    <field name="sample_identifier"/>
-                    <field name="reception_date" string="Fecha Recepción"/>
-                    <field name="revision_number" string="Rev." width="50px"/>
-                    <field name="is_revision" string="🔄" widget="boolean_toggle" width="30px"/>
-                    <field name="ready_parameters_count" string="Listos"/>
-                    <field name="total_parameters_count" string="Total"/>
-                    <field name="has_ready_parameters" string="📊 Tiene Listos" widget="boolean_toggle"/>
-                    <field name="all_parameters_ready" string="✅ Todo Listo" widget="boolean_toggle"/>
-                    <field name="signature_state" string="✍️ Firma" 
-                        decoration-success="signature_state == 'signed'"
-                        decoration-warning="signature_state == 'cancelled'"
-                        decoration-muted="signature_state == 'not_signed'"/>
-                    <field name="report_status_summary" string="Estado Parámetros"/>
-                </list>
-            </field>
-        </record>
+        <!-- ========== TODOS LOS MENÚS AL FINAL ========== -->
 
-        <record id="view_analysis_consolidated_form" model="ir.ui.view">
-            <field name="name">lims.analysis.consolidated.form</field>
-            <field name="model">lims.analysis</field>
-            <field name="arch" type="xml">
-                <form string="Análisis - Vista de Reportes">
-                    <header>
-                        <!-- BOTONES DE FIRMA EXISTENTES -->
-                        <button name="action_sign_sample"
-                                type="object"
-                                string="✍️ Firmar Muestra"
-                                class="btn-warning"
-                                invisible="signature_state != 'not_signed'"
-                                confirm="Se abrirá el wizard de firma. ¿Continuar?"/>
-                        
-                        <button name="action_cancel_signature"
-                                type="object"
-                                string="❌ Cancelar Firma"
-                                class="btn-danger"
-                                invisible="can_cancel_signature == False"
-                                confirm="¿Está seguro de cancelar la firma? Los parámetros volverán a estado borrador."/>
-
-                        <button name="action_undo_cancellation"
-                                type="object"
-                                string="🔄 Deshacer Cancelación"
-                                class="btn-info"
-                                invisible="signature_state != 'cancelled'"
-                                confirm="¿Deshacer la cancelación? La muestra volverá a estar lista para firmar."/>
-
-                        <button name="action_request_revision"
-                                type="object"
-                                string="🔄 Solicitar Revisión"
-                                class="btn-info"
-                                invisible="signature_state != 'signed'"
-                                confirm="¿Está seguro de solicitar una revisión? Esto cancelará la firma actual."/>
-                        
-                        <field name="signature_state" widget="statusbar" statusbar_visible="not_signed,signed"/>
-                    </header>
-                    
-                    <sheet>
-                        <!-- Información de la cadena -->
-                        <group>
-                            <group string="Información de la Cadena">
-                                <field name="custody_chain_code" readonly="1"/>
-                                <field name="customer_id" readonly="1"/>
-                                <field name="reception_date" readonly="1"/>
-                            </group>
-                            <group string="Estado de Reportes">
-                                <field name="ready_parameters_count" readonly="1"/>
-                                <field name="total_parameters_count" readonly="1"/>
-                                <field name="has_ready_parameters" readonly="1"/>
-                                <field name="all_parameters_ready" readonly="1"/>
-                            </group>
-                        </group>
-                        
-                        <!-- SECCIÓN DE FIRMA -->
-                        <group string="✍️ Estado de Firma" invisible="signature_state == 'not_signed'">
-                            <group>
-                                <field name="sample_signature_name" readonly="1"/>
-                                <field name="sample_signature_position" readonly="1"/>
-                                <field name="sample_signature_date" readonly="1"/>
-                            </group>
-                            <group invisible="signature_state != 'cancelled'">
-                                <field name="signature_cancelled_by" readonly="1"/>
-                                <field name="signature_cancelled_date" readonly="1"/>
-                                <field name="signature_cancellation_reason" readonly="1"/>
-                            </group>
-                        </group>
-                        
-                        <!-- Información de esta muestra específica -->
-                        <group string="Esta Muestra">
-                            <field name="sample_code" readonly="1"/>
-                            <field name="sample_identifier" readonly="1"/>
-                            <field name="analysis_state" readonly="1"/>
-                        </group>
-                        
-                        <!-- Lista de parámetros de esta muestra -->
-                        <field name="parameter_analysis_ids" readonly="1">
-                            <list>
-                                <field name="name"/>
-                                <field name="microorganism"/>
-                                <field name="report_status"/>
-                                <field name="result_complete"/>
-                                <field name="analysis_status_checkbox"/>
-                            </list>
-                        </field>
-                    </sheet>
-                </form>
-            </field>
-        </record>
-
-        <!-- ========== NUEVA ACCIÓN PRINCIPAL CONSOLIDADA ========== -->
-        <record id="action_analysis_for_reports" model="ir.actions.act_window">
-            <field name="name">Reportes de Análisis</field>
-            <field name="res_model">lims.analysis</field>
-            <field name="view_mode">list,form</field>
-            <field name="view_ids" eval="[
-                (5, 0, 0),
-                (0, 0, {'view_mode': 'list', 'view_id': ref('view_analysis_consolidated_list')}),
-                (0, 0, {'view_mode': 'form', 'view_id': ref('view_analysis_consolidated_form')})
-            ]"/>            
-            <field name="context">{'group_by': 'custody_chain_id'}</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    No hay análisis disponibles
-                </p>
-                <p>
-                    Los análisis aparecerán aquí organizados por cadena de custodia.
-                </p>
-            </field>
-        </record>
-
-        <!-- ========== VISTA DE BÚSQUEDA CON FILTROS ========== -->
-        <record id="view_analysis_reports_search" model="ir.ui.view">
-            <field name="name">lims.analysis.reports.search</field>
-            <field name="model">lims.analysis</field>
-            <field name="arch" type="xml">
-                <search string="Buscar Análisis para Reportes">
-                    <field name="sample_code"/>
-                    <field name="custody_chain_code"/>
-                    <field name="customer_id"/>
-                    
-                    <filter string="📋 Con Parámetros Listos" 
-                            name="with_ready_params"
-                            domain="[('has_ready_parameters', '=', True)]"/>
-                    
-                    <filter string="📊 Con Parámetros Reportados" 
-                            name="has_reported"
-                            domain="[('parameter_analysis_ids.report_status', '=', 'reported')]"/>
-                    
-                    <filter string="🔄 Todos los Estados" 
-                            name="all_states"
-                            domain="[]"/>
-                    
-                    <separator/>
-                    
-                    <filter string="🔄 Solo Revisiones" 
-                            name="only_revisions"
-                            domain="[('is_revision', '=', True)]"/>
-                    
-                    <filter string="📋 Solo Originales" 
-                            name="only_originals"
-                            domain="[('is_revision', '=', False)]"/>
-                    
-                    <filter string="🔢 Con Revisiones" 
-                            name="with_revisions"
-                            domain="[('revision_ids', '!=', False)]"/>
-                    
-                    <separator/>
-                    
-                    <filter string="✍️ Firmadas" 
-                            name="signed"
-                            domain="[('signature_state', '=', 'signed')]"/>
-                    
-                    <filter string="⏸️ Sin Firmar" 
-                            name="not_signed"
-                            domain="[('signature_state', '=', 'not_signed')]"/>
-                    
-                    <group expand="0" string="Agrupar Por">
-                        <filter string="Cadena de Custodia" 
-                                name="group_chain"
-                                context="{'group_by': 'custody_chain_id'}"/>
-                        <filter string="Estado de Firma"
-                                name="group_signature"
-                                context="{'group_by': 'signature_state'}"/>
-                        <filter string="Tipo (Original/Revisión)"
-                                name="group_revision_type"
-                                context="{'group_by': 'is_revision'}"/>
-                    </group>
-                </search>
-            </field>
-        </record>
-
-        <!-- ========== MENÚ ÚNICO SIMPLIFICADO ========== -->
-        <menuitem id="menu_analysis_reports_unified" 
-                name="📊 Reportes de Análisis" 
-                parent="menu_lims_analysis_root"
-                action="action_analysis_for_reports" 
-                sequence="20"/>
-
-        <!-- ========== ACCIONES DE SERVIDOR ========== -->
-        <record id="action_print_preliminary_report" model="ir.actions.server">
-            <field name="name">📋 Imprimir Reporte Preliminar</field>
-            <field name="model_id" ref="model_lims_analysis"/>
-            <field name="binding_model_id" ref="model_lims_analysis"/>
-            <field name="binding_view_types">list,form</field>
-            <field name="state">code</field>
-            <field name="code">
-        action = model.action_mass_print_preliminary_report(records.ids)
-            </field>
-        </record>
-
-        <record id="action_print_final_report" model="ir.actions.server">
-            <field name="name">📄 Imprimir Reporte Final</field>
-            <field name="model_id" ref="model_lims_analysis"/>
-            <field name="binding_model_id" ref="model_lims_analysis"/>
-            <field name="binding_view_types">list,form</field>
-            <field name="state">code</field>
-            <field name="code">
-        action = model.action_mass_print_final_report(records.ids)
-            </field>
-        </record>
-
-        <record id="action_print_report_for_signing" model="ir.actions.server">
-            <field name="name">✍️ Imprimir Reporte para Firmar</field>
-            <field name="model_id" ref="model_lims_analysis"/>
-            <field name="binding_model_id" ref="model_lims_analysis"/>
-            <field name="binding_view_types">list,form</field>
-            <field name="state">code</field>
-            <field name="code">
-        action = model.action_mass_print_report_for_signing(records.ids)
-            </field>
-        </record>
-
-        <record id="action_mark_as_reported" model="ir.actions.server">
-            <field name="name">✅ Marcar como Reportado</field>
-            <field name="model_id" ref="model_lims_analysis"/>
-            <field name="binding_model_id" ref="model_lims_analysis"/>
-            <field name="binding_view_types">list</field>
-            <field name="state">code</field>
-            <field name="code">
-        action = model.action_mass_mark_as_reported(records.ids)
-            </field>
-        </record>
+        <!-- NOTA: Los menús están definidos en lims_analysis_views.xml -->
 
     </data>
 </odoo>
