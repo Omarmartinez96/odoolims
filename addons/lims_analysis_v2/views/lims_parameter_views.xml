@@ -41,75 +41,23 @@
                                        decoration-info="report_status == 'reported'"
                                        decoration-muted="report_status == 'draft'"/>
                             </group>
+                        </group>
 
-                            <!-- Configuración automática de procesos según categoría y tipo -->
-                            <group string="🔧 Configuración de Procesos" invisible="category != 'microbiological'">
-                                <div class="alert alert-info" style="margin-bottom: 10px;" colspan="4">
-                                    <strong>ℹ️ Configuración Automática:</strong> 
-                                    Selecciona los procesos que requiere este parámetro para mostrar las pestañas correspondientes.
-                                </div>
-                                <field name="requires_pre_enrichment" invisible="result_type != 'qualitative'"/>
-                                <field name="requires_selective_enrichment" invisible="result_type != 'qualitative'"/>
-                                <field name="requires_confirmation"/>
-                                <field name="requires_ph_adjustment"/>
-                            </group>
-
+                        <!-- Configuración automática de procesos según categoría y tipo -->
+                        <group string="🔧 Configuración de Procesos" invisible="category != 'microbiological'">
+                            <div class="alert alert-info" style="margin-bottom: 10px;" colspan="4">
+                                <strong>ℹ️ Configuración Automática:</strong> 
+                                Selecciona los procesos que requiere este parámetro para mostrar las pestañas correspondientes.
+                            </div>
+                            <field name="requires_pre_enrichment" invisible="result_type != 'qualitative'"/>
+                            <field name="requires_selective_enrichment" invisible="result_type != 'qualitative'"/>
+                            <field name="requires_confirmation"/>
+                            <field name="requires_ph_adjustment"/>
                         </group>
 
                         <!-- Notebook principal -->
                         <notebook>
                             
-                            <!-- TAB DE PROCESOS REQUERIDOS -->
-                            <page string="🧪 Configuración de Procesos" invisible="category != 'microbiological'">
-                                <group string="Procesos Necesarios para este Parámetro" colspan="4">
-                                    <field name="requires_pre_enrichment"/>
-                                    <field name="requires_selective_enrichment"/>
-                                    <field name="requires_confirmation"/>
-                                    <field name="requires_ph_adjustment"/>
-                                </group>
-                                
-                                <!-- Configuración de ambientes por proceso -->
-                                <group string="🏭 Ambientes de Procesamiento" colspan="4">
-                                    <page string="🔬 Pre-enriquecimiento" invisible="requires_pre_enrichment == False or category != 'microbiological'">
-                                        <field name="pre_enrichment_environment" widget="radio"/>
-                                        <field name="pre_enrichment_equipment_id" 
-                                               invisible="pre_enrichment_environment not in ['campana_flujo', 'campana_bioseguridad']"/>
-                                        <field name="pre_enrichment_processing_date"/>
-                                        <field name="pre_enrichment_processing_time" placeholder="HH:MM"/>
-                                    </group>
-                                    
-                                    <group string="Enriquecimiento Selectivo" invisible="requires_selective_enrichment == False">
-                                        <field name="selective_enrichment_environment" widget="radio"/>
-                                        <field name="selective_enrichment_equipment_id" 
-                                               invisible="selective_enrichment_environment not in ['campana_flujo', 'campana_bioseguridad']"/>
-                                        <field name="selective_enrichment_processing_date"/>
-                                        <field name="selective_enrichment_processing_time" placeholder="HH:MM"/>
-                                    </group>
-                                    
-                                    <group string="Confirmación" invisible="requires_confirmation == False">
-                                        <field name="confirmation_environment" widget="radio"/>
-                                        <field name="confirmation_equipment_id" 
-                                               invisible="confirmation_environment not in ['campana_flujo', 'campana_bioseguridad']"/>
-                                        <field name="confirmation_processing_date"/>
-                                        <field name="confirmation_processing_time" placeholder="HH:MM"/>
-                                    </group>
-                                    
-                                    <group string="Análisis Final">
-                                        <field name="quantitative_environment" widget="radio" invisible="result_type != 'quantitative'"/>
-                                        <field name="quantitative_equipment_id" 
-                                               invisible="result_type != 'quantitative' or quantitative_environment not in ['campana_flujo', 'campana_bioseguridad']"/>
-                                        <field name="quantitative_processing_date" invisible="result_type != 'quantitative'"/>
-                                        <field name="quantitative_processing_time" placeholder="HH:MM" invisible="result_type != 'quantitative'"/>
-                                        
-                                        <field name="qualitative_environment" widget="radio" invisible="result_type != 'qualitative'"/>
-                                        <field name="qualitative_equipment_id" 
-                                               invisible="result_type != 'qualitative' or qualitative_environment not in ['campana_flujo', 'campana_bioseguridad']"/>
-                                        <field name="qualitative_processing_date" invisible="result_type != 'qualitative'"/>
-                                        <field name="qualitative_processing_time" placeholder="HH:MM" invisible="result_type != 'qualitative'"/>
-                                    </group>
-                                </group>
-                            </page>
-
                             <!-- TAB DE MEDIOS Y REACTIVOS UNIFICADO -->
                             <page string="🧫 Medios y Reactivos">
                                 <field name="media_ids" nolabel="1">
