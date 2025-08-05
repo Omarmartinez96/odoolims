@@ -307,12 +307,8 @@ class LimsSampleSignatureWizardV2(models.TransientModel):
                 # Intentar obtener cargo desde el usuario
                 if user.function:
                     self.signature_position = user.function
-                elif user.has_group('lims_analysis_v2.group_analyst'):
-                    self.signature_position = 'Analista'
-                elif user.has_group('lims_analysis_v2.group_supervisor'):
-                    self.signature_position = 'Supervisor'
                 else:
-                    self.signature_position = 'Técnico de Laboratorio'
+                    self.signature_position = 'Analista'  # Valor por defecto
     
     @api.onchange('analysis_id')
     def _onchange_analysis_id(self):
