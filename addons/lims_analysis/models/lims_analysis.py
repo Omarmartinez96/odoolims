@@ -12,7 +12,7 @@ class LimsAnalysis(models.Model):
     _order = 'create_date desc'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
-    # Relación con la recepción de muestra (que tiene el sample_code)
+    # RELACIONES PRINCIPALES
     sample_reception_id = fields.Many2one(
         'lims.sample.reception',
         string='Muestra Recibida',
@@ -20,14 +20,13 @@ class LimsAnalysis(models.Model):
         ondelete='cascade',
         domain=[('reception_state', '=', 'recibida')]
     )
-    # Campo relacionado para mostrar el código de muestra
+    # CAMPOS RELACIONADOS (INFORMACION DE LA MUESTRA)
     sample_code = fields.Char(
         string='Código de Muestra',
         related='sample_reception_id.sample_code',
         readonly=True,
         store=True
     )
-    # Campos relacionados para información adicional
     sample_identifier = fields.Char(
         string='Identificación de Muestra',
         related='sample_reception_id.sample_identifier',
@@ -60,6 +59,7 @@ class LimsAnalysis(models.Model):
         readonly=True,
         store=True
     )
+    # INFORMACION BASICA DEL ANALISIS
     display_name = fields.Char(
         string='Nombre del Análisis',
         compute='_compute_display_name',
@@ -70,7 +70,14 @@ class LimsAnalysis(models.Model):
         compute='_compute_report_status_summary',
         help='Resumen del estado de reporte de los parámetros'
     )
-    # Fechas
+    analysis_state = fields.Selection([
+        ('draft', 'Borrador'),
+        ('in_progress', 'En Proceso'),
+        ('completed', 'Completado'),
+        ('validated', 'Validado'),
+        ('cancelled', 'Cancelado')
+    ], string='Estado', default='draft')
+    # FECHAS
     analysis_start_date = fields.Date(
         string='Fecha de Inicio',
         default=fields.Date.context_today
@@ -82,14 +89,7 @@ class LimsAnalysis(models.Model):
         string='Fecha Compromiso',
         help='Fecha comprometida para entregar resultados'
     )
-    # Estado del análisis
-    analysis_state = fields.Selection([
-        ('draft', 'Borrador'),
-        ('in_progress', 'En Proceso'),
-        ('completed', 'Completado'),
-        ('validated', 'Validado'),
-        ('cancelled', 'Cancelado')
-    ], string='Estado', default='draft')
+
     # 🆕 RELACIÓN CON PARÁMETROS DE ANÁLISIS
     parameter_analysis_ids = fields.One2many(
         'lims.parameter.analysis',
