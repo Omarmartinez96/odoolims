@@ -1331,253 +1331,473 @@
         </t>
     </template>
 
-    <!-- ========== TEMPLATE GENERAL ILAC ========== -->
+    <!-- ========== TEMPLATE GENERAL ILAC MEJORADO ========== -->
     <template id="report_general_ilac_template">
-        <t t-call="lims_analysis_v2.report_analysis_base_template">
-            <t t-foreach="docs" t-as="analysis">
-                <div class="page">
-                    <div class="main-content">
-                        
-                        <!-- Variables de configuración -->
-                        <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
-                        <t t-set="language" t-value="report_config.get('language', 'es')"/>
-                        <t t-set="status" t-value="report_config.get('status', 'final')"/>
-                        
-                        <!-- Título según idioma y estado -->
-                        <div style="text-align: center; margin: 20px 0 30px 0;">
-                            <h1 style="font-size: 24px; font-weight: bold; margin: 0;">
-                                <t t-if="language == 'es' and status == 'final'">
-                                    INFORME DE ENSAYO
-                                </t>
-                                <t t-elif="language == 'es' and status == 'preliminary'">
-                                    PRELIMINAR - INFORME DE ENSAYO
-                                </t>
-                                <t t-elif="language == 'en' and status == 'final'">
-                                    TEST REPORT FINAL
-                                </t>
-                                <t t-elif="language == 'en' and status == 'preliminary'">
-                                    PRELIMINAR - TEST REPORT
-                                </t>
-                            </h1>
-                        </div>
+        <t t-call="web.html_container">
+            <meta charset="UTF-8"/>
+            <t t-call-assets="web.report_assets_common" t-js="false"/>
+            <t t-set="company" t-value="env.company"/>
 
-                        <!-- Badge especial para ILAC -->
-                        <div style="text-align: center; margin: 20px 0; padding: 15px; background-color: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px;">
-                            <h2 style="color: #9c27b0; margin: 0;">
-                                🏆 
-                                <t t-if="language == 'es'">CERTIFICADO CON SELLOS ILAC</t>
-                                <t t-else="">CERTIFIED WITH ILAC SEALS</t>
-                            </h2>
-                            <p style="margin: 5px 0 0 0; font-style: italic;">
-                                <t t-if="language == 'es'">Laboratorio acreditado internacionalmente</t>
-                                <t t-else="">Internationally accredited laboratory</t>
-                            </p>
-                        </div>
+            <!-- ESTILOS ESPECÍFICOS PARA REPLICAR EL DISEÑO -->
+            <style>
+                body, .o_report_layout, table, td, th, span, div, p {
+                    font-family: "Arial", sans-serif !important;
+                    margin: 0;
+                    padding: 0;
+                }
+                .header-section {
+                    border-bottom: 2px solid #000;
+                    padding-bottom: 10px;
+                    margin-bottom: 15px;
+                }
+                .company-info {
+                    text-align: center;
+                    font-size: 14px;
+                    font-weight: bold;
+                }
+                .company-details {
+                    text-align: center;
+                    font-size: 10px;
+                    margin: 5px 0;
+                }
+                .form-info {
+                    text-align: center;
+                    font-size: 9px;
+                    margin: 5px 0;
+                }
+                .report-title {
+                    text-align: center;
+                    font-size: 18px;
+                    font-weight: bold;
+                    margin: 20px 0;
+                    background-color: #f0f0f0;
+                    padding: 10px;
+                    border: 1px solid #000;
+                }
+                .section-header {
+                    background-color: #d3d3d3;
+                    font-weight: bold;
+                    padding: 5px;
+                    text-align: center;
+                    font-size: 11px;
+                    border: 1px solid #000;
+                }
+                .data-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    font-size: 10px;
+                    margin: 10px 0;
+                }
+                .data-table th, .data-table td {
+                    border: 1px solid #000;
+                    padding: 4px;
+                    vertical-align: top;
+                }
+                .data-table th {
+                    background-color: #d3d3d3;
+                    font-weight: bold;
+                    text-align: center;
+                }
+                .info-grid {
+                    width: 100%;
+                    border-collapse: collapse;
+                    font-size: 10px;
+                    margin: 5px 0;
+                }
+                .info-grid td {
+                    padding: 3px 5px;
+                    vertical-align: top;
+                }
+                .label {
+                    font-weight: bold;
+                }
+                .two-column {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                .two-column td {
+                    width: 50%;
+                    vertical-align: top;
+                    padding: 0 10px;
+                }
+                .signature-section {
+                    margin-top: 30px;
+                    text-align: right;
+                }
+                .footer-info {
+                    margin-top: 20px;
+                    font-size: 9px;
+                }
+            </style>
 
-                        <!-- Información básica -->
-                        <table class="table table-borderless mt-1" style="width:100%; font-size:14px; border-collapse:collapse;">
-                            <t t-set="meses_es" t-value="{
-                                '01':'Ene','02':'Feb','03':'Mar','04':'Abr',
-                                '05':'May','06':'Jun','07':'Jul','08':'Ago',
-                                '09':'Sep','10':'Oct','11':'Nov','12':'Dic'
-                            }"/>
-                            <t t-set="meses_en" t-value="{
-                                '01':'Jan','02':'Feb','03':'Mar','04':'Apr',
-                                '05':'May','06':'Jun','07':'Jul','08':'Aug',
-                                '09':'Sep','10':'Oct','11':'Nov','12':'Dec'
-                            }"/>
-                            <t t-set="meses" t-value="meses_es if language == 'es' else meses_en"/>
-                            
-                            <tbody>
-                                <tr>
-                                    <td style="width:50%; padding:4px;">
-                                        <strong>
-                                            <t t-if="language == 'es'">Cadena de Custodia:</t>
-                                            <t t-else="">Chain of Custody:</t>
-                                        </strong> 
-                                        <span t-esc="analysis.custody_chain_code"/>
-                                    </td>
-                                    <td style="width:50%; padding:4px; text-align:right;">
-                                        <strong>
-                                            <t t-if="language == 'es'">Fecha de emisión:</t>
-                                            <t t-else="">Issue Date:</t>
-                                        </strong>
-                                        <t t-set="today" t-value="datetime.datetime.now()"/>
-                                        <t t-set="d_today" t-value="today.strftime('%d')"/>
-                                        <t t-set="m_today" t-value="today.strftime('%m')"/>
-                                        <t t-set="y_today" t-value="today.strftime('%Y')"/>
-                                        <span t-esc="d_today + '/' + meses[m_today] + '/' + y_today"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding:4px;">
-                                        <strong>
-                                            <t t-if="language == 'es'">Cliente:</t>
-                                            <t t-else="">Customer:</t>
-                                        </strong> 
-                                        <span t-esc="analysis.customer_id.name"/>
-                                    </td>
-                                    <td style="padding:4px; text-align:right;">
-                                        <t t-if="status == 'preliminary'">
-                                            <span class="preliminary-badge">
-                                                <t t-if="language == 'es'">PRELIMINAR</t>
-                                                <t t-else="">PRELIMINARY</t>
-                                            </span>
-                                        </t>
-                                        <t t-else="">
-                                            <span class="final-badge">
-                                                <t t-if="language == 'es'">FINAL</t>
-                                                <t t-else="">FINAL</t>
-                                            </span>
-                                        </t>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="padding:4px;">
-                                        <strong>
-                                            <t t-if="language == 'es'">Muestra:</t>
-                                            <t t-else="">Sample:</t>
-                                        </strong> 
-                                        <span t-esc="analysis.sample_code"/> - <span t-esc="analysis.sample_identifier"/>
-                                    </td>
-                                    <td style="padding:4px; text-align:right;">
-                                        <strong>
-                                            <t t-if="language == 'es'">Fecha de Recepción:</t>
-                                            <t t-else="">Reception Date:</t>
-                                        </strong>
-                                        <t t-if="analysis.reception_date">
-                                            <t t-set="r_date" t-value="analysis.reception_date"/>
-                                            <t t-set="d_reception" t-value="r_date.strftime('%d')"/>
-                                            <t t-set="m_reception" t-value="r_date.strftime('%m')"/>
-                                            <t t-set="y_reception" t-value="r_date.strftime('%Y')"/>
-                                            <span t-esc="d_reception + '/' + meses[m_reception] + '/' + y_reception"/>
-                                        </t>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <!-- Separador -->
-                        <hr style="margin: 20px 0; border: 1px solid;"/>
-
-                        <!-- Resultados generales -->
-                        <div class="sample-section">
-                            <div class="header-title">
-                                <t t-if="language == 'es'">Muestra:</t>
-                                <t t-else="">Sample:</t>
-                                <span t-esc="analysis.sample_code"/> - <span t-esc="analysis.sample_identifier"/>
-                            </div>
-
-                            <!-- Todos los parámetros -->
-                            <t t-set="all_params" t-value="analysis.parameter_analysis_ids.filtered(lambda p: (p.report_status == 'ready' if status == 'preliminary' else p.report_status in ['ready', 'reported']))"/>
-                            
-                            <t t-if="all_params">
-                                <h5 style="font-size: 14px; margin: 15px 0 5px 0;">
-                                    <t t-if="language == 'es'">Resultados de Análisis:</t>
-                                    <t t-else="">Analysis Results:</t>
-                                </h5>
-                                <table class="table table-bordered" style="width:100%; font-size:11px; border-collapse:collapse;">
-                                    <thead>
-                                        <tr style="background-color:#9c27b0; color: white;">
-                                            <th style="padding:8px; text-align:left; width:25%;">
-                                                <t t-if="language == 'es'">Parámetro</t>
-                                                <t t-else="">Parameter</t>
-                                            </th>
-                                            <th style="padding:8px; text-align:left; width:25%;">
-                                                <t t-if="language == 'es'">Método</t>
-                                                <t t-else="">Method</t>
-                                            </th>
-                                            <th style="padding:8px; text-align:center; width:20%;">
-                                                <t t-if="language == 'es'">Resultado</t>
-                                                <t t-else="">Result</t>
-                                            </th>
-                                            <th style="padding:8px; text-align:left; width:30%;">
-                                                <t t-if="language == 'es'">Observaciones</t>
-                                                <t t-else="">Observations</t>
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <t t-foreach="all_params" t-as="parameter">
-                                            <tr class="result-row">
-                                                <td style="padding:8px;">
-                                                    <t t-if="parameter.microorganism">
-                                                        <strong><span t-esc="parameter.microorganism"/></strong>
-                                                    </t>
-                                                    <t t-else="">
-                                                        <strong><span t-esc="parameter.name or 'Sin nombre'"/></strong>
-                                                    </t>
-                                                </td>
-                                                <td style="padding:8px;">
-                                                    <span t-esc="parameter.method or 'No especificado'"/>
-                                                </td>
-                                                <td style="padding:8px; text-align:center; font-weight:bold; color: #9c27b0;">
-                                                    <span t-esc="parameter.result_complete or parameter.result_value or 'Sin resultado'"/>
-                                                </td>
-                                                <td style="padding:8px; font-size:10px;">
-                                                    <span t-esc="parameter.analyst_notes or '—'"/>
-                                                </td>
-                                            </tr>
-                                        </t>
-                                    </tbody>
-                                </table>
-                            </t>
-                            <t t-else="">
-                                <div style="text-align: center; padding: 20px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;">
-                                    <p style="margin: 0; font-style: italic; color: #856404;">
-                                        <t t-if="language == 'es'">No hay resultados disponibles.</t>
-                                        <t t-else="">No results available.</t>
-                                    </p>
+            <!-- HEADER FIJO -->
+            <div class="header" style="position: fixed; top: 0; width: 100%; height: 120px;">
+                <div class="header-section">
+                    <table style="width: 100%;">
+                        <tr>
+                            <td style="width: 15%; text-align: left;">
+                                <img t-if="company.logo"
+                                    t-att-src="image_data_uri(company.logo)"
+                                    style="max-height: 80px; width: auto;"/>
+                            </td>
+                            <td style="width: 70%; text-align: center;">
+                                <div class="company-info">Laboratorio de Microbiología</div>
+                                <div class="company-info">PROTEUS</div>
+                                <div class="company-details">
+                                    Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.
                                 </div>
-                            </t>
-                        </div>
+                                <div class="company-details">
+                                    E-mail: contacto@proteuslaboratorio.com // Teléfono: (664) 973-8185
+                                </div>
+                                <div class="form-info">FOR-022 Rev. 03 / PROC-006</div>
+                                <div class="form-info">Documento controlado, prohibida su reproducción parcial o total sin autorización. Página 1 de 2</div>
+                                <div class="form-info">Accreditation #108644</div>
+                            </td>
+                            <td style="width: 15%; text-align: right;">
+                                <!-- Aquí irían los logos de ILAC cuando estén listos -->
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
 
-                        <!-- Sección ILAC -->
-                        <div style="margin-top: 30px; padding: 15px; background-color: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px;">
-                            <h4 style="color: #9c27b0; margin: 0 0 10px 0; text-align: center;">
-                                🏆 
-                                <t t-if="language == 'es'">ACREDITACIÓN ILAC</t>
-                                <t t-else="">ILAC ACCREDITATION</t>
-                            </h4>
-                            <p style="margin: 0; font-size: 11px; text-align: center;">
-                                <t t-if="language == 'es'">
-                                    Este laboratorio está acreditado bajo normas internacionales ILAC.
-                                    Los resultados están respaldados por nuestro sistema de calidad certificado.
-                                </t>
-                                <t t-else="">
-                                    This laboratory is accredited under international ILAC standards.
-                                    Results are backed by our certified quality system.
-                                </t>
-                            </p>
-                        </div>
+            <!-- FOOTER FIJO -->
+            <div class="footer" style="position: fixed; bottom: 0; width: 100%; font-size: 9px; text-align: center;">
+                <div style="border-top: 1px solid #000; padding-top: 5px;">
+                    Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.<br/>
+                    E-mail: contacto@proteuslaboratorio.com // Teléfono: (664) 973-8185<br/>
+                    FOR-022 Rev. 03 / PROC-006<br/>
+                    Documento controlado, prohibida su reproducción parcial o total sin autorización.
+                </div>
+            </div>
 
-                        <!-- Información adicional -->
-                        <div style="margin-top: 30px; font-size: 11px; color: #666;">
-                            <p>
-                                <strong>
-                                    <t t-if="language == 'es'">Tipo de Reporte:</t>
-                                    <t t-else="">Report Type:</t>
-                                </strong> 
-                                <t t-if="language == 'es'">
-                                    Informe general de ensayos con certificación ILAC.
-                                </t>
-                                <t t-else="">
-                                    General test report with ILAC certification.
-                                </t>
-                            </p>
-                            <p style="margin-top: 10px;">
-                                <em>
-                                    <t t-if="language == 'es'">
-                                        Los análisis se realizaron conforme a normas internacionales bajo acreditación ILAC.
-                                    </t>
-                                    <t t-else="">
-                                        Analyses were performed according to international standards under ILAC accreditation.
-                                    </t>
-                                </em>
-                            </p>
-                        </div>
-
+            <!-- CONTENIDO PRINCIPAL -->
+            <t t-foreach="docs" t-as="analysis">
+                <div class="page" style="margin-top: 140px; margin-bottom: 80px;">
+                    
+                    <!-- Variables de configuración -->
+                    <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
+                    <t t-set="language" t-value="report_config.get('language', 'es')"/>
+                    <t t-set="status" t-value="report_config.get('status', 'final')"/>
+                    
+                    <!-- TÍTULO DEL REPORTE -->
+                    <div class="report-title">
+                        <t t-if="language == 'es'">INFORME DE ENSAYO</t>
+                        <t t-else="">TEST REPORT</t>
                     </div>
+
+                    <!-- INFORMACIÓN SUPERIOR -->
+                    <table class="info-grid">
+                        <tr>
+                            <td class="label">
+                                <t t-if="language == 'es'">Identificación de la muestra:</t>
+                                <t t-else="">Sample identification:</t>
+                            </td>
+                            <td><span t-esc="analysis.sample_identifier"/></td>
+                            <td class="label" style="text-align: right;">
+                                <t t-if="language == 'es'">Fecha de emisión:</t>
+                                <t t-else="">Issue date:</t>
+                            </td>
+                            <td style="text-align: right;">
+                                <t t-set="today" t-value="datetime.datetime.now()"/>
+                                <span t-esc="today.strftime('%d/%b/%Y')"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                <t t-if="language == 'es'">Descripción de la muestra:</t>
+                                <t t-else="">Sample description:</t>
+                            </td>
+                            <td><span t-esc="analysis.sample_reception_id.sample_id.sample_description or 'Sin descripción'"/></td>
+                            <td class="label" style="text-align: right;">
+                                <t t-if="language == 'es'">Cadena de custodia:</t>
+                                <t t-else="">Chain of custody:</t>
+                            </td>
+                            <td style="text-align: right;"><span t-esc="analysis.custody_chain_code"/></td>
+                        </tr>
+                    </table>
+
+                    <!-- DATOS DEL CLIENTE -->
+                    <div class="section-header">
+                        <t t-if="language == 'es'">DATOS DEL CLIENTE</t>
+                        <t t-else="">CUSTOMER DATA</t>
+                    </div>
+                    <table class="info-grid">
+                        <tr>
+                            <td class="label" style="width: 20%;">
+                                <t t-if="language == 'es'">Nombre o Razón social:</t>
+                                <t t-else="">Name or Company name:</t>
+                            </td>
+                            <td style="width: 80%;"><span t-esc="analysis.customer_id.name"/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                <t t-if="language == 'es'">Dirección fiscal:</t>
+                                <t t-else="">Fiscal address:</t>
+                            </td>
+                            <td>
+                                <span t-esc="analysis.customer_id.street"/>
+                                <t t-if="analysis.customer_id.street2">, <span t-esc="analysis.customer_id.street2"/></t>
+                                <t t-if="analysis.customer_id.city">, <span t-esc="analysis.customer_id.city"/></t>
+                                <t t-if="analysis.customer_id.zip"> C.P. <span t-esc="analysis.customer_id.zip"/></t>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                <t t-if="language == 'es'">Código de cliente:</t>
+                                <t t-else="">Customer code:</t>
+                            </td>
+                            <td><span t-esc="analysis.customer_id.client_code or 'N/A'"/></td>
+                        </tr>
+                        <tr>
+                            <td class="label">
+                                <t t-if="language == 'es'">Contacto:</t>
+                                <t t-else="">Contact:</t>
+                            </td>
+                            <td>
+                                <t t-if="analysis.custody_chain_id.contact_ids">
+                                    <span t-esc="analysis.custody_chain_id.contact_ids[0].name"/>
+                                </t>
+                                <t t-else="">N/A</t>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- INFORMACIÓN DE MUESTREO Y RECEPCIÓN (DOS COLUMNAS) -->
+                    <table class="two-column">
+                        <tr>
+                            <!-- COLUMNA IZQUIERDA: INFORMACIÓN DE MUESTREO -->
+                            <td>
+                                <div class="section-header">
+                                    <t t-if="language == 'es'">INFORMACIÓN DE MUESTREO</t>
+                                    <t t-else="">SAMPLING INFORMATION</t>
+                                </div>
+                                <table class="info-grid">
+                                    <tr>
+                                        <td class="label">
+                                            <t t-if="language == 'es'">Fecha y hora de muestreo:</t>
+                                            <t t-else="">Sampling date and time:</t>
+                                        </td>
+                                        <td>
+                                            <t t-if="analysis.sample_reception_id.sample_id.sampling_date">
+                                                <span t-esc="analysis.sample_reception_id.sample_id.sampling_date"/>
+                                                <t t-if="analysis.sample_reception_id.sample_id.sampling_time">
+                                                    <span t-esc="analysis.sample_reception_id.sample_id.sampling_time"/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">-</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">
+                                            <t t-if="language == 'es'">Tipo de muestra:</t>
+                                            <t t-else="">Sample type:</t>
+                                        </td>
+                                        <td><span t-esc="analysis.sample_reception_id.sample_id.sample_type_id.name or 'No especificado'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">
+                                            <t t-if="language == 'es'">Sitio de muestreo:</t>
+                                            <t t-else="">Sampling site:</t>
+                                        </td>
+                                        <td>
+                                            <t t-if="analysis.custody_chain_id.departamento_id">
+                                                <span t-esc="analysis.custody_chain_id.departamento_id.name"/>
+                                            </t>
+                                            <t t-else="">Empresa</t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">
+                                            <t t-if="language == 'es'">Muestreador:</t>
+                                            <t t-else="">Sampler:</t>
+                                        </td>
+                                        <td><span t-esc="analysis.sample_reception_id.sample_id.sampling_technician or 'Cliente'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">
+                                            <t t-if="language == 'es'">Método/plan de muestreo (si aplica):</t>
+                                            <t t-else="">Sampling method/plan (if applicable):</t>
+                                        </td>
+                                        <td><span t-esc="analysis.sample_reception_id.sample_id.sampling_plan or 'No aplica'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">
+                                            <t t-if="language == 'es'">Observaciones:</t>
+                                            <t t-else="">Observations:</t>
+                                        </td>
+                                        <td><span t-esc="analysis.sample_reception_id.sample_id.sampling_observations or 'Muestra proporcionada por el cliente'"/></td>
+                                    </tr>
+                                </table>
+                            </td>
+                            
+                            <!-- COLUMNA DERECHA: INFORMACIÓN DE RECEPCIÓN -->
+                            <td>
+                                <div class="section-header">
+                                    <t t-if="language == 'es'">INFORMACIÓN DE RECEPCIÓN</t>
+                                    <t t-else="">RECEPTION INFORMATION</t>
+                                </div>
+                                <table class="info-grid">
+                                    <tr>
+                                        <td class="label">
+                                            <t t-if="language == 'es'">Fecha y hora de recepción:</t>
+                                            <t t-else="">Reception date and time:</t>
+                                        </td>
+                                        <td>
+                                            <span t-esc="analysis.sample_reception_id.reception_date"/>
+                                            <t t-if="analysis.sample_reception_id.reception_time">
+                                                <span t-esc="analysis.sample_reception_id.reception_time"/>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">
+                                            <t t-if="language == 'es'">Clave de la muestra:</t>
+                                            <t t-else="">Sample key:</t>
+                                        </td>
+                                        <td><span t-esc="analysis.sample_code"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">
+                                            <t t-if="language == 'es'">Cantidad de muestra:</t>
+                                            <t t-else="">Sample quantity:</t>
+                                        </td>
+                                        <td><span t-esc="analysis.sample_reception_id.sample_id.sample_quantity or 'No especificada'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">
+                                            <t t-if="language == 'es'">Temperatura de recepción:</t>
+                                            <t t-else="">Reception temperature:</t>
+                                        </td>
+                                        <td>-</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">
+                                            <t t-if="language == 'es'">Recipiente de la muestra:</t>
+                                            <t t-else="">Sample container:</t>
+                                        </td>
+                                        <td><span t-esc="analysis.sample_reception_id.sample_id.container_type_id.name or 'Envase original'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">
+                                            <t t-if="language == 'es'">Recibió:</t>
+                                            <t t-else="">Received by:</t>
+                                        </td>
+                                        <td><span t-esc="analysis.sample_reception_id.received_by.name or 'No especificado'"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="label">
+                                            <t t-if="language == 'es'">Observaciones:</t>
+                                            <t t-else="">Observations:</t>
+                                        </td>
+                                        <td><span t-esc="analysis.sample_reception_id.reception_notes or 'Sin observaciones'"/></td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <!-- DATOS DEL ANÁLISIS -->
+                    <div class="section-header">
+                        <t t-if="language == 'es'">DATOS DEL ANÁLISIS</t>
+                        <t t-else="">ANALYSIS DATA</t>
+                    </div>
+                    
+                    <t t-set="all_params" t-value="analysis.parameter_analysis_ids.filtered(lambda p: (p.report_status == 'ready' if status == 'preliminary' else p.report_status in ['ready', 'reported']))"/>
+                    
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 15%;">
+                                    <t t-if="language == 'es'">Parámetro</t>
+                                    <t t-else="">Parameter</t>
+                                </th>
+                                <th style="width: 20%;">
+                                    <t t-if="language == 'es'">Método</t>
+                                    <t t-else="">Method</t>
+                                </th>
+                                <th style="width: 4%;">C</th>
+                                <th style="width: 4%;">T</th>
+                                <th style="width: 4%;">LAB</th>
+                                <th style="width: 12%;">
+                                    <t t-if="language == 'es'">Resultado</t>
+                                    <t t-else="">Result</t>
+                                </th>
+                                <th style="width: 10%;">
+                                    <t t-if="language == 'es'">Unidades</t>
+                                    <t t-else="">Units</t>
+                                </th>
+                                <th style="width: 12%;">
+                                    <t t-if="language == 'es'">Referencia</t>
+                                    <t t-else="">Reference</t>
+                                </th>
+                                <th style="width: 10%;">
+                                    <t t-if="language == 'es'">Fecha de análisis</t>
+                                    <t t-else="">Analysis date</t>
+                                </th>
+                                <th style="width: 5%;">AN</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-foreach="all_params" t-as="parameter">
+                                <tr>
+                                    <td><span t-esc="parameter.microorganism or parameter.name"/></td>
+                                    <td><span t-esc="parameter.method or 'No especificado'"/></td>
+                                    <td style="text-align: center;">A</td>
+                                    <td style="text-align: center;">a</td>
+                                    <td style="text-align: center;">1</td>
+                                    <td><strong><span t-esc="parameter.result_value or 'Sin resultado'"/></strong></td>
+                                    <td><span t-esc="parameter.unit or parameter.result_unit or ''"/></td>
+                                    <td>-</td>
+                                    <td><span t-esc="parameter.analysis_start_date or analysis.analysis_start_date or ''"/></td>
+                                    <td><span t-esc="parameter.analyst_names or 'YJLD'"/></td>
+                                </tr>
+                            </t>
+                        </tbody>
+                    </table>
+
+                    <!-- INFORMACIÓN ADICIONAL -->
+                    <div class="footer-info">
+                        <p><strong>
+                            <t t-if="language == 'es'">Referencia normativa:</t>
+                            <t t-else="">Normative reference:</t>
+                        </strong> 
+                        <t t-if="language == 'es'">Límites de referencia proporcionadas por el cliente.</t>
+                        <t t-else="">Reference limits provided by the customer.</t>
+                        </p>
+                        
+                        <p><strong>
+                            <t t-if="language == 'es'">Observaciones analíticas y de resultados:</t>
+                            <t t-else="">Analytical and results observations:</t>
+                        </strong> 
+                        <t t-if="language == 'es'">Sin observaciones.</t>
+                        <t t-else="">No observations.</t>
+                        </p>
+                    </div>
+
+                    <!-- SECCIÓN DE FIRMA -->
+                    <div class="signature-section">
+                        <div style="width: 200px; margin-left: auto; margin-top: 30px;">
+                            <div style="border-bottom: 1px solid #000; margin-bottom: 5px; height: 40px;"></div>
+                            <div style="text-align: center; font-size: 11px;">
+                                <strong>Bryan Manuel Zamora Luna</strong><br/>
+                                <t t-if="language == 'es'">Aseguramiento de la Calidad</t>
+                                <t t-else="">Quality Assurance</t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- NOTA FINAL -->
+                    <div style="margin-top: 20px; font-size: 9px;">
+                        <p><strong>
+                            <t t-if="language == 'es'">Nota:</t>
+                            <t t-else="">Note:</t>
+                        </strong> 
+                        <t t-if="language == 'es'">Los resultados solo están relacionados con la porción de muestra analizada.</t>
+                        <t t-else="">Results are only related to the analyzed sample portion.</t>
+                        </p>
+                    </div>
+
                 </div>
             </t>
         </t>
