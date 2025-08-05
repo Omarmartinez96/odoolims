@@ -326,7 +326,40 @@ class LimsParameterAnalysisV2(models.Model):
         'parameter_analysis_id',
         string='Equipos Involucrados'
     )
-    
+    pre_enrichment_media_ids = fields.One2many(
+        'lims.analysis.media.v2',
+        'parameter_analysis_id',
+        string='Medios de Pre-enriquecimiento',
+        domain=[('process_type', '=', 'pre_enrichment')]
+    )
+
+    selective_enrichment_media_ids = fields.One2many(
+        'lims.analysis.media.v2',
+        'parameter_analysis_id', 
+        string='Medios de Enriquecimiento Selectivo',
+        domain=[('process_type', '=', 'selective_enrichment')]
+    )
+
+    quantitative_media_ids = fields.One2many(
+        'lims.analysis.media.v2',
+        'parameter_analysis_id',
+        string='Medios para Análisis Cuantitativo', 
+        domain=[('process_type', '=', 'quantitative')]
+    )
+
+    qualitative_media_ids = fields.One2many(
+        'lims.analysis.media.v2',
+        'parameter_analysis_id',
+        string='Medios para Análisis Cualitativo',
+        domain=[('process_type', '=', 'qualitative')]
+    )
+
+    confirmation_media_ids = fields.One2many(
+        'lims.analysis.media.v2', 
+        'parameter_analysis_id',
+        string='Medios de Confirmación',
+        domain=[('process_type', '=', 'confirmation')]
+    )
     # ===============================================
     # === CAMPOS COMPUTADOS ===
     # ===============================================
