@@ -1,5 +1,6 @@
 <odoo>
-  <data noupdate="1">
+  <data noupdate="0">  <!-- CAMBIAR A 0 TEMPORALMENTE PARA FORZAR ACTUALIZACIÓN -->
+    
     <record id="paperformat_lims_letter" model="report.paperformat">
       <field name="name">Carta (LIMS)</field>
       <field name="default" eval="False"/>
@@ -14,7 +15,7 @@
       <field name="dpi">90</field>
     </record>
 
-    <!-- Paperformat para Informes de Ensayo ILAC -->
+    <!-- Paperformat para Informes de Ensayo ILAC - CORREGIDO -->
     <record id="paperformat_lims_test_report" model="report.paperformat">
         <field name="name">Informe de Ensayo (LIMS)</field>
         <field name="default" eval="False"/>
@@ -25,8 +26,9 @@
         <field name="margin_left">15</field>
         <field name="margin_right">15</field>
         <field name="header_line" eval="False"/>
-        <field name="header_spacing">200</field> 
+        <field name="header_spacing">35</field>  <!-- CORREGIDO: Era 200, ahora 35 -->
         <field name="dpi">90</field>
     </record>
+    
   </data>
 </odoo>
