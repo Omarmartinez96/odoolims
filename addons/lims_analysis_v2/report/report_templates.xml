@@ -1468,34 +1468,35 @@
                     z-index: 1000;
                     padding: 10px 20px !important;
                 }
+
                 .page {
                     margin-top: 120px;
                 }
             </style>
 
-            <!-- HEADER FIJO -->
-            <div class="header" style="padding: 10px 20px;">
+            <!-- HEADER NATIVO ODOO -->
+            <div class="header" style="padding: 15px 20px; border-bottom: 2px solid #000;">
                 <!-- Variables -->
                 <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
                 <t t-set="language" t-value="report_config.get('language', 'es')"/>
                 
-                <table style="width: 100%; height: 80px; border-collapse: collapse;">
+                <table style="width: 100%; border-collapse: collapse;">
                     <tr>
                         <td style="width: 15%; text-align: left; vertical-align: middle;">
                             <img t-if="company.logo"
                                 t-att-src="image_data_uri(company.logo)"
-                                style="max-height: 60px; width: auto;"/>
+                                style="max-height: 50px; width: auto;"/>
                         </td>
                         <td style="width: 70%; text-align: center; vertical-align: middle;">
-                            <div style="border: 2px solid #000; background-color: #f0f0f0; padding: 12px; margin: 0 20px;">
-                                <h2 style="font-size: 16px; font-weight: bold; margin: 0;">
+                            <div style="border: 2px solid #000; background-color: #f0f0f0; padding: 8px; margin: 0 10px;">
+                                <strong style="font-size: 14px;">
                                     <t t-if="language == 'es'">INFORME DE ENSAYO</t>
                                     <t t-else="">TEST REPORT</t>
-                                </h2>
+                                </strong>
                             </div>
                         </td>
                         <td style="width: 15%; text-align: right; vertical-align: middle;">
-                            <div style="border: 1px solid #000; padding: 5px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 8px;">
+                            <div style="border: 1px solid #000; padding: 3px; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 8px;">
                                 [ILAC LOGOS]
                             </div>
                         </td>
