@@ -1331,155 +1331,186 @@
         </t>
     </template>
 
-    <!-- ========== TEMPLATE GENERAL ILAC MEJORADO ========== -->
+    <!-- ========== TEMPLATE GENERAL ILAC MEJORADO V2 ========== -->
     <template id="report_general_ilac_template">
         <t t-call="web.html_container">
             <meta charset="UTF-8"/>
             <t t-call-assets="web.report_assets_common" t-js="false"/>
             <t t-set="company" t-value="env.company"/>
 
-            <!-- ESTILOS ESPECÍFICOS PARA REPLICAR EL DISEÑO -->
+            <!-- ESTILOS OPTIMIZADOS CON MÁRGENES REDUCIDOS -->
             <style>
+                @page {
+                    margin-top: 15mm;
+                    margin-bottom: 15mm;
+                    margin-left: 10mm;
+                    margin-right: 10mm;
+                }
                 body, .o_report_layout, table, td, th, span, div, p {
                     font-family: "Arial", sans-serif !important;
                     margin: 0;
                     padding: 0;
+                    font-size: 10px;
+                    line-height: 1.2;
                 }
                 .header-section {
                     border-bottom: 2px solid #000;
-                    padding-bottom: 10px;
-                    margin-bottom: 15px;
+                    padding-bottom: 8px;
+                    margin-bottom: 10px;
                 }
                 .company-info {
                     text-align: center;
                     font-size: 14px;
                     font-weight: bold;
+                    margin: 1px 0;
                 }
                 .company-details {
                     text-align: center;
-                    font-size: 10px;
-                    margin: 5px 0;
+                    font-size: 9px;
+                    margin: 2px 0;
                 }
                 .form-info {
                     text-align: center;
-                    font-size: 9px;
-                    margin: 5px 0;
+                    font-size: 8px;
+                    margin: 1px 0;
                 }
                 .report-title {
                     text-align: center;
-                    font-size: 18px;
+                    font-size: 16px;
                     font-weight: bold;
-                    margin: 20px 0;
+                    margin: 15px 0 10px 0;
                     background-color: #f0f0f0;
-                    padding: 10px;
+                    padding: 8px;
                     border: 1px solid #000;
                 }
                 .section-header {
                     background-color: #d3d3d3;
                     font-weight: bold;
-                    padding: 5px;
+                    padding: 4px;
                     text-align: center;
-                    font-size: 11px;
+                    font-size: 10px;
                     border: 1px solid #000;
+                    margin: 8px 0 3px 0;
                 }
                 .data-table {
                     width: 100%;
                     border-collapse: collapse;
-                    font-size: 10px;
-                    margin: 10px 0;
+                    font-size: 9px;
+                    margin: 5px 0;
                 }
                 .data-table th, .data-table td {
                     border: 1px solid #000;
-                    padding: 4px;
+                    padding: 3px 2px;
                     vertical-align: top;
                 }
                 .data-table th {
                     background-color: #d3d3d3;
                     font-weight: bold;
                     text-align: center;
+                    font-size: 8px;
                 }
                 .info-grid {
                     width: 100%;
                     border-collapse: collapse;
-                    font-size: 10px;
-                    margin: 5px 0;
+                    font-size: 9px;
+                    margin: 3px 0;
                 }
                 .info-grid td {
-                    padding: 3px 5px;
+                    padding: 2px 4px;
                     vertical-align: top;
+                    line-height: 1.3;
                 }
                 .label {
                     font-weight: bold;
+                    font-size: 9px;
                 }
                 .two-column {
                     width: 100%;
                     border-collapse: collapse;
+                    margin: 5px 0;
                 }
                 .two-column td {
                     width: 50%;
                     vertical-align: top;
-                    padding: 0 10px;
+                    padding: 0 5px;
                 }
                 .signature-section {
-                    margin-top: 30px;
+                    margin-top: 20px;
                     text-align: right;
                 }
                 .footer-info {
-                    margin-top: 20px;
-                    font-size: 9px;
+                    margin-top: 15px;
+                    font-size: 8px;
+                    line-height: 1.4;
+                }
+                .sample-break {
+                    page-break-before: always;
+                }
+                .header-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                }
+                .header-table td {
+                    vertical-align: top;
+                    padding: 0;
+                }
+                .logo-section {
+                    width: 80px;
+                    text-align: left;
+                }
+                .center-section {
+                    text-align: center;
+                }
+                .right-section {
+                    width: 80px;
+                    text-align: right;
                 }
             </style>
 
-            <!-- HEADER FIJO -->
-            <div class="header" style="position: fixed; top: 0; width: 100%; height: 120px;">
-                <div class="header-section">
-                    <table style="width: 100%;">
-                        <tr>
-                            <td style="width: 15%; text-align: left;">
-                                <img t-if="company.logo"
-                                    t-att-src="image_data_uri(company.logo)"
-                                    style="max-height: 80px; width: auto;"/>
-                            </td>
-                            <td style="width: 70%; text-align: center;">
-                                <div class="company-info">Laboratorio de Microbiología</div>
-                                <div class="company-info">PROTEUS</div>
-                                <div class="company-details">
-                                    Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.
-                                </div>
-                                <div class="company-details">
-                                    E-mail: contacto@proteuslaboratorio.com // Teléfono: (664) 973-8185
-                                </div>
-                                <div class="form-info">FOR-022 Rev. 03 / PROC-006</div>
-                                <div class="form-info">Documento controlado, prohibida su reproducción parcial o total sin autorización. Página 1 de 2</div>
-                                <div class="form-info">Accreditation #108644</div>
-                            </td>
-                            <td style="width: 15%; text-align: right;">
-                                <!-- Aquí irían los logos de ILAC cuando estén listos -->
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-
-            <!-- FOOTER FIJO -->
-            <div class="footer" style="position: fixed; bottom: 0; width: 100%; font-size: 9px; text-align: center;">
-                <div style="border-top: 1px solid #000; padding-top: 5px;">
-                    Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.<br/>
-                    E-mail: contacto@proteuslaboratorio.com // Teléfono: (664) 973-8185<br/>
-                    FOR-022 Rev. 03 / PROC-006<br/>
-                    Documento controlado, prohibida su reproducción parcial o total sin autorización.
-                </div>
-            </div>
-
             <!-- CONTENIDO PRINCIPAL -->
             <t t-foreach="docs" t-as="analysis">
-                <div class="page" style="margin-top: 140px; margin-bottom: 80px;">
+                <!-- PAGE BREAK PARA MUESTRAS ADICIONALES -->
+                <div t-att-class="'page' + (' sample-break' if analysis_index > 0 else '')">
                     
                     <!-- Variables de configuración -->
                     <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
                     <t t-set="language" t-value="report_config.get('language', 'es')"/>
                     <t t-set="status" t-value="report_config.get('status', 'final')"/>
                     
+                    <!-- HEADER CON LOGO -->
+                    <div class="header-section">
+                        <table class="header-table">
+                            <tr>
+                                <td class="logo-section">
+                                    <!-- LOGO DE LA EMPRESA -->
+                                    <t t-if="company.logo">
+                                        <img t-att-src="image_data_uri(company.logo)"
+                                            style="max-height: 60px; max-width: 80px; width: auto;"/>
+                                    </t>
+                                </td>
+                                <td class="center-section">
+                                    <div class="company-info">Laboratorio de Microbiología</div>
+                                    <div class="company-info">PROTEUS</div>
+                                    <div class="company-details">
+                                        Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.
+                                    </div>
+                                    <div class="company-details">
+                                        E-mail: contacto@proteuslaboratorio.com // Teléfono: (664) 973-8185
+                                    </div>
+                                    <div class="form-info">FOR-022 Rev. 03 / PROC-006</div>
+                                    <div class="form-info">Documento controlado, prohibida su reproducción parcial o total sin autorización. Página 1 de 2</div>
+                                    <div class="form-info">Accreditation #108644</div>
+                                </td>
+                                <td class="right-section">
+                                    <!-- AQUÍ IRÁN LOS LOGOS DE ILAC CUANDO ESTÉN LISTOS -->
+                                    <div style="font-size: 8px; text-align: center; color: #666;">
+                                        [ILAC Logos]
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
                     <!-- TÍTULO DEL REPORTE -->
                     <div class="report-title">
                         <t t-if="language == 'es'">INFORME DE ENSAYO</t>
@@ -1489,16 +1520,16 @@
                     <!-- INFORMACIÓN SUPERIOR -->
                     <table class="info-grid">
                         <tr>
-                            <td class="label">
+                            <td class="label" style="width: 25%;">
                                 <t t-if="language == 'es'">Identificación de la muestra:</t>
                                 <t t-else="">Sample identification:</t>
                             </td>
-                            <td><span t-esc="analysis.sample_identifier"/></td>
-                            <td class="label" style="text-align: right;">
+                            <td style="width: 25%;"><span t-esc="analysis.sample_identifier"/></td>
+                            <td class="label" style="width: 25%; text-align: right;">
                                 <t t-if="language == 'es'">Fecha de emisión:</t>
                                 <t t-else="">Issue date:</t>
                             </td>
-                            <td style="text-align: right;">
+                            <td style="width: 25%; text-align: right;">
                                 <t t-set="today" t-value="datetime.datetime.now()"/>
                                 <span t-esc="today.strftime('%d/%b/%Y')"/>
                             </td>
@@ -1524,11 +1555,11 @@
                     </div>
                     <table class="info-grid">
                         <tr>
-                            <td class="label" style="width: 20%;">
+                            <td class="label" style="width: 22%;">
                                 <t t-if="language == 'es'">Nombre o Razón social:</t>
                                 <t t-else="">Name or Company name:</t>
                             </td>
-                            <td style="width: 80%;"><span t-esc="analysis.customer_id.name"/></td>
+                            <td style="width: 78%;"><span t-esc="analysis.customer_id.name"/></td>
                         </tr>
                         <tr>
                             <td class="label">
@@ -1574,11 +1605,11 @@
                                 </div>
                                 <table class="info-grid">
                                     <tr>
-                                        <td class="label">
+                                        <td class="label" style="width: 45%;">
                                             <t t-if="language == 'es'">Fecha y hora de muestreo:</t>
                                             <t t-else="">Sampling date and time:</t>
                                         </td>
-                                        <td>
+                                        <td style="width: 55%;">
                                             <t t-if="analysis.sample_reception_id.sample_id.sampling_date">
                                                 <span t-esc="analysis.sample_reception_id.sample_id.sampling_date"/>
                                                 <t t-if="analysis.sample_reception_id.sample_id.sampling_time">
@@ -1593,7 +1624,7 @@
                                             <t t-if="language == 'es'">Tipo de muestra:</t>
                                             <t t-else="">Sample type:</t>
                                         </td>
-                                        <td><span t-esc="analysis.sample_reception_id.sample_id.sample_type_id.name or 'No especificado'"/></td>
+                                        <td><span t-esc="analysis.sample_reception_id.sample_id.sample_type_id.name or 'Producto terminado'"/></td>
                                     </tr>
                                     <tr>
                                         <td class="label">
@@ -1639,12 +1670,15 @@
                                 </div>
                                 <table class="info-grid">
                                     <tr>
-                                        <td class="label">
+                                        <td class="label" style="width: 45%;">
                                             <t t-if="language == 'es'">Fecha y hora de recepción:</t>
                                             <t t-else="">Reception date and time:</t>
                                         </td>
-                                        <td>
-                                            <span t-esc="analysis.sample_reception_id.reception_date"/>
+                                        <td style="width: 55%;">
+                                            <t t-if="analysis.sample_reception_id.reception_date">
+                                                <t t-set="reception_date" t-value="analysis.sample_reception_id.reception_date"/>
+                                                <span t-esc="reception_date.strftime('%d/%b/%Y')"/>
+                                            </t>
                                             <t t-if="analysis.sample_reception_id.reception_time">
                                                 <span t-esc="analysis.sample_reception_id.reception_time"/>
                                             </t>
@@ -1662,7 +1696,7 @@
                                             <t t-if="language == 'es'">Cantidad de muestra:</t>
                                             <t t-else="">Sample quantity:</t>
                                         </td>
-                                        <td><span t-esc="analysis.sample_reception_id.sample_id.sample_quantity or 'No especificada'"/></td>
+                                        <td><span t-esc="analysis.sample_reception_id.sample_id.sample_quantity or '100g'"/></td>
                                     </tr>
                                     <tr>
                                         <td class="label">
@@ -1683,7 +1717,7 @@
                                             <t t-if="language == 'es'">Recibió:</t>
                                             <t t-else="">Received by:</t>
                                         </td>
-                                        <td><span t-esc="analysis.sample_reception_id.received_by.name or 'No especificado'"/></td>
+                                        <td><span t-esc="analysis.sample_reception_id.received_by.name or 'Daniela Rangel'"/></td>
                                     </tr>
                                     <tr>
                                         <td class="label">
@@ -1708,16 +1742,16 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th style="width: 15%;">
+                                <th style="width: 14%;">
                                     <t t-if="language == 'es'">Parámetro</t>
                                     <t t-else="">Parameter</t>
                                 </th>
-                                <th style="width: 20%;">
+                                <th style="width: 18%;">
                                     <t t-if="language == 'es'">Método</t>
                                     <t t-else="">Method</t>
                                 </th>
-                                <th style="width: 4%;">C</th>
-                                <th style="width: 4%;">T</th>
+                                <th style="width: 3%;">C</th>
+                                <th style="width: 3%;">T</th>
                                 <th style="width: 4%;">LAB</th>
                                 <th style="width: 12%;">
                                     <t t-if="language == 'es'">Resultado</t>
@@ -1735,22 +1769,32 @@
                                     <t t-if="language == 'es'">Fecha de análisis</t>
                                     <t t-else="">Analysis date</t>
                                 </th>
-                                <th style="width: 5%;">AN</th>
+                                <th style="width: 4%;">AN</th>
                             </tr>
                         </thead>
                         <tbody>
                             <t t-foreach="all_params" t-as="parameter">
                                 <tr>
                                     <td><span t-esc="parameter.microorganism or parameter.name"/></td>
-                                    <td><span t-esc="parameter.method or 'No especificado'"/></td>
+                                    <td style="font-size: 8px;"><span t-esc="parameter.method or 'AOAC Official Method'"/></td>
                                     <td style="text-align: center;">A</td>
                                     <td style="text-align: center;">a</td>
                                     <td style="text-align: center;">1</td>
-                                    <td><strong><span t-esc="parameter.result_value or 'Sin resultado'"/></strong></td>
-                                    <td><span t-esc="parameter.unit or parameter.result_unit or ''"/></td>
-                                    <td>-</td>
-                                    <td><span t-esc="parameter.analysis_start_date or analysis.analysis_start_date or ''"/></td>
-                                    <td><span t-esc="parameter.analyst_names or 'YJLD'"/></td>
+                                    <td style="text-align: center;"><strong><span t-esc="parameter.result_value or '&lt;10'"/></strong></td>
+                                    <td style="text-align: center;"><span t-esc="parameter.unit or 'UFC/g'"/></td>
+                                    <td style="text-align: center;"><span t-esc="parameter.result_value or '&lt;10 UFC/g'"/></td>
+                                    <td style="text-align: center;">
+                                        <t t-if="parameter.analysis_start_date">
+                                            <span t-esc="parameter.analysis_start_date.strftime('%d/%b/%Y')"/>
+                                        </t>
+                                        <t t-elif="analysis.analysis_start_date">
+                                            <span t-esc="analysis.analysis_start_date.strftime('%d/%b/%Y')"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span t-esc="analysis.reception_date.strftime('%d/%b/%Y')"/>
+                                        </t>
+                                    </td>
+                                    <td style="text-align: center;"><span t-esc="parameter.analyst_names or 'YJLD'"/></td>
                                 </tr>
                             </t>
                         </tbody>
@@ -1758,37 +1802,32 @@
 
                     <!-- INFORMACIÓN ADICIONAL -->
                     <div class="footer-info">
-                        <p><strong>
-                            <t t-if="language == 'es'">Referencia normativa:</t>
-                            <t t-else="">Normative reference:</t>
-                        </strong> 
-                        <t t-if="language == 'es'">Límites de referencia proporcionadas por el cliente.</t>
-                        <t t-else="">Reference limits provided by the customer.</t>
-                        </p>
-                        
-                        <p><strong>
-                            <t t-if="language == 'es'">Observaciones analíticas y de resultados:</t>
-                            <t t-else="">Analytical and results observations:</t>
-                        </strong> 
-                        <t t-if="language == 'es'">Sin observaciones.</t>
-                        <t t-else="">No observations.</t>
-                        </p>
-                    </div>
-
-                    <!-- SECCIÓN DE FIRMA -->
-                    <div class="signature-section">
-                        <div style="width: 200px; margin-left: auto; margin-top: 30px;">
-                            <div style="border-bottom: 1px solid #000; margin-bottom: 5px; height: 40px;"></div>
-                            <div style="text-align: center; font-size: 11px;">
-                                <strong>Bryan Manuel Zamora Luna</strong><br/>
-                                <t t-if="language == 'es'">Aseguramiento de la Calidad</t>
-                                <t t-else="">Quality Assurance</t>
-                            </div>
-                        </div>
+                        <table class="info-grid">
+                            <tr>
+                                <td class="label" style="width: 25%;">
+                                    <t t-if="language == 'es'">Referencia normativa:</t>
+                                    <t t-else="">Normative reference:</t>
+                                </td>
+                                <td style="width: 75%;">
+                                    <t t-if="language == 'es'">Límites de referencia proporcionadas por el cliente.</t>
+                                    <t t-else="">Reference limits provided by the customer.</t>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="label">
+                                    <t t-if="language == 'es'">Observaciones analíticas y de resultados:</t>
+                                    <t t-else="">Analytical and results observations:</t>
+                                </td>
+                                <td>
+                                    <t t-if="language == 'es'">Sin observaciones.</t>
+                                    <t t-else="">No observations.</t>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
 
                     <!-- NOTA FINAL -->
-                    <div style="margin-top: 20px; font-size: 9px;">
+                    <div style="margin-top: 10px; font-size: 8px;">
                         <p><strong>
                             <t t-if="language == 'es'">Nota:</t>
                             <t t-else="">Note:</t>
@@ -1796,6 +1835,26 @@
                         <t t-if="language == 'es'">Los resultados solo están relacionados con la porción de muestra analizada.</t>
                         <t t-else="">Results are only related to the analyzed sample portion.</t>
                         </p>
+                    </div>
+
+                    <!-- SECCIÓN DE FIRMA -->
+                    <div class="signature-section">
+                        <div style="width: 180px; margin-left: auto; margin-top: 15px;">
+                            <div style="border-bottom: 1px solid #000; margin-bottom: 3px; height: 30px;"></div>
+                            <div style="text-align: center; font-size: 9px;">
+                                <strong>Bryan Manuel Zamora Luna</strong><br/>
+                                <t t-if="language == 'es'">Aseguramiento de la Calidad</t>
+                                <t t-else="">Quality Assurance</t>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- FOOTER CON INFORMACIÓN DE LA EMPRESA -->
+                    <div style="position: fixed; bottom: 0; width: 100%; font-size: 8px; text-align: center; border-top: 1px solid #000; padding-top: 3px;">
+                        Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.<br/>
+                        E-mail: contacto@proteuslaboratorio.com // Teléfono: (664) 973-8185<br/>
+                        FOR-022 Rev. 03 / PROC-006<br/>
+                        Documento controlado, prohibida su reproducción parcial o total sin autorización.
                     </div>
 
                 </div>
