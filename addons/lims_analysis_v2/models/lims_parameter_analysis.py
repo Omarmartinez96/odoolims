@@ -107,6 +107,12 @@ class LimsParameterAnalysisV2(models.Model):
         placeholder='mg/L, °C, pH, NTU, etc.'
     )
     
+    result_quantitative_text = fields.Char(
+        string='Resultado Cuantitativo',
+        help='Resultado cuantitativo como texto libre para mayor flexibilidad',
+        placeholder='Ej: 1.2 x 10² UFC/g, < 0.01 mg/kg, 7.2 ± 0.1 pH'
+    )
+
     # Para resultados cualitativos
     result_qualitative = fields.Selection([
         ('detected', 'Detectado'),
@@ -416,15 +422,24 @@ class LimsParameterAnalysisV2(models.Model):
         if self.result_unit_selection != 'custom':
             self.custom_unit = False
     
-    @api.onchange('result_numeric', 'result_unit')
+    @api.onchange('result_numeric', 'result_unit', 'result_quantitative_text')
     def _onchange_numeric_result(self):
-        """Auto-completar resultado principal cuando se llena numérico + unidad"""
-        if self.result_numeric and self.result_unit:
+        """Auto-completar resultado principal cuando se llena cuantitativo + unidad"""
+        # Priorizar el campo de texto si está lleno
+        if self.result_quantitative_text:
+            self.result_value = self.result_quantitative_text
+        elif self.result_numeric and self.result_unit:
             if self.result_unit.lower() in ['ph', 'unidades de ph']:
                 self.result_value = f"{self.result_numeric:.1f} {self.result_unit}"
             else:
                 self.result_value = f"{self.result_numeric} {self.result_unit}"
     
+    @api.onchange('result_quantitative_text')
+    def _onchange_quantitative_text_result(self):
+        """Auto-completar resultado principal con resultado cuantitativo de texto"""
+        if self.result_quantitative_text:
+            self.result_value = self.result_quantitative_text
+
     @api.onchange('result_qualitative')
     def _onchange_qualitative_result(self):
         """Auto-completar resultado principal con resultado cualitativo"""
@@ -460,6 +475,7 @@ class LimsParameterAnalysisV2(models.Model):
             # Limpiar campos cuantitativos
             self.result_numeric = False
             self.result_unit = False
+            self.result_quantitative_text = False  
             self.below_detection_limit = False
             self.above_quantification_limit = False
             self.result_unit_selection = False
