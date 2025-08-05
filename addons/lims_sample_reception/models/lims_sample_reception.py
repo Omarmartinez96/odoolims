@@ -285,7 +285,7 @@ class LimsSampleReception(models.Model):
         if vals.get('reception_state') == 'recibida':
             for record in self:
                 # Verificar que no exista ya un análisis para esta recepción
-                existing_analysis = self.env['lims.analysis'].search([
+                existing_analysis = self.env['lims.analysis.v2'].search([
                     ('sample_reception_id', '=', record.id)
                 ])
                 
