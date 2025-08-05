@@ -13,34 +13,6 @@
         - Control de calidad integrado y automatizado
         - Sistema de revisiones completo con historial
         - Gestión avanzada de incubaciones con estados en tiempo real
-        
-        🎯 MEJORAS DE LA V2:
-        - Interfaz de usuario moderna y optimizada
-        - Modelos unificados para mejor rendimiento
-        - Reportes dinámicos que se generan al momento
-        - Flujo de trabajo simplificado y más intuitivo
-        - Mejor organización de datos y menor redundancia
-        - Sistema de medios consolidado en un solo modelo
-        
-        📊 FUNCIONALIDADES AVANZADAS:
-        - Datos crudos de diluciones con cálculos automáticos
-        - Seguimiento de incubaciones con alertas de vencimiento
-        - Control de calidad ejecutado con estados y trazabilidad
-        - Gestión de equipos involucrados en cada análisis
-        - Sistema de confirmaciones para análisis cualitativos
-        - Acciones masivas para eficiencia operativa
-        
-        🔄 SISTEMA DE REVISIONES:
-        - Creación automática de revisiones con copia completa de datos
-        - Trazabilidad completa de cambios y motivos
-        - Numeración automática de revisiones
-        - Historial completo de modificaciones
-        
-        🖊️ FIRMAS DIGITALES:
-        - Captura de firmas digitales con metadatos completos
-        - Cancelación y recuperación de firmas
-        - Generación de reportes para firma manual adicional
-        - Trazabilidad completa del proceso de autorización
     ''',
     'category': 'LIMS',
     'author': 'Omar Martinez',
@@ -68,12 +40,8 @@
         'report/report_templates.xml',
     ],
     'demo': [],
-    'qweb': [],
     'installable': True,
     'application': True,
     'auto_install': False,
     'license': 'LGPL-3',
-    'images': ['static/description/banner.png'],
-    'price': 0.0,
-    'currency': 'USD',
 }
