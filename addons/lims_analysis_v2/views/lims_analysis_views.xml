@@ -96,6 +96,8 @@
                                 class="btn-info"
                                 invisible="signature_state != 'signed'"
                                 confirm="¿Está seguro de solicitar una revisión? Esto cancelará la firma actual."/>
+                        
+                    </header>
                     
                     <sheet>
                         <!-- Título -->
