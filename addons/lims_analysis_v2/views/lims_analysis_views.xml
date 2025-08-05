@@ -7,8 +7,7 @@
             <field name="name">lims.analysis.v2.list</field>
             <field name="model">lims.analysis.v2</field>
             <field name="arch" type="xml">
-                <list string="Análisis de Muestras" create="0" default_group_by="custody_chain_id" expand="1"
-                      create="0"
+                <list string="Análisis de Muestras v2" create="false" default_group_by="custody_chain_id" expand="1"
                       decoration-success="signature_state == 'signed'" 
                       decoration-warning="signature_state == 'cancelled'"
                       decoration-info="has_ready_parameters == True">
@@ -385,7 +384,7 @@
             <field name="name">lims.analysis.v2.kanban</field>
             <field name="model">lims.analysis.v2</field>
             <field name="arch" type="xml">
-                <kanban default_group_by="analysis_state" class="o_kanban_small_column" create="0">
+                <kanban default_group_by="analysis_state" class="o_kanban_small_column" create="false">
                     <field name="sample_code"/>
                     <field name="customer_id"/>
                     <field name="ready_parameters_count"/>
@@ -456,7 +455,7 @@
             <field name="name">Análisis de Muestras</field>
             <field name="res_model">lims.analysis.v2</field>
             <field name="view_mode">kanban,list,form</field>
-            <field name="create">0</field>
+            <field name="create">false</field>
             <field name="view_ids" eval="[
                 (5, 0, 0),
                 (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_lims_analysis_v2_kanban')}),
