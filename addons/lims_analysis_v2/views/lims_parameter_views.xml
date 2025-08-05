@@ -320,127 +320,6 @@
                                 
                             </page>
 
-                            <!-- ========== TAB DE CONFIRMACIÓN ========== -->
-                            <page string="✅ Confirmación" invisible="requires_confirmation == False">
-                                
-                                <group string="Ambiente de Procesamiento">
-                                    <field name="confirmation_environment" widget="radio"/>
-                                </group>
-                                
-                                <group string="Equipo Utilizado" 
-                                       invisible="confirmation_environment not in ['campana_flujo', 'campana_bioseguridad']">
-                                    <field name="confirmation_equipment_id" 
-                                           placeholder="Seleccionar equipo específico"/>
-                                </group>
-                                
-                                <group string="Fechas del Proceso">
-                                    <field name="confirmation_processing_date"/>
-                                    <field name="confirmation_processing_time" placeholder="HH:MM"/>
-                                </group>
-                                
-                                <group string="Medios de Confirmación">
-                                    <field name="confirmation_media_ids" nolabel="1" colspan="2"
-                                           context="{'default_process_type': 'confirmation', 'default_media_usage': 'pruebas_bioquimicas'}">
-                                        
-                                        <list string="Medios para Confirmación" create="true" delete="true" edit="true">
-                                            <field name="media_source" string="Origen" width="15%"/>
-                                            <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
-                                            <field name="culture_media_batch_id" 
-                                                string="Lote Interno"
-                                                invisible="media_source != 'internal'"
-                                                width="20%"/>
-                                            <field name="external_batch_code" 
-                                                string="Lote Externo" 
-                                                invisible="media_source != 'external'"
-                                                width="20%"/>
-                                            <field name="media_usage" string="Uso" width="20%"/>
-                                            <field name="requires_incubation" string="¿Incubación?"/>
-                                            <field name="incubation_status" 
-                                                invisible="requires_incubation == False"
-                                                decoration-success="incubation_status == 'completed'"
-                                                decoration-warning="incubation_status == 'overdue'"
-                                                decoration-info="incubation_status == 'active'"/>
-                                            <field name="qualitative_result" string="Resultado" optional="show"/>
-                                        </list>
-                                        
-                                        <form string="Medio de Confirmación">
-                                            <!-- Mismo form structure -->
-                                            <group>
-                                                <group>
-                                                    <field name="process_type" invisible="1"/>
-                                                    <field name="media_source" widget="radio"/>
-                                                    <field name="culture_media_name" 
-                                                        placeholder="Nombre del medio de cultivo"
-                                                        required="1"/>
-                                                </group>
-
-                                                <group string="Lote del Medio">
-                                                    <field name="culture_media_batch_id" 
-                                                        invisible="media_source != 'internal'"
-                                                        placeholder="Seleccionar lote interno"
-                                                        options="{'no_create': True}"/>
-                                                    <field name="external_batch_code" 
-                                                        invisible="media_source != 'external'"
-                                                        placeholder="Código del lote externo"
-                                                        required="media_source == 'external'"/>
-                                                </group>
-
-                                                <group>
-                                                    <field name="media_usage" 
-                                                        string="Uso del Medio"
-                                                        required="1"/>
-                                                    <field name="requires_incubation" string="¿Requiere Incubación?"/>
-                                                </group>
-                                            </group>
-                                            
-                                            <group string="🌡️ Incubación" 
-                                                   invisible="requires_incubation == False">
-                                                <group>
-                                                    <field name="incubation_equipment" 
-                                                           placeholder="Equipo utilizado"/>
-                                                    <field name="incubation_start_date"/>
-                                                    <field name="incubation_start_time" placeholder="HH:MM"/>
-                                                </group>
-                                                <group>
-                                                    <field name="incubation_end_date"/>
-                                                    <field name="incubation_end_time" placeholder="HH:MM"/>
-                                                </group>
-                                            </group>
-                                            
-                                            <group string="📊 Estado de Incubación" 
-                                                invisible="requires_incubation == False">
-                                                <group>
-                                                    <field name="incubation_status" readonly="1"/>
-                                                    <field name="time_remaining" readonly="1" 
-                                                        invisible="incubation_status != 'active'"/>
-                                                    <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
-                                                </group>
-
-                                                <group>
-                                                    <field name="incubation_end_date_real"/>
-                                                    <field name="incubation_end_time_real" placeholder="HH:MM"/>
-                                                    <button name="action_mark_completed" 
-                                                            type="object" 
-                                                            string="✅ Marcar Completada" 
-                                                            class="btn-success"
-                                                            invisible="incubation_status == 'completed'"/>
-                                                </group>
-                                            </group>
-
-                                            <group string="🧪 Resultado en este Medio (Si Aplica)">
-                                                <field name="qualitative_result"/>
-                                            </group>
-
-                                            <group string="📝 Notas de Preparación">
-                                                <field name="preparation_notes" nolabel="1"
-                                                       placeholder="Instrucciones especiales, observaciones, etc..."/>
-                                            </group>
-                                        </form>
-                                    </field>
-                                </group>
-                                
-                            </page>
-
                             <!-- ========== TAB DE ANÁLISIS CUANTITATIVO ========== -->
                             <page string="🔢 Análisis Cuantitativo" invisible="result_type != 'quantitative'">
                         
@@ -814,18 +693,125 @@
                                 </group>
                             </page>
 
-                            <!-- ========== TAB DE RESULTADOS DE CONFIRMACIÓN ========== -->
-                            <page string="✅ Resultados de Confirmación" invisible="requires_confirmation == False">
-                                <field name="confirmation_results_ids" nolabel="1">
-                                    <list string="Resultados por Lote de Medio" editable="bottom">
-                                        <field name="batch_display_name" string="Lote de Medio" readonly="1"/>
-                                        <field name="result" string="Resultado" placeholder="Ej: Positivo, Negativo, etc."/>
-                                        <field name="qualitative_result" string="Resultado Estructurado"/>
-                                        <field name="result_date" string="Fecha"/>
-                                        <field name="recorded_by" string="Registrado por"/>
-                                        <field name="observations" string="Observaciones" optional="show"/>
-                                    </list>
-                                </field>
+                            <!-- ========== TAB DE CONFIRMACIÓN ========== -->
+                            <page string="✅ Confirmación" invisible="requires_confirmation == False">
+                                
+                                <group string="Ambiente de Procesamiento">
+                                    <field name="confirmation_environment" widget="radio"/>
+                                </group>
+                                
+                                <group string="Equipo Utilizado" 
+                                       invisible="confirmation_environment not in ['campana_flujo', 'campana_bioseguridad']">
+                                    <field name="confirmation_equipment_id" 
+                                           placeholder="Seleccionar equipo específico"/>
+                                </group>
+                                
+                                <group string="Fechas del Proceso">
+                                    <field name="confirmation_processing_date"/>
+                                    <field name="confirmation_processing_time" placeholder="HH:MM"/>
+                                </group>
+                                
+                                <group string="Medios de Confirmación">
+                                    <field name="confirmation_media_ids" nolabel="1" colspan="2"
+                                           context="{'default_process_type': 'confirmation', 'default_media_usage': 'pruebas_bioquimicas'}">
+                                        
+                                        <list string="Medios para Confirmación" create="true" delete="true" edit="true">
+                                            <field name="media_source" string="Origen" width="15%"/>
+                                            <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
+                                            <field name="culture_media_batch_id" 
+                                                string="Lote Interno"
+                                                invisible="media_source != 'internal'"
+                                                width="20%"/>
+                                            <field name="external_batch_code" 
+                                                string="Lote Externo" 
+                                                invisible="media_source != 'external'"
+                                                width="20%"/>
+                                            <field name="media_usage" string="Uso" width="20%"/>
+                                            <field name="requires_incubation" string="¿Incubación?"/>
+                                            <field name="incubation_status" 
+                                                invisible="requires_incubation == False"
+                                                decoration-success="incubation_status == 'completed'"
+                                                decoration-warning="incubation_status == 'overdue'"
+                                                decoration-info="incubation_status == 'active'"/>
+                                            <field name="qualitative_result" string="Resultado" optional="show"/>
+                                        </list>
+                                        
+                                        <form string="Medio de Confirmación">
+                                            <!-- Mismo form structure -->
+                                            <group>
+                                                <group>
+                                                    <field name="process_type" invisible="1"/>
+                                                    <field name="media_source" widget="radio"/>
+                                                    <field name="culture_media_name" 
+                                                        placeholder="Nombre del medio de cultivo"
+                                                        required="1"/>
+                                                </group>
+
+                                                <group string="Lote del Medio">
+                                                    <field name="culture_media_batch_id" 
+                                                        invisible="media_source != 'internal'"
+                                                        placeholder="Seleccionar lote interno"
+                                                        options="{'no_create': True}"/>
+                                                    <field name="external_batch_code" 
+                                                        invisible="media_source != 'external'"
+                                                        placeholder="Código del lote externo"
+                                                        required="media_source == 'external'"/>
+                                                </group>
+
+                                                <group>
+                                                    <field name="media_usage" 
+                                                        string="Uso del Medio"
+                                                        required="1"/>
+                                                    <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                </group>
+                                            </group>
+                                            
+                                            <group string="🌡️ Incubación" 
+                                                   invisible="requires_incubation == False">
+                                                <group>
+                                                    <field name="incubation_equipment" 
+                                                           placeholder="Equipo utilizado"/>
+                                                    <field name="incubation_start_date"/>
+                                                    <field name="incubation_start_time" placeholder="HH:MM"/>
+                                                </group>
+                                                <group>
+                                                    <field name="incubation_end_date"/>
+                                                    <field name="incubation_end_time" placeholder="HH:MM"/>
+                                                </group>
+                                            </group>
+                                            
+                                            <group string="📊 Estado de Incubación" 
+                                                invisible="requires_incubation == False">
+                                                <group>
+                                                    <field name="incubation_status" readonly="1"/>
+                                                    <field name="time_remaining" readonly="1" 
+                                                        invisible="incubation_status != 'active'"/>
+                                                    <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
+                                                </group>
+
+                                                <group>
+                                                    <field name="incubation_end_date_real"/>
+                                                    <field name="incubation_end_time_real" placeholder="HH:MM"/>
+                                                    <button name="action_mark_completed" 
+                                                            type="object" 
+                                                            string="✅ Marcar Completada" 
+                                                            class="btn-success"
+                                                            invisible="incubation_status == 'completed'"/>
+                                                </group>
+                                            </group>
+
+                                            <group string="🧪 Resultado en este Medio (Si Aplica)">
+                                                <field name="qualitative_result"/>
+                                            </group>
+
+                                            <group string="📝 Notas de Preparación">
+                                                <field name="preparation_notes" nolabel="1"
+                                                       placeholder="Instrucciones especiales, observaciones, etc..."/>
+                                            </group>
+                                        </form>
+                                    </field>
+                                </group>
+                                
                             </page>
 
                         </notebook>
