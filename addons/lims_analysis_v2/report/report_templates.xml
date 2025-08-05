@@ -1526,7 +1526,7 @@
                     </style>
 
                     <!-- CONTENIDO PRINCIPAL - Una página por muestra -->
-                    <div t-att-class="'page' + (' sample-break' if analysis_index > 0 else '')">
+                    <div t-att-class="'page' + (' sample-break' if analysis_index > 0 else '')" style="padding-top: 80px;">
                         
                         <!-- Variables de configuración -->
                         <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
