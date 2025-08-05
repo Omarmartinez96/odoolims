@@ -470,6 +470,55 @@ class LimsParameterAnalysisV2(models.Model):
             # Limpiar campos cualitativos
             self.result_qualitative = False
 
+    @api.onchange('result_type')
+    def _onchange_result_type_cleanup(self):
+        """Limpiar campos y medios cuando cambia el tipo de resultado"""
+        if self.result_type == 'qualitative':
+            # Limpiar campos cuantitativos
+            self.result_numeric = False
+            self.result_unit = False
+            self.below_detection_limit = False
+            self.above_quantification_limit = False
+            self.result_unit_selection = False
+            self.custom_unit = False
+            # Limpiar datos de diluciones
+            self.raw_dilution_data_ids = [(5, 0, 0)]
+            # Limpiar medios cuantitativos
+            self.quantitative_media_ids = [(5, 0, 0)]
+            # Limpiar campos de ambiente cuantitativo
+            self.quantitative_environment = False
+            self.quantitative_equipment_id = False
+            self.quantitative_processing_date = False
+            self.quantitative_processing_time = False
+            
+        elif self.result_type == 'quantitative':
+            # Limpiar campos cualitativos
+            self.result_qualitative = False
+            self.qualitative_unit_selection = False
+            self.qualitative_custom_unit = False
+            # Limpiar configuración de procesos cualitativos
+            self.requires_pre_enrichment = False
+            self.requires_selective_enrichment = False
+            # Limpiar medios cualitativos
+            self.pre_enrichment_media_ids = [(5, 0, 0)]
+            self.selective_enrichment_media_ids = [(5, 0, 0)]
+            self.qualitative_media_ids = [(5, 0, 0)]
+            # Limpiar campos de ambiente cualitativo
+            self.qualitative_environment = False
+            self.qualitative_equipment_id = False
+            self.qualitative_processing_date = False
+            self.qualitative_processing_time = False
+            # Limpiar campos de pre-enriquecimiento
+            self.pre_enrichment_environment = False
+            self.pre_enrichment_equipment_id = False
+            self.pre_enrichment_processing_date = False
+            self.pre_enrichment_processing_time = False
+            # Limpiar campos de enriquecimiento selectivo
+            self.selective_enrichment_environment = False
+            self.selective_enrichment_equipment_id = False
+            self.selective_enrichment_processing_date = False
+            self.selective_enrichment_processing_time = False
+
     @api.onchange('result_value', 'analysis_status')
     def _onchange_check_report_ready(self):
         """Detectar automáticamente cuando el parámetro está listo para reporte"""

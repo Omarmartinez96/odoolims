@@ -43,13 +43,21 @@
                         <!-- Configuración de procesos según categoría y tipo -->
                         <group string="🔧 Configuración de Procesos" invisible="category != 'microbiological'">
                             <div class="alert alert-info" style="margin-bottom: 10px;" colspan="4">
-                                <strong>ℹ️ Configuración Automática:</strong> 
+                                <strong>ℹ️ Configuración:</strong> 
                                 Selecciona los procesos que requiere este parámetro para mostrar las pestañas correspondientes.
                             </div>
-                            <field name="requires_pre_enrichment" invisible="result_type != 'qualitative'"/>
-                            <field name="requires_selective_enrichment" invisible="result_type != 'qualitative'"/>
-                            <field name="requires_confirmation"/>
-                            <field name="requires_ph_adjustment"/>
+                            
+                            <!-- Para Análisis Cualitativos -->
+                            <group string="Procesos para Análisis Cualitativos" invisible="result_type != 'qualitative'" colspan="2">
+                                <field name="requires_pre_enrichment"/>
+                                <field name="requires_selective_enrichment"/>
+                            </group>
+                            
+                            <!-- Para Todos los Tipos -->
+                            <group string="Procesos Adicionales" colspan="2">
+                                <field name="requires_confirmation"/>
+                                <field name="requires_ph_adjustment"/>
+                            </group>
                         </group>
 
                         <!-- Notebook principal con pestañas específicas por proceso -->
