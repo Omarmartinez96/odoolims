@@ -7,13 +7,24 @@
             <field name="name">lims.custody_chain.reception.list</field>
             <field name="model">lims.custody_chain</field>
             <field name="arch" type="xml">
-                <list string="Cadenas de Custodia - Recepción">
+                <list string="Cadenas de Custodia - Recepción" create="false" edit="false">
                     <field name="custody_chain_code"/>
                     <field name="cliente_id"/>
-                    <field name="sucursal_id"/>
-                    <field name="departamento_id"/>
-                    <field name="chain_of_custody_state"/>
+                    <field name="client_code"/>
                     <field name="date_created"/>
+                    <field name="chain_of_custody_state"/>
+                    
+                    <!-- Campos de estadísticas de recepción -->
+                    <field name="samples_total"/>
+                    <field name="samples_received" decoration-success="samples_received > 0"/>
+                    <field name="samples_rejected" decoration-danger="samples_rejected > 0"/>
+                    <field name="samples_pending" decoration-warning="samples_pending > 0"/>
+                    <field name="reception_progress" widget="percentage"/>
+                    
+                    <!-- Estado general computado -->
+                    <field name="reception_status_display" decoration-success="reception_status_display == 'Completo'" 
+                        decoration-warning="reception_status_display == 'En Proceso'" 
+                        decoration-muted="reception_status_display == 'Sin Procesar'"/>
                 </list>
             </field>
         </record>
@@ -170,13 +181,6 @@
                   parent="lims_sample_reception_menu_root"
                   action="action_custody_chains_reception"
                   sequence="10"/>
-
-        <!-- Submenú para recepciones -->
-        <menuitem id="menu_sample_receptions"
-                  name="Recepciones"
-                  parent="lims_sample_reception_menu_root"
-                  action="action_sample_receptions"
-                  sequence="20"/>
 
     </data>
 </odoo>

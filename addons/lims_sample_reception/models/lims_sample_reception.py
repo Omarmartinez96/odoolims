@@ -376,6 +376,14 @@ class LimsSample(models.Model):
             record.samples_received = received
             record.samples_rejected = rejected
             record.samples_pending = pending
+            if total == 0:
+                record.reception_status_display = 'Sin Muestras'
+            elif pending == total:
+                record.reception_status_display = 'Sin Procesar'
+            elif pending == 0:
+                record.reception_status_display = 'Completo'
+            else:
+                record.reception_status_display = 'En Proceso'
             record.reception_progress = (received + rejected) * 100.0 / total if total > 0 else 0.0
 
     def _compute_sample_reception_state(self):
@@ -418,6 +426,11 @@ class LimsCustodyChain(models.Model):
     )
     reception_progress = fields.Float(
         string='Progreso (%)',
+        compute='_compute_reception_stats'
+    )
+
+    reception_status_display = fields.Char(
+        string='Estado General',
         compute='_compute_reception_stats'
     )
 
