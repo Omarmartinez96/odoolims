@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- ========== REPORTE PRELIMINAR DINÁMICO ========== -->
+        <record id="action_report_analysis_preliminary" model="ir.actions.report">
+            <field name="name">Reporte Preliminar de Análisis</field>
+            <field name="model">lims.analysis.v2</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">lims_analysis_v2.report_analysis_preliminary_template</field>
+            <field name="report_file">lims_analysis_v2.report_analysis_preliminary_template</field>
+            <field name="print_report_name">'Informe Preliminar - ' + (object.custody_chain_code or 'Sin código') + '.pdf'</field>
+            <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
+        </record>
+
+        <!-- ========== REPORTE FINAL DINÁMICO ========== -->
+        <record id="action_report_analysis_final" model="ir.actions.report">
+            <field name="name">Reporte Final de Análisis</field>
+            <field name="model">lims.analysis.v2</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">lims_analysis_v2.report_analysis_final_template</field>
+            <field name="report_file">lims_analysis_v2.report_analysis_final_template</field>
+            <field name="print_report_name">'Informe Final - ' + (object.custody_chain_code or 'Sin código') + '.pdf'</field>
+            <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
+        </record>
+
+        <!-- ========== REPORTE PARA FIRMA MANUAL ========== -->
+        <record id="action_report_analysis_signing" model="ir.actions.report">
+            <field name="name">Reporte para Firma Manual</field>
+            <field name="model">lims.analysis.v2</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">lims_analysis_v2.report_analysis_signing_template</field>
+            <field name="report_file">lims_analysis_v2.report_analysis_signing_template</field>
+            <field name="print_report_name">'Informe para Firma - ' + (object.custody_chain_code or 'Sin código') + '.pdf'</field>
+            <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
+        </record>
+
+    </data>
+</odoo>

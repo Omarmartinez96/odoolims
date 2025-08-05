@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- ========== VISTA LISTA PRINCIPAL DE ANÁLISIS ========== -->
+        <record id="view_lims_analysis_v2_list" model="ir.ui.view">
+            <field name="name">lims.analysis.v2.list</field>
+            <field name="model">lims.analysis.v2</field>
+            <field name="arch" type="xml">
+                <list string="Análisis de Muestras v2" create="false" default_group_by="custody_chain_id" expand="1" 
+                      decoration-success="signature_state == 'signed'" 
+                      decoration-warning="signature_state == 'cancelled'"
+                      decoration-info="has_ready_parameters == True">
+                    
+                    <!-- Campos invisibles para agrupación -->
+                    <field name="custody_chain_id" invisible="1"/>
+                    
+                    <!-- Header con información de la cadena -->
+                    <header>
+                        <button name="action_mass_print_preliminary_report" 
+                                type="object" 
+                                string="📋 Reporte Preliminar" 
+                                class="btn-primary"/>
+                        <button name="action_mass_print_final_report" 
+                                type="object" 
+                                string="📄 Reporte Final" 
+                                class="btn-success"/>
+                        <button name="action_mass_print_report_for_signing" 
+                                type="object" 
+                                string="✍️ Para Firma Manual" 
+                                class="btn-info"/>
+                        <button name="action_mass_mark_as_reported" 
+                                type="object" 
+                                string="✅ Marcar Reportado" 
+                                class="btn-secondary"/>
+                    </header>
+                    
+                    <!-- Información de la cadena (visible en el grupo) -->
+                    <field name="custody_chain_code" string="Cadena"/>
+                    <field name="customer_id" string="Cliente"/>
+                    
+                    <!-- Información de la muestra -->
+                    <field name="sample_code" string="Código Muestra"/>
+                    <field name="sample_identifier" string="Identificación"/>
+                    
+                    <!-- Información de revisiones -->
+                    <field name="revision_number" string="Rev." width="50px"/>
+                    <field name="is_revision" string="🔄" widget="boolean_toggle" width="30px"/>
+                    
+                    <!-- Fechas -->
+                    <field name="analysis_start_date" string="Inicio"/>
+                    <field name="reception_date" string="Recepción"/>
+                    
+                    <!-- Estados y contadores -->
+                    <field name="ready_parameters_count" string="Listos"/>
+                    <field name="total_parameters_count" string="Total"/>
+                    <field name="has_ready_parameters" string="📊" widget="boolean_toggle" width="30px"/>
+                    <field name="all_parameters_ready" string="✅" widget="boolean_toggle" width="30px"/>
+                    
+                    <!-- Estado de firma -->
+                    <field name="signature_state" string="✍️ Firma" 
+                        decoration-success="signature_state == 'signed'"
+                        decoration-warning="signature_state == 'cancelled'"
+                        decoration-muted="signature_state == 'not_signed'"/>
+                    
+                    <!-- Estado de análisis -->
+                    <field name="analysis_state" string="Estado"/>
+                    
+                    <!-- Resumen de reportes -->
+                    <field name="report_status_summary" string="Estado Parámetros"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ========== VISTA FORMULARIO PRINCIPAL DE ANÁLISIS ========== -->
+        <record id="view_lims_analysis_v2_form" model="ir.ui.view">
+            <field name="name">lims.analysis.v2.form</field>
+            <field name="model">lims.analysis.v2</field>
+            <field name="arch" type="xml">
+                <form string="Análisis de Muestra v2">
+                    <header>
+                        <!-- Botones de estado de análisis -->
+                        <button name="action_complete_analysis"
+                                type="object"
+                                string="✅ Completar Análisis"
+                                class="btn-success"
+                                invisible="analysis_state != 'in_progress'"
+                                confirm="¿Marcar análisis como completado?"/>
+                        
+                        <!-- Botones de firma -->
+                        <button name="action_sign_sample"
+                                type="object"
+                                string="✍️ Firmar Muestra"
+                                class="btn-warning"
+                                invisible="signature_state != 'not_signed'"
+                                confirm="Se abrirá el wizard de firma. ¿Continuar?"/>
+                        
+                        <button name="action_cancel_signature"
+                                type="object"
+                                string="❌ Cancelar Firma"
+                                class="btn-danger"
+                                invisible="can_cancel_signature == False"
+                                confirm="¿Está seguro de cancelar la firma? Los parámetros volverán a estado borrador."/>
+
+                        <button name="action_undo_cancellation"
+                                type="object"
+                                string="🔄 Deshacer Cancelación"
+                                class="btn-info"
+                                invisible="signature_state != 'cancelled'"
+                                confirm="¿Deshacer la cancelación? La muestra volverá a estar lista para firmar."/>
+
+                        <button name="action_request_revision"
+                                type="object"
+                                string="🔄 Solicitar Revisión"
+                                class="btn-info"
+                                invisible="signature_state != 'signed'"
+                                confirm="¿Está seguro de solicitar una revisión? Esto cancelará la firma actual."/>
+                        
+                        <!-- Botones de reportes -->
+                        <button name="generate_preliminary_report"
+                                type="object"
+                                string="📋 Reporte Preliminar"
+                                class="btn-primary"
+                                invisible="has_ready_parameters == False"/>
+                        
+                        <button name="generate_final_report"
+                                type="object"
+                                string="📄 Reporte Final"
+                                class="btn-success"
+                                invisible="all_parameters_ready == False"/>
+                        
+                        <button name="generate_signing_report"
+                                type="object"
+                                string="📄 Para Firma Manual"
+                                class="btn-info"
+                                invisible="signature_state != 'signed'"/>
+                        
+                        <!-- StatusBar -->
+                        <field name="analysis_state" widget="statusbar" statusbar_visible="draft,in_progress,completed,validated"/>
+                    </header>
+                    
+                    <sheet>
+                        <!-- Título -->
+                        <div class="oe_title">
+                            <h1>
+                                <field name="display_name" readonly="1"/>
+                                <t t-if="revision_number > 0">
+                                    <span class="badge badge-info">Rev. <field name="revision_number"/></span>
+                                </t>
+                            </h1>
+                            <h3 invisible="is_revision == False">
+                                🔄 Esta es una revisión del análisis original
+                            </h3>
+                        </div>
+
+                        <!-- Información básica -->
+                        <group>
+                            <group string="📋 Información de la Muestra">
+                                <field name="sample_reception_id" readonly="1"/>
+                                <field name="sample_code" readonly="1"/>
+                                <field name="sample_identifier" readonly="1"/>
+                                <field name="custody_chain_code" readonly="1"/>
+                                <field name="customer_id" readonly="1"/>
+                            </group>
+                            <group string="📅 Fechas del Análisis">
+                                <field name="analysis_start_date"/>
+                                <field name="analysis_end_date"/>
+                                <field name="analysis_commitment_date"/>
+                                <field name="reception_date" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <!-- Estadísticas de parámetros -->
+                        <group string="📊 Estado de Parámetros" colspan="4">
+                            <div class="o_field_widget o_readonly_modifier">
+                                <div class="row">
+                                    <div class="col-3">
+                                        <div class="text-center">
+                                            <div class="h1 text-primary">
+                                                <field name="total_parameters_count"/>
+                                            </div>
+                                            <small>Total Parámetros</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="text-center">
+                                            <div class="h1 text-success">
+                                                <field name="ready_parameters_count"/>
+                                            </div>
+                                            <small>Listos para Reporte</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="text-center">
+                                            <field name="has_ready_parameters" widget="boolean_toggle"/>
+                                            <br/><small>Tiene Listos</small>
+                                        </div>
+                                    </div>
+                                    <div class="col-3">
+                                        <div class="text-center">
+                                            <field name="all_parameters_ready" widget="boolean_toggle"/>
+                                            <br/><small>Todos Listos</small>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <strong>Estado Actual:</strong> <field name="report_status_summary"/>
+                                </div>
+                            </div>
+                        </group>
+
+                        <!-- Información de firma -->
+                        <group string="✍️ Estado de Firma" invisible="signature_state == 'not_signed'">
+                            <group>
+                                <field name="sample_signature_name" readonly="1"/>
+                                <field name="sample_signature_position" readonly="1"/>
+                                <field name="sample_signature_date" readonly="1"/>
+                            </group>
+                            <group invisible="signature_state != 'cancelled'">
+                                <field name="signature_cancelled_by" readonly="1"/>
+                                <field name="signature_cancelled_date" readonly="1"/>
+                                <field name="signature_cancellation_reason" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <!-- Información de revisiones -->
+                        <group string="🔄 Información de Revisión" invisible="is_revision == False">
+                            <group>
+                                <field name="revision_reason" readonly="1"/>
+                                <field name="revision_requested_by" readonly="1"/>
+                                <field name="revision_date" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="original_analysis_id" readonly="1"/>
+                                <field name="revision_count" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <!-- Notebook principal -->
+                        <notebook>
+                            <!-- Página de parámetros -->
+                            <page string="🔬 Parámetros de Análisis">
+                                <field name="parameter_analysis_ids" nolabel="1" context="{'form_view_ref': 'lims_analysis_v2.view_parameter_analysis_v2_form'}">
+                                    <list string="Parámetros" editable="false">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="name"/>
+                                        <field name="microorganism"/>
+                                        <field name="method"/>
+                                        <field name="analysis_status" 
+                                               decoration-success="analysis_status == 'completed'"
+                                               decoration-info="analysis_status == 'in_progress'"
+                                               decoration-muted="analysis_status == 'draft'"/>
+                                        <field name="report_status" 
+                                               decoration-success="report_status == 'ready'"
+                                               decoration-info="report_status == 'reported'"
+                                               decoration-muted="report_status == 'draft'"/>
+                                        <field name="result_complete" class="o_field_highlight" string="Resultado"/>
+                                        <field name="analyst_names"/>
+                                    </list>
+                                </field>
+                            </page>
+
+                            <!-- Página de reportes generados -->
+                            <page string="📄 Historial de Reportes" invisible="signature_state == 'not_signed'">
+                                <div class="alert alert-info">
+                                    <strong>ℹ️ Reportes Dinámicos:</strong> Este módulo genera reportes dinámicamente sin almacenarlos. 
+                                    Use los botones del header para generar reportes actualizados.
+                                </div>
+                                
+                                <group string="Acciones Disponibles">
+                                    <div class="row">
+                                        <div class="col-4">
+                                            <button name="generate_preliminary_report" 
+                                                    type="object" 
+                                                    string="📋 Generar Preliminar" 
+                                                    class="btn btn-primary btn-block"
+                                                    invisible="has_ready_parameters == False"/>
+                                        </div>
+                                        <div class="col-4">
+                                            <button name="generate_final_report" 
+                                                    type="object" 
+                                                    string="📄 Generar Final" 
+                                                    class="btn btn-success btn-block"
+                                                    invisible="all_parameters_ready == False"/>
+                                        </div>
+                                        <div class="col-4">
+                                            <button name="generate_signing_report" 
+                                                    type="object" 
+                                                    string="📄 Para Firma Manual" 
+                                                    class="btn btn-info btn-block"
+                                                    invisible="signature_state != 'signed'"/>
+                                        </div>
+                                    </div>
+                                </group>
+                            </page>
+
+                            <!-- Página de revisiones -->
+                            <page string="🔄 Revisiones" invisible="revision_count == 0 and is_revision == False">
+                                <field name="revision_ids" readonly="1">
+                                    <list string="Revisiones de este Análisis">
+                                        <field name="revision_number"/>
+                                        <field name="revision_requested_by"/>
+                                        <field name="revision_reason"/>
+                                        <field name="revision_date"/>
+                                        <field name="analysis_state"/>
+                                        <field name="signature_state"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                    
+                    <!-- Chatter -->
+                    <div class="oe_chatter">
+                        <field name="message_follower_ids"/>
+                        <field name="activity_ids"/>
+                        <field name="message_ids"/>
+                    </div>
+                </form>
+            </field>
+        </record>
+
+        <!-- ========== VISTA DE BÚSQUEDA ========== -->
+        <record id="view_lims_analysis_v2_search" model="ir.ui.view">
+            <field name="name">lims.analysis.v2.search</field>
+            <field name="model">lims.analysis.v2</field>
+            <field name="arch" type="xml">
+                <search string="Buscar Análisis v2">
+                    <!-- Campos de búsqueda -->
+                    <field name="sample_code"/>
+                    <field name="sample_identifier"/>
+                    <field name="custody_chain_code"/>
+                    <field name="customer_id"/>
+                    
+                    <!-- Filtros principales -->
+                    <filter string="📋 Con Parámetros Listos" 
+                            name="with_ready_params"
+                            domain="[('has_ready_parameters', '=', True)]"/>
+                    
+                    <filter string="✅ Completados" 
+                            name="completed"
+                            domain="[('analysis_state', '=', 'completed')]"/>
+                    
+                    <filter string="✍️ Firmadas" 
+                            name="signed"
+                            domain="[('signature_state', '=', 'signed')]"/>
+                    
+                    <separator/>
+                    
+                    <filter string="🔄 Solo Revisiones" 
+                            name="only_revisions"
+                            domain="[('is_revision', '=', True)]"/>
+                    
+                    <filter string="📋 Solo Originales" 
+                            name="only_originals"
+                            domain="[('is_revision', '=', False)]"/>
+                    
+                    <separator/>
+                    
+                    <filter string="Hoy" 
+                            name="today"
+                            domain="[('analysis_start_date', '=', context_today())]"/>
+                    
+                    <filter string="Esta Semana" 
+                            name="this_week"
+                            domain="[('analysis_start_date', '&gt;=', (context_today() - datetime.timedelta(days=7)))]"/>
+                    
+                    <!-- Agrupación -->
+                    <group expand="0" string="Agrupar Por">
+                        <filter string="Cadena de Custodia" 
+                                name="group_chain"
+                                context="{'group_by': 'custody_chain_id'}"/>
+                        <filter string="Cliente" 
+                                name="group_customer"
+                                context="{'group_by': 'customer_id'}"/>
+                        <filter string="Estado de Firma"
+                                name="group_signature"
+                                context="{'group_by': 'signature_state'}"/>
+                        <filter string="Estado de Análisis"
+                                name="group_analysis_state"
+                                context="{'group_by': 'analysis_state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- ========== VISTA KANBAN PARA SEGUIMIENTO RÁPIDO ========== -->
+        <record id="view_lims_analysis_v2_kanban" model="ir.ui.view">
+            <field name="name">lims.analysis.v2.kanban</field>
+            <field name="model">lims.analysis.v2</field>
+            <field name="arch" type="xml">
+                <kanban default_group_by="analysis_state" class="o_kanban_small_column">
+                    <field name="sample_code"/>
+                    <field name="customer_id"/>
+                    <field name="ready_parameters_count"/>
+                    <field name="total_parameters_count"/>
+                    <field name="signature_state"/>
+                    <field name="has_ready_parameters"/>
+                    <field name="all_parameters_ready"/>
+                    
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_record_top mb8">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title">
+                                            <field name="sample_code"/>
+                                        </strong>
+                                        <div class="o_kanban_record_subtitle text-muted">
+                                            <field name="customer_id"/>
+                                        </div>
+                                    </div>
+                                    <div class="o_kanban_manage_button_section">
+                                        <a class="o_kanban_manage_toggle_button" href="#">
+                                            <i class="fa fa-ellipsis-v" role="img" aria-label="Manage" title="Manage"/>
+                                        </a>
+                                    </div>
+                                </div>
+                                
+                                <div class="o_kanban_record_body">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <span class="badge badge-pill badge-info">
+                                                <field name="ready_parameters_count"/> / <field name="total_parameters_count"/>
+                                            </span>
+                                        </div>
+                                        <div class="col-6 text-right">
+                                            <span t-if="record.signature_state.raw_value == 'signed'" 
+                                                  class="badge badge-success">✍️ Firmado</span>
+                                            <span t-if="record.signature_state.raw_value == 'not_signed'" 
+                                                  class="badge badge-secondary">Sin Firmar</span>
+                                            <span t-if="record.signature_state.raw_value == 'cancelled'" 
+                                                  class="badge badge-warning">Cancelado</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-2">
+                                        <div class="progress" style="height: 6px;">
+                                            <div class="progress-bar bg-success" 
+                                                 t-att-style="'width: ' + (record.total_parameters_count.raw_value > 0 ? (record.ready_parameters_count.raw_value / record.total_parameters_count.raw_value * 100) : 0) + '%'"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="o_kanban_record_bottom">
+                                    <div class="oe_kanban_bottom_left">
+                                        <span t-if="record.has_ready_parameters.raw_value" class="badge badge-success">📊 Listo</span>
+                                        <span t-if="record.all_parameters_ready.raw_value" class="badge badge-primary">✅ Completo</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- ========== ACCIONES ========== -->
+        <record id="action_lims_analysis_v2" model="ir.actions.act_window">
+            <field name="name">Análisis de Muestras v2</field>
+            <field name="res_model">lims.analysis.v2</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_lims_analysis_v2_kanban')}),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_lims_analysis_v2_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_lims_analysis_v2_form')})
+            ]"/>
+            <field name="search_view_id" ref="view_lims_analysis_v2_search"/>
+            <field name="context">{'group_by': 'custody_chain_id'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No hay análisis disponibles
+                </p>
+                <p>
+                    Los análisis se crean automáticamente desde muestras recibidas.
+                    <br/>Usa este menú para <strong>capturar resultados</strong> de laboratorio.
+                </p>
+            </field>
+        </record>
+
+        <!-- ========== ACCIONES DE SERVIDOR MASIVAS ========== -->
+        <record id="action_mass_print_preliminary_report_v2" model="ir.actions.server">
+            <field name="name">📋 Reporte Preliminar</field>
+            <field name="model_id" ref="model_lims_analysis_v2"/>
+            <field name="binding_model_id" ref="model_lims_analysis_v2"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+        action = model.action_mass_print_preliminary_report(records.ids)
+            </field>
+        </record>
+
+        <record id="action_mass_print_final_report_v2" model="ir.actions.server">
+            <field name="name">📄 Reporte Final</field>
+            <field name="model_id" ref="model_lims_analysis_v2"/>
+            <field name="binding_model_id" ref="model_lims_analysis_v2"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+        action = model.action_mass_print_final_report(records.ids)
+            </field>
+        </record>
+
+        <record id="action_mass_print_signing_report_v2" model="ir.actions.server">
+            <field name="name">✍️ Para Firma Manual</field>
+            <field name="model_id" ref="model_lims_analysis_v2"/>
+            <field name="binding_model_id" ref="model_lims_analysis_v2"/>
+            <field name="binding_view_types">list,form</field>
+            <field name="state">code</field>
+            <field name="code">
+        action = model.action_mass_print_report_for_signing(records.ids)
+            </field>
+        </record>
+
+        <record id="action_mass_mark_reported_v2" model="ir.actions.server">
+            <field name="name">✅ Marcar como Reportado</field>
+            <field name="model_id" ref="model_lims_analysis_v2"/>
+            <field name="binding_model_id" ref="model_lims_analysis_v2"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+        action = model.action_mass_mark_as_reported(records.ids)
+            </field>
+        </record>
+
+        <!-- ========== MENÚS ========== -->
+        <menuitem id="menu_lims_analysis_v2_root" 
+                  name="Análisis LIMS v2" 
+                  sequence="25"/>
+
+        <menuitem id="menu_lims_analysis_v2_main" 
+                name="🔬 Análisis de Muestras" 
+                parent="menu_lims_analysis_v2_root" 
+                action="action_lims_analysis_v2" 
+                sequence="10"/>
+
+    </data>
+</odoo>

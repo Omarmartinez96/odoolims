@@ -1,0 +1,496 @@
+from odoo import models, fields, api
+from odoo.exceptions import UserError
+
+class LimsParameterAnalysisV2(models.Model):
+    _name = 'lims.parameter.analysis.v2'
+    _description = 'Parámetros de Análisis con Resultados v2'
+    _rec_name = 'name'
+    _order = 'sequence, name'
+
+    # ===============================================
+    # === RELACIÓN PRINCIPAL ===
+    # ===============================================
+    analysis_id = fields.Many2one(
+        'lims.analysis.v2',
+        string='Análisis',
+        required=True,
+        ondelete='cascade'
+    )
+    
+    # ===============================================
+    # === INFORMACIÓN DEL PARÁMETRO ===
+    # ===============================================
+    parameter_id = fields.Many2one(
+        'lims.sample.parameter',
+        string='Parámetro Original',
+        readonly=True
+    )
+    name = fields.Char(
+        string='Nombre del Parámetro',
+        required=True
+    )
+    method = fields.Char(string='Método')
+    microorganism = fields.Char(string='Análisis')
+    unit = fields.Char(string='Unidad')
+    category = fields.Selection([
+        ('physical', 'Físico'),
+        ('chemical', 'Químico'),
+        ('microbiological', 'Microbiológico'),
+        ('other', 'Otro')
+    ], string='Categoría')
+    sequence = fields.Integer(string='Secuencia', default=10)
+    
+    # ===============================================
+    # === CONFIGURACIÓN DE ANÁLISIS ===
+    # ===============================================
+    result_type = fields.Selection([
+        ('qualitative', 'Cualitativo'),
+        ('quantitative', 'Cuantitativo')
+    ], string='Tipo de Resultado', default='quantitative', required=True)
+    
+    # ===============================================
+    # === FECHAS Y ESTADO ===
+    # ===============================================
+    analysis_start_date = fields.Date(
+        string='Fecha Inicio de Análisis',
+        help='Fecha en que se inició el análisis de este parámetro'
+    )
+    analysis_commitment_date = fields.Date(
+        string='Fecha Compromiso de Análisis',
+        help='Fecha comprometida para la entrega del resultado'
+    )
+    analysis_date = fields.Date(string='Fecha de Análisis')
+    
+    # Estados del análisis
+    analysis_status = fields.Selection([
+        ('draft', 'Borrador'),
+        ('in_progress', 'En Proceso'),
+        ('completed', 'Completado'),
+        ('reviewed', 'Revisado'),
+        ('approved', 'Aprobado')
+    ], string='Estado del Análisis', default='draft')
+    
+    # ===============================================
+    # === RESPONSABLES ===
+    # ===============================================
+    analyst_names = fields.Char(
+        string='Analistas Responsables',
+        help='Firma (Iniciales separadas por comas)'
+    )
+    
+    # ===============================================
+    # === RESULTADO PRINCIPAL ===
+    # ===============================================
+    result_value = fields.Char(
+        string='Resultado',
+        help='Resultado principal del análisis',
+        placeholder='Ej: 7.2, Negativo, 1.2 x 10² UFC/g, < 0.01 mg/kg'
+    )
+    result_complete = fields.Char(
+        string='Resultado Completo',
+        compute='_compute_result_complete',
+        store=True,
+        help='Resultado con unidad incluida'
+    )
+    
+    # ===============================================
+    # === CAMPOS ESPECÍFICOS DE RESULTADO ===
+    # ===============================================
+    result_numeric = fields.Float(
+        string='Valor Numérico',
+        help='Para cálculos automáticos y validaciones',
+        digits=(12, 4)
+    )
+    result_unit = fields.Char(
+        string='Unidad',
+        help='Unidad del resultado',
+        placeholder='mg/L, °C, pH, NTU, etc.'
+    )
+    
+    # Para resultados cualitativos
+    result_qualitative = fields.Selection([
+        ('detected', 'Detectado'),
+        ('not_detected', 'No Detectado'),
+        ('positive', 'Positivo'),
+        ('negative', 'Negativo'),
+        ('presence', 'Presencia'),
+        ('absence', 'Ausencia'),
+        ('growth', 'Crecimiento'),
+        ('no_growth', 'Sin Crecimiento'),
+        ('confirmed', 'Confirmado'),
+        ('not_confirmed', 'No Confirmado')
+    ], string='Resultado Cualitativo')
+    
+    # Unidades para resultados
+    result_unit_selection = fields.Selection([
+        ('ufc_g', 'UFC/g'),
+        ('ufc_ml', 'UFC/mL'),
+        ('nmp_g', 'NMP/g'),
+        ('nmp_ml', 'NMP/mL'),
+        ('ufc_100ml', 'UFC/100mL'),
+        ('nmp_100ml', 'NMP/100mL'),
+        ('mg_kg', 'mg/kg'),
+        ('mg_l', 'mg/L'),
+        ('custom', 'Otra unidad (especificar)')
+    ], string='Unidad del Resultado')
+    
+    custom_unit = fields.Char(
+        string='Especificar Unidad',
+        help='Especificar unidad personalizada'
+    )
+    
+    qualitative_unit_selection = fields.Selection([
+        ('ausencia_presencia_25g', 'Ausencia/Presencia en 25g'),
+        ('ausencia_presencia_100ml', 'Ausencia/Presencia en 100mL'),
+        ('ausencia_presencia_10g', 'Ausencia/Presencia en 10g'),
+        ('ausencia_presencia_1g', 'Ausencia/Presencia en 1g'),
+        ('detectado_no_detectado', 'Detectado/No Detectado'),
+        ('positivo_negativo', 'Positivo/Negativo'),
+        ('custom', 'Otra unidad (especificar)')
+    ], string='Unidad/Base para Cualitativos')
+    
+    qualitative_custom_unit = fields.Char(
+        string='Unidad Personalizada',
+        help='Especificar unidad personalizada para resultado cualitativo'
+    )
+    
+    # Límites de detección
+    below_detection_limit = fields.Boolean(
+        string='< Límite de Detección',
+        help='Resultado por debajo del límite de detección'
+    )
+    above_quantification_limit = fields.Boolean(
+        string='> Límite de Cuantificación',
+        help='Resultado por encima del límite de cuantificación'
+    )
+    
+    # ===============================================
+    # === ESTADO DE REPORTE ===
+    # ===============================================
+    report_status = fields.Selection([
+        ('draft', 'En Proceso'),
+        ('ready', 'Listo para Reporte'),
+        ('reported', 'Ya Reportado')
+    ], string='Estado para Reporte', 
+       default='draft',
+       help='Indica si este parámetro está listo para incluir en reportes')
+    
+    # ===============================================
+    # === PROCESOS ANALÍTICOS REQUERIDOS ===
+    # ===============================================
+    requires_pre_enrichment = fields.Boolean(
+        string='Requiere Pre-enriquecimiento',
+        default=False,
+        help='Marcar si este parámetro requiere proceso de pre-enriquecimiento'
+    )
+    requires_selective_enrichment = fields.Boolean(
+        string='Requiere Enriquecimiento Selectivo',
+        default=False,
+        help='Marcar si este parámetro requiere enriquecimiento selectivo'
+    )
+    requires_confirmation = fields.Boolean(
+        string='Requiere Confirmación',
+        default=False,
+        help='Marcar si este parámetro requiere pruebas de confirmación'
+    )
+    requires_ph_adjustment = fields.Boolean(
+        string='Requiere Ajuste de pH',
+        default=False,
+        help='Marcar si este parámetro requiere ajuste de pH'
+    )
+    
+    # ===============================================
+    # === CAMPOS DE AMBIENTE DE TRABAJO ===
+    # ===============================================
+    # Pre-enriquecimiento
+    pre_enrichment_environment = fields.Selection([
+        ('ambiente_aseptico', 'Ambiente aséptico'),
+        ('campana_flujo', 'Campana de Flujo Laminar'),
+        ('campana_bioseguridad', 'Campana de Bioseguridad'),
+        ('mesa_trabajo', 'Mesa de Trabajo'),
+        ('no_aplica', 'N/A'),
+    ], string='Ambiente de Procesamiento')
+    pre_enrichment_equipment_id = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo Específico',
+        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]",
+        help='Equipo específico utilizado para el pre-enriquecimiento'
+    )
+    pre_enrichment_processing_date = fields.Date(string='Fecha de Procesamiento')
+    pre_enrichment_processing_time = fields.Char(string='Hora de Procesamiento', help='Formato HH:MM')
+    
+    # Enriquecimiento selectivo
+    selective_enrichment_environment = fields.Selection([
+        ('ambiente_aseptico', 'Ambiente aséptico'),
+        ('campana_flujo', 'Campana de Flujo Laminar'),
+        ('campana_bioseguridad', 'Campana de Bioseguridad'),
+        ('mesa_trabajo', 'Mesa de Trabajo'),
+        ('no_aplica', 'N/A'),
+    ], string='Ambiente de Procesamiento Selectivo')
+    selective_enrichment_equipment_id = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo Específico para Selectivo',
+        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]"
+    )
+    selective_enrichment_processing_date = fields.Date(string='Fecha de Procesamiento Selectivo')
+    selective_enrichment_processing_time = fields.Char(string='Hora de Procesamiento Selectivo', help='Formato HH:MM')
+    
+    # Confirmación
+    confirmation_environment = fields.Selection([
+        ('ambiente_aseptico', 'Ambiente aséptico'),
+        ('campana_flujo', 'Campana de Flujo Laminar'),
+        ('campana_bioseguridad', 'Campana de Bioseguridad'),
+        ('mesa_trabajo', 'Mesa de Trabajo'),
+        ('no_aplica', 'N/A'),
+    ], string='Ambiente de Procesamiento de Confirmación')
+    confirmation_equipment_id = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo Específico para Confirmación',
+        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]"
+    )
+    confirmation_processing_date = fields.Date(string='Fecha de Procesamiento de Confirmación')
+    confirmation_processing_time = fields.Char(string='Hora de Procesamiento de Confirmación', help='Formato HH:MM')
+    
+    # Análisis cuantitativo
+    quantitative_environment = fields.Selection([
+        ('ambiente_aseptico', 'Ambiente aséptico'),
+        ('campana_flujo', 'Campana de Flujo Laminar'),
+        ('campana_bioseguridad', 'Campana de Bioseguridad'),
+        ('mesa_trabajo', 'Mesa de Trabajo'),
+        ('no_aplica', 'N/A'),
+    ], string='Ambiente de Procesamiento Cuantitativo')
+    quantitative_equipment_id = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo Específico para Cuantitativo',
+        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]"
+    )
+    quantitative_processing_date = fields.Date(string='Fecha de Procesamiento Cuantitativo')
+    quantitative_processing_time = fields.Char(string='Hora de Procesamiento Cuantitativo', help='Formato HH:MM')
+    
+    # Análisis cualitativo
+    qualitative_environment = fields.Selection([
+        ('ambiente_aseptico', 'Ambiente aséptico'),
+        ('campana_flujo', 'Campana de Flujo Laminar'),
+        ('campana_bioseguridad', 'Campana de Bioseguridad'),
+        ('mesa_trabajo', 'Mesa de Trabajo'),
+        ('no_aplica', 'N/A'),
+    ], string='Ambiente de Procesamiento Cualitativo')
+    qualitative_equipment_id = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo Específico para Cualitativo',
+        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]"
+    )
+    qualitative_processing_date = fields.Date(string='Fecha de Procesamiento Cualitativo')
+    qualitative_processing_time = fields.Char(string='Hora de Procesamiento Cualitativo', help='Formato HH:MM')
+    
+    # ===============================================
+    # === OBSERVACIONES ===
+    # ===============================================
+    analyst_notes = fields.Text(
+        string='Observaciones del Analista',
+        help='Notas técnicas sobre el análisis realizado'
+    )
+    
+    # ===============================================
+    # === RELACIONES ONE2MANY ===
+    # ===============================================
+    media_ids = fields.One2many(
+        'lims.analysis.media.v2',
+        'parameter_analysis_id',
+        string='Medios y Reactivos Utilizados'
+    )
+    raw_dilution_data_ids = fields.One2many(
+        'lims.raw.dilution.data.v2',
+        'parameter_analysis_id',
+        string='Datos Crudos de Diluciones'
+    )
+    confirmation_results_ids = fields.One2many(
+        'lims.confirmation.result.v2',
+        'parameter_analysis_id',
+        string='Resultados de Confirmación'
+    )
+    executed_qc_ids = fields.One2many(
+        'lims.executed.quality.control.v2',
+        'parameter_analysis_id',
+        string='Controles de Calidad Ejecutados'
+    )
+    equipment_involved_ids = fields.One2many(
+        'lims.equipment.involved.v2',
+        'parameter_analysis_id',
+        string='Equipos Involucrados'
+    )
+    
+    # ===============================================
+    # === CAMPOS COMPUTADOS ===
+    # ===============================================
+    dilution_calculations = fields.Text(
+        string='Cálculos Informativos',
+        compute='_compute_dilution_calculations',
+        help='Cálculos informativos basados en datos crudos (solo referencia)'
+    )
+    
+    # ===============================================
+    # === MÉTODOS COMPUTADOS ===
+    # ===============================================
+    @api.depends('result_value')
+    def _compute_result_complete(self):
+        """Mostrar solo el resultado sin unidad en la lista"""
+        for record in self:
+            record.result_complete = record.result_value or ''
+    
+    @api.depends('raw_dilution_data_ids.ufc_count')
+    def _compute_dilution_calculations(self):
+        """Mostrar SOLO cálculos informativos (NO actualiza resultado automáticamente)"""
+        for record in self:
+            if record.raw_dilution_data_ids:
+                calculations = []
+                
+                dilution_names = {
+                    'direct': 'Directo',
+                    '10_1': '10⁻¹',
+                    '10_2': '10⁻²',
+                    '10_3': '10⁻³',
+                    '10_4': '10⁻⁴',
+                    '10_5': '10⁻⁵',
+                    '10_6': '10⁻⁶'
+                }
+                
+                for data in record.raw_dilution_data_ids:
+                    if data.ufc_count is not False and data.ufc_count >= 0:
+                        dilution_name = dilution_names.get(data.dilution_factor, data.dilution_factor)
+                        calculations.append(f"{dilution_name}: {data.ufc_count} UFC → {data.calculated_result}")
+                
+                if calculations:
+                    record.dilution_calculations = "\n".join(calculations)
+                else:
+                    record.dilution_calculations = "Sin datos registrados"
+            else:
+                record.dilution_calculations = "Sin diluciones registradas"
+    
+    # ===============================================
+    # === MÉTODOS ONCHANGE ===
+    # ===============================================
+    @api.onchange('result_unit_selection')
+    def _onchange_result_unit_selection(self):
+        """Limpiar unidad personalizada si no se selecciona 'custom'"""
+        if self.result_unit_selection != 'custom':
+            self.custom_unit = False
+    
+    @api.onchange('result_numeric', 'result_unit')
+    def _onchange_numeric_result(self):
+        """Auto-completar resultado principal cuando se llena numérico + unidad"""
+        if self.result_numeric and self.result_unit:
+            if self.result_unit.lower() in ['ph', 'unidades de ph']:
+                self.result_value = f"{self.result_numeric:.1f} {self.result_unit}"
+            else:
+                self.result_value = f"{self.result_numeric} {self.result_unit}"
+    
+    @api.onchange('result_qualitative')
+    def _onchange_qualitative_result(self):
+        """Auto-completar resultado principal con resultado cualitativo"""
+        if self.result_qualitative:
+            qualitative_map = {
+                'detected': 'Detectado',
+                'not_detected': 'No Detectado',
+                'positive': 'Positivo',
+                'negative': 'Negativo',
+                'presence': 'Presencia',
+                'absence': 'Ausencia',
+                'growth': 'Crecimiento',
+                'no_growth': 'Sin Crecimiento',
+                'confirmed': 'Confirmado',
+                'not_confirmed': 'No Confirmado'
+            }
+            self.result_value = qualitative_map.get(self.result_qualitative, self.result_qualitative)
+    
+    @api.onchange('below_detection_limit', 'above_quantification_limit')
+    def _onchange_limits(self):
+        """Auto-completar resultado cuando está fuera de límites"""
+        if self.below_detection_limit:
+            unit = self.result_unit or ''
+            self.result_value = f"< LD {unit}".strip()
+        elif self.above_quantification_limit:
+            unit = self.result_unit or ''
+            self.result_value = f"> LC {unit}".strip()
+
+    @api.onchange('result_type')
+    def _onchange_result_type(self):
+        """Limpiar campos cuando cambia el tipo de resultado"""
+        if self.result_type == 'qualitative':
+            # Limpiar campos cuantitativos
+            self.result_numeric = False
+            self.result_unit = False
+            self.below_detection_limit = False
+            self.above_quantification_limit = False
+            self.result_unit_selection = False
+            self.custom_unit = False
+            # Limpiar datos de diluciones
+            self.raw_dilution_data_ids = [(5, 0, 0)]
+        elif self.result_type == 'quantitative':
+            # Limpiar campos cualitativos
+            self.result_qualitative = False
+
+    @api.onchange('result_value', 'analysis_status')
+    def _onchange_check_report_ready(self):
+        """Detectar automáticamente cuando el parámetro está listo para reporte"""
+        if (self.result_value and 
+            self.result_value.strip() and 
+            self.analysis_status == 'completed'):
+            # Solo cambiar a 'ready' si estaba en 'draft'
+            if self.report_status == 'draft':
+                self.report_status = 'ready'
+        else:
+            # Solo volver a 'draft' si no está reportado
+            if self.report_status != 'reported':
+                self.report_status = 'draft'
+
+    @api.onchange('qualitative_unit_selection')
+    def _onchange_qualitative_unit_selection(self):
+        """Limpiar unidad personalizada si no se selecciona 'custom'"""
+        if self.qualitative_unit_selection != 'custom':
+            self.qualitative_custom_unit = False
+    
+    # ===============================================
+    # === MÉTODOS DE ACCIÓN ===
+    # ===============================================
+    def action_copy_qc_from_template(self):
+        """Copiar controles de calidad desde la plantilla del parámetro"""
+        if not self.parameter_id or not self.parameter_id.quality_control_ids:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Sin Controles en Plantilla',
+                    'message': 'El parámetro no tiene controles de calidad definidos en su plantilla',
+                    'type': 'warning',
+                }
+            }
+        
+        # Copiar controles desde la plantilla
+        new_controls = 0
+        for qc in self.parameter_id.quality_control_ids:
+            # Verificar si ya existe
+            existing = self.executed_qc_ids.filtered(
+                lambda x: x.qc_type_id.id == qc.control_type_id.id
+            )
+            
+            if not existing:
+                self.env['lims.executed.quality.control.v2'].create({
+                    'parameter_analysis_id': self.id,
+                    'qc_type_id': qc.control_type_id.id,
+                    'expected_result': qc.expected_result,
+                    'control_status': 'pending',
+                    'sequence': qc.sequence,
+                    'notes': qc.notes or '',
+                })
+                new_controls += 1
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Controles Copiados',
+                'message': f'Se agregaron {new_controls} controles de calidad desde la plantilla',
+                'type': 'success',
+            }
+        }

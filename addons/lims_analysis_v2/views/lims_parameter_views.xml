@@ -1,0 +1,393 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- ========== VISTA FORMULARIO DE PARÁMETRO DE ANÁLISIS ========== -->
+        <record id="view_parameter_analysis_v2_form" model="ir.ui.view">
+            <field name="name">lims.parameter.analysis.v2.form</field>
+            <field name="model">lims.parameter.analysis.v2</field>
+            <field name="arch" type="xml">
+                <form string="Parámetro de Análisis v2">
+                    
+                    <sheet>
+                        <!-- Título -->
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" readonly="1"/>
+                            </h1>
+                            <h3>
+                                <field name="microorganism" readonly="1" placeholder="Sin microorganismo especificado"/>
+                            </h3>
+                        </div>
+
+                        <!-- Información básica -->
+                        <group>
+                            <group string="📋 Información del Parámetro">
+                                <field name="method" readonly="1"/>
+                                <field name="category" readonly="1"/>
+                                <field name="unit" readonly="1"/>
+                                <field name="result_type" widget="radio" required="1"/>
+                            </group>
+                            <group string="📅 Información del Análisis">
+                                <field name="analysis_start_date"/>
+                                <field name="analysis_commitment_date"/>
+                                <field name="analyst_names" placeholder="Iniciales separadas por comas"/>
+                                <field name="analysis_status" 
+                                       decoration-success="analysis_status == 'completed'"
+                                       decoration-info="analysis_status == 'in_progress'"
+                                       decoration-muted="analysis_status == 'draft'"/>
+                                <field name="report_status" readonly="1"
+                                       decoration-success="report_status == 'ready'"
+                                       decoration-info="report_status == 'reported'"
+                                       decoration-muted="report_status == 'draft'"/>
+                            </group>
+                        </group>
+
+                        <!-- Notebook principal -->
+                        <notebook>
+                            
+                            <!-- TAB DE PROCESOS REQUERIDOS -->
+                            <page string="🧪 Procesos Requeridos" invisible="category != 'microbiological'">
+                                <group string="Procesos Necesarios para este Parámetro" colspan="4">
+                                    <field name="requires_pre_enrichment"/>
+                                    <field name="requires_selective_enrichment"/>
+                                    <field name="requires_confirmation"/>
+                                    <field name="requires_ph_adjustment"/>
+                                </group>
+                                
+                                <!-- Configuración de ambientes por proceso -->
+                                <group string="🏭 Ambientes de Procesamiento" colspan="4">
+                                    <group string="Pre-enriquecimiento" invisible="requires_pre_enrichment == False">
+                                        <field name="pre_enrichment_environment" widget="radio"/>
+                                        <field name="pre_enrichment_equipment_id" 
+                                               invisible="pre_enrichment_environment not in ['campana_flujo', 'campana_bioseguridad']"/>
+                                        <field name="pre_enrichment_processing_date"/>
+                                        <field name="pre_enrichment_processing_time" placeholder="HH:MM"/>
+                                    </group>
+                                    
+                                    <group string="Enriquecimiento Selectivo" invisible="requires_selective_enrichment == False">
+                                        <field name="selective_enrichment_environment" widget="radio"/>
+                                        <field name="selective_enrichment_equipment_id" 
+                                               invisible="selective_enrichment_environment not in ['campana_flujo', 'campana_bioseguridad']"/>
+                                        <field name="selective_enrichment_processing_date"/>
+                                        <field name="selective_enrichment_processing_time" placeholder="HH:MM"/>
+                                    </group>
+                                    
+                                    <group string="Confirmación" invisible="requires_confirmation == False">
+                                        <field name="confirmation_environment" widget="radio"/>
+                                        <field name="confirmation_equipment_id" 
+                                               invisible="confirmation_environment not in ['campana_flujo', 'campana_bioseguridad']"/>
+                                        <field name="confirmation_processing_date"/>
+                                        <field name="confirmation_processing_time" placeholder="HH:MM"/>
+                                    </group>
+                                    
+                                    <group string="Análisis Final">
+                                        <field name="quantitative_environment" widget="radio" invisible="result_type != 'quantitative'"/>
+                                        <field name="quantitative_equipment_id" 
+                                               invisible="result_type != 'quantitative' or quantitative_environment not in ['campana_flujo', 'campana_bioseguridad']"/>
+                                        <field name="quantitative_processing_date" invisible="result_type != 'quantitative'"/>
+                                        <field name="quantitative_processing_time" placeholder="HH:MM" invisible="result_type != 'quantitative'"/>
+                                        
+                                        <field name="qualitative_environment" widget="radio" invisible="result_type != 'qualitative'"/>
+                                        <field name="qualitative_equipment_id" 
+                                               invisible="result_type != 'qualitative' or qualitative_environment not in ['campana_flujo', 'campana_bioseguridad']"/>
+                                        <field name="qualitative_processing_date" invisible="result_type != 'qualitative'"/>
+                                        <field name="qualitative_processing_time" placeholder="HH:MM" invisible="result_type != 'qualitative'"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <!-- TAB DE MEDIOS Y REACTIVOS UNIFICADO -->
+                            <page string="🧫 Medios y Reactivos">
+                                <field name="media_ids" nolabel="1">
+                                    <list string="Medios Utilizados" editable="bottom">
+                                        <field name="process_type" string="Proceso"/>
+                                        <field name="media_source" string="Origen"/>
+                                        <field name="culture_media_name" string="Nombre del Medio"/>
+                                        <field name="culture_media_batch_id" 
+                                               string="Lote Interno"
+                                               invisible="media_source != 'internal'"/>
+                                        <field name="external_batch_code" 
+                                               string="Lote Externo" 
+                                               invisible="media_source != 'external'"/>
+                                        <field name="media_usage" string="Uso"/>
+                                        <field name="requires_incubation" string="Incubación?"/>
+                                        <field name="incubation_status" 
+                                               invisible="requires_incubation == False"
+                                               decoration-success="incubation_status == 'completed'"
+                                               decoration-warning="incubation_status == 'overdue'"
+                                               decoration-info="incubation_status == 'active'"/>
+                                        <field name="qualitative_result" string="Resultado"/>
+                                    </list>
+                                    
+                                    <form string="Medio Utilizado">
+                                        <group>
+                                            <group>
+                                                <field name="process_type" required="1"/>
+                                                <field name="media_source" widget="radio"/>
+                                                <field name="culture_media_name" 
+                                                       placeholder="Nombre del medio de cultivo"
+                                                       required="1"/>
+                                            </group>
+
+                                            <group string="Lote del Medio">
+                                                <field name="culture_media_batch_id" 
+                                                       invisible="media_source != 'internal'"
+                                                       placeholder="Seleccionar lote interno"
+                                                       options="{'no_create': True}"/>
+                                                <field name="external_batch_code" 
+                                                       invisible="media_source != 'external'"
+                                                       placeholder="Código del lote externo"
+                                                       required="media_source == 'external'"/>
+                                                <field name="media_usage" 
+                                                       string="Uso del Medio"
+                                                       required="1"/>
+                                            </group>
+                                        </group>
+                                        
+                                        <!-- Incubación -->
+                                        <group string="🌡️ Incubación">
+                                            <group>
+                                                <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                <field name="incubation_equipment" 
+                                                       invisible="requires_incubation == False"
+                                                       placeholder="Equipo utilizado"/>
+                                                <field name="incubation_start_date" invisible="requires_incubation == False"/>
+                                                <field name="incubation_start_time" placeholder="HH:MM" invisible="requires_incubation == False"/>
+                                            </group>
+                                            <group>
+                                                <field name="incubation_end_date" invisible="requires_incubation == False"/>
+                                                <field name="incubation_end_time" placeholder="HH:MM" invisible="requires_incubation == False"/>
+                                                <field name="incubation_end_date_real" invisible="requires_incubation == False"/>
+                                                <field name="incubation_end_time_real" placeholder="HH:MM" invisible="requires_incubation == False"/>
+                                            </group>
+                                        </group>
+                                        
+                                        <group string="📊 Estado de Incubación" 
+                                               invisible="requires_incubation == False">
+                                            <group>
+                                                <field name="incubation_status" readonly="1"/>
+                                                <field name="time_remaining" readonly="1" 
+                                                       invisible="incubation_status != 'active'"/>
+                                                <field name="is_overdue" readonly="1" widget="boolean_toggle"/>
+                                            </group>
+                                            <group>
+                                                <button name="action_mark_completed" 
+                                                        type="object" 
+                                                        string="✅ Marcar Completada" 
+                                                        class="btn-success"
+                                                        invisible="incubation_status == 'completed'"/>
+                                                <button name="action_refresh_status" 
+                                                        type="object" 
+                                                        string="🔄 Actualizar Estado" 
+                                                        class="btn-secondary"/>
+                                            </group>
+                                        </group>
+
+                                        <group string="🧪 Resultado en este Medio">
+                                            <field name="qualitative_result"/>
+                                        </group>
+
+                                        <group string="📝 Notas de Preparación">
+                                            <field name="preparation_notes" nolabel="1"
+                                                   placeholder="Instrucciones especiales, observaciones, etc..."/>
+                                        </group>
+                                    </form>
+                                </field>
+                            </page>
+
+                            <!-- TAB DE DATOS CRUDOS (SOLO MICROBIOLOGÍA CUANTITATIVA) -->
+                            <page string="🔢 Datos Crudos de Diluciones" 
+                                  invisible="category != 'microbiological' or result_type != 'quantitative'">
+                                
+                                <div class="alert alert-info" style="margin-bottom: 15px;">
+                                    <strong>📝 Información:</strong> Esta tabla es para registrar datos crudos únicamente. 
+                                    Los cálculos son informativos. El resultado final debe ingresarse manualmente en la pestaña "Resultado".
+                                </div>
+                                
+                                <field name="raw_dilution_data_ids" nolabel="1">
+                                    <list string="Diluciones" editable="bottom">
+                                        <field name="method_type" width="20%"/>
+                                        <field name="dilution_factor" width="20%"/>
+                                        <!-- UFC -->
+                                        <field name="ufc_count" invisible="method_type != 'ufc'" width="15%"/>
+                                        <!-- NMP -->
+                                        <field name="positive_tubes" invisible="method_type != 'nmp'" width="15%"/>
+                                        <field name="total_tubes" invisible="method_type != 'nmp'" width="15%"/>
+                                        <field name="nmp_result" invisible="method_type != 'nmp'" width="20%"/>
+                                        <!-- Resultado calculado -->
+                                        <field name="calculated_result" readonly="1" width="30%"/>
+                                        <field name="observations" optional="show"/>
+                                    </list>
+                                </field>
+                                
+                                <!-- Cálculos informativos -->
+                                <group string="📊 Cálculos Informativos (Solo Referencia)">
+                                    <field name="dilution_calculations" nolabel="1" readonly="1" 
+                                           widget="text" style="font-family: monospace;"/>
+                                </group>
+                            </page>
+
+                            <!-- TAB DE CONTROL DE CALIDAD -->
+                            <page string="🔬 Control de Calidad">
+                                
+                                <div class="alert alert-info" style="margin-bottom: 15px;">
+                                    <strong>📋 Controles de Calidad:</strong> 
+                                    Estos controles garantizan la calidad y confiabilidad de los resultados.
+                                </div>
+                                
+                                <!-- Botón para copiar desde plantilla -->
+                                <div class="oe_button_box" style="margin-bottom: 15px;">
+                                    <button type="object" 
+                                            name="action_copy_qc_from_template" 
+                                            string="📋 Copiar desde Plantilla" 
+                                            class="btn-secondary"
+                                            help="Copiar controles desde la plantilla del parámetro"/>
+                                </div>
+                                
+                                <field name="executed_qc_ids" nolabel="1">
+                                    <list string="Controles de Calidad" editable="bottom">
+                                        <field name="qc_type_id" string="Tipo de Control" width="25%"/>
+                                        <field name="expected_result" string="Resultado Esperado" width="15%"/>
+                                        <field name="actual_result" string="Resultado Obtenido" width="15%"/>
+                                        
+                                        <field name="control_status" string="Estado" width="15%"
+                                               decoration-success="control_status == 'passed'"
+                                               decoration-warning="control_status == 'in_progress'"
+                                               decoration-danger="control_status == 'failed'"
+                                               decoration-muted="control_status == 'not_applicable'"/>
+                                        
+                                        <field name="execution_date" string="Fecha" width="10%"/>
+                                        <field name="executed_by" string="Realizado Por" width="15%"/>
+                                        
+                                        <!-- Botones rápidos -->
+                                        <button name="action_mark_passed" type="object" 
+                                                string="✅" class="btn-success btn-sm" 
+                                                title="Marcar como exitoso"/>
+                                        <button name="action_mark_failed" type="object" 
+                                                string="❌" class="btn-danger btn-sm" 
+                                                title="Marcar como fallido"/>
+                                        <button name="action_reset_control" type="object" 
+                                                string="🔄" class="btn-secondary btn-sm" 
+                                                title="Restablecer"/>
+                                    </list>
+                                </field>
+                            </page>
+
+                            <!-- TAB DE RESULTADO FINAL -->
+                            <page string="📊 Resultado Final">
+                                
+                                <!-- RESULTADO CUALITATIVO -->
+                                <group string="📊 Resultado Cualitativo" 
+                                       invisible="result_type != 'qualitative'">
+                                    <field name="result_qualitative"/>
+                                    <field name="qualitative_unit_selection" string="Unidad/Base"/>
+                                    <field name="qualitative_custom_unit" 
+                                           placeholder="Especificar unidad personalizada"
+                                           invisible="qualitative_unit_selection != 'custom'"/>
+                                </group>
+
+                                <!-- RESULTADO CUANTITATIVO -->
+                                <group string="🔢 Resultado Cuantitativo" 
+                                       invisible="result_type != 'quantitative'">
+                                    <field name="result_numeric"/>
+                                    <field name="result_unit"/>
+                                    <field name="result_unit_selection"/>
+                                    <field name="custom_unit" 
+                                           placeholder="Especificar unidad"
+                                           invisible="result_unit_selection != 'custom'"/>
+                                    <field name="below_detection_limit"/>
+                                    <field name="above_quantification_limit"/>
+                                </group>
+
+                                <!-- RESULTADO PRINCIPAL -->
+                                <group string="✅ Resultado Principal" colspan="4">
+                                    <field name="result_value" 
+                                           class="o_field_highlight"
+                                           style="font-size: 18px; font-weight: bold;"
+                                           placeholder="Ingrese el resultado final aquí..."/>
+                                </group>
+
+                                <!-- EQUIPOS ADICIONALES -->
+                                <group string="🔧 Equipos Adicionales Utilizados">
+                                    <field name="equipment_involved_ids" nolabel="1">
+                                        <list string="Equipos" editable="bottom">
+                                            <field name="equipment_id" string="Equipo"/>
+                                            <field name="usage" string="Uso" placeholder="Especificar uso del equipo"/>
+                                            <field name="usage_date" string="Fecha"/>
+                                            <field name="used_by" string="Utilizado por"/>
+                                        </list>
+                                    </field>
+                                </group>
+
+                                <!-- OBSERVACIONES -->
+                                <group string="📝 Observaciones del Analista">
+                                    <field name="analyst_notes" nolabel="1"
+                                           placeholder="Observaciones técnicas del análisis..."/>
+                                </group>
+                            </page>
+
+                            <!-- TAB DE RESULTADOS DE CONFIRMACIÓN -->
+                            <page string="✅ Resultados de Confirmación" invisible="requires_confirmation == False">
+                                <field name="confirmation_results_ids" nolabel="1">
+                                    <list string="Resultados por Lote de Medio" editable="bottom">
+                                        <field name="batch_display_name" string="Lote de Medio" readonly="1"/>
+                                        <field name="result" string="Resultado" placeholder="Ej: Positivo, Negativo, etc."/>
+                                        <field name="qualitative_result" string="Resultado Estructurado"/>
+                                        <field name="result_date" string="Fecha"/>
+                                        <field name="recorded_by" string="Registrado por"/>
+                                        <field name="observations" string="Observaciones" optional="show"/>
+                                    </list>
+                                </field>
+                            </page>
+
+                        </notebook>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ========== VISTA LISTA DE PARÁMETROS ========== -->
+        <record id="view_parameter_analysis_v2_list" model="ir.ui.view">
+            <field name="name">lims.parameter.analysis.v2.list</field>
+            <field name="model">lims.parameter.analysis.v2</field>
+            <field name="arch" type="xml">
+                <list string="Parámetros de Análisis v2">
+                    <field name="analysis_id"/>
+                    <field name="name"/>
+                    <field name="microorganism"/>
+                    <field name="method"/>
+                    <field name="result_type"/>
+                    <field name="analysis_status" 
+                           decoration-success="analysis_status == 'completed'"
+                           decoration-info="analysis_status == 'in_progress'"
+                           decoration-muted="analysis_status == 'draft'"/>
+                    <field name="report_status" 
+                           decoration-success="report_status == 'ready'"
+                           decoration-info="report_status == 'reported'"
+                           decoration-muted="report_status == 'draft'"/>
+                    <field name="result_complete" class="o_field_highlight"/>
+                    <field name="analyst_names"/>
+                    <field name="analysis_start_date"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ========== ACCIÓN PARA PARÁMETROS ========== -->
+        <record id="action_parameter_analysis_v2" model="ir.actions.act_window">
+            <field name="name">Parámetros de Análisis v2</field>
+            <field name="res_model">lims.parameter.analysis.v2</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No hay parámetros de análisis
+                </p>
+                <p>
+                    Los parámetros se crean automáticamente al crear análisis
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>
