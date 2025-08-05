@@ -1347,30 +1347,8 @@
                     font-size: 10px;
                     line-height: 1.2;
                 }
-                .company-info {
-                    text-align: center;
-                    font-size: 14px;
-                    font-weight: bold;
-                    margin: 1px 0;
-                }
-                .company-details {
-                    text-align: center;
-                    font-size: 9px;
-                    margin: 2px 0;
-                }
-                .form-info {
-                    text-align: center;
-                    font-size: 8px;
-                    margin: 1px 0;
-                }
-                .report-title {
-                    text-align: center;
-                    font-size: 16px;
-                    font-weight: bold;
-                    margin: 15px 0 10px 0;
-                    background-color: #f0f0f0;
-                    padding: 8px;
-                    border: 1px solid #000;
+                .sample-break {
+                    page-break-before: always;
                 }
                 .section-header {
                     background-color: #d3d3d3;
@@ -1432,51 +1410,11 @@
                     font-size: 8px;
                     line-height: 1.4;
                 }
-                .header-table {
-                    width: 100%;
-                    border-collapse: collapse;
-                    border-bottom: 2px solid #000;
-                    padding-bottom: 8px;
-                    margin-bottom: 10px;
-                }
-                .header-table td {
-                    vertical-align: top;
-                    padding: 0;
-                }
-                .logo-section {
-                    width: 80px;
-                    text-align: left;
-                }
-                .center-section {
-                    text-align: center;
-                }
-                .right-section {
-                    width: 80px;
-                    text-align: right;
-                }
-                .sample-break {
-                    page-break-before: always;
-                }
-                .header {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    right: 0;
-                    height: 100px;
-                    background-color: white;
-                    border-bottom: 2px solid #000;
-                    z-index: 1000;
-                    padding: 10px 20px !important;
-                }
-
-                .page {
-                    margin-top: 120px;
-                }
             </style>
 
-            <!-- HEADER NATIVO ODOO -->
+            <!-- HEADER FIJO FUERA DEL LOOP -->
             <div class="header" style="padding: 15px 20px; border-bottom: 2px solid #000;">
-                <!-- Variables -->
+                <!-- Variables GLOBALES -->
                 <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
                 <t t-set="language" t-value="report_config.get('language', 'es')"/>
                 
@@ -1504,7 +1442,7 @@
                 </table>
             </div>
 
-            <!-- FOOTER FIJO -->
+            <!-- FOOTER FIJO FUERA DEL LOOP -->
             <div class="footer">
                 <table class="table table-borderless" style="width: 100%; font-size: 8px; border-top: 1px solid #000; padding-top: 5px;">
                     <tr>
@@ -1536,13 +1474,13 @@
                 </table>
             </div>
 
-            <!-- CONTENIDO PRINCIPAL -->
+            <!-- CONTENIDO PRINCIPAL - LOOP DE ANÁLISIS -->
             <t t-foreach="docs" t-as="analysis">
                 <div t-att-class="'page' + (' sample-break' if analysis_index > 0 else '')">
                     
-                    <!-- Variables de configuración -->
+                    <!-- Variables locales para este análisis -->
                     <t t-set="status" t-value="report_config.get('status', 'final')"/>
-
+                    
                     <!-- INFORMACIÓN SUPERIOR -->
                     <table class="info-grid">
                         <tr>
