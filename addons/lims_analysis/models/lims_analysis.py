@@ -733,14 +733,15 @@ class LimsAnalysis(models.Model):
             'tag': 'reload',
         }
 
-# 🆕 NUEVO MODELO PARA PARÁMETROS DE ANÁLISIS - CORREGIDO
 class LimsParameterAnalysis(models.Model):
     _name = 'lims.parameter.analysis'
     _description = 'Parámetros de Análisis con Resultados'
     _rec_name = 'name'
     _order = 'sequence, name'
 
-    # Relación con el análisis padre
+    # ===============================================
+    # === RELACIÓN PRINCIPAL ===
+    # ===============================================
     analysis_id = fields.Many2one(
         'lims.analysis',
         string='Análisis',
@@ -748,135 +749,103 @@ class LimsParameterAnalysis(models.Model):
         ondelete='cascade'
     )
     
-    analysis_start_date = fields.Date(
-        string='Fecha Inicio de Análisis',
-        help='Fecha en que se inició el análisis de este parámetro'
-    )
-
-    analysis_commitment_date = fields.Date(
-        string='Fecha Compromiso de Análisis',
-        help='Fecha comprometida para la entrega del resultado'
-    )
-
-    # Información del parámetro (copiada desde el parámetro original)
+    # ===============================================
+    # === INFORMACIÓN DEL PARÁMETRO ===
+    # ===============================================
     parameter_id = fields.Many2one(
         'lims.sample.parameter',
         string='Parámetro Original',
         readonly=True
     )
-    
     name = fields.Char(
         string='Nombre del Parámetro',
         required=True
     )
-    method = fields.Char(
-        string='Método'
-    )
-    microorganism = fields.Char(
-        string='Análisis'
-    )
-    unit = fields.Char(
-        string='Unidad'
-    )
+    method = fields.Char(string='Método')
+    microorganism = fields.Char(string='Análisis')
+    unit = fields.Char(string='Unidad')
     category = fields.Selection([
         ('physical', 'Físico'),
         ('chemical', 'Químico'),
         ('microbiological', 'Microbiológico'),
         ('other', 'Otro')
     ], string='Categoría')
+    sequence = fields.Integer(string='Secuencia', default=10)
     
-    sequence = fields.Integer(
-        string='Secuencia',
-        default=10
-    )
-    
-    # 🆕 SISTEMA HÍBRIDO DE RESULTADOS
-    
-    # Campo principal (siempre visible)
-    result_value = fields.Char(
-        string='Resultado',
-        help='Resultado principal del análisis',
-        placeholder='Ej: 7.2, Negativo, 1.2 x 10² UFC/g, < 0.01 mg/kg'
-    )
-    
-    # Campos específicos que aparecen según contexto
-    result_numeric = fields.Float(
-        string='Valor Numérico',
-        help='Para cálculos automáticos y validaciones',
-        digits=(12, 4)
-    )
-    
-    result_unit = fields.Char(
-        string='Unidad',
-        help='Unidad del resultado',
-        placeholder='mg/L, °C, pH, NTU, etc.'
-    )
-
+    # ===============================================
+    # === CONFIGURACIÓN DE ANÁLISIS ===
+    # ===============================================
     result_type = fields.Selection([
         ('qualitative', 'Cualitativo'),
         ('quantitative', 'Cuantitativo')
     ], string='Tipo de Resultado', default='quantitative', required=True)
     
-    # 🆕 CAMPOS PARA PROCESOS ANALÍTICOS
-    requires_pre_enrichment = fields.Boolean(
-        string='Requiere Pre-enriquecimiento',
-        default=False,
-        help='Marcar si este parámetro requiere proceso de pre-enriquecimiento'
+    # ===============================================
+    # === FECHAS Y ESTADO ===
+    # ===============================================
+    analysis_start_date = fields.Date(
+        string='Fecha Inicio de Análisis',
+        help='Fecha en que se inició el análisis de este parámetro'
     )
-
-    requires_selective_enrichment = fields.Boolean(
-        string='Requiere Enriquecimiento Selectivo',
-        default=False,
-        help='Marcar si este parámetro requiere enriquecimiento selectivo'
+    analysis_commitment_date = fields.Date(
+        string='Fecha Compromiso de Análisis',
+        help='Fecha comprometida para la entrega del resultado'
     )
-
-    requires_confirmation = fields.Boolean(
-        string='Requiere Confirmación',
-        default=False,
-        help='Marcar si este parámetro requiere pruebas de confirmación'
+    analysis_date = fields.Date(string='Fecha de Análisis')
+    
+    # Estados del análisis
+    analysis_status = fields.Selection([
+        ('pending', 'Pendiente'),
+        ('in_progress', 'En Proceso'),
+        ('completed', 'Completado'),
+        ('reviewed', 'Revisado'),
+        ('approved', 'Aprobado')
+    ], string='Estado del Análisis', default='pending')
+    
+    analysis_status_checkbox = fields.Selection([
+        ('sin_procesar', 'Sin Procesar'),
+        ('en_proceso', 'En Proceso'),
+        ('finalizado', 'Finalizado')
+    ], string='Estado del Análisis', default='sin_procesar', required=True)
+    
+    # ===============================================
+    # === RESPONSABLES ===
+    # ===============================================
+    analyst_names = fields.Char(
+        string='Analistas Responsables',
+        help='Firma (Iniciales separadas por comas)'
     )
-
-    requires_ph_adjustment = fields.Boolean(
-        string='Requiere Ajuste de pH',
-        default=False,
-        help='Marcar si este parámetro requiere ajuste de pH'
+    
+    # ===============================================
+    # === RESULTADO PRINCIPAL ===
+    # ===============================================
+    result_value = fields.Char(
+        string='Resultado',
+        help='Resultado principal del análisis',
+        placeholder='Ej: 7.2, Negativo, 1.2 x 10² UFC/g, < 0.01 mg/kg'
     )
-
-    # 🆕 CAMPOS PARA PRE-ENRIQUECIMIENTO
-    pre_enrichment_environment = fields.Selection([
-        ('ambiente_aseptico', 'Ambiente aséptico'),
-        ('campana_flujo', 'Campana de Flujo Laminar'),
-        ('campana_bioseguridad', 'Campana de Bioseguridad'),
-        ('mesa_trabajo', 'Mesa de Trabajo'),
-        ('no_aplica', 'N/A'),
-    ], string='Ambiente de Procesamiento')
-
-    pre_enrichment_equipment_id = fields.Many2one(
-        'lims.lab.equipment',
-        string='Equipo Específico',
-        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]",
-        help='Equipo específico utilizado para el pre-enriquecimiento'
+    result_complete = fields.Char(
+        string='Resultado Completo',
+        compute='_compute_result_complete',
+        store=True,
+        help='Resultado con unidad incluida'
     )
-
-    # Fechas de procesamiento
-    pre_enrichment_processing_date = fields.Date(
-        string='Fecha de Procesamiento'
+    
+    # ===============================================
+    # === CAMPOS ESPECÍFICOS DE RESULTADO ===
+    # ===============================================
+    result_numeric = fields.Float(
+        string='Valor Numérico',
+        help='Para cálculos automáticos y validaciones',
+        digits=(12, 4)
     )
-
-    pre_enrichment_processing_time = fields.Char(
-        string='Hora de Procesamiento',
-        help='Formato HH:MM'
+    result_unit = fields.Char(
+        string='Unidad',
+        help='Unidad del resultado',
+        placeholder='mg/L, °C, pH, NTU, etc.'
     )
-
-    # Medios y reactivos
-
-    pre_enrichment_media_ids = fields.One2many(
-        'lims.pre.enrichment.media',
-        'parameter_analysis_id',
-        string='Medios y Reactivos Utilizados'
-    )
-
-    # Para microbiología
+    
+    # Para resultados cualitativos
     result_qualitative = fields.Selection([
         ('detected', 'Detectado'),
         ('not_detected', 'No Detectado'),
@@ -890,50 +859,7 @@ class LimsParameterAnalysis(models.Model):
         ('not_confirmed', 'No Confirmado')
     ], string='Resultado Cualitativo')
     
-    # Límites de detección y cuantificación
-    below_detection_limit = fields.Boolean(
-        string='< Límite de Detección',
-        help='Resultado por debajo del límite de detección'
-    )
-    
-    above_quantification_limit = fields.Boolean(
-        string='> Límite de Cuantificación',
-        help='Resultado por encima del límite de cuantificación'
-    )
-    
-    # CAMPOS DE ANÁLISIS (sin duplicar analysis_status)
-    analysis_status = fields.Selection([
-        ('pending', 'Pendiente'),
-        ('in_progress', 'En Proceso'),
-        ('completed', 'Completado'),
-        ('reviewed', 'Revisado'),
-        ('approved', 'Aprobado')
-    ], string='Estado del Análisis', default='pending')
-    
-    analysis_date = fields.Date(
-        string='Fecha de Análisis'
-    )
-    
-    analyst_notes = fields.Text(
-        string='Observaciones del Analista',
-        help='Notas técnicas sobre el análisis realizado'
-    )
-    
-    # 🆕 RELACIÓN CON DATOS CRUDOS DE DILUCIONES
-    raw_dilution_data_ids = fields.One2many(
-        'lims.raw.dilution.data',
-        'parameter_analysis_id',
-        string='Datos Crudos de Diluciones'
-    )
-    
-    # Campo que muestra SOLO los cálculos (NO actualiza resultado automáticamente)
-    dilution_calculations = fields.Text(
-        string='Cálculos Informativos',
-        compute='_compute_dilution_calculations',
-        help='Cálculos informativos basados en datos crudos (solo referencia)'
-    )
-    
-    # 🆕 CAMPOS PARA RESULTADO MANUAL
+    # Unidades para resultados
     result_unit_selection = fields.Selection([
         ('ufc_g', 'UFC/g'),
         ('ufc_ml', 'UFC/mL'),
@@ -951,91 +877,6 @@ class LimsParameterAnalysis(models.Model):
         help='Especificar unidad personalizada'
     )
     
-    # CAMPOS PARA ENRIQUECIMIENTO SELECTIVO
-    selective_enrichment_environment = fields.Selection([
-        ('ambiente_aseptico', 'Ambiente aséptico'),
-        ('campana_flujo', 'Campana de Flujo Laminar'),
-        ('campana_bioseguridad', 'Campana de Bioseguridad'),
-        ('mesa_trabajo', 'Mesa de Trabajo'),
-        ('no_aplica', 'N/A'),
-    ], string='Ambiente de Procesamiento Selectivo')
-
-    selective_enrichment_equipment_id = fields.Many2one(
-        'lims.lab.equipment',
-        string='Equipo Específico para Selectivo',
-        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]",
-        help='Equipo específico utilizado para el enriquecimiento selectivo'
-    )
-
-    # Fechas de procesamiento selectivo
-    selective_enrichment_processing_date = fields.Date(
-        string='Fecha de Procesamiento Selectivo'
-    )
-
-    selective_enrichment_processing_time = fields.Char(
-        string='Hora de Procesamiento Selectivo',
-        help='Formato HH:MM'
-    )
-
-    # Medios selectivos
-    selective_enrichment_media_ids = fields.One2many(
-        'lims.selective.enrichment.media',
-        'parameter_analysis_id',
-        string='Medios Selectivos Utilizados'
-    )
-
-    quantitative_media_ids = fields.One2many(
-        'lims.quantitative.media',
-        'parameter_analysis_id',
-        string='Medios Utilizados para Cuantitativos'
-    )
-
-    # 🆕 CAMPOS PARA CONFIRMACIÓN
-    confirmation_environment = fields.Selection([
-        ('ambiente_aseptico', 'Ambiente aséptico'),
-        ('campana_flujo', 'Campana de Flujo Laminar'),
-        ('campana_bioseguridad', 'Campana de Bioseguridad'),
-        ('mesa_trabajo', 'Mesa de Trabajo'),
-        ('no_aplica', 'N/A'),
-    ], string='Ambiente de Procesamiento de Confirmación')
-
-    confirmation_equipment_id = fields.Many2one(
-        'lims.lab.equipment',
-        string='Equipo Específico para Confirmación',
-        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]",
-        help='Equipo específico utilizado para la confirmación'
-    )
-
-    # Fechas de procesamiento de confirmación
-    confirmation_processing_date = fields.Date(
-        string='Fecha de Procesamiento de Confirmación'
-    )
-
-    confirmation_processing_time = fields.Char(
-        string='Hora de Procesamiento de Confirmación',
-        help='Formato HH:MM'
-    )
-
-    # Medios de confirmación
-    confirmation_media_ids = fields.One2many(
-        'lims.confirmation.media',
-        'parameter_analysis_id',
-        string='Medios Utilizados para Confirmación'
-    )
-    
-    # Resultados de confirmación (generados automáticamente)
-    confirmation_results_ids = fields.One2many(
-        'lims.confirmation.result',
-        'parameter_analysis_id',
-        string='Resultados de Confirmación'
-    )
-
-    analysis_status_checkbox = fields.Selection([
-        ('sin_procesar', 'Sin Procesar'),
-        ('en_proceso', 'En Proceso'),
-        ('finalizado', 'Finalizado')
-    ], string='Estado del Análisis', default='sin_procesar', required=True)
-
     qualitative_unit_selection = fields.Selection([
         ('ausencia_presencia_25g', 'Ausencia/Presencia en 25g'),
         ('ausencia_presencia_100ml', 'Ausencia/Presencia en 100mL'),
@@ -1050,14 +891,20 @@ class LimsParameterAnalysis(models.Model):
         string='Unidad Personalizada',
         help='Especificar unidad personalizada para resultado cualitativo'
     )
-
-    result_complete = fields.Char(
-        string='Resultado Completo',
-        compute='_compute_result_complete',
-        store=True,
-        help='Resultado con unidad incluida'
+    
+    # Límites de detección
+    below_detection_limit = fields.Boolean(
+        string='< Límite de Detección',
+        help='Resultado por debajo del límite de detección'
     )
-
+    above_quantification_limit = fields.Boolean(
+        string='> Límite de Cuantificación',
+        help='Resultado por encima del límite de cuantificación'
+    )
+    
+    # ===============================================
+    # === ESTADO DE REPORTE ===
+    # ===============================================
     report_status = fields.Selection([
         ('draft', 'En Proceso'),
         ('ready', 'Listo para Reporte'),
@@ -1065,25 +912,84 @@ class LimsParameterAnalysis(models.Model):
     ], string='Estado para Reporte', 
        default='draft',
        help='Indica si este parámetro está listo para incluir en reportes')
-
-    executed_qc_ids = fields.One2many(
-        'lims.executed.quality.control',
-        'parameter_analysis_id',
-        string='Controles de Calidad Ejecutados'
+    
+    # ===============================================
+    # === PROCESOS ANALÍTICOS REQUERIDOS ===
+    # ===============================================
+    requires_pre_enrichment = fields.Boolean(
+        string='Requiere Pre-enriquecimiento',
+        default=False,
+        help='Marcar si este parámetro requiere proceso de pre-enriquecimiento'
     )
-
-    # qualitative_results_ids = fields.One2many(
-    #     'lims.qualitative.result',
-    #     'parameter_analysis_id',
-    #     string='Resultados Cualitativos'
-    # )
-
-    qualitative_media_ids = fields.One2many(
-        'lims.qualitative.media',
-        'parameter_analysis_id',
-        string='Medios Utilizados para Cualitativos'
+    requires_selective_enrichment = fields.Boolean(
+        string='Requiere Enriquecimiento Selectivo',
+        default=False,
+        help='Marcar si este parámetro requiere enriquecimiento selectivo'
     )
-
+    requires_confirmation = fields.Boolean(
+        string='Requiere Confirmación',
+        default=False,
+        help='Marcar si este parámetro requiere pruebas de confirmación'
+    )
+    requires_ph_adjustment = fields.Boolean(
+        string='Requiere Ajuste de pH',
+        default=False,
+        help='Marcar si este parámetro requiere ajuste de pH'
+    )
+    
+    # ===============================================
+    # === CAMPOS DE AMBIENTE DE TRABAJO ===
+    # ===============================================
+    # Pre-enriquecimiento
+    pre_enrichment_environment = fields.Selection([
+        ('ambiente_aseptico', 'Ambiente aséptico'),
+        ('campana_flujo', 'Campana de Flujo Laminar'),
+        ('campana_bioseguridad', 'Campana de Bioseguridad'),
+        ('mesa_trabajo', 'Mesa de Trabajo'),
+        ('no_aplica', 'N/A'),
+    ], string='Ambiente de Procesamiento')
+    pre_enrichment_equipment_id = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo Específico',
+        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]",
+        help='Equipo específico utilizado para el pre-enriquecimiento'
+    )
+    pre_enrichment_processing_date = fields.Date(string='Fecha de Procesamiento')
+    pre_enrichment_processing_time = fields.Char(string='Hora de Procesamiento', help='Formato HH:MM')
+    
+    # Enriquecimiento selectivo
+    selective_enrichment_environment = fields.Selection([
+        ('ambiente_aseptico', 'Ambiente aséptico'),
+        ('campana_flujo', 'Campana de Flujo Laminar'),
+        ('campana_bioseguridad', 'Campana de Bioseguridad'),
+        ('mesa_trabajo', 'Mesa de Trabajo'),
+        ('no_aplica', 'N/A'),
+    ], string='Ambiente de Procesamiento Selectivo')
+    selective_enrichment_equipment_id = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo Específico para Selectivo',
+        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]"
+    )
+    selective_enrichment_processing_date = fields.Date(string='Fecha de Procesamiento Selectivo')
+    selective_enrichment_processing_time = fields.Char(string='Hora de Procesamiento Selectivo', help='Formato HH:MM')
+    
+    # Confirmación
+    confirmation_environment = fields.Selection([
+        ('ambiente_aseptico', 'Ambiente aséptico'),
+        ('campana_flujo', 'Campana de Flujo Laminar'),
+        ('campana_bioseguridad', 'Campana de Bioseguridad'),
+        ('mesa_trabajo', 'Mesa de Trabajo'),
+        ('no_aplica', 'N/A'),
+    ], string='Ambiente de Procesamiento de Confirmación')
+    confirmation_equipment_id = fields.Many2one(
+        'lims.lab.equipment',
+        string='Equipo Específico para Confirmación',
+        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]"
+    )
+    confirmation_processing_date = fields.Date(string='Fecha de Procesamiento de Confirmación')
+    confirmation_processing_time = fields.Char(string='Hora de Procesamiento de Confirmación', help='Formato HH:MM')
+    
+    # Análisis cuantitativo
     quantitative_environment = fields.Selection([
         ('ambiente_aseptico', 'Ambiente aséptico'),
         ('campana_flujo', 'Campana de Flujo Laminar'),
@@ -1091,24 +997,15 @@ class LimsParameterAnalysis(models.Model):
         ('mesa_trabajo', 'Mesa de Trabajo'),
         ('no_aplica', 'N/A'),
     ], string='Ambiente de Procesamiento Cuantitativo')
-
     quantitative_equipment_id = fields.Many2one(
         'lims.lab.equipment',
         string='Equipo Específico para Cuantitativo',
-        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]",
-        help='Equipo específico utilizado para el análisis cuantitativo'
+        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]"
     )
-
-    quantitative_processing_date = fields.Date(
-        string='Fecha de Procesamiento Cuantitativo'
-    )
-
-    quantitative_processing_time = fields.Char(
-        string='Hora de Procesamiento Cuantitativo',
-        help='Formato HH:MM'
-    )
-
-    # 🆕 CAMPOS DE AMBIENTE PARA CUALITATIVOS
+    quantitative_processing_date = fields.Date(string='Fecha de Procesamiento Cuantitativo')
+    quantitative_processing_time = fields.Char(string='Hora de Procesamiento Cuantitativo', help='Formato HH:MM')
+    
+    # Análisis cualitativo
     qualitative_environment = fields.Selection([
         ('ambiente_aseptico', 'Ambiente aséptico'),
         ('campana_flujo', 'Campana de Flujo Laminar'),
@@ -1116,79 +1013,89 @@ class LimsParameterAnalysis(models.Model):
         ('mesa_trabajo', 'Mesa de Trabajo'),
         ('no_aplica', 'N/A'),
     ], string='Ambiente de Procesamiento Cualitativo')
-
     qualitative_equipment_id = fields.Many2one(
         'lims.lab.equipment',
         string='Equipo Específico para Cualitativo',
-        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]",
-        help='Equipo específico utilizado para el análisis cualitativo'
+        domain="['|', ('equipment_type', '=', 'campana_flujo'), ('equipment_type', '=', 'campana_bioseguridad')]"
     )
-
-    qualitative_processing_date = fields.Date(
-        string='Fecha de Procesamiento Cualitativo'
-    )
-
-    qualitative_processing_time = fields.Char(
-        string='Hora de Procesamiento Cualitativo',
-        help='Formato HH:MM'
-    )
-
-    analyst_names = fields.Char(
-        string='Analistas Responsables',
-        help='Firma (Iniciales separadas por comas)'
+    qualitative_processing_date = fields.Date(string='Fecha de Procesamiento Cualitativo')
+    qualitative_processing_time = fields.Char(string='Hora de Procesamiento Cualitativo', help='Formato HH:MM')
+    
+    # ===============================================
+    # === OBSERVACIONES ===
+    # ===============================================
+    analyst_notes = fields.Text(
+        string='Observaciones del Analista',
+        help='Notas técnicas sobre el análisis realizado'
     )
     
+    # ===============================================
+    # === RELACIONES ONE2MANY ===
+    # ===============================================
+    raw_dilution_data_ids = fields.One2many(
+        'lims.raw.dilution.data',
+        'parameter_analysis_id',
+        string='Datos Crudos de Diluciones'
+    )
+    pre_enrichment_media_ids = fields.One2many(
+        'lims.pre.enrichment.media',
+        'parameter_analysis_id',
+        string='Medios y Reactivos Utilizados'
+    )
+    selective_enrichment_media_ids = fields.One2many(
+        'lims.selective.enrichment.media',
+        'parameter_analysis_id',
+        string='Medios Selectivos Utilizados'
+    )
+    quantitative_media_ids = fields.One2many(
+        'lims.quantitative.media',
+        'parameter_analysis_id',
+        string='Medios Utilizados para Cuantitativos'
+    )
+    qualitative_media_ids = fields.One2many(
+        'lims.qualitative.media',
+        'parameter_analysis_id',
+        string='Medios Utilizados para Cualitativos'
+    )
+    confirmation_media_ids = fields.One2many(
+        'lims.confirmation.media',
+        'parameter_analysis_id',
+        string='Medios Utilizados para Confirmación'
+    )
+    confirmation_results_ids = fields.One2many(
+        'lims.confirmation.result',
+        'parameter_analysis_id',
+        string='Resultados de Confirmación'
+    )
+    executed_qc_ids = fields.One2many(
+        'lims.executed.quality.control',
+        'parameter_analysis_id',
+        string='Controles de Calidad Ejecutados'
+    )
     equipment_involved_ids = fields.One2many(
         'lims.equipment.involved',
         'parameter_analysis_id',
         string='Equipos Involucrados'
     )
-
-    def sync_confirmation_results(self):
-        """Botón para sincronizar resultados de confirmación manualmente"""
+    
+    # ===============================================
+    # === CAMPOS COMPUTADOS ===
+    # ===============================================
+    dilution_calculations = fields.Text(
+        string='Cálculos Informativos',
+        compute='_compute_dilution_calculations',
+        help='Cálculos informativos basados en datos crudos (solo referencia)'
+    )
+    
+    # ===============================================
+    # === MÉTODOS COMPUTADOS ===
+    # ===============================================
+    @api.depends('result_value')
+    def _compute_result_complete(self):
+        """Mostrar solo el resultado sin unidad en la lista"""
         for record in self:
-            try:
-                # Limpiar resultados existentes
-                existing_results = self.env['lims.confirmation.result'].search([
-                    ('parameter_analysis_id', '=', record.id)
-                ])
-                if existing_results:
-                    existing_results.unlink()
-                
-                # Crear nuevos resultados para cada medio de confirmación
-                for media in record.confirmation_media_ids:
-                    if media.culture_media_batch_id:
-                        batch_display = f"{media.culture_media_batch_id.culture_media_id.name} (Lote: {media.culture_media_batch_id.batch_code})"
-                        
-                        self.env['lims.confirmation.result'].create({
-                            'parameter_analysis_id': record.id,
-                            'confirmation_media_id': media.id,
-                            'batch_display_name': batch_display,
-                        })
-                
-                # Mostrar mensaje de éxito
-                return {
-                    'type': 'ir.actions.client',
-                    'tag': 'display_notification',
-                    'params': {
-                        'title': 'Sincronización Completada',
-                        'message': f'Se crearon {len(record.confirmation_media_ids)} resultados de confirmación',
-                        'type': 'success',
-                    }
-                }
-                
-            except Exception as e:
-                # Mostrar mensaje de error
-                return {
-                    'type': 'ir.actions.client',
-                    'tag': 'display_notification',
-                    'params': {
-                        'title': 'Error en Sincronización',
-                        'message': f'Error: {str(e)}',
-                        'type': 'warning',
-                    }
-                }
-
+            record.result_complete = record.result_value or ''
+    
     @api.depends('raw_dilution_data_ids.ufc_count')
     def _compute_dilution_calculations(self):
         """Mostrar SOLO cálculos informativos (NO actualiza resultado automáticamente)"""
@@ -1219,13 +1126,15 @@ class LimsParameterAnalysis(models.Model):
             else:
                 record.dilution_calculations = "Sin diluciones registradas"
     
+    # ===============================================
+    # === MÉTODOS ONCHANGE ===
+    # ===============================================
     @api.onchange('result_unit_selection')
     def _onchange_result_unit_selection(self):
         """Limpiar unidad personalizada si no se selecciona 'custom'"""
         if self.result_unit_selection != 'custom':
             self.custom_unit = False
     
-    # 🆕 MÉTODOS ONCHANGE BÁSICOS (sin campos inexistentes)
     @api.onchange('result_numeric', 'result_unit')
     def _onchange_numeric_result(self):
         """Auto-completar resultado principal cuando se llena numérico + unidad"""
@@ -1280,7 +1189,6 @@ class LimsParameterAnalysis(models.Model):
             # Limpiar campos cualitativos
             self.result_qualitative = False
     
-    # 🆕 MÉTODO ONCHANGE PARA AMBIENTE DE PROCESAMIENTO
     @api.onchange('pre_enrichment_environment')
     def _onchange_pre_enrichment_environment(self):
         """Limpiar equipo cuando cambia el ambiente"""
@@ -1328,12 +1236,6 @@ class LimsParameterAnalysis(models.Model):
             domain = []
         
         return {'domain': {'confirmation_equipment_id': domain}}
-    
-    @api.depends('result_value')
-    def _compute_result_complete(self):
-        """Mostrar solo el resultado sin unidad en la lista"""
-        for record in self:
-            record.result_complete = record.result_value or ''
     
     @api.onchange('result_qualitative', 'qualitative_unit_selection', 'qualitative_custom_unit')
     def _onchange_qualitative_result_with_unit(self):
@@ -1448,6 +1350,86 @@ class LimsParameterAnalysis(models.Model):
             # Solo volver a 'draft' si no está reportado
             if self.report_status != 'reported':
                 self.report_status = 'draft'
+
+    @api.onchange('quantitative_environment')
+    def _onchange_quantitative_environment(self):
+        """Limpiar equipo cuando cambia el ambiente cuantitativo"""
+        if self.quantitative_environment not in ['campana_flujo', 'campana_bioseguridad']:
+            self.quantitative_equipment_id = False
+        
+        # Actualizar dominio del equipo según el ambiente
+        if self.quantitative_environment == 'campana_flujo':
+            domain = [('equipment_type', '=', 'campana_flujo')]
+        elif self.quantitative_environment == 'campana_bioseguridad':
+            domain = [('equipment_type', '=', 'campana_bioseguridad')]
+        else:
+            domain = []
+        
+        return {'domain': {'quantitative_equipment_id': domain}}
+
+    @api.onchange('qualitative_environment')
+    def _onchange_qualitative_environment(self):
+        """Limpiar equipo cuando cambia el ambiente cualitativo"""
+        if self.qualitative_environment not in ['campana_flujo', 'campana_bioseguridad']:
+            self.qualitative_equipment_id = False
+        
+        # Actualizar dominio del equipo según el ambiente
+        if self.qualitative_environment == 'campana_flujo':
+            domain = [('equipment_type', '=', 'campana_flujo')]
+        elif self.qualitative_environment == 'campana_bioseguridad':
+            domain = [('equipment_type', '=', 'campana_bioseguridad')]
+        else:
+            domain = []
+        
+        return {'domain': {'qualitative_equipment_id': domain}}
+    
+    # ===============================================
+    # === MÉTODOS DE ACCIÓN ===
+    # ===============================================
+    def sync_confirmation_results(self):
+        """Botón para sincronizar resultados de confirmación manualmente"""
+        for record in self:
+            try:
+                # Limpiar resultados existentes
+                existing_results = self.env['lims.confirmation.result'].search([
+                    ('parameter_analysis_id', '=', record.id)
+                ])
+                if existing_results:
+                    existing_results.unlink()
+                
+                # Crear nuevos resultados para cada medio de confirmación
+                for media in record.confirmation_media_ids:
+                    if media.culture_media_batch_id:
+                        batch_display = f"{media.culture_media_batch_id.culture_media_id.name} (Lote: {media.culture_media_batch_id.batch_code})"
+                        
+                        self.env['lims.confirmation.result'].create({
+                            'parameter_analysis_id': record.id,
+                            'confirmation_media_id': media.id,
+                            'batch_display_name': batch_display,
+                        })
+                
+                # Mostrar mensaje de éxito
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': 'Sincronización Completada',
+                        'message': f'Se crearon {len(record.confirmation_media_ids)} resultados de confirmación',
+                        'type': 'success',
+                    }
+                }
+                
+            except Exception as e:
+                # Mostrar mensaje de error
+                return {
+                    'type': 'ir.actions.client',
+                    'tag': 'display_notification',
+                    'params': {
+                        'title': 'Error en Sincronización',
+                        'message': f'Error: {str(e)}',
+                        'type': 'warning',
+                    }
+                }
     
     def action_copy_qc_from_template(self):
         """Copiar controles de calidad desde la plantilla del parámetro"""
@@ -1490,100 +1472,6 @@ class LimsParameterAnalysis(models.Model):
                 'type': 'success',
             }
         }
-
-    @api.depends('parameter_signature')
-    def _compute_is_parameter_signed(self):
-        """Verificar si el parámetro está firmado"""
-        for param in self:
-            param.is_parameter_signed = bool(param.parameter_signature)
-
-    # def sync_qualitative_results(self):
-    #     """Botón para sincronizar resultados cualitativos incluyendo lotes externos"""
-    #     for record in self:
-    #         try:
-    #             # Limpiar resultados existentes
-    #             existing_results = self.env['lims.qualitative.result'].search([
-    #                 ('parameter_analysis_id', '=', record.id)
-    #             ])
-    #             if existing_results:
-    #                 existing_results.unlink()
-                
-    #             # Crear resultados para medios INTERNOS
-    #             for media in record.qualitative_media_ids.filtered(lambda m: m.media_source == 'internal' and m.culture_media_batch_id):
-    #                 batch_display = f"{media.culture_media_batch_id.culture_media_id.name} (Lote: {media.culture_media_batch_id.batch_code})"
-                    
-    #                 self.env['lims.qualitative.result'].create({
-    #                     'parameter_analysis_id': record.id,
-    #                     'culture_media_batch_id': media.culture_media_batch_id.id,
-    #                     'batch_display_name': batch_display,
-    #                     'media_source': 'internal',
-    #                 })
-                
-    #             # Crear resultados para medios EXTERNOS
-    #             for media in record.qualitative_media_ids.filtered(lambda m: m.media_source == 'external'):
-    #                 batch_display = f"{media.culture_media_name} (Ext: {media.external_batch_code})"
-                    
-    #                 self.env['lims.qualitative.result'].create({
-    #                     'parameter_analysis_id': record.id,
-    #                     'batch_display_name': batch_display,
-    #                     'media_source': 'external',
-    #                     'external_batch_info': f"{media.culture_media_name} - {media.external_batch_code}",
-    #                 })
-                
-    #             total_created = len(record.qualitative_media_ids)
-                
-    #             return {
-    #                 'type': 'ir.actions.client',
-    #                 'tag': 'display_notification',
-    #                 'params': {
-    #                     'title': 'Sincronización Completada',
-    #                     'message': f'Se crearon {total_created} resultados (internos y externos)',
-    #                     'type': 'success',
-    #                 }
-    #             }
-                
-    #         except Exception as e:
-    #             return {
-    #                 'type': 'ir.actions.client',
-    #                 'tag': 'display_notification',
-    #                 'params': {
-    #                     'title': 'Error en Sincronización',
-    #                     'message': f'Error: {str(e)}',
-    #                     'type': 'warning',
-    #                 }
-    #             }
-
-    @api.onchange('quantitative_environment')
-    def _onchange_quantitative_environment(self):
-        """Limpiar equipo cuando cambia el ambiente cuantitativo"""
-        if self.quantitative_environment not in ['campana_flujo', 'campana_bioseguridad']:
-            self.quantitative_equipment_id = False
-        
-        # Actualizar dominio del equipo según el ambiente
-        if self.quantitative_environment == 'campana_flujo':
-            domain = [('equipment_type', '=', 'campana_flujo')]
-        elif self.quantitative_environment == 'campana_bioseguridad':
-            domain = [('equipment_type', '=', 'campana_bioseguridad')]
-        else:
-            domain = []
-        
-        return {'domain': {'quantitative_equipment_id': domain}}
-
-    @api.onchange('qualitative_environment')
-    def _onchange_qualitative_environment(self):
-        """Limpiar equipo cuando cambia el ambiente cualitativo"""
-        if self.qualitative_environment not in ['campana_flujo', 'campana_bioseguridad']:
-            self.qualitative_equipment_id = False
-        
-        # Actualizar dominio del equipo según el ambiente
-        if self.qualitative_environment == 'campana_flujo':
-            domain = [('equipment_type', '=', 'campana_flujo')]
-        elif self.qualitative_environment == 'campana_bioseguridad':
-            domain = [('equipment_type', '=', 'campana_bioseguridad')]
-        else:
-            domain = []
-        
-        return {'domain': {'qualitative_equipment_id': domain}}
 
 # 🆕 MODELO PARA DATOS CRUDOS DE DILUCIONES
 class LimsRawDilutionData(models.Model):
