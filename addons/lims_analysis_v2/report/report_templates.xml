@@ -1460,26 +1460,32 @@
             </style>
 
             <!-- HEADER FIJO -->
-            <div class="header" style="padding: 15px 20px;">
-                <table style="width: 100%; border-collapse: collapse;">
+            <div class="header" style="padding: 10px 20px;">
+                <!-- Primero definir las variables ANTES de usarlas -->
+                <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
+                <t t-set="language" t-value="report_config.get('language', 'es')"/>
+                
+                <table style="width: 100%; border-collapse: collapse; border-bottom: 2px solid #000; padding-bottom: 10px;">
                     <tr>
-                        <td style="width: 20%; text-align: left; vertical-align: middle;">
-                            <!-- LOGO DE LA EMPRESA -->
+                        <td style="width: 15%; text-align: left; vertical-align: top;">
+                            <!-- LOGO -->
                             <t t-if="company.logo">
                                 <img t-att-src="image_data_uri(company.logo)"
-                                    style="max-height: 50px; width: auto;"/>
+                                    style="max-height: 60px; width: auto;"/>
                             </t>
                         </td>
-                        <td style="width: 60%; text-align: center; vertical-align: middle;">
-                            <!-- TÍTULO DINÁMICO SEGÚN IDIOMA -->
-                            <h2 style="font-size: 18px; font-weight: bold; margin: 0; border: 2px solid #000; padding: 8px; background-color: #f0f0f0;">
-                                <t t-if="language == 'es'">INFORME DE ENSAYO</t>
-                                <t t-else="">TEST REPORT</t>
-                            </h2>
+                        <td style="width: 70%; text-align: center; vertical-align: middle;">
+                            <!-- TÍTULO DINÁMICO -->
+                            <div style="border: 2px solid #000; background-color: #f0f0f0; padding: 10px; margin: 0 20px;">
+                                <h2 style="font-size: 16px; font-weight: bold; margin: 0;">
+                                    <t t-if="language == 'es'">INFORME DE ENSAYO</t>
+                                    <t t-else="">TEST REPORT</t>
+                                </h2>
+                            </div>
                         </td>
-                        <td style="width: 20%; text-align: right; vertical-align: middle;">
+                        <td style="width: 15%; text-align: right; vertical-align: top;">
                             <!-- LOGOS ILAC -->
-                            <div style="font-size: 10px; color: #666; border: 1px solid #ccc; padding: 5px; height: 40px; display: flex; align-items: center; justify-content: center;">
+                            <div style="border: 1px solid #000; padding: 5px; height: 60px; display: flex; align-items: center; justify-content: center; font-size: 8px;">
                                 [ILAC LOGOS]
                             </div>
                         </td>
@@ -1524,8 +1530,6 @@
                 <div t-att-class="'page' + (' sample-break' if analysis_index > 0 else '')">
                     
                     <!-- Variables de configuración -->
-                    <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
-                    <t t-set="language" t-value="report_config.get('language', 'es')"/>
                     <t t-set="status" t-value="report_config.get('status', 'final')"/>
 
                     <!-- INFORMACIÓN SUPERIOR -->
