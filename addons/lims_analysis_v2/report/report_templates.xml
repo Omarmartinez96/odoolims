@@ -1101,4 +1101,719 @@
         </t>
     </template>
 
+    <!-- ========== TEMPLATE ENDOTOXINAS ========== -->
+    <template id="report_endotoxin_template">
+        <t t-call="lims_analysis_v2.report_analysis_base_template">
+            <t t-foreach="docs" t-as="analysis">
+                <div class="page">
+                    <div class="main-content">
+                        
+                        <!-- Variables de configuración -->
+                        <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
+                        <t t-set="language" t-value="report_config.get('language', 'es')"/>
+                        <t t-set="status" t-value="report_config.get('status', 'final')"/>
+                        
+                        <!-- Título según idioma y estado -->
+                        <div style="text-align: center; margin: 20px 0 30px 0;">
+                            <h1 style="font-size: 24px; font-weight: bold; margin: 0;">
+                                <t t-if="language == 'es' and status == 'final'">
+                                    INFORME DE ENSAYO - ENDOTOXINAS
+                                </t>
+                                <t t-elif="language == 'es' and status == 'preliminary'">
+                                    INFORME PRELIMINAR - ENDOTOXINAS
+                                </t>
+                                <t t-elif="language == 'en' and status == 'final'">
+                                    TEST REPORT - ENDOTOXIN
+                                </t>
+                                <t t-elif="language == 'en' and status == 'preliminary'">
+                                    PRELIMINARY TEST REPORT - ENDOTOXIN
+                                </t>
+                            </h1>
+                        </div>
+
+                        <!-- Badge especial para Endotoxinas -->
+                        <div style="text-align: center; margin: 20px 0; padding: 15px; background-color: #fff8e1; border: 2px solid #ff9800; border-radius: 10px;">
+                            <h2 style="color: #ff9800; margin: 0;">
+                                🧪 
+                                <t t-if="language == 'es'">ENSAYO DE ENDOTOXINAS</t>
+                                <t t-else="">ENDOTOXIN ASSAY</t>
+                            </h2>
+                            <p style="margin: 5px 0 0 0; font-style: italic;">
+                                <t t-if="language == 'es'">Detección de endotoxinas bacterianas</t>
+                                <t t-else="">Bacterial endotoxin detection</t>
+                            </p>
+                        </div>
+
+                        <!-- Información básica -->
+                        <table class="table table-borderless mt-1" style="width:100%; font-size:14px; border-collapse:collapse;">
+                            <t t-set="meses_es" t-value="{
+                                '01':'Ene','02':'Feb','03':'Mar','04':'Abr',
+                                '05':'May','06':'Jun','07':'Jul','08':'Ago',
+                                '09':'Sep','10':'Oct','11':'Nov','12':'Dic'
+                            }"/>
+                            <t t-set="meses_en" t-value="{
+                                '01':'Jan','02':'Feb','03':'Mar','04':'Apr',
+                                '05':'May','06':'Jun','07':'Jul','08':'Aug',
+                                '09':'Sep','10':'Oct','11':'Nov','12':'Dec'
+                            }"/>
+                            <t t-set="meses" t-value="meses_es if language == 'es' else meses_en"/>
+                            
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%; padding:4px;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Cadena de Custodia:</t>
+                                            <t t-else="">Chain of Custody:</t>
+                                        </strong> 
+                                        <span t-esc="analysis.custody_chain_code"/>
+                                    </td>
+                                    <td style="width:50%; padding:4px; text-align:right;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Fecha de emisión:</t>
+                                            <t t-else="">Issue Date:</t>
+                                        </strong>
+                                        <t t-set="today" t-value="datetime.datetime.now()"/>
+                                        <t t-set="d_today" t-value="today.strftime('%d')"/>
+                                        <t t-set="m_today" t-value="today.strftime('%m')"/>
+                                        <t t-set="y_today" t-value="today.strftime('%Y')"/>
+                                        <span t-esc="d_today + '/' + meses[m_today] + '/' + y_today"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:4px;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Cliente:</t>
+                                            <t t-else="">Customer:</t>
+                                        </strong> 
+                                        <span t-esc="analysis.customer_id.name"/>
+                                    </td>
+                                    <td style="padding:4px; text-align:right;">
+                                        <t t-if="status == 'preliminary'">
+                                            <span class="preliminary-badge">
+                                                <t t-if="language == 'es'">PRELIMINAR</t>
+                                                <t t-else="">PRELIMINARY</t>
+                                            </span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="final-badge">
+                                                <t t-if="language == 'es'">FINAL</t>
+                                                <t t-else="">FINAL</t>
+                                            </span>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:4px;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Muestra:</t>
+                                            <t t-else="">Sample:</t>
+                                        </strong> 
+                                        <span t-esc="analysis.sample_code"/> - <span t-esc="analysis.sample_identifier"/>
+                                    </td>
+                                    <td style="padding:4px; text-align:right;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Fecha de Recepción:</t>
+                                            <t t-else="">Reception Date:</t>
+                                        </strong>
+                                        <t t-if="analysis.reception_date">
+                                            <t t-set="r_date" t-value="analysis.reception_date"/>
+                                            <t t-set="d_reception" t-value="r_date.strftime('%d')"/>
+                                            <t t-set="m_reception" t-value="r_date.strftime('%m')"/>
+                                            <t t-set="y_reception" t-value="r_date.strftime('%Y')"/>
+                                            <span t-esc="d_reception + '/' + meses[m_reception] + '/' + y_reception"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Separador -->
+                        <hr style="margin: 20px 0; border: 1px solid;"/>
+
+                        <!-- Resultados específicos de Endotoxinas -->
+                        <div class="sample-section">
+                            <div class="header-title">
+                                <t t-if="language == 'es'">Muestra:</t>
+                                <t t-else="">Sample:</t>
+                                <span t-esc="analysis.sample_code"/> - <span t-esc="analysis.sample_identifier"/>
+                            </div>
+
+                            <!-- Filtrar parámetros relevantes -->
+                            <t t-set="endotoxin_params" t-value="analysis.parameter_analysis_ids.filtered(lambda p: (p.report_status == 'ready' if status == 'preliminary' else p.report_status in ['ready', 'reported']))"/>
+                            
+                            <t t-if="endotoxin_params">
+                                <h5 style="font-size: 14px; margin: 15px 0 5px 0;">
+                                    <t t-if="language == 'es'">Resultados de Endotoxinas:</t>
+                                    <t t-else="">Endotoxin Results:</t>
+                                </h5>
+                                <table class="table table-bordered" style="width:100%; font-size:11px; border-collapse:collapse;">
+                                    <thead>
+                                        <tr style="background-color:#ff9800; color: white;">
+                                            <th style="padding:8px; text-align:left; width:30%;">
+                                                <t t-if="language == 'es'">Parámetro</t>
+                                                <t t-else="">Parameter</t>
+                                            </th>
+                                            <th style="padding:8px; text-align:left; width:25%;">
+                                                <t t-if="language == 'es'">Método</t>
+                                                <t t-else="">Method</t>
+                                            </th>
+                                            <th style="padding:8px; text-align:center; width:20%;">
+                                                <t t-if="language == 'es'">Resultado</t>
+                                                <t t-else="">Result</t>
+                                            </th>
+                                            <th style="padding:8px; text-align:left; width:25%;">
+                                                <t t-if="language == 'es'">Observaciones</t>
+                                                <t t-else="">Observations</t>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="endotoxin_params" t-as="parameter">
+                                            <tr class="result-row">
+                                                <td style="padding:8px;">
+                                                    <strong>
+                                                        <span t-esc="parameter.name or parameter.microorganism or 'Endotoxinas'"/>
+                                                    </strong>
+                                                </td>
+                                                <td style="padding:8px;">
+                                                    <span t-esc="parameter.method or 'LAL'"/>
+                                                </td>
+                                                <td style="padding:8px; text-align:center; font-weight:bold; color: #ff9800;">
+                                                    <span t-esc="parameter.result_complete or parameter.result_value or 'Sin resultado'"/>
+                                                </td>
+                                                <td style="padding:8px; font-size:10px;">
+                                                    <span t-esc="parameter.analyst_notes or '—'"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </t>
+                            <t t-else="">
+                                <div style="text-align: center; padding: 20px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;">
+                                    <p style="margin: 0; font-style: italic; color: #856404;">
+                                        <t t-if="language == 'es'">No hay resultados de endotoxinas disponibles.</t>
+                                        <t t-else="">No endotoxin results available.</t>
+                                    </p>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- Información adicional -->
+                        <div style="margin-top: 30px; font-size: 11px; color: #666;">
+                            <p>
+                                <strong>
+                                    <t t-if="language == 'es'">Método de Ensayo:</t>
+                                    <t t-else="">Test Method:</t>
+                                </strong> 
+                                <t t-if="language == 'es'">
+                                    Ensayo LAL (Limulus Amebocyte Lysate) según normas farmacéuticas.
+                                </t>
+                                <t t-else="">
+                                    LAL (Limulus Amebocyte Lysate) assay according to pharmaceutical standards.
+                                </t>
+                            </p>
+                            <p style="margin-top: 10px;">
+                                <em>
+                                    <t t-if="language == 'es'">
+                                        Los análisis se realizaron bajo condiciones de laboratorio controladas.
+                                    </t>
+                                    <t t-else="">
+                                        Analyses were performed under controlled laboratory conditions.
+                                    </t>
+                                </em>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ========== TEMPLATE GENERAL ILAC ========== -->
+    <template id="report_general_ilac_template">
+        <t t-call="lims_analysis_v2.report_analysis_base_template">
+            <t t-foreach="docs" t-as="analysis">
+                <div class="page">
+                    <div class="main-content">
+                        
+                        <!-- Variables de configuración -->
+                        <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
+                        <t t-set="language" t-value="report_config.get('language', 'es')"/>
+                        <t t-set="status" t-value="report_config.get('status', 'final')"/>
+                        
+                        <!-- Título según idioma y estado -->
+                        <div style="text-align: center; margin: 20px 0 30px 0;">
+                            <h1 style="font-size: 24px; font-weight: bold; margin: 0;">
+                                <t t-if="language == 'es' and status == 'final'">
+                                    INFORME DE ENSAYO
+                                </t>
+                                <t t-elif="language == 'es' and status == 'preliminary'">
+                                    PRELIMINAR - INFORME DE ENSAYO
+                                </t>
+                                <t t-elif="language == 'en' and status == 'final'">
+                                    TEST REPORT FINAL
+                                </t>
+                                <t t-elif="language == 'en' and status == 'preliminary'">
+                                    PRELIMINAR - TEST REPORT
+                                </t>
+                            </h1>
+                        </div>
+
+                        <!-- Badge especial para ILAC -->
+                        <div style="text-align: center; margin: 20px 0; padding: 15px; background-color: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px;">
+                            <h2 style="color: #9c27b0; margin: 0;">
+                                🏆 
+                                <t t-if="language == 'es'">CERTIFICADO CON SELLOS ILAC</t>
+                                <t t-else="">CERTIFIED WITH ILAC SEALS</t>
+                            </h2>
+                            <p style="margin: 5px 0 0 0; font-style: italic;">
+                                <t t-if="language == 'es'">Laboratorio acreditado internacionalmente</t>
+                                <t t-else="">Internationally accredited laboratory</t>
+                            </p>
+                        </div>
+
+                        <!-- Información básica -->
+                        <table class="table table-borderless mt-1" style="width:100%; font-size:14px; border-collapse:collapse;">
+                            <t t-set="meses_es" t-value="{
+                                '01':'Ene','02':'Feb','03':'Mar','04':'Abr',
+                                '05':'May','06':'Jun','07':'Jul','08':'Ago',
+                                '09':'Sep','10':'Oct','11':'Nov','12':'Dic'
+                            }"/>
+                            <t t-set="meses_en" t-value="{
+                                '01':'Jan','02':'Feb','03':'Mar','04':'Apr',
+                                '05':'May','06':'Jun','07':'Jul','08':'Aug',
+                                '09':'Sep','10':'Oct','11':'Nov','12':'Dec'
+                            }"/>
+                            <t t-set="meses" t-value="meses_es if language == 'es' else meses_en"/>
+                            
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%; padding:4px;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Cadena de Custodia:</t>
+                                            <t t-else="">Chain of Custody:</t>
+                                        </strong> 
+                                        <span t-esc="analysis.custody_chain_code"/>
+                                    </td>
+                                    <td style="width:50%; padding:4px; text-align:right;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Fecha de emisión:</t>
+                                            <t t-else="">Issue Date:</t>
+                                        </strong>
+                                        <t t-set="today" t-value="datetime.datetime.now()"/>
+                                        <t t-set="d_today" t-value="today.strftime('%d')"/>
+                                        <t t-set="m_today" t-value="today.strftime('%m')"/>
+                                        <t t-set="y_today" t-value="today.strftime('%Y')"/>
+                                        <span t-esc="d_today + '/' + meses[m_today] + '/' + y_today"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:4px;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Cliente:</t>
+                                            <t t-else="">Customer:</t>
+                                        </strong> 
+                                        <span t-esc="analysis.customer_id.name"/>
+                                    </td>
+                                    <td style="padding:4px; text-align:right;">
+                                        <t t-if="status == 'preliminary'">
+                                            <span class="preliminary-badge">
+                                                <t t-if="language == 'es'">PRELIMINAR</t>
+                                                <t t-else="">PRELIMINARY</t>
+                                            </span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="final-badge">
+                                                <t t-if="language == 'es'">FINAL</t>
+                                                <t t-else="">FINAL</t>
+                                            </span>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:4px;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Muestra:</t>
+                                            <t t-else="">Sample:</t>
+                                        </strong> 
+                                        <span t-esc="analysis.sample_code"/> - <span t-esc="analysis.sample_identifier"/>
+                                    </td>
+                                    <td style="padding:4px; text-align:right;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Fecha de Recepción:</t>
+                                            <t t-else="">Reception Date:</t>
+                                        </strong>
+                                        <t t-if="analysis.reception_date">
+                                            <t t-set="r_date" t-value="analysis.reception_date"/>
+                                            <t t-set="d_reception" t-value="r_date.strftime('%d')"/>
+                                            <t t-set="m_reception" t-value="r_date.strftime('%m')"/>
+                                            <t t-set="y_reception" t-value="r_date.strftime('%Y')"/>
+                                            <span t-esc="d_reception + '/' + meses[m_reception] + '/' + y_reception"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Separador -->
+                        <hr style="margin: 20px 0; border: 1px solid;"/>
+
+                        <!-- Resultados generales -->
+                        <div class="sample-section">
+                            <div class="header-title">
+                                <t t-if="language == 'es'">Muestra:</t>
+                                <t t-else="">Sample:</t>
+                                <span t-esc="analysis.sample_code"/> - <span t-esc="analysis.sample_identifier"/>
+                            </div>
+
+                            <!-- Todos los parámetros -->
+                            <t t-set="all_params" t-value="analysis.parameter_analysis_ids.filtered(lambda p: (p.report_status == 'ready' if status == 'preliminary' else p.report_status in ['ready', 'reported']))"/>
+                            
+                            <t t-if="all_params">
+                                <h5 style="font-size: 14px; margin: 15px 0 5px 0;">
+                                    <t t-if="language == 'es'">Resultados de Análisis:</t>
+                                    <t t-else="">Analysis Results:</t>
+                                </h5>
+                                <table class="table table-bordered" style="width:100%; font-size:11px; border-collapse:collapse;">
+                                    <thead>
+                                        <tr style="background-color:#9c27b0; color: white;">
+                                            <th style="padding:8px; text-align:left; width:25%;">
+                                                <t t-if="language == 'es'">Parámetro</t>
+                                                <t t-else="">Parameter</t>
+                                            </th>
+                                            <th style="padding:8px; text-align:left; width:25%;">
+                                                <t t-if="language == 'es'">Método</t>
+                                                <t t-else="">Method</t>
+                                            </th>
+                                            <th style="padding:8px; text-align:center; width:20%;">
+                                                <t t-if="language == 'es'">Resultado</t>
+                                                <t t-else="">Result</t>
+                                            </th>
+                                            <th style="padding:8px; text-align:left; width:30%;">
+                                                <t t-if="language == 'es'">Observaciones</t>
+                                                <t t-else="">Observations</t>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="all_params" t-as="parameter">
+                                            <tr class="result-row">
+                                                <td style="padding:8px;">
+                                                    <t t-if="parameter.microorganism">
+                                                        <strong><span t-esc="parameter.microorganism"/></strong>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <strong><span t-esc="parameter.name or 'Sin nombre'"/></strong>
+                                                    </t>
+                                                </td>
+                                                <td style="padding:8px;">
+                                                    <span t-esc="parameter.method or 'No especificado'"/>
+                                                </td>
+                                                <td style="padding:8px; text-align:center; font-weight:bold; color: #9c27b0;">
+                                                    <span t-esc="parameter.result_complete or parameter.result_value or 'Sin resultado'"/>
+                                                </td>
+                                                <td style="padding:8px; font-size:10px;">
+                                                    <span t-esc="parameter.analyst_notes or '—'"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </t>
+                            <t t-else="">
+                                <div style="text-align: center; padding: 20px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;">
+                                    <p style="margin: 0; font-style: italic; color: #856404;">
+                                        <t t-if="language == 'es'">No hay resultados disponibles.</t>
+                                        <t t-else="">No results available.</t>
+                                    </p>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- Sección ILAC -->
+                        <div style="margin-top: 30px; padding: 15px; background-color: #f3e5f5; border: 2px solid #9c27b0; border-radius: 10px;">
+                            <h4 style="color: #9c27b0; margin: 0 0 10px 0; text-align: center;">
+                                🏆 
+                                <t t-if="language == 'es'">ACREDITACIÓN ILAC</t>
+                                <t t-else="">ILAC ACCREDITATION</t>
+                            </h4>
+                            <p style="margin: 0; font-size: 11px; text-align: center;">
+                                <t t-if="language == 'es'">
+                                    Este laboratorio está acreditado bajo normas internacionales ILAC.
+                                    Los resultados están respaldados por nuestro sistema de calidad certificado.
+                                </t>
+                                <t t-else="">
+                                    This laboratory is accredited under international ILAC standards.
+                                    Results are backed by our certified quality system.
+                                </t>
+                            </p>
+                        </div>
+
+                        <!-- Información adicional -->
+                        <div style="margin-top: 30px; font-size: 11px; color: #666;">
+                            <p>
+                                <strong>
+                                    <t t-if="language == 'es'">Tipo de Reporte:</t>
+                                    <t t-else="">Report Type:</t>
+                                </strong> 
+                                <t t-if="language == 'es'">
+                                    Informe general de ensayos con certificación ILAC.
+                                </t>
+                                <t t-else="">
+                                    General test report with ILAC certification.
+                                </t>
+                            </p>
+                            <p style="margin-top: 10px;">
+                                <em>
+                                    <t t-if="language == 'es'">
+                                        Los análisis se realizaron conforme a normas internacionales bajo acreditación ILAC.
+                                    </t>
+                                    <t t-else="">
+                                        Analyses were performed according to international standards under ILAC accreditation.
+                                    </t>
+                                </em>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ========== TEMPLATE GENERAL SIN ILAC ========== -->
+    <template id="report_general_no_ilac_template">
+        <t t-call="lims_analysis_v2.report_analysis_base_template">
+            <t t-foreach="docs" t-as="analysis">
+                <div class="page">
+                    <div class="main-content">
+                        
+                        <!-- Variables de configuración -->
+                        <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
+                        <t t-set="language" t-value="report_config.get('language', 'es')"/>
+                        <t t-set="status" t-value="report_config.get('status', 'final')"/>
+                        
+                        <!-- Título según idioma y estado -->
+                        <div style="text-align: center; margin: 20px 0 30px 0;">
+                            <h1 style="font-size: 24px; font-weight: bold; margin: 0;">
+                                <t t-if="language == 'es' and status == 'final'">
+                                    INFORME DE ENSAYO
+                                </t>
+                                <t t-elif="language == 'es' and status == 'preliminary'">
+                                    PRELIMINAR - INFORME DE ENSAYO
+                                </t>
+                                <t t-elif="language == 'en' and status == 'final'">
+                                    TEST REPORT
+                                </t>
+                                <t t-elif="language == 'en' and status == 'preliminary'">
+                                    PRELIMINAR - TEST REPORT
+                                </t>
+                            </h1>
+                        </div>
+
+                        <!-- Badge general (sin ILAC) -->
+                        <div style="text-align: center; margin: 20px 0; padding: 15px; background-color: #e8f5e8; border: 2px solid #4caf50; border-radius: 10px;">
+                            <h2 style="color: #4caf50; margin: 0;">
+                                📄 
+                                <t t-if="language == 'es'">INFORME GENERAL DE LABORATORIO</t>
+                                <t t-else="">GENERAL LABORATORY REPORT</t>
+                            </h2>
+                            <p style="margin: 5px 0 0 0; font-style: italic;">
+                                <t t-if="language == 'es'">Análisis realizados según procedimientos estándar</t>
+                                <t t-else="">Analyses performed according to standard procedures</t>
+                            </p>
+                        </div>
+
+                        <!-- Información básica -->
+                        <table class="table table-borderless mt-1" style="width:100%; font-size:14px; border-collapse:collapse;">
+                            <t t-set="meses_es" t-value="{
+                                '01':'Ene','02':'Feb','03':'Mar','04':'Abr',
+                                '05':'May','06':'Jun','07':'Jul','08':'Ago',
+                                '09':'Sep','10':'Oct','11':'Nov','12':'Dic'
+                            }"/>
+                            <t t-set="meses_en" t-value="{
+                                '01':'Jan','02':'Feb','03':'Mar','04':'Apr',
+                                '05':'May','06':'Jun','07':'Jul','08':'Aug',
+                                '09':'Sep','10':'Oct','11':'Nov','12':'Dec'
+                            }"/>
+                            <t t-set="meses" t-value="meses_es if language == 'es' else meses_en"/>
+                            
+                            <tbody>
+                                <tr>
+                                    <td style="width:50%; padding:4px;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Cadena de Custodia:</t>
+                                            <t t-else="">Chain of Custody:</t>
+                                        </strong> 
+                                        <span t-esc="analysis.custody_chain_code"/>
+                                    </td>
+                                    <td style="width:50%; padding:4px; text-align:right;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Fecha de emisión:</t>
+                                            <t t-else="">Issue Date:</t>
+                                        </strong>
+                                        <t t-set="today" t-value="datetime.datetime.now()"/>
+                                        <t t-set="d_today" t-value="today.strftime('%d')"/>
+                                        <t t-set="m_today" t-value="today.strftime('%m')"/>
+                                        <t t-set="y_today" t-value="today.strftime('%Y')"/>
+                                        <span t-esc="d_today + '/' + meses[m_today] + '/' + y_today"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:4px;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Cliente:</t>
+                                            <t t-else="">Customer:</t>
+                                        </strong> 
+                                        <span t-esc="analysis.customer_id.name"/>
+                                    </td>
+                                    <td style="padding:4px; text-align:right;">
+                                        <t t-if="status == 'preliminary'">
+                                            <span class="preliminary-badge">
+                                                <t t-if="language == 'es'">PRELIMINAR</t>
+                                                <t t-else="">PRELIMINARY</t>
+                                            </span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="final-badge">
+                                                <t t-if="language == 'es'">FINAL</t>
+                                                <t t-else="">FINAL</t>
+                                            </span>
+                                        </t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="padding:4px;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Muestra:</t>
+                                            <t t-else="">Sample:</t>
+                                        </strong> 
+                                        <span t-esc="analysis.sample_code"/> - <span t-esc="analysis.sample_identifier"/>
+                                    </td>
+                                    <td style="padding:4px; text-align:right;">
+                                        <strong>
+                                            <t t-if="language == 'es'">Fecha de Recepción:</t>
+                                            <t t-else="">Reception Date:</t>
+                                        </strong>
+                                        <t t-if="analysis.reception_date">
+                                            <t t-set="r_date" t-value="analysis.reception_date"/>
+                                            <t t-set="d_reception" t-value="r_date.strftime('%d')"/>
+                                            <t t-set="m_reception" t-value="r_date.strftime('%m')"/>
+                                            <t t-set="y_reception" t-value="r_date.strftime('%Y')"/>
+                                            <span t-esc="d_reception + '/' + meses[m_reception] + '/' + y_reception"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <!-- Separador -->
+                        <hr style="margin: 20px 0; border: 1px solid;"/>
+
+                        <!-- Resultados generales -->
+                        <div class="sample-section">
+                            <div class="header-title">
+                                <t t-if="language == 'es'">Muestra:</t>
+                                <t t-else="">Sample:</t>
+                                <span t-esc="analysis.sample_code"/> - <span t-esc="analysis.sample_identifier"/>
+                            </div>
+
+                            <!-- Todos los parámetros -->
+                            <t t-set="all_params" t-value="analysis.parameter_analysis_ids.filtered(lambda p: (p.report_status == 'ready' if status == 'preliminary' else p.report_status in ['ready', 'reported']))"/>
+                            
+                            <t t-if="all_params">
+                                <h5 style="font-size: 14px; margin: 15px 0 5px 0;">
+                                    <t t-if="language == 'es'">Resultados de Análisis:</t>
+                                    <t t-else="">Analysis Results:</t>
+                                </h5>
+                                <table class="table table-bordered" style="width:100%; font-size:11px; border-collapse:collapse;">
+                                    <thead>
+                                        <tr style="background-color:#4caf50; color: white;">
+                                            <th style="padding:8px; text-align:left; width:25%;">
+                                                <t t-if="language == 'es'">Parámetro</t>
+                                                <t t-else="">Parameter</t>
+                                            </th>
+                                            <th style="padding:8px; text-align:left; width:25%;">
+                                                <t t-if="language == 'es'">Método</t>
+                                                <t t-else="">Method</t>
+                                            </th>
+                                            <th style="padding:8px; text-align:center; width:20%;">
+                                                <t t-if="language == 'es'">Resultado</t>
+                                                <t t-else="">Result</t>
+                                            </th>
+                                            <th style="padding:8px; text-align:left; width:30%;">
+                                                <t t-if="language == 'es'">Observaciones</t>
+                                                <t t-else="">Observations</t>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="all_params" t-as="parameter">
+                                            <tr class="result-row">
+                                                <td style="padding:8px;">
+                                                    <t t-if="parameter.microorganism">
+                                                        <strong><span t-esc="parameter.microorganism"/></strong>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <strong><span t-esc="parameter.name or 'Sin nombre'"/></strong>
+                                                    </t>
+                                                </td>
+                                                <td style="padding:8px;">
+                                                    <span t-esc="parameter.method or 'No especificado'"/>
+                                                </td>
+                                                <td style="padding:8px; text-align:center; font-weight:bold; color: #4caf50;">
+                                                    <span t-esc="parameter.result_complete or parameter.result_value or 'Sin resultado'"/>
+                                                </td>
+                                                <td style="padding:8px; font-size:10px;">
+                                                    <span t-esc="parameter.analyst_notes or '—'"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </t>
+                            <t t-else="">
+                                <div style="text-align: center; padding: 20px; background-color: #fff3cd; border: 1px solid #ffeaa7; border-radius: 5px;">
+                                    <p style="margin: 0; font-style: italic; color: #856404;">
+                                        <t t-if="language == 'es'">No hay resultados disponibles.</t>
+                                        <t t-else="">No results available.</t>
+                                    </p>
+                                </div>
+                            </t>
+                        </div>
+
+                        <!-- Información adicional -->
+                        <div style="margin-top: 30px; font-size: 11px; color: #666;">
+                            <p>
+                                <strong>
+                                    <t t-if="language == 'es'">Tipo de Reporte:</t>
+                                    <t t-else="">Report Type:</t>
+                                </strong> 
+                                <t t-if="language == 'es'">
+                                    Informe general de ensayos de laboratorio.
+                                </t>
+                                <t t-else="">
+                                    General laboratory test report.
+                                </t>
+                            </p>
+                            <p style="margin-top: 10px;">
+                                <em>
+                                    <t t-if="language == 'es'">
+                                        Los análisis se realizaron según procedimientos establecidos en el laboratorio.
+                                    </t>
+                                    <t t-else="">
+                                        Analyses were performed according to established laboratory procedures.
+                                    </t>
+                                </em>
+                            </p>
+                        </div>
+
+                    </div>
+                </div>
+            </t>
+        </t>
+    </template>
+
 </odoo>
