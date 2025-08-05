@@ -14,18 +14,23 @@
       <field name="dpi">90</field>
     </record>
 
-    <!-- NUEVO PAPERFORMAT PARA INFORMES DE ENSAYO -->
+    <!-- Paperformat para Informes de Ensayo ILAC -->
     <record id="paperformat_lims_test_report" model="report.paperformat">
-        <field name="name">Informe de Ensayo (LIMS)</field>
+        <field name="name">Informe de Ensayo ILAC (LIMS)</field>
         <field name="default" eval="False"/>
         <field name="format">Letter</field>
         <field name="orientation">Portrait</field>
-        <field name="margin_top">80</field>
-        <field name="margin_bottom">50</field>
+        
+        <!-- MÁRGENES CRÍTICOS - deben coincidir con altura de header/footer -->
+        <field name="margin_top">85</field>      <!-- Altura del header + espacio -->
+        <field name="margin_bottom">55</field>   <!-- Altura del footer + espacio -->
         <field name="margin_left">15</field>
         <field name="margin_right">15</field>
+        
+        <!-- Espaciado del header - CRÍTICO -->
         <field name="header_line" eval="False"/>
-        <field name="header_spacing">70</field> 
+        <field name="header_spacing">80</field>  <!-- Debe ser igual o menor que margin_top -->
+        
         <field name="dpi">90</field>
     </record>
   </data>
