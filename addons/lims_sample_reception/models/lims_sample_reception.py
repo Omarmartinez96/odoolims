@@ -291,7 +291,7 @@ class LimsSampleReception(models.Model):
                 
                 if not existing_analysis:
                     # Crear análisis automáticamente (SIN analyst_id)
-                    analysis = self.env['lims.analysis'].create({
+                    analysis = self.env['lims.analysis.v2'].create({
                         'sample_reception_id': record.id,
                         # Removido: 'analyst_id': self.env.user.id,
                     })
