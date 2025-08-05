@@ -1331,22 +1331,15 @@
         </t>
     </template>
 
-    <!-- ========== TEMPLATE GENERAL ILAC SIN HEADERS FIJOS ========== -->
+    <!-- ========== TEMPLATE GENERAL ILAC CON HEADERS/FOOTERS FIJOS ========== -->
     <template id="report_general_ilac_template">
         <t t-call="web.html_container">
             <meta charset="UTF-8"/>
             <t t-call-assets="web.report_assets_common" t-js="false"/>
             <t t-set="company" t-value="env.company"/>
 
-            <!-- ESTILOS OPTIMIZADOS SIN HEADERS FIJOS -->
+            <!-- ESTILOS CON HEADERS/FOOTERS FIJOS -->
             <style>
-                @page {
-                    margin-top: 8mm !important;
-                }
-                body {
-                    margin-top: 0 !important;
-                    padding-top: 0 !important;
-                }
                 body, .o_report_layout, table, td, th, span, div, p {
                     font-family: "Arial", sans-serif !important;
                     margin: 0;
@@ -1354,11 +1347,27 @@
                     font-size: 10px;
                     line-height: 1.2;
                 }
-                .main-header {
+                .header {
+                    position: fixed;
+                    top: 0;
+                    width: 100%;
+                    height: 70px;
                     border-bottom: 2px solid #000;
-                    padding-bottom: 8px;
-                    margin-bottom: 10px;
-                    margin-top: 0;
+                    padding-bottom: 5px;
+                    background-color: white;
+                    z-index: 1000;
+                }
+                .footer {
+                    position: fixed;
+                    bottom: 0;
+                    width: 100%;
+                    height: 50px;
+                    border-top: 1px solid #000;
+                    padding-top: 5px;
+                    font-size: 8px;
+                    text-align: center;
+                    background-color: white;
+                    z-index: 1000;
                 }
                 .company-info {
                     text-align: center;
@@ -1451,6 +1460,7 @@
                 .header-table {
                     width: 100%;
                     border-collapse: collapse;
+                    height: 100%;
                 }
                 .header-table td {
                     vertical-align: top;
@@ -1467,65 +1477,60 @@
                     width: 80px;
                     text-align: right;
                 }
-                .main-footer {
-                    margin-top: 30px;
-                    font-size: 8px;
-                    text-align: center;
-                    border-top: 1px solid #000;
-                    padding-top: 5px;
-                }
             </style>
+
+            <!-- HEADER FIJO -->
+            <div class="header">
+                <table class="header-table">
+                    <tr>
+                        <td class="logo-section">
+                            <!-- LOGO DE LA EMPRESA -->
+                            <t t-if="company.logo">
+                                <img t-att-src="image_data_uri(company.logo)"
+                                    style="max-height: 60px; max-width: 80px; width: auto;"/>
+                            </t>
+                        </td>
+                        <td class="center-section">
+                            <div class="company-info">Laboratorio de Microbiología</div>
+                            <div class="company-info">PROTEUS</div>
+                            <div class="company-details">
+                                Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.
+                            </div>
+                            <div class="company-details">
+                                E-mail: contacto@proteuslaboratorio.com // Teléfono: (664) 973-8185
+                            </div>
+                            <div class="form-info">FOR-022 Rev. 03 / PROC-006</div>
+                            <div class="form-info">Documento controlado, prohibida su reproducción parcial o total sin autorización. Página 1 de 2</div>
+                            <div class="form-info">Accreditation #108644</div>
+                        </td>
+                        <td class="right-section">
+                            <!-- LOGOS DE ILAC -->
+                            <div style="font-size: 8px; text-align: center; color: #666;">
+                                [ILAC Logos]
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- FOOTER FIJO -->
+            <div class="footer">
+                Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.<br/>
+                E-mail: contacto@proteuslaboratorio.com // Teléfono: (664) 973-8185<br/>
+                FOR-022 Rev. 03 / PROC-006<br/>
+                Documento controlado, prohibida su reproducción parcial o total sin autorización.
+            </div>
 
             <!-- CONTENIDO PRINCIPAL -->
             <t t-foreach="docs" t-as="analysis">
                 <!-- PAGE BREAK PARA MUESTRAS ADICIONALES -->
-                <div t-att-class="'page' + (' sample-break' if analysis_index > 0 else '')">
+                <div t-att-class="'page' + (' sample-break' if analysis_index > 0 else '')" style="margin-top: 90px; margin-bottom: 70px;">
                     
                     <!-- Variables de configuración -->
                     <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
                     <t t-set="language" t-value="report_config.get('language', 'es')"/>
                     <t t-set="status" t-value="report_config.get('status', 'final')"/>
                     
-                    <!-- HEADER NORMAL (NO FIJO) -->
-                    <div class="main-header">
-                        <table class="header-table">
-                            <tr>
-                                <td class="logo-section">
-                                    <!-- LOGO DE LA EMPRESA -->
-                                    <t t-if="company.logo">
-                                        <img t-att-src="image_data_uri(company.logo)"
-                                            style="max-height: 60px; max-width: 80px; width: auto;"/>
-                                    </t>
-                                    <t t-else="">
-                                        <!-- PLACEHOLDER SI NO HAY LOGO -->
-                                        <div style="width: 80px; height: 60px; border: 1px dashed #ccc; display: flex; align-items: center; justify-content: center; font-size: 8px; color: #666;">
-                                            LOGO
-                                        </div>
-                                    </t>
-                                </td>
-                                <td class="center-section">
-                                    <div class="company-info">Laboratorio de Microbiología</div>
-                                    <div class="company-info">PROTEUS</div>
-                                    <div class="company-details">
-                                        Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.
-                                    </div>
-                                    <div class="company-details">
-                                        E-mail: contacto@proteuslaboratorio.com // Teléfono: (664) 973-8185
-                                    </div>
-                                    <div class="form-info">FOR-022 Rev. 03 / PROC-006</div>
-                                    <div class="form-info">Documento controlado, prohibida su reproducción parcial o total sin autorización. Página 1 de 2</div>
-                                    <div class="form-info">Accreditation #108644</div>
-                                </td>
-                                <td class="right-section">
-                                    <!-- AQUÍ IRÁN LOS LOGOS DE ILAC CUANDO ESTÉN LISTOS -->
-                                    <div style="font-size: 8px; text-align: center; color: #666;">
-                                        [ILAC Logos]
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-
                     <!-- TÍTULO DEL REPORTE -->
                     <div class="report-title">
                         <t t-if="language == 'es'">INFORME DE ENSAYO</t>
@@ -1862,14 +1867,6 @@
                                 <t t-else="">Quality Assurance</t>
                             </div>
                         </div>
-                    </div>
-
-                    <!-- FOOTER NORMAL (NO FIJO) -->
-                    <div class="main-footer">
-                        Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.<br/>
-                        E-mail: contacto@proteuslaboratorio.com // Teléfono: (664) 973-8185<br/>
-                        FOR-022 Rev. 03 / PROC-006<br/>
-                        Documento controlado, prohibida su reproducción parcial o total sin autorización.
                     </div>
 
                 </div>
