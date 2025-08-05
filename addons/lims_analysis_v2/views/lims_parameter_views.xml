@@ -777,7 +777,7 @@
                                 <group string="🔢 Resultado Cuantitativo" 
                                        invisible="result_type != 'quantitative'">
                                     <field name="result_quantitative_text" 
-                                        placeholder="Ej: 1.2 x 10² UFC/g, < 0.01 mg/kg, 7.2 ± 0.1 pH"
+                                        placeholder="Ej: 1.2 x 10²,  0.01, 7.2"
                                         class="o_field_highlight"/>
                                     <field name="result_unit_selection"/>
                                     <field name="custom_unit" 
