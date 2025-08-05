@@ -30,10 +30,12 @@
         # Seguridad
         'security/ir.model.access.csv',
         
-        # Vistas principales
-        'views/lims_analysis_views.xml',
-        'views/lims_parameter_views.xml',
+        # Vistas de wizards PRIMERO
         'views/wizard_views.xml',
+        
+        # Vistas principales
+        'views/lims_analysis_views.xml', 
+        'views/lims_parameter_views.xml',
         
         # Reportes dinámicos
         'report/report_actions.xml',

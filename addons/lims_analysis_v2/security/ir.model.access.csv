@@ -6,3 +6,5 @@ access_lims_raw_dilution_data_v2,lims.raw.dilution.data.v2,model_lims_raw_diluti
 access_lims_executed_quality_control_v2,lims.executed.quality.control.v2,model_lims_executed_quality_control_v2,base.group_user,1,1,1,1
 access_lims_confirmation_result_v2,lims.confirmation.result.v2,model_lims_confirmation_result_v2,base.group_user,1,1,1,1
 access_lims_equipment_involved_v2,lims.equipment.involved.v2,model_lims_equipment_involved_v2,base.group_user,1,1,1,1
+access_lims_sample_signature_wizard_v2,lims.sample.signature.wizard.v2,model_lims_sample_signature_wizard_v2,base.group_user,1,1,1,1
+access_lims_revision_request_wizard_v2,lims.revision.request.wizard.v2,model_lims_revision_request_wizard_v2,base.group_user,1,1,1,1
