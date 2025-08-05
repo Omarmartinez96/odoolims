@@ -1340,6 +1340,13 @@
 
             <!-- ESTILOS OPTIMIZADOS SIN HEADERS FIJOS -->
             <style>
+                @page {
+                    margin-top: 8mm !important;
+                }
+                body {
+                    margin-top: 0 !important;
+                    padding-top: 0 !important;
+                }
                 body, .o_report_layout, table, td, th, span, div, p {
                     font-family: "Arial", sans-serif !important;
                     margin: 0;
@@ -1351,6 +1358,7 @@
                     border-bottom: 2px solid #000;
                     padding-bottom: 8px;
                     margin-bottom: 10px;
+                    margin-top: 0;
                 }
                 .company-info {
                     text-align: center;
