@@ -474,40 +474,29 @@
             </field>
         </record>
 
-        <!-- ========== ACCIONES DE SERVIDOR MASIVAS ========== -->
-        <record id="action_mass_print_preliminary_report_v2" model="ir.actions.server">
-            <field name="name">📋 Reporte Preliminar</field>
+        <!-- ========== ACCIÓN UNIFICADA DE REPORTES ========== -->
+        <record id="action_unified_report_selector_v2" model="ir.actions.server">
+            <field name="name">📊 Generar Reporte Personalizado</field>
             <field name="model_id" ref="model_lims_analysis_v2"/>
             <field name="binding_model_id" ref="model_lims_analysis_v2"/>
             <field name="binding_view_types">list,form</field>
             <field name="state">code</field>
             <field name="code">
-        action = model.action_mass_print_preliminary_report(records.ids)
+        action = {
+            'type': 'ir.actions.act_window',
+            'name': 'Seleccionar Tipo de Reporte',
+            'res_model': 'lims.report.selection.wizard.v2',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'active_ids': records.ids,
+                'default_analysis_ids': [(6, 0, records.ids)]
+            }
+        }
             </field>
         </record>
 
-        <record id="action_mass_print_final_report_v2" model="ir.actions.server">
-            <field name="name">📄 Reporte Final</field>
-            <field name="model_id" ref="model_lims_analysis_v2"/>
-            <field name="binding_model_id" ref="model_lims_analysis_v2"/>
-            <field name="binding_view_types">list,form</field>
-            <field name="state">code</field>
-            <field name="code">
-        action = model.action_mass_print_final_report(records.ids)
-            </field>
-        </record>
-
-        <record id="action_mass_print_signing_report_v2" model="ir.actions.server">
-            <field name="name">✍️ Para Firma Manual</field>
-            <field name="model_id" ref="model_lims_analysis_v2"/>
-            <field name="binding_model_id" ref="model_lims_analysis_v2"/>
-            <field name="binding_view_types">list,form</field>
-            <field name="state">code</field>
-            <field name="code">
-        action = model.action_mass_print_report_for_signing(records.ids)
-            </field>
-        </record>
-
+        <!-- Mantener solo la acción de marcar reportado -->
         <record id="action_mass_mark_reported_v2" model="ir.actions.server">
             <field name="name">✅ Marcar como Reportado</field>
             <field name="model_id" ref="model_lims_analysis_v2"/>
@@ -516,40 +505,6 @@
             <field name="state">code</field>
             <field name="code">
         action = model.action_mass_mark_as_reported(records.ids)
-            </field>
-        </record>
-
-        <!-- ========== MENÚS ========== -->
-        <menuitem id="menu_lims_analysis_v2_root" 
-                  name="Análisis LIMS v2" 
-                  sequence="25"/>
-
-        <menuitem id="menu_lims_analysis_v2_main" 
-                name="🔬 Análisis de Muestras" 
-                parent="menu_lims_analysis_v2_root" 
-                action="action_lims_analysis_v2" 
-                sequence="10"/>
-
-        <!-- ========== ACCIONES ESPECÍFICAS DE BIOBURDEN ========== -->
-        <record id="action_mass_bioburden_final_es" model="ir.actions.server">
-            <field name="name">🦠 Bioburden - Informe Final</field>
-            <field name="model_id" ref="model_lims_analysis_v2"/>
-            <field name="binding_model_id" ref="model_lims_analysis_v2"/>
-            <field name="binding_view_types">list,form</field>
-            <field name="state">code</field>
-            <field name="code">
-        action = model.action_mass_print_bioburden_final(records.ids)
-            </field>
-        </record>
-
-        <record id="action_mass_bioburden_prelim_es" model="ir.actions.server">
-            <field name="name">🦠 Bioburden - Preliminar</field>
-            <field name="model_id" ref="model_lims_analysis_v2"/>
-            <field name="binding_model_id" ref="model_lims_analysis_v2"/>
-            <field name="binding_view_types">list,form</field>
-            <field name="state">code</field>
-            <field name="code">
-        action = model.action_mass_print_bioburden_preliminary(records.ids)
             </field>
         </record>
 

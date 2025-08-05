@@ -109,5 +109,62 @@
             </field>
         </record>
         
+        <!-- ========== WIZARD DE SELECCIÓN DE REPORTES ========== -->
+        <record id="view_report_selection_wizard_v2_form" model="ir.ui.view">
+            <field name="name">lims.report.selection.wizard.v2.form</field>
+            <field name="model">lims.report.selection.wizard.v2</field>
+            <field name="arch" type="xml">
+                <form string="Seleccionar Tipo de Reporte">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>📊 Generar Reporte Personalizado</h1>
+                            <h3 class="text-success">
+                                <field name="analysis_count" readonly="1"/> análisis seleccionados
+                            </h3>
+                        </div>
+                        
+                        <div class="alert alert-info" style="margin: 20px 0;">
+                            <strong>ℹ️ Selecciona el tipo de reporte:</strong><br/>
+                            Elige la categoría, idioma y tipo que necesitas generar para los análisis seleccionados.
+                        </div>
+                        
+                        <group string="🎯 Configuración del Reporte">
+                            <field name="report_category" widget="radio" required="1"/>
+                        </group>
+                        
+                        <group string="🌐 Opciones de Formato" col="2">
+                            <field name="report_language" widget="radio" required="1"/>
+                            <field name="report_status" widget="radio" required="1"/>
+                        </group>
+                        
+                        <!-- Información de los análisis seleccionados -->
+                        <group string="📋 Análisis Seleccionados" invisible="analysis_count == 0">
+                            <field name="analysis_ids" nolabel="1" readonly="1">
+                                <list string="Análisis">
+                                    <field name="sample_code"/>
+                                    <field name="customer_id"/>
+                                    <field name="ready_parameters_count"/>
+                                    <field name="total_parameters_count"/>
+                                    <field name="signature_state"/>
+                                </list>
+                            </field>
+                        </group>
+                        
+                    </sheet>
+                    
+                    <footer>
+                        <button string="📄 Generar Reporte" 
+                                name="action_generate_report" 
+                                type="object" 
+                                class="btn-primary"/>
+                        <button string="❌ Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+
     </data>
 </odoo>
