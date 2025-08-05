@@ -57,6 +57,51 @@
                             </group>
                         </group>
 
+                        <!-- Panel de Control de Recepción -->
+                        <div class="alert alert-info" style="margin: 15px 0;">
+                            <div class="row">
+                                <div class="col-3 text-center">
+                                    <div style="font-size: 24px; font-weight: bold; color: #17a2b8;">
+                                        <field name="samples_total"/>
+                                    </div>
+                                    <small>Total Muestras</small>
+                                </div>
+                                <div class="col-3 text-center">
+                                    <div style="font-size: 24px; font-weight: bold; color: #28a745;">
+                                        <field name="samples_received"/>
+                                    </div>
+                                    <small>✅ Recibidas</small>
+                                </div>
+                                <div class="col-3 text-center">
+                                    <div style="font-size: 24px; font-weight: bold; color: #dc3545;">
+                                        <field name="samples_rejected"/>
+                                    </div>
+                                    <small>❌ Rechazadas</small>
+                                </div>
+                                <div class="col-3 text-center">
+                                    <div style="font-size: 24px; font-weight: bold; color: #ffc107;">
+                                        <field name="samples_pending"/>
+                                    </div>
+                                    <small>⏳ Pendientes</small>
+                                </div>
+                            </div>
+                            <div class="row mt-2">
+                                <div class="col-12">
+                                    <div class="progress">
+                                        <div class="progress-bar bg-success" 
+                                            role="progressbar" 
+                                            t-attf-style="width: {{record.reception_progress.raw_value}}%"
+                                            t-attf-aria-valuenow="{{record.reception_progress.raw_value}}" 
+                                            aria-valuemin="0" 
+                                            aria-valuemax="100">
+                                            <field name="reception_progress"/>%
+                                        </div>
+                                    </div>
+                                    <small class="text-muted">Progreso de Recepción</small>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Lista de muestras con acceso a recepción -->
                         <notebook>
                             <page string="Muestras para Recepción">
