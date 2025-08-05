@@ -640,59 +640,6 @@
                                 </field>
                             </page>
 
-                            <!-- ========== TAB DE RESULTADO FINAL ========== -->
-                            <page string="📊 Resultado Final">
-                                
-                                <!-- RESULTADO CUALITATIVO -->
-                                <group string="📊 Resultado Cualitativo" 
-                                       invisible="result_type != 'qualitative'">
-                                    <field name="result_qualitative"/>
-                                    <field name="qualitative_unit_selection" string="Unidad/Base"/>
-                                    <field name="qualitative_custom_unit" 
-                                           placeholder="Especificar unidad personalizada"
-                                           invisible="qualitative_unit_selection != 'custom'"/>
-                                </group>
-
-                                <!-- RESULTADO CUANTITATIVO -->
-                                <group string="🔢 Resultado Cuantitativo" 
-                                       invisible="result_type != 'quantitative'">
-                                    <field name="result_numeric"/>
-                                    <field name="result_unit"/>
-                                    <field name="result_unit_selection"/>
-                                    <field name="custom_unit" 
-                                           placeholder="Especificar unidad"
-                                           invisible="result_unit_selection != 'custom'"/>
-                                    <field name="below_detection_limit"/>
-                                    <field name="above_quantification_limit"/>
-                                </group>
-
-                                <!-- RESULTADO PRINCIPAL -->
-                                <group string="✅ Resultado Principal" colspan="4">
-                                    <field name="result_value" 
-                                           class="o_field_highlight"
-                                           style="font-size: 18px; font-weight: bold;"
-                                           placeholder="Ingrese el resultado final aquí..."/>
-                                </group>
-
-                                <!-- EQUIPOS ADICIONALES -->
-                                <group string="🔧 Equipos Adicionales Utilizados">
-                                    <field name="equipment_involved_ids" nolabel="1">
-                                        <list string="Equipos" editable="bottom">
-                                            <field name="equipment_id" string="Equipo"/>
-                                            <field name="usage" string="Uso" placeholder="Especificar uso del equipo"/>
-                                            <field name="usage_date" string="Fecha"/>
-                                            <field name="used_by" string="Utilizado por"/>
-                                        </list>
-                                    </field>
-                                </group>
-
-                                <!-- OBSERVACIONES -->
-                                <group string="📝 Observaciones del Analista">
-                                    <field name="analyst_notes" nolabel="1"
-                                           placeholder="Observaciones técnicas del análisis..."/>
-                                </group>
-                            </page>
-
                             <!-- ========== TAB DE CONFIRMACIÓN ========== -->
                             <page string="✅ Confirmación" invisible="requires_confirmation == False">
                                 
@@ -811,7 +758,59 @@
                                         </form>
                                     </field>
                                 </group>
+                            </page>
+
+                            <!-- ========== TAB DE RESULTADO FINAL ========== -->
+                            <page string="📊 Resultado Final">
                                 
+                                <!-- RESULTADO CUALITATIVO -->
+                                <group string="📊 Resultado Cualitativo" 
+                                       invisible="result_type != 'qualitative'">
+                                    <field name="result_qualitative"/>
+                                    <field name="qualitative_unit_selection" string="Unidad/Base"/>
+                                    <field name="qualitative_custom_unit" 
+                                           placeholder="Especificar unidad personalizada"
+                                           invisible="qualitative_unit_selection != 'custom'"/>
+                                </group>
+
+                                <!-- RESULTADO CUANTITATIVO -->
+                                <group string="🔢 Resultado Cuantitativo" 
+                                       invisible="result_type != 'quantitative'">
+                                    <field name="result_numeric"/>
+                                    <field name="result_unit"/>
+                                    <field name="result_unit_selection"/>
+                                    <field name="custom_unit" 
+                                           placeholder="Especificar unidad"
+                                           invisible="result_unit_selection != 'custom'"/>
+                                    <field name="below_detection_limit"/>
+                                    <field name="above_quantification_limit"/>
+                                </group>
+
+                                <!-- RESULTADO PRINCIPAL -->
+                                <group string="✅ Resultado Principal" colspan="4">
+                                    <field name="result_value" 
+                                           class="o_field_highlight"
+                                           style="font-size: 18px; font-weight: bold;"
+                                           placeholder="Ingrese el resultado final aquí..."/>
+                                </group>
+
+                                <!-- EQUIPOS ADICIONALES -->
+                                <group string="🔧 Equipos Adicionales Utilizados">
+                                    <field name="equipment_involved_ids" nolabel="1">
+                                        <list string="Equipos" editable="bottom">
+                                            <field name="equipment_id" string="Equipo"/>
+                                            <field name="usage" string="Uso" placeholder="Especificar uso del equipo"/>
+                                            <field name="usage_date" string="Fecha"/>
+                                            <field name="used_by" string="Utilizado por"/>
+                                        </list>
+                                    </field>
+                                </group>
+
+                                <!-- OBSERVACIONES -->
+                                <group string="📝 Observaciones del Analista">
+                                    <field name="analyst_notes" nolabel="1"
+                                           placeholder="Observaciones técnicas del análisis..."/>
+                                </group>
                             </page>
 
                         </notebook>
