@@ -1465,10 +1465,10 @@
                 }
             </style>
 
-            <!-- CONTENIDO PRINCIPAL -->
-            <div class="article">
+            <!-- ELEMENTO MAIN REQUERIDO -->
+            <main class="o_layout_main">
                 <t t-foreach="docs" t-as="analysis">
-                    <div t-att-class="'o_report_page' + (' sample-break' if analysis_index > 0 else '')">
+                    <div t-att-class="'page' + (' sample-break' if analysis_index > 0 else '')">
                         
                         <t t-set="status" t-value="report_config.get('status', 'final')"/>
                         
@@ -1669,7 +1669,7 @@
 
                     </div>
                 </t>
-            </div>
+            </main>
         </t>
     </template>
 
