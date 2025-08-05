@@ -1331,14 +1331,14 @@
         </t>
     </template>
 
-    <!-- ========== TEMPLATE GENERAL ILAC SIMPLE ========== -->
+    <!-- ========== TEMPLATE GENERAL ILAC ========== -->
     <template id="report_general_ilac_template">
         <t t-call="web.html_container">
             <meta charset="UTF-8"/>
             <t t-call-assets="web.report_assets_common" t-js="false"/>
             <t t-set="company" t-value="env.company"/>
 
-            <!-- ESTILOS SIMPLES SIN HEADERS FIJOS -->
+            <!-- ESTILOS LOCALES -->
             <style>
                 body, .o_report_layout, table, td, th, span, div, p {
                     font-family: "Arial", sans-serif !important;
@@ -1346,12 +1346,6 @@
                     padding: 0;
                     font-size: 10px;
                     line-height: 1.2;
-                }
-                .main-header {
-                    border-bottom: 2px solid #000;
-                    padding-bottom: 8px;
-                    margin-bottom: 10px;
-                    margin-top: 0;
                 }
                 .company-info {
                     text-align: center;
@@ -1438,12 +1432,12 @@
                     font-size: 8px;
                     line-height: 1.4;
                 }
-                .sample-break {
-                    page-break-before: always;
-                }
                 .header-table {
                     width: 100%;
                     border-collapse: collapse;
+                    border-bottom: 2px solid #000;
+                    padding-bottom: 8px;
+                    margin-bottom: 10px;
                 }
                 .header-table td {
                     vertical-align: top;
@@ -1460,59 +1454,83 @@
                     width: 80px;
                     text-align: right;
                 }
-                .main-footer {
-                    margin-top: 30px;
-                    font-size: 8px;
-                    text-align: center;
-                    border-top: 1px solid #000;
-                    padding-top: 5px;
-                }
             </style>
+
+            <!-- HEADER FIJO -->
+            <div class="header" style="padding: 10px 20px;">
+                <table class="header-table">
+                    <tr>
+                        <td class="logo-section">
+                            <!-- LOGO DE LA EMPRESA -->
+                            <t t-if="company.logo">
+                                <img t-att-src="image_data_uri(company.logo)"
+                                    style="max-height: 60px; max-width: 80px; width: auto;"/>
+                            </t>
+                        </td>
+                        <td class="center-section">
+                            <div class="company-info">Laboratorio de Microbiología</div>
+                            <div class="company-info">PROTEUS</div>
+                            <div class="company-details">
+                                Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.
+                            </div>
+                            <div class="company-details">
+                                E-mail: contacto@proteuslaboratorio.com // Teléfono: (664) 973-8185
+                            </div>
+                            <div class="form-info">FOR-022 Rev. 03 / PROC-006</div>
+                            <div class="form-info">Documento controlado, prohibida su reproducción parcial o total sin autorización.</div>
+                            <div class="form-info">Accreditation #108644</div>
+                        </td>
+                        <td class="right-section">
+                            <!-- LOGOS DE ILAC -->
+                            <div style="font-size: 8px; text-align: center; color: #666;">
+                                [ILAC Logos]
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+            <!-- FOOTER FIJO -->
+            <div class="footer">
+                <table class="table table-borderless" style="width: 100%; font-size: 8px; border-top: 1px solid #000; padding-top: 5px;">
+                    <tr>
+                        <td style="width: 33%; text-align: left; padding: 2px;">
+                            Teléfono: (664) 973-8185
+                        </td>
+                        <td style="width: 33%; text-align: center; padding: 2px;">
+                            FOR-022 Rev. 03 / PROC-006
+                        </td>
+                        <td style="width: 33%; text-align: right; padding: 2px;">
+                            contacto@proteuslaboratorio.com
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: center; font-size: 8px; padding: 2px;">
+                            Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: center; font-size: 8px; padding: 2px;">
+                            Documento controlado, prohibida su reproducción parcial o total sin autorización.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" style="text-align: center; font-size: 8px; padding: 2px;">
+                            Página <span class="page"/> / <span class="topage"/>
+                        </td>
+                    </tr>
+                </table>
+            </div>
 
             <!-- CONTENIDO PRINCIPAL -->
             <t t-foreach="docs" t-as="analysis">
-                <!-- PAGE BREAK PARA MUESTRAS ADICIONALES -->
-                <div t-att-class="'page' + (' sample-break' if analysis_index > 0 else '')">
+                <div class="page">
                     
                     <!-- Variables de configuración -->
                     <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
                     <t t-set="language" t-value="report_config.get('language', 'es')"/>
                     <t t-set="status" t-value="report_config.get('status', 'final')"/>
                     
-                    <!-- HEADER NORMAL -->
-                    <div class="main-header">
-                        <table class="header-table">
-                            <tr>
-                                <td class="logo-section">
-                                    <!-- LOGO DE LA EMPRESA -->
-                                    <t t-if="company.logo">
-                                        <img t-att-src="image_data_uri(company.logo)"
-                                            style="max-height: 60px; max-width: 80px; width: auto;"/>
-                                    </t>
-                                </td>
-                                <td class="center-section">
-                                    <div class="company-info">Laboratorio de Microbiología</div>
-                                    <div class="company-info">PROTEUS</div>
-                                    <div class="company-details">
-                                        Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.
-                                    </div>
-                                    <div class="company-details">
-                                        E-mail: contacto@proteuslaboratorio.com // Teléfono: (664) 973-8185
-                                    </div>
-                                    <div class="form-info">FOR-022 Rev. 03 / PROC-006</div>
-                                    <div class="form-info">Documento controlado, prohibida su reproducción parcial o total sin autorización. Página 1 de 2</div>
-                                    <div class="form-info">Accreditation #108644</div>
-                                </td>
-                                <td class="right-section">
-                                    <!-- LOGOS DE ILAC -->
-                                    <div style="font-size: 8px; text-align: center; color: #666;">
-                                        [ILAC Logos]
-                                    </div>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-
                     <!-- TÍTULO DEL REPORTE -->
                     <div class="report-title">
                         <t t-if="language == 'es'">INFORME DE ENSAYO</t>
@@ -1575,25 +1593,6 @@
                                 <t t-if="analysis.customer_id.zip"> C.P. <span t-esc="analysis.customer_id.zip"/></t>
                             </td>
                         </tr>
-                        <tr>
-                            <td class="label">
-                                <t t-if="language == 'es'">Código de cliente:</t>
-                                <t t-else="">Customer code:</t>
-                            </td>
-                            <td><span t-esc="analysis.customer_id.client_code or 'N/A'"/></td>
-                        </tr>
-                        <tr>
-                            <td class="label">
-                                <t t-if="language == 'es'">Contacto:</t>
-                                <t t-else="">Contact:</t>
-                            </td>
-                            <td>
-                                <t t-if="analysis.custody_chain_id.contact_ids">
-                                    <span t-esc="analysis.custody_chain_id.contact_ids[0].name"/>
-                                </t>
-                                <t t-else="">N/A</t>
-                            </td>
-                        </tr>
                     </table>
 
                     <!-- INFORMACIÓN DE MUESTREO Y RECEPCIÓN -->
@@ -1629,14 +1628,6 @@
                                         <td class="label">Muestreador:</td>
                                         <td>Cliente</td>
                                     </tr>
-                                    <tr>
-                                        <td class="label">Método/plan de muestreo (si aplica):</td>
-                                        <td>N/A</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label">Observaciones:</td>
-                                        <td>Muestra proporcionada por el cliente</td>
-                                    </tr>
                                 </table>
                             </td>
                             
@@ -1659,20 +1650,8 @@
                                         <td>100g</td>
                                     </tr>
                                     <tr>
-                                        <td class="label">Temperatura de recepción:</td>
-                                        <td>-</td>
-                                    </tr>
-                                    <tr>
                                         <td class="label">Recipiente de la muestra:</td>
                                         <td>Envase original</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label">Recibió:</td>
-                                        <td>Daniela Rangel</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="label">Observaciones:</td>
-                                        <td>Sin observaciones</td>
                                     </tr>
                                 </table>
                             </td>
@@ -1685,20 +1664,43 @@
                     <table class="data-table">
                         <thead>
                             <tr>
-                                <th style="width: 14%;">Parámetro</th>
+                                <th style="width: 20%;">Parámetro</th>
                                 <th style="width: 18%;">Método</th>
-                                <th style="width: 3%;">C</th>
-                                <th style="width: 3%;">T</th>
-                                <th style="width: 4%;">LAB</th>
-                                <th style="width: 12%;">Resultado</th>
+                                <th style="width: 15%;">Resultado</th>
                                 <th style="width: 10%;">Unidades</th>
                                 <th style="width: 12%;">Referencia</th>
-                                <th style="width: 10%;">Fecha de análisis</th>
-                                <th style="width: 4%;">AN</th>
+                                <th style="width: 15%;">Fecha de análisis</th>
+                                <th style="width: 10%;">Analista</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <!-- Aquí irían los parámetros -->
+                            <t t-set="analysis_params" t-value="analysis.parameter_analysis_ids.filtered(lambda p: (p.report_status == 'ready' if status == 'preliminary' else p.report_status in ['ready', 'reported']))"/>
+                            <t t-foreach="analysis_params" t-as="parameter">
+                                <tr>
+                                    <td><span t-esc="parameter.microorganism or parameter.name"/></td>
+                                    <td><span t-esc="parameter.method or 'No especificado'"/></td>
+                                    <td style="text-align: center;"><span t-esc="parameter.result_value or 'Sin resultado'"/></td>
+                                    <td style="text-align: center;">
+                                        <t t-if="parameter.result_unit_selection == 'custom'">
+                                            <span t-esc="parameter.custom_unit or ''"/>
+                                        </t>
+                                        <t t-elif="parameter.qualitative_unit_selection == 'custom'">
+                                            <span t-esc="parameter.qualitative_custom_unit or ''"/>
+                                        </t>
+                                        <t t-else="">
+                                            <span t-esc="parameter.unit or ''"/>
+                                        </t>
+                                    </td>
+                                    <td style="text-align: center;">Límites del cliente</td>
+                                    <td style="text-align: center;">
+                                        <t t-if="parameter.analysis_date">
+                                            <span t-esc="parameter.analysis_date.strftime('%d/%b/%Y')"/>
+                                        </t>
+                                        <t t-else="">-</t>
+                                    </td>
+                                    <td style="text-align: center;"><span t-esc="parameter.analyst_names or 'N/A'"/></td>
+                                </tr>
+                            </t>
                         </tbody>
                     </table>
 
@@ -1730,14 +1732,6 @@
                                 Aseguramiento de la Calidad
                             </div>
                         </div>
-                    </div>
-
-                    <!-- FOOTER NORMAL -->
-                    <div class="main-footer">
-                        Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.<br/>
-                        E-mail: contacto@proteuslaboratorio.com // Teléfono: (664) 973-8185<br/>
-                        FOR-022 Rev. 03 / PROC-006<br/>
-                        Documento controlado, prohibida su reproducción parcial o total sin autorización.
                     </div>
 
                 </div>
