@@ -1331,7 +1331,7 @@
         </t>
     </template>
 
-    <!-- ========== TEMPLATE GENERAL ILAC - ESTRUCTURA IDÉNTICA A COTIZACIÓN ========== -->
+    <!-- ========== TEMPLATE GENERAL ILAC CORREGIDO FINAL ========== -->
     <template id="report_general_ilac_template">
         <t t-call="web.html_container">
             <meta charset="UTF-8"/>
@@ -1350,6 +1350,11 @@
                     div,
                     p {
                         font-family: "DejaVu Sans", sans-serif !important;
+                    }
+                    
+                    /* Page break para múltiples muestras */
+                    .sample-break {
+                        page-break-before: always;
                     }
                     
                     .section-header {
@@ -1414,7 +1419,7 @@
                 </style>
             </t>
 
-            <!-- HEADER SOLO CON LOGO Y TÍTULO -->
+            <!-- HEADER FIJO CON TÍTULO INFORME DE ENSAYO -->
             <div class="header" style="padding: 10px 20px;">
                 <table style="width: 100%; border-collapse: collapse;">
                     <tr>
@@ -1476,9 +1481,10 @@
                 </table>
             </div>
 
-            <!-- CONTENIDO PRINCIPAL -->
+            <!-- CONTENIDO PRINCIPAL - UNA PÁGINA POR MUESTRA -->
             <t t-foreach="docs" t-as="analysis">
-                <div class="page">
+                <!-- Page break después de la primera muestra -->
+                <div t-att-class="'page' + (' sample-break' if analysis_index > 0 else '')">
                     <div class="main-content">
                         
                         <!-- Variables de configuración -->
@@ -1486,16 +1492,18 @@
                         <t t-set="language" t-value="report_config.get('language', 'es')"/>
                         <t t-set="status" t-value="report_config.get('status', 'final')"/>
 
-                        <!-- Título principal -->
-                        <div style="text-align: center; margin: 20px 0 30px 0;">
-                            <h1 style="font-size: 20px; font-weight: bold; margin: 0;">
-                                <t t-if="status == 'preliminary'">PRELIMINAR - </t>
-                                INFORME DE ENSAYO
-                            </h1>
-                        </div>
+                        <!-- NO DUPLICAR EL TÍTULO - YA ESTÁ EN EL HEADER -->
+                        <!-- Solo mostrar si es preliminar como indicador adicional -->
+                        <t t-if="status == 'preliminary'">
+                            <div style="text-align: center; margin: 15px 0;">
+                                <span style="background-color: #ffc107; color: #212529; padding: 5px 10px; border-radius: 5px; font-weight: bold;">
+                                    PRELIMINAR
+                                </span>
+                            </div>
+                        </t>
 
-                        <!-- INFORMACIÓN SUPERIOR -->
-                        <table class="info-grid" style="margin-top: 10px;">
+                        <!-- INFORMACIÓN SUPERIOR - Directamente sin título duplicado -->
+                        <table class="info-grid" style="margin-top: 20px;">
                             <tr>
                                 <td class="label" style="width: 25%;">
                                     <t t-if="language == 'es'">Identificación de la muestra:</t>
@@ -1628,7 +1636,7 @@
                                             <td>Cliente</td>
                                         </tr>
                                         <tr>
-                                            <td class="label">Método/plan de muestreo:</td>
+                                            <td class="label">Método/plan de muestreo (si aplica):</td>
                                             <td>N/A</td>
                                         </tr>
                                         <tr>
