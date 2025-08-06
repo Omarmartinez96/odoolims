@@ -131,21 +131,38 @@
 
             <!-- HEADER GLOBAL (FUERA DEL LOOP) -->
             <div class="header">
-                <table class="header-table" style="height: 180px;">
-                    <tr style="height: 150px;">
-                        <!-- ✅ USAR SOLO ESTILOS INLINE, SIN CLASES ESPECÍFICAS -->
-                        <td style="width: 20%; text-align: left; vertical-align: middle; border: none !important; padding: 25px 15px !important;">
+                <table class="header-table" style="height: 180px; border: none !important; border-collapse: collapse !important;">
+                    <tr style="height: 150px; border: none !important;">
+                        <!-- LOGO IZQUIERDA -->
+                        <td style="width: 20%; text-align: left; vertical-align: middle; border: none !important; padding: 25px 15px;">
                             <img t-if="company.logo"
                                 t-att-src="image_data_uri(company.logo)"
                                 style="max-height: 140px; width: auto;"/>
                         </td>
-                        <td style="width: 60%; text-align: center; vertical-align: middle; border: none !important; padding: 25px 15px !important;">
-                            <div style="background-color: #f0f0f0; padding: 25px 30px; margin: 0; width: 100%; box-sizing: border-box; min-height: 80px; display: flex; align-items: center; justify-content: center;">
-                                <strong style="font-size: 22px; font-family: Arial, sans-serif;">
-                                    INFORME DE ENSAYO
-                                </strong>
+                        
+                        <!-- INFORMACIÓN DEL LABORATORIO CENTRO -->
+                        <td style="width: 60%; text-align: center; vertical-align: middle; border: none !important; padding: 25px 15px;">
+                            <div style="text-align: center; font-family: Arial, sans-serif;">
+                                <!-- Nombre del laboratorio -->
+                                <div style="font-size: 20px; font-weight: bold; color: #000; margin-bottom: 8px;">
+                                    <t t-if="language == 'es'">Laboratorio de Microbiología</t>
+                                    <t t-else="">Microbiology Laboratory</t>
+                                </div>
+                                
+                                <!-- Nombre PROTEUS -->
+                                <div style="font-size: 24px; font-weight: bold; color: #000; margin-bottom: 15px;">
+                                    PROTEUS
+                                </div>
+                                
+                                <!-- Tipo de reporte -->
+                                <div style="font-size: 16px; font-weight: bold; color: #000;">
+                                    <t t-if="language == 'es'">INFORME DE ENSAYO</t>
+                                    <t t-else="">TEST REPORT</t>
+                                </div>
                             </div>
                         </td>
+                        
+                        <!-- LOGOS PLACEHOLDER DERECHA -->
                         <td style="width: 20%; text-align: right; vertical-align: middle; border: none !important; padding: 25px 15px !important;">
                             <div style="border: 1px solid #000; padding: 15px; min-height: 80px; display: flex; align-items: center; justify-content: center; font-size: 12px; width: 100%; box-sizing: border-box;">
                                 [ILAC LOGOS]
