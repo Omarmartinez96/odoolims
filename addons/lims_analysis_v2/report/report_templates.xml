@@ -31,7 +31,7 @@
     <!-- Ejemplo: <template id="report_endotoxin_template"> -->
     <!-- ========================================================= -->
 
-    <!-- ========== TEMPLATE GENERAL ILAC (CORREGIDO CON MEJORAS) ========== -->
+    <!-- ========== TEMPLATE GENERAL ILAC (MEJORADO CON NUEVOS AJUSTES) ========== -->
     <template id="report_general_ilac_template">
         <t t-call="web.html_container">
             <meta charset="UTF-8"/>
@@ -40,10 +40,11 @@
 
             <!-- ESTILOS ESPECÍFICOS PARA ILAC -->
             <style>
+                /* ✅ ACTUALIZADO: Arial y tamaños más grandes */
                 body, .o_report_layout, table, td, th, span, div, p {
-                    font-family: "DejaVu Sans", "Arial", sans-serif !important;
-                    font-size: 10px;
-                    line-height: 1.2;
+                    font-family: Arial, sans-serif !important;
+                    font-size: 12px !important;  /* ✅ Era 10px, ahora 12px */
+                    line-height: 1.3;
                 }
                 .sample-break {
                     page-break-before: always;
@@ -55,98 +56,113 @@
                 .section-header {
                     background-color: rgb(218,227,243);
                     font-weight: bold;
-                    padding: 4px;
+                    padding: 6px;  /* ✅ Era 4px, ahora 6px */
                     text-align: center;
-                    font-size: 10px;
-                    margin: 8px 0 3px 0;
+                    font-size: 12px !important;  /* ✅ Era 10px, ahora 12px */
+                    margin: 10px 0 5px 0;  /* ✅ Más espacio */
                     page-break-inside: avoid;
                 }
                 .data-table {
                     width: 100%;
                     border-collapse: collapse;
-                    font-size: 9px;
-                    margin: 5px 0;
+                    font-size: 11px !important;  /* ✅ Era 9px, ahora 11px */
+                    margin: 8px 0;  /* ✅ Más espacio */
                     page-break-inside: auto;
-                    /* ✅ NUEVO: Sin bordes */
                     border: none !important;
                 }
                 .data-table th, .data-table td {
-                    /* ✅ ACTUALIZADO: Sin bordes */
                     border: none !important;
-                    padding: 3px 2px;
+                    padding: 5px 3px;  /* ✅ Era 3px 2px, ahora 5px 3px */
                     vertical-align: top;
-                    /* ✅ NUEVO: Centrar contenido */
                     text-align: center;
                 }
                 .data-table th {
-                    /* ✅ ACTUALIZADO: Nuevo color azul */
                     background-color: rgb(218,227,243);
                     font-weight: bold;
                     text-align: center;
-                    font-size: 8px;
+                    font-size: 10px !important;  /* ✅ Era 8px, ahora 10px */
                 }
                 .data-table tr {
                     page-break-inside: avoid;
                 }
+                /* ✅ ACTUALIZADO: Info grid más compacta y alineada */
                 .info-grid {
                     width: 100%;
                     border-collapse: collapse;
-                    font-size: 9px;
-                    margin: 3px 0;
+                    font-size: 11px !important;  /* ✅ Era 9px, ahora 11px */
+                    margin: 1px 0;  /* ✅ Era 3px, ahora 1px - más compacto */
                 }
                 .info-grid td {
-                    padding: 2px 4px;
+                    padding: 1px 2px;  /* ✅ Era 2px 4px, ahora más compacto */
                     vertical-align: top;
-                    line-height: 1.3;
+                    line-height: 1.2;
+                    text-align: left !important;  /* ✅ NUEVO: Todo alineado a la izquierda */
                 }
                 .label {
                     font-weight: bold;
-                    font-size: 9px;
+                    font-size: 11px !important;  /* ✅ Era 9px, ahora 11px */
                 }
                 .two-column {
                     width: 100%;
                     border-collapse: collapse;
-                    margin: 5px 0;
+                    margin: 8px 0;  /* ✅ Más espacio */
                     page-break-inside: avoid;
                 }
                 .two-column td {
                     width: 50%;
                     vertical-align: top;
-                    padding: 0 5px;
+                    padding: 0 8px;  /* ✅ Era 5px, ahora 8px */
                 }
-                /* ✅ ACTUALIZADO: Header a todo lo ancho */
+                /* ✅ ACTUALIZADO: Header más grande y completamente borderless */
                 .header-table {
                     width: 100% !important;
-                    border-collapse: collapse;
-                    margin: 0;
-                    padding: 0;
+                    border-collapse: separate !important;
+                    border-spacing: 0 !important;
+                    margin: 0 !important;
+                    padding: 15px 0 !important;  /* ✅ NUEVO: Más padding vertical */
                     border: none !important;
                     table-layout: fixed;
                 }
                 .header-table td {
                     border: none !important;
+                    padding: 15px 10px !important;  /* ✅ NUEVO: Más padding */
+                    vertical-align: middle;
+                }
+                /* ✅ NUEVO: Estilos específicos para el header */
+                .header-logo {
+                    width: 20%;
+                    text-align: left;
+                }
+                .header-title {
+                    width: 60%;
+                    text-align: center;
+                }
+                .header-ilac {
+                    width: 20%;
+                    text-align: right;
                 }
             </style>
 
             <!-- HEADER GLOBAL (FUERA DEL LOOP) -->
             <div class="header">
-                <!-- ✅ ACTUALIZADO: Header a todo lo ancho -->
+                <!-- ✅ ACTUALIZADO: Header más grande y sin bordes -->
                 <table class="header-table">
                     <tr>
-                        <td style="width: 20%; text-align: left; vertical-align: middle; padding: 5px;">
+                        <td class="header-logo">
                             <img t-if="company.logo"
                                 t-att-src="image_data_uri(company.logo)"
-                                style="max-height: 100px; width: auto;"/>
+                                style="max-height: 120px; width: auto;"/>  <!-- ✅ Era 100px, ahora 120px -->
                         </td>
-                        <td style="width: 60%; text-align: center; vertical-align: middle; padding: 5px;">
-                            <div style="background-color: #f0f0f0; padding: 8px; margin: 0 10px; width: 100%;">
-                                <strong style="font-size: 14px;">
+                        <td class="header-title">
+                            <!-- ✅ ACTUALIZADO: Título más grande -->
+                            <div style="background-color: #f0f0f0; padding: 15px 20px; margin: 0; width: 100%; box-sizing: border-box;">
+                                <strong style="font-size: 18px; font-family: Arial, sans-serif;">  <!-- ✅ Era 14px, ahora 18px -->
                                     INFORME DE ENSAYO
                                 </strong>
                             </div>
                         </td>
-                        <td style="width: 20%; text-align: right; vertical-align: middle; padding: 5px;">
-                            <div style="border: 1px solid #000; padding: 5px; min-height: 40px; display: flex; align-items: center; justify-content: center; font-size: 9px; width: 100%;">
+                        <td class="header-ilac">
+                            <div style="border: 1px solid #000; padding: 8px; min-height: 60px; display: flex; align-items: center; justify-content: center; font-size: 11px; width: 100%; box-sizing: border-box;">  <!-- ✅ Era 40px altura, ahora 60px -->
                                 [ILAC LOGOS]
                             </div>
                         </td>
@@ -156,30 +172,30 @@
 
             <!-- FOOTER GLOBAL (FUERA DEL LOOP) -->
             <div class="footer">
-                <table style="width: 100%; font-size: 8px; margin: 0; padding: 0; border-top: 1px solid #000;">
+                <table style="width: 100%; font-size: 9px; margin: 0; padding: 0; border-top: 1px solid #000; font-family: Arial, sans-serif;">  <!-- ✅ Era 8px, ahora 9px -->
                     <tr>
-                        <td style="width: 33%; text-align: left; padding: 2px;">
+                        <td style="width: 33%; text-align: left; padding: 3px;">  <!-- ✅ Era 2px, ahora 3px -->
                             Teléfono: (664) 973-8185
                         </td>
-                        <td style="width: 33%; text-align: center; padding: 2px;">
+                        <td style="width: 33%; text-align: center; padding: 3px;">
                             FOR-022 Rev. 03 / PROC-006
                         </td>
-                        <td style="width: 33%; text-align: right; padding: 2px;">
+                        <td style="width: 33%; text-align: right; padding: 3px;">
                             contacto@proteuslaboratorio.com
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3" style="text-align: center; font-size: 7px; padding: 1px;">
+                        <td colspan="3" style="text-align: center; font-size: 8px; padding: 2px;">  <!-- ✅ Era 7px, ahora 8px -->
                             Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3" style="text-align: center; font-size: 7px; padding: 1px;">
+                        <td colspan="3" style="text-align: center; font-size: 8px; padding: 2px;">
                             Documento controlado, prohibida su reproducción parcial o total sin autorización.
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3" style="text-align: center; font-size: 7px; padding: 1px;">
+                        <td colspan="3" style="text-align: center; font-size: 8px; padding: 2px;">
                             Página <span class="page"/> de <span class="topage"/>
                         </td>
                     </tr>
@@ -200,26 +216,26 @@
 
                         <!-- Badge preliminar si aplica -->
                         <t t-if="status == 'preliminary'">
-                            <div style="text-align: center; margin: 10px 0;">
-                                <span style="background-color: #ffc107; color: #212529; padding: 5px 10px; border-radius: 5px; font-weight: bold;">
+                            <div style="text-align: center; margin: 15px 0;">  <!-- ✅ Era 10px, ahora 15px -->
+                                <span style="background-color: #ffc107; color: #212529; padding: 8px 15px; border-radius: 5px; font-weight: bold; font-size: 14px;">  <!-- ✅ Más grande -->
                                     PRELIMINAR
                                 </span>
                             </div>
                         </t>
 
-                        <!-- INFORMACIÓN SUPERIOR -->
-                        <table class="info-grid" style="margin-top: 10px;">
+                        <!-- ✅ ACTUALIZADO: INFORMACIÓN SUPERIOR MÁS COMPACTA Y ALINEADA -->
+                        <table class="info-grid" style="margin-top: 15px;">  <!-- ✅ Era 10px, ahora 15px -->
                             <tr>
                                 <td class="label" style="width: 25%;">
                                     <t t-if="language == 'es'">Identificación de la muestra:</t>
                                     <t t-else="">Sample identification:</t>
                                 </td>
                                 <td style="width: 25%;"><span t-esc="analysis.sample_identifier or 'Sin identificación'"/></td>
-                                <td class="label" style="width: 25%; text-align: right;">
+                                <td class="label" style="width: 25%;">  <!-- ✅ QUITADO: text-align: right -->
                                     <t t-if="language == 'es'">Fecha de emisión:</t>
                                     <t t-else="">Issue date:</t>
                                 </td>
-                                <td style="width: 25%; text-align: right;">
+                                <td style="width: 25%;">  <!-- ✅ QUITADO: text-align: right -->
                                     <t t-set="today" t-value="datetime.datetime.now()"/>
                                     <span t-esc="today.strftime('%d/%b/%Y')"/>
                                 </td>
@@ -235,11 +251,11 @@
                                     </t>
                                     <t t-else="">Sin descripción</t>
                                 </td>
-                                <td class="label" style="text-align: right;">
+                                <td class="label">  <!-- ✅ QUITADO: text-align: right -->
                                     <t t-if="language == 'es'">Cadena de custodia:</t>
                                     <t t-else="">Chain of custody:</t>
                                 </td>
-                                <td style="text-align: right;"><span t-esc="analysis.custody_chain_code or 'Sin código'"/></td>
+                                <td><span t-esc="analysis.custody_chain_code or 'Sin código'"/></td>  <!-- ✅ QUITADO: text-align: right -->
                             </tr>
                         </table>
 
@@ -417,7 +433,6 @@
                                 <t t-set="analysis_params" t-value="analysis.parameter_analysis_ids.filtered(lambda p: (p.report_status == 'ready' if status == 'preliminary' else p.report_status in ['ready', 'reported']))"/>
                                 <t t-foreach="analysis_params" t-as="parameter">
                                     <tr>
-                                        <!-- ✅ ACTUALIZADO: Todo centrado por default en CSS -->
                                         <td><span t-esc="parameter.microorganism or parameter.name or 'Sin nombre'"/></td>
                                         <td><span t-esc="parameter.method or 'No especificado'"/></td>
                                         <td>C</td>
@@ -449,7 +464,7 @@
                         </table>
 
                         <!-- INFORMACIÓN ADICIONAL -->
-                        <div style="margin-top: 10px; font-size: 9px;">
+                        <div style="margin-top: 15px; font-size: 11px;">  <!-- ✅ Era 10px y 9px, ahora 15px y 11px -->
                             <table class="info-grid">
                                 <tr>
                                     <td class="label" style="width: 25%;">Referencia normativa:</td>
@@ -463,15 +478,15 @@
                         </div>
 
                         <!-- NOTA FINAL -->
-                        <div style="margin-top: 10px; font-size: 8px;">
+                        <div style="margin-top: 15px; font-size: 10px;">  <!-- ✅ Era 10px y 8px, ahora 15px y 10px -->
                             <p><strong>Nota:</strong> Los resultados solo están relacionados con la porción de muestra analizada.</p>
                         </div>
 
                         <!-- SECCIÓN DE FIRMA -->
-                        <div style="margin-top: 30px; text-align: right;">
+                        <div style="margin-top: 40px; text-align: right;">  <!-- ✅ Era 30px, ahora 40px -->
                             <div style="width: 200px; margin-left: auto;">
-                                <div style="border-bottom: 1px solid #000; margin-bottom: 5px; height: 40px;"></div>
-                                <div style="text-align: center; font-size: 9px;">
+                                <div style="border-bottom: 1px solid #000; margin-bottom: 8px; height: 50px;"></div>  <!-- ✅ Era 5px y 40px, ahora 8px y 50px -->
+                                <div style="text-align: center; font-size: 11px;">  <!-- ✅ Era 9px, ahora 11px -->
                                     <strong>Bryan Manuel Zamora Luna</strong><br/>
                                     Aseguramiento de la Calidad
                                 </div>
