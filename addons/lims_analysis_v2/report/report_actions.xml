@@ -76,7 +76,7 @@
             <field name="report_name">lims_analysis_v2.report_general_ilac_template</field>
             <field name="report_file">lims_analysis_v2.report_general_ilac_template</field>
             <field name="print_report_name">'Informe ILAC - ' + (object.custody_chain_code or 'Sin código') + '.pdf'</field>
-            <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/> 
+            <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_test_report"/>
         </record>
 
         <!-- ========== REPORTE GENERAL SIN ILAC ========== -->
