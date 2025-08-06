@@ -127,13 +127,12 @@
                         <!-- INFORMACIÓN DEL LABORATORIO CENTRO -->
                         <td style="width: 60%; text-align: center; vertical-align: middle; border: none !important; padding: 25px 15px;">
                             <div style="text-align: center; font-family: Arial, sans-serif;">
-                                <!-- Nombre del laboratorio -->
+                                <!-- Nombre del laboratorio - SIEMPRE EN ESPAÑOL -->
                                 <div style="font-size: 20px; font-weight: bold; color: #000; margin-bottom: 8px;">
-                                    <t t-if="language == 'es'">Laboratorio de Microbiología</t>
-                                    <t t-else="">Microbiology Laboratory</t>
+                                    Laboratorio de Microbiología
                                 </div>
                                 
-                                <!-- Nombre PROTEUS -->
+                                <!-- Nombre PROTEUS - SIEMPRE IGUAL -->
                                 <div style="font-size: 24px; font-weight: bold; color: #000; margin-bottom: 15px;">
                                     PROTEUS
                                 </div>
