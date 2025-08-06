@@ -31,7 +31,7 @@
     <!-- Ejemplo: <template id="report_endotoxin_template"> -->
     <!-- ========================================================= -->
 
-    <!-- ========== TEMPLATE GENERAL ILAC (ACTUALIZADO CON NUEVOS ESTILOS) ========== -->
+    <!-- ========== TEMPLATE GENERAL ILAC (CORREGIDO CON MEJORAS) ========== -->
     <template id="report_general_ilac_template">
         <t t-call="web.html_container">
             <meta charset="UTF-8"/>
@@ -53,12 +53,11 @@
                     min-height: 90vh;
                 }
                 .section-header {
-                    background-color: rgb(218,227,243);  /* ✅ Nuevo color azul claro */
+                    background-color: rgb(218,227,243);
                     font-weight: bold;
                     padding: 4px;
                     text-align: center;
                     font-size: 10px;
-                    /* ✅ QUITADO: border: 1px solid #000; */
                     margin: 8px 0 3px 0;
                     page-break-inside: avoid;
                 }
@@ -68,14 +67,20 @@
                     font-size: 9px;
                     margin: 5px 0;
                     page-break-inside: auto;
+                    /* ✅ NUEVO: Sin bordes */
+                    border: none !important;
                 }
                 .data-table th, .data-table td {
-                    border: 1px solid #000;
+                    /* ✅ ACTUALIZADO: Sin bordes */
+                    border: none !important;
                     padding: 3px 2px;
                     vertical-align: top;
+                    /* ✅ NUEVO: Centrar contenido */
+                    text-align: center;
                 }
                 .data-table th {
-                    background-color: #d3d3d3;
+                    /* ✅ ACTUALIZADO: Nuevo color azul */
+                    background-color: rgb(218,227,243);
                     font-weight: bold;
                     text-align: center;
                     font-size: 8px;
@@ -109,13 +114,14 @@
                     vertical-align: top;
                     padding: 0 5px;
                 }
-                /* ✅ NUEVO: Estilo para tabla del header sin bordes */
+                /* ✅ ACTUALIZADO: Header a todo lo ancho */
                 .header-table {
-                    width: 100%;
+                    width: 100% !important;
                     border-collapse: collapse;
                     margin: 0;
                     padding: 0;
                     border: none !important;
+                    table-layout: fixed;
                 }
                 .header-table td {
                     border: none !important;
@@ -124,25 +130,23 @@
 
             <!-- HEADER GLOBAL (FUERA DEL LOOP) -->
             <div class="header">
-                <!-- ✅ ACTUALIZADO: Tabla sin bordes usando clase CSS -->
+                <!-- ✅ ACTUALIZADO: Header a todo lo ancho -->
                 <table class="header-table">
                     <tr>
                         <td style="width: 20%; text-align: left; vertical-align: middle; padding: 5px;">
-                            <!-- ✅ ACTUALIZADO: Logo más grande (60px → 100px) -->
                             <img t-if="company.logo"
                                 t-att-src="image_data_uri(company.logo)"
                                 style="max-height: 100px; width: auto;"/>
                         </td>
                         <td style="width: 60%; text-align: center; vertical-align: middle; padding: 5px;">
-                            <!-- ✅ ACTUALIZADO: Sin borde oscuro en el título -->
-                            <div style="background-color: #f0f0f0; padding: 8px; margin: 0 10px;">
+                            <div style="background-color: #f0f0f0; padding: 8px; margin: 0 10px; width: 100%;">
                                 <strong style="font-size: 14px;">
                                     INFORME DE ENSAYO
                                 </strong>
                             </div>
                         </td>
                         <td style="width: 20%; text-align: right; vertical-align: middle; padding: 5px;">
-                            <div style="border: 1px solid #000; padding: 5px; min-height: 40px; display: flex; align-items: center; justify-content: center; font-size: 9px;">
+                            <div style="border: 1px solid #000; padding: 5px; min-height: 40px; display: flex; align-items: center; justify-content: center; font-size: 9px; width: 100%;">
                                 [ILAC LOGOS]
                             </div>
                         </td>
@@ -413,13 +417,14 @@
                                 <t t-set="analysis_params" t-value="analysis.parameter_analysis_ids.filtered(lambda p: (p.report_status == 'ready' if status == 'preliminary' else p.report_status in ['ready', 'reported']))"/>
                                 <t t-foreach="analysis_params" t-as="parameter">
                                     <tr>
+                                        <!-- ✅ ACTUALIZADO: Todo centrado por default en CSS -->
                                         <td><span t-esc="parameter.microorganism or parameter.name or 'Sin nombre'"/></td>
                                         <td><span t-esc="parameter.method or 'No especificado'"/></td>
-                                        <td style="text-align: center;">C</td>
-                                        <td style="text-align: center;">T</td>
-                                        <td style="text-align: center;">LAB</td>
-                                        <td style="text-align: center;"><span t-esc="parameter.result_value or 'Sin resultado'"/></td>
-                                        <td style="text-align: center;">
+                                        <td>C</td>
+                                        <td>T</td>
+                                        <td>LAB</td>
+                                        <td><span t-esc="parameter.result_value or 'Sin resultado'"/></td>
+                                        <td>
                                             <t t-if="parameter.result_unit_selection == 'custom'">
                                                 <span t-esc="parameter.custom_unit or ''"/>
                                             </t>
@@ -430,14 +435,14 @@
                                                 <span t-esc="parameter.unit or ''"/>
                                             </t>
                                         </td>
-                                        <td style="text-align: center;">Límites del cliente</td>
-                                        <td style="text-align: center;">
+                                        <td>Límites del cliente</td>
+                                        <td>
                                             <t t-if="parameter.analysis_date">
                                                 <span t-esc="parameter.analysis_date.strftime('%d/%b/%Y')"/>
                                             </t>
                                             <t t-else="">-</t>
                                         </td>
-                                        <td style="text-align: center;"><span t-esc="parameter.analyst_names or 'N/A'"/></td>
+                                        <td><span t-esc="parameter.analyst_names or 'N/A'"/></td>
                                     </tr>
                                 </t>
                             </tbody>
