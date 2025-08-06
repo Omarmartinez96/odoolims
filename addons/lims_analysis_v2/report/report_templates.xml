@@ -127,6 +127,12 @@
                         <!-- INFORMACIÓN DEL LABORATORIO CENTRO -->
                         <td style="width: 60%; text-align: center; vertical-align: middle; border: none !important; padding: 25px 15px;">
                             <div style="text-align: center; font-family: Arial, sans-serif;">
+
+                                <!-- DEBUG: Mostrar valor de language -->
+                                <div style="font-size: 8px; color: red;">
+                                    DEBUG - Language: <span t-esc="language"/> | Report Config: <span t-esc="report_config"/>
+                                </div>
+
                                 <!-- Nombre del laboratorio - SIEMPRE EN ESPAÑOL -->
                                 <div style="font-size: 20px; font-weight: bold; color: #000; margin-bottom: 4px;">
                                     Laboratorio de Microbiología
