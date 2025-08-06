@@ -15,7 +15,6 @@
       <field name="dpi">90</field>
     </record>
 
-    <!-- Paperformat para Informes de Ensayo ILAC - CORREGIDO -->
     <record id="paperformat_lims_test_report" model="report.paperformat">
         <field name="name">Informe de Ensayo (LIMS)</field>
         <field name="default" eval="False"/>
