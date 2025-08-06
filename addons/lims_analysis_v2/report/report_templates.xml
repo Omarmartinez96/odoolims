@@ -127,40 +127,27 @@
                     vertical-align: middle;
                     height: 150px !important;  
                 }
-                .header-logo {
-                    width: 20%;
-                    text-align: left;
-                }
-                .header-title {
-                    width: 60%;
-                    text-align: center;
-                }
-                .header-ilac {
-                    width: 20%;
-                    text-align: right;
-                }
             </style>
 
             <!-- HEADER GLOBAL (FUERA DEL LOOP) -->
             <div class="header">
-                <!-- ✅ CORREGIDO: Header con altura fija más grande -->
-                <table class="header-table" style="height: 180px;">  <!-- ✅ NUEVO: Altura fija -->
-                    <tr style="height: 150px;">  <!-- ✅ NUEVO: Altura fija del row -->
-                        <td class="header-logo">
+                <table class="header-table" style="height: 180px;">
+                    <tr style="height: 150px;">
+                        <!-- ✅ USAR SOLO ESTILOS INLINE, SIN CLASES ESPECÍFICAS -->
+                        <td style="width: 20%; text-align: left; vertical-align: middle; border: none !important; padding: 25px 15px !important;">
                             <img t-if="company.logo"
                                 t-att-src="image_data_uri(company.logo)"
-                                style="max-height: 140px; width: auto;"/>  <!-- ✅ Era 120px, ahora 140px -->
+                                style="max-height: 140px; width: auto;"/>
                         </td>
-                        <td class="header-title">
-                            <!-- ✅ ACTUALIZADO: Título con más padding y tamaño -->
+                        <td style="width: 60%; text-align: center; vertical-align: middle; border: none !important; padding: 25px 15px !important;">
                             <div style="background-color: #f0f0f0; padding: 25px 30px; margin: 0; width: 100%; box-sizing: border-box; min-height: 80px; display: flex; align-items: center; justify-content: center;">
-                                <strong style="font-size: 22px; font-family: Arial, sans-serif;">  <!-- ✅ Era 18px, ahora 22px -->
+                                <strong style="font-size: 22px; font-family: Arial, sans-serif;">
                                     INFORME DE ENSAYO
                                 </strong>
                             </div>
                         </td>
-                        <td class="header-ilac">
-                            <div style="border: 1px solid #000; padding: 15px; min-height: 80px; display: flex; align-items: center; justify-content: center; font-size: 12px; width: 100%; box-sizing: border-box;">  <!-- ✅ Era 60px altura y 11px font, ahora 80px y 12px -->
+                        <td style="width: 20%; text-align: right; vertical-align: middle; border: none !important; padding: 25px 15px !important;">
+                            <div style="border: 1px solid #000; padding: 15px; min-height: 80px; display: flex; align-items: center; justify-content: center; font-size: 12px; width: 100%; box-sizing: border-box;">
                                 [ILAC LOGOS]
                             </div>
                         </td>
