@@ -37,6 +37,11 @@
             <meta charset="UTF-8"/>
             <t t-call-assets="web.report_assets_common" t-js="false"/>
             <t t-set="company" t-value="env.company"/>
+            
+            <!-- ✅ VARIABLES MOVIDAS FUERA DEL LOOP -->
+            <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
+            <t t-set="language" t-value="report_config.get('language', 'es')"/>
+            <t t-set="status" t-value="report_config.get('status', 'final')"/>
 
             <!-- ESTILOS ESPECÍFICOS PARA ILAC -->
             <style>
@@ -127,12 +132,6 @@
                         <!-- INFORMACIÓN DEL LABORATORIO CENTRO -->
                         <td style="width: 60%; text-align: center; vertical-align: middle; border: none !important; padding: 25px 15px;">
                             <div style="text-align: center; font-family: Arial, sans-serif;">
-
-                                <!-- DEBUG: Mostrar valor de language -->
-                                <div style="font-size: 8px; color: red;">
-                                    DEBUG - Language: <span t-esc="language"/> | Report Config: <span t-esc="report_config"/>
-                                </div>
-
                                 <!-- Nombre del laboratorio - SIEMPRE EN ESPAÑOL -->
                                 <div style="font-size: 20px; font-weight: bold; color: #000; margin-bottom: 4px;">
                                     Laboratorio de Microbiología
@@ -143,7 +142,7 @@
                                     PROTEUS
                                 </div>
                                 
-                                <!-- Tipo de reporte -->
+                                <!-- ✅ TIPO DE REPORTE - SIN DEBUG -->
                                 <div style="font-size: 16px; font-weight: bold; color: #000;">
                                     <t t-if="language == 'es'">INFORME DE ENSAYO</t>
                                     <t t-else="">TEST REPORT</t>
@@ -163,9 +162,9 @@
 
             <!-- FOOTER GLOBAL (FUERA DEL LOOP) -->
             <div class="footer">
-                <table style="width: 100%; font-size: 9px; margin: 0; padding: 0; border-top: 1px solid #000; font-family: Arial, sans-serif;">  <!-- ✅ Era 8px, ahora 9px -->
+                <table style="width: 100%; font-size: 9px; margin: 0; padding: 0; border-top: 1px solid #000; font-family: Arial, sans-serif;">
                     <tr>
-                        <td style="width: 33%; text-align: left; padding: 3px;">  <!-- ✅ Era 2px, ahora 3px -->
+                        <td style="width: 33%; text-align: left; padding: 3px;">
                             Teléfono: (664) 973-8185
                         </td>
                         <td style="width: 33%; text-align: center; padding: 3px;">
@@ -176,7 +175,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td colspan="3" style="text-align: center; font-size: 8px; padding: 2px;">  <!-- ✅ Era 7px, ahora 8px -->
+                        <td colspan="3" style="text-align: center; font-size: 8px; padding: 2px;">
                             Av. Defensores de Baja California 2163 Plaza Marina Local 5-A, Empleado Postal, Tijuana B.C.
                         </td>
                     </tr>
@@ -195,11 +194,6 @@
 
             <!-- CONTENIDO POR ANÁLISIS -->
             <t t-foreach="docs" t-as="analysis">
-                
-                <!-- Variables de configuración DENTRO del loop -->
-                <t t-set="report_config" t-value="context.get('custom_report_config', {})"/>
-                <t t-set="language" t-value="report_config.get('language', 'es')"/>
-                <t t-set="status" t-value="report_config.get('status', 'final')"/>
 
                 <!-- CONTENIDO PRINCIPAL -->
                 <div t-att-class="'page-content' + (' sample-break' if analysis_index > 0 else '')">
@@ -207,26 +201,26 @@
 
                         <!-- Badge preliminar si aplica -->
                         <t t-if="status == 'preliminary'">
-                            <div style="text-align: center; margin: 15px 0;">  <!-- ✅ Era 10px, ahora 15px -->
-                                <span style="background-color: #ffc107; color: #212529; padding: 8px 15px; border-radius: 5px; font-weight: bold; font-size: 14px;">  <!-- ✅ Más grande -->
+                            <div style="text-align: center; margin: 15px 0;">
+                                <span style="background-color: #ffc107; color: #212529; padding: 8px 15px; border-radius: 5px; font-weight: bold; font-size: 14px;">
                                     PRELIMINAR
                                 </span>
                             </div>
                         </t>
 
-                        <!-- ✅ ACTUALIZADO: INFORMACIÓN SUPERIOR MÁS COMPACTA Y ALINEADA -->
-                        <table class="info-grid" style="margin-top: 15px;">  <!-- ✅ Era 10px, ahora 15px -->
+                        <!-- INFORMACIÓN SUPERIOR -->
+                        <table class="info-grid" style="margin-top: 15px;">
                             <tr>
                                 <td class="label" style="width: 25%;">
                                     <t t-if="language == 'es'">Identificación de la muestra:</t>
                                     <t t-else="">Sample identification:</t>
                                 </td>
                                 <td style="width: 25%;"><span t-esc="analysis.sample_identifier or 'Sin identificación'"/></td>
-                                <td class="label" style="width: 25%;">  <!-- ✅ QUITADO: text-align: right -->
+                                <td class="label" style="width: 25%;">
                                     <t t-if="language == 'es'">Fecha de emisión:</t>
                                     <t t-else="">Issue date:</t>
                                 </td>
-                                <td style="width: 25%;">  <!-- ✅ QUITADO: text-align: right -->
+                                <td style="width: 25%;">
                                     <t t-set="today" t-value="datetime.datetime.now()"/>
                                     <span t-esc="today.strftime('%d/%b/%Y')"/>
                                 </td>
@@ -242,11 +236,11 @@
                                     </t>
                                     <t t-else="">Sin descripción</t>
                                 </td>
-                                <td class="label">  <!-- ✅ QUITADO: text-align: right -->
+                                <td class="label">
                                     <t t-if="language == 'es'">Cadena de custodia:</t>
                                     <t t-else="">Chain of custody:</t>
                                 </td>
-                                <td><span t-esc="analysis.custody_chain_code or 'Sin código'"/></td>  <!-- ✅ QUITADO: text-align: right -->
+                                <td><span t-esc="analysis.custody_chain_code or 'Sin código'"/></td>
                             </tr>
                         </table>
 
@@ -455,7 +449,7 @@
                         </table>
 
                         <!-- INFORMACIÓN ADICIONAL -->
-                        <div style="margin-top: 15px; font-size: 11px;">  <!-- ✅ Era 10px y 9px, ahora 15px y 11px -->
+                        <div style="margin-top: 15px; font-size: 11px;">
                             <table class="info-grid">
                                 <tr>
                                     <td class="label" style="width: 25%;">Referencia normativa:</td>
@@ -469,15 +463,15 @@
                         </div>
 
                         <!-- NOTA FINAL -->
-                        <div style="margin-top: 15px; font-size: 10px;">  <!-- ✅ Era 10px y 8px, ahora 15px y 10px -->
+                        <div style="margin-top: 15px; font-size: 10px;">
                             <p><strong>Nota:</strong> Los resultados solo están relacionados con la porción de muestra analizada.</p>
                         </div>
 
                         <!-- SECCIÓN DE FIRMA -->
-                        <div style="margin-top: 40px; text-align: right;">  <!-- ✅ Era 30px, ahora 40px -->
+                        <div style="margin-top: 40px; text-align: right;">
                             <div style="width: 200px; margin-left: auto;">
-                                <div style="border-bottom: 1px solid #000; margin-bottom: 8px; height: 50px;"></div>  <!-- ✅ Era 5px y 40px, ahora 8px y 50px -->
-                                <div style="text-align: center; font-size: 11px;">  <!-- ✅ Era 9px, ahora 11px -->
+                                <div style="border-bottom: 1px solid #000; margin-bottom: 8px; height: 50px;"></div>
+                                <div style="text-align: center; font-size: 11px;">
                                     <strong>Bryan Manuel Zamora Luna</strong><br/>
                                     Aseguramiento de la Calidad
                                 </div>
