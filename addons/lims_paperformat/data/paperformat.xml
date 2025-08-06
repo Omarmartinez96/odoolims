@@ -25,7 +25,7 @@
         <field name="margin_left">5</field>
         <field name="margin_right">5</field>
         <field name="header_line" eval="False"/>
-        <field name="header_spacing">32</field> 
+        <field name="header_spacing">35</field> 
     </record>
     
   </data>
