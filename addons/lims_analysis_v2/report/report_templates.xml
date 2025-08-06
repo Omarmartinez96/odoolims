@@ -120,7 +120,7 @@
                 <t t-set="status" t-value="report_config.get('status', 'final')"/>
 
                 <!-- HEADER DENTRO DEL LOOP -->
-                <div class="header" style="padding: 10px 20px;">
+                <div class="header">
                     <table style="width: 100%; border-collapse: collapse; margin: 0; padding: 0;">
                         <tr>
                             <td style="width: 20%; text-align: left; vertical-align: middle; padding: 5px;">
