@@ -40,10 +40,9 @@
 
             <!-- ESTILOS ESPECÍFICOS PARA ILAC -->
             <style>
-                /* ✅ ACTUALIZADO: Arial y tamaños más grandes */
                 body, .o_report_layout, table, td, th, span, div, p {
                     font-family: Arial, sans-serif !important;
-                    font-size: 12px !important;  /* ✅ Era 10px, ahora 12px */
+                    font-size: 12px !important;  
                     line-height: 1.3;
                 }
                 .sample-break {
@@ -56,23 +55,23 @@
                 .section-header {
                     background-color: rgb(218,227,243);
                     font-weight: bold;
-                    padding: 6px;  /* ✅ Era 4px, ahora 6px */
+                    padding: 6px;  
                     text-align: center;
-                    font-size: 12px !important;  /* ✅ Era 10px, ahora 12px */
-                    margin: 10px 0 5px 0;  /* ✅ Más espacio */
+                    font-size: 12px !important;  
+                    margin: 10px 0 5px 0; 
                     page-break-inside: avoid;
                 }
                 .data-table {
                     width: 100%;
                     border-collapse: collapse;
-                    font-size: 11px !important;  /* ✅ Era 9px, ahora 11px */
-                    margin: 8px 0;  /* ✅ Más espacio */
+                    font-size: 11px !important; 
+                    margin: 8px 0; 
                     page-break-inside: auto;
                     border: none !important;
                 }
                 .data-table th, .data-table td {
                     border: none !important;
-                    padding: 5px 3px;  /* ✅ Era 3px 2px, ahora 5px 3px */
+                    padding: 5px 3px;  
                     vertical-align: top;
                     text-align: center;
                 }
@@ -80,55 +79,54 @@
                     background-color: rgb(218,227,243);
                     font-weight: bold;
                     text-align: center;
-                    font-size: 10px !important;  /* ✅ Era 8px, ahora 10px */
+                    font-size: 10px !important; 
                 }
                 .data-table tr {
                     page-break-inside: avoid;
                 }
-                /* ✅ ACTUALIZADO: Info grid más compacta y alineada */
                 .info-grid {
                     width: 100%;
                     border-collapse: collapse;
-                    font-size: 11px !important;  /* ✅ Era 9px, ahora 11px */
-                    margin: 1px 0;  /* ✅ Era 3px, ahora 1px - más compacto */
+                    font-size: 11px !important; 
+                    margin: 1px 0;  
                 }
                 .info-grid td {
-                    padding: 1px 2px;  /* ✅ Era 2px 4px, ahora más compacto */
+                    padding: 1px 2px;  
                     vertical-align: top;
                     line-height: 1.2;
-                    text-align: left !important;  /* ✅ NUEVO: Todo alineado a la izquierda */
+                    text-align: left !important;  
                 }
                 .label {
                     font-weight: bold;
-                    font-size: 11px !important;  /* ✅ Era 9px, ahora 11px */
+                    font-size: 11px !important; 
                 }
                 .two-column {
                     width: 100%;
                     border-collapse: collapse;
-                    margin: 8px 0;  /* ✅ Más espacio */
+                    margin: 8px 0;  
                     page-break-inside: avoid;
                 }
                 .two-column td {
                     width: 50%;
                     vertical-align: top;
-                    padding: 0 8px;  /* ✅ Era 5px, ahora 8px */
+                    padding: 0 8px; 
                 }
-                /* ✅ ACTUALIZADO: Header más grande y completamente borderless */
                 .header-table {
                     width: 100% !important;
                     border-collapse: separate !important;
                     border-spacing: 0 !important;
                     margin: 0 !important;
-                    padding: 15px 0 !important;  /* ✅ NUEVO: Más padding vertical */
+                    padding: 30px 0 !important;  
                     border: none !important;
                     table-layout: fixed;
+                    min-height: 150px !important;  
                 }
                 .header-table td {
                     border: none !important;
-                    padding: 15px 10px !important;  /* ✅ NUEVO: Más padding */
+                    padding: 25px 15px !important; 
                     vertical-align: middle;
+                    height: 150px !important;  
                 }
-                /* ✅ NUEVO: Estilos específicos para el header */
                 .header-logo {
                     width: 20%;
                     text-align: left;
@@ -145,24 +143,24 @@
 
             <!-- HEADER GLOBAL (FUERA DEL LOOP) -->
             <div class="header">
-                <!-- ✅ ACTUALIZADO: Header más grande y sin bordes -->
-                <table class="header-table">
-                    <tr>
+                <!-- ✅ CORREGIDO: Header con altura fija más grande -->
+                <table class="header-table" style="height: 180px;">  <!-- ✅ NUEVO: Altura fija -->
+                    <tr style="height: 150px;">  <!-- ✅ NUEVO: Altura fija del row -->
                         <td class="header-logo">
                             <img t-if="company.logo"
                                 t-att-src="image_data_uri(company.logo)"
-                                style="max-height: 120px; width: auto;"/>  <!-- ✅ Era 100px, ahora 120px -->
+                                style="max-height: 140px; width: auto;"/>  <!-- ✅ Era 120px, ahora 140px -->
                         </td>
                         <td class="header-title">
-                            <!-- ✅ ACTUALIZADO: Título más grande -->
-                            <div style="background-color: #f0f0f0; padding: 15px 20px; margin: 0; width: 100%; box-sizing: border-box;">
-                                <strong style="font-size: 18px; font-family: Arial, sans-serif;">  <!-- ✅ Era 14px, ahora 18px -->
+                            <!-- ✅ ACTUALIZADO: Título con más padding y tamaño -->
+                            <div style="background-color: #f0f0f0; padding: 25px 30px; margin: 0; width: 100%; box-sizing: border-box; min-height: 80px; display: flex; align-items: center; justify-content: center;">
+                                <strong style="font-size: 22px; font-family: Arial, sans-serif;">  <!-- ✅ Era 18px, ahora 22px -->
                                     INFORME DE ENSAYO
                                 </strong>
                             </div>
                         </td>
                         <td class="header-ilac">
-                            <div style="border: 1px solid #000; padding: 8px; min-height: 60px; display: flex; align-items: center; justify-content: center; font-size: 11px; width: 100%; box-sizing: border-box;">  <!-- ✅ Era 40px altura, ahora 60px -->
+                            <div style="border: 1px solid #000; padding: 15px; min-height: 80px; display: flex; align-items: center; justify-content: center; font-size: 12px; width: 100%; box-sizing: border-box;">  <!-- ✅ Era 60px altura y 11px font, ahora 80px y 12px -->
                                 [ILAC LOGOS]
                             </div>
                         </td>
