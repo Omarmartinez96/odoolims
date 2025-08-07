@@ -119,14 +119,7 @@
                     vertical-align: top;
                     padding: 0 8px; 
                 }
-                .main-content {
-                    padding-left: 0px !important;
-                    margin-left: 0px !important;
-                    padding-right: 0px !important;
-                    margin-right: 0px !important;
-                }
-
-                .page-content {
+                body, .o_report_layout {
                     padding-left: 0px !important;
                     margin-left: 0px !important;
                 }
