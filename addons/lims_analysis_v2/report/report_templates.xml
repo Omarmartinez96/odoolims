@@ -104,7 +104,9 @@
                 .label {
                     font-weight: bold;
                     font-size: 11px !important; 
-                    text align: right !important;
+                }
+                .info-grid .label {
+                    text-align: right !important;
                 }
                 .two-column {
                     width: 100%;
