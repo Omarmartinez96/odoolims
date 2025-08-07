@@ -94,7 +94,6 @@
                     border-collapse: collapse;
                     font-size: 11px !important; 
                     margin: 1px 0;  
-                    table-layout: fixed !important;
                 }
                 .info-grid td {
                     padding: 1px 2px;  
@@ -120,6 +119,10 @@
                     vertical-align: top;
                     padding: 0 8px; 
                 }
+                .main-content {
+                    width: 100% !important;
+                    box-sizing: border-box !important;
+                }         
             </style>
 
             <!-- HEADER GLOBAL (FUERA DEL LOOP) -->
