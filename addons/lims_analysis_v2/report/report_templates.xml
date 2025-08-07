@@ -118,11 +118,7 @@
                     width: 50%;
                     vertical-align: top;
                     padding: 0 8px; 
-                }
-                .main-content {
-                    width: 100% !important;
-                    box-sizing: border-box !important;
-                }         
+                }      
             </style>
 
             <!-- HEADER GLOBAL (FUERA DEL LOOP) -->
@@ -204,7 +200,7 @@
 
                 <!-- CONTENIDO PRINCIPAL -->
                 <div t-att-class="'page-content' + (' sample-break' if analysis_index > 0 else '')">
-                    <div class="main-content">
+                    <div class="main-content" style="width: 100%; margin: 0; padding: 0;">
 
                         <!-- Badge preliminar si aplica -->
                         <t t-if="status == 'preliminary'">
