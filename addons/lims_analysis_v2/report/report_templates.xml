@@ -119,10 +119,6 @@
                     vertical-align: top;
                     padding: 0 8px; 
                 }
-                body, .o_report_layout {
-                    padding-left: 0px !important;
-                    margin-left: 0px !important;
-                }
             </style>
 
             <!-- HEADER GLOBAL (FUERA DEL LOOP) -->
