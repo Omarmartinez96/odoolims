@@ -96,7 +96,7 @@
                     margin: 1px 0;  
                 }
                 .info-grid td {
-                    padding: 1px 2px;  
+                    padding: 1px 0px;  
                     vertical-align: top;
                     line-height: 1.2;
                     text-align: left !important;  
