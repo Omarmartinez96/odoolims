@@ -78,7 +78,6 @@ class LimsExecutedQualityControlV2(models.Model):
 
     executed_by_name = fields.Char(
         string='Ejecutado por',
-        default=lambda self: self.env.user.name,
         help='Nombre de la persona que ejecutó el control de calidad'
     )
         
