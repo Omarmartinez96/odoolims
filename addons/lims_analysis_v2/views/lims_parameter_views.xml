@@ -631,7 +631,7 @@
                                                 decoration-muted="control_status == 'not_applicable'"/>
                                             
                                             <field name="execution_date" string="Fecha" width="8%"/>
-                                            <field name="executed_by" string="Realizado Por" width="12%"/>
+                                            <field name="executed_by_name" string="Realizado Por" width="12%"/>
                                             
                                             <!-- Botones rápidos optimizados -->
                                             <button name="action_mark_passed" type="object" 
@@ -808,7 +808,7 @@
                                             <field name="equipment_id" string="Equipo"/>
                                             <field name="usage" string="Uso" placeholder="Especificar uso del equipo"/>
                                             <field name="usage_date" string="Fecha"/>
-                                            <field name="used_by" string="Utilizado por"/>
+                                            <field name="used_by_name" string="Utilizado por"/>
                                         </list>
                                     </field>
                                 </group>

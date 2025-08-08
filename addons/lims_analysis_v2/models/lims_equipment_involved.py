@@ -54,11 +54,21 @@ class LimsEquipmentInvolvedV2(models.Model):
     # ===============================================
     # === RESPONSABLE ===
     # ===============================================
+
+    # =============================================== CAMPO DEPRECADO ===============================================
     used_by = fields.Many2one(
         'res.users',
-        string='Utilizado por',
-        help='Usuario que utilizó el equipo'
+        string='CAMPO DEPRECADO',
+        help='CAMPO DEPRECADO'
     )
+    # =============================================== CAMPO DEPRECADO ===============================================
+
+    used_by_name = fields.Char(
+        string='Utilizado por',
+        default=lambda self: self.env.user.name,
+        help='Nombre de la persona que utilizó el equipo'
+    )
+
     
     # ===============================================
     # === OBSERVACIONES ===
@@ -99,4 +109,4 @@ class LimsEquipmentInvolvedV2(models.Model):
         """Establecer valores por defecto cuando se selecciona un equipo"""
         if self.equipment_id:
             self.usage_date = fields.Date.context_today(self)
-            self.used_by = self.env.user
+            self.used_by_name = self.env.user.name

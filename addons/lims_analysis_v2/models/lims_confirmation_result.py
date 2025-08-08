@@ -81,13 +81,23 @@ class LimsConfirmationResultV2(models.Model):
     # ===============================================
     # === RESPONSABLE ===
     # ===============================================
+
+    # =============================================== CAMPO DEPRECADO ===============================================
     recorded_by = fields.Many2one(
         'res.users',
-        string='Registrado por',
+        string='Registrado por (DEPRECADO)',
         default=lambda self: self.env.user,
-        help='Usuario que registró este resultado'
+        help='CAMPO DEPRECADO - USAR RECORDED_BY_NAME'
     )
-    
+    # =============================================== CAMPO DEPRECADO ===============================================
+
+
+    recorded_by_name = fields.Char(
+        string='Registrado por',
+        default=lambda self: self.env.user.name,
+        help='Nombre de la persona que registró este resultado'
+    )
+
     # ===============================================
     # === MÉTODOS ONCHANGE ===
     # ===============================================

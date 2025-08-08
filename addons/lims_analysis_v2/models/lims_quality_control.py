@@ -67,12 +67,21 @@ class LimsExecutedQualityControlV2(models.Model):
     # ===============================================
     # === RESPONSABLE ===
     # ===============================================
+
+    # =============================================== CAMPO DEPRECADO ===============================================
     executed_by = fields.Many2one(
         'res.users',
-        string='Ejecutado por',
-        help='Usuario que ejecutó el control de calidad'
+        string='CAMPO DEPRECADO',
+        help='CAMPO DEPRECADO'
     )
-    
+    # =============================================== CAMPO DEPRECADO ===============================================
+
+    executed_by_name = fields.Char(
+        string='Ejecutado por',
+        default=lambda self: self.env.user.name,
+        help='Nombre de la persona que ejecutó el control de calidad'
+    )
+        
     # ===============================================
     # === DETALLES TÉCNICOS ===
     # ===============================================
@@ -165,7 +174,7 @@ class LimsExecutedQualityControlV2(models.Model):
             'control_status': 'in_progress',
             'execution_date': fields.Date.context_today(self),
             'execution_time': fields.Datetime.now().strftime('%H:%M'),
-            'executed_by': self.env.user.id
+            'executed_by_name': self.env.user.name
         })
         
         return {
@@ -184,7 +193,7 @@ class LimsExecutedQualityControlV2(models.Model):
             'control_status': 'passed',
             'execution_date': fields.Date.context_today(self),
             'execution_time': fields.Datetime.now().strftime('%H:%M'),
-            'executed_by': self.env.user.id
+            'executed_by_name': self.env.user.name
         })
         
         return {
@@ -203,7 +212,7 @@ class LimsExecutedQualityControlV2(models.Model):
             'control_status': 'failed',
             'execution_date': fields.Date.context_today(self),
             'execution_time': fields.Datetime.now().strftime('%H:%M'),
-            'executed_by': self.env.user.id
+            'executed_by_name': self.env.user.name
         })
         
         return {
@@ -223,7 +232,7 @@ class LimsExecutedQualityControlV2(models.Model):
             'actual_result': False,
             'execution_date': False,
             'execution_time': False,
-            'executed_by': False
+            'executed_by_name': False
         })
         
         return {
@@ -245,7 +254,7 @@ class LimsExecutedQualityControlV2(models.Model):
         if self.control_status in ['passed', 'failed'] and not self.execution_date:
             self.execution_date = fields.Date.context_today(self)
             self.execution_time = fields.Datetime.now().strftime('%H:%M')
-            self.executed_by = self.env.user
+            self.executed_by_name = self.env.user.name
     
     @api.onchange('qc_type_id')
     def _onchange_qc_type_id(self):
