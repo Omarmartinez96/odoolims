@@ -26,7 +26,7 @@
         'report/report_sample_reception.xml',
         'report/report_mass_reception_action.xml',
         'report/report_mass_reception.xml',
-        # Tercero: Vistas que referencian a los reportes
+        # Tercero: Vistas que referencian a los reportes.
         'views/lims_custody_chain_reception_views.xml',
     ],
     'installable': True,
