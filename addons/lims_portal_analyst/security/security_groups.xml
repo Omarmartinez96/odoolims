@@ -50,5 +50,19 @@
             <field name="perm_unlink" eval="False"/>
         </record>
 
+        <!-- ========== REGLA DE ACCESO PARA CONTACTOS/CLIENTES ========== -->
+        
+        <!-- Los analistas pueden ver contactos que son clientes del laboratorio -->
+        <record id="rule_partner_analyst_customers" model="ir.rule">
+            <field name="name">Portal Analyst: Laboratory Customers Read-Only</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('group_portal_analyst'))]"/>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
     </data>
 </odoo>
