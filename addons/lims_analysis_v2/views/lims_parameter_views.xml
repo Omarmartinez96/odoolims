@@ -633,16 +633,6 @@
                                             <field name="execution_date" string="Fecha" width="8%"/>
                                             <field name="executed_by_name" string="Realizado Por" width="12%"/>
                                             
-                                            <!-- Botones rápidos optimizados -->
-                                            <button name="action_mark_passed" type="object" 
-                                                    string="✅" class="btn-success btn-sm" 
-                                                    title="Marcar como exitoso" width="4%"/>
-                                            <button name="action_mark_failed" type="object" 
-                                                    string="❌" class="btn-danger btn-sm" 
-                                                    title="Marcar como fallido" width="4%"/>
-                                            <button name="action_reset_control" type="object" 
-                                                    string="🔄" class="btn-secondary btn-sm" 
-                                                    title="Restablecer" width="4%"/>
                                         </list>
                                     </field>
                                 </div>
