@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- ========================================================= -->
+    <!-- TEMPLATE BASE BÁSICO PARA PORTAL LIMS -->
+    <!-- ========================================================= -->
+    <template id="portal_layout_lims_basic" name="Portal LIMS Layout Básico" inherit_id="portal.portal_layout">
+        <xpath expr="//div[@class='navbar-nav']" position="inside">
+            <a href="/my/lims" class="nav-link">
+                <i class="fa fa-flask"></i> Laboratorio
+            </a>
+        </xpath>
+    </template>
+
+    <!-- ========================================================= -->
+    <!-- DASHBOARD BÁSICO -->
+    <!-- ========================================================= -->
+    <template id="portal_dashboard_basic" name="LIMS Portal Dashboard Básico">
+        <t t-call="portal.portal_layout">
+            <t t-set="title">Laboratorio - Dashboard</t>
+            
+            <div class="container mt-3">
+                <!-- Header simple -->
+                <div class="row">
+                    <div class="col-12">
+                        <h2>
+                            <i class="fa fa-flask text-primary"></i> 
+                            Dashboard LIMS
+                        </h2>
+                        <p class="text-muted">
+                            Bienvenido, <strong t-esc="user_name"/>
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Estadísticas básicas -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 class="text-primary" t-esc="total_assigned"/>
+                                <p class="text-muted mb-0">Total Asignados</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 class="text-warning" t-esc="pending_count"/>
+                                <p class="text-muted mb-0">Pendientes</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 class="text-info" t-esc="in_progress_count"/>
+                                <p class="text-muted mb-0">En Proceso</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-3">
+                        <div class="card text-center">
+                            <div class="card-body">
+                                <h3 class="text-success" t-esc="completed_count"/>
+                                <p class="text-muted mb-0">Completados</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Parámetros recientes -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-header d-flex justify-content-between">
+                                <h5>Parámetros Recientes</h5>
+                                <a href="/my/lims/pending" class="btn btn-primary btn-sm">
+                                    Ver Todos
+                                </a>
+                            </div>
+                            <div class="card-body">
+                                <t t-if="recent_parameters">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Parámetro</th>
+                                                <th>Estado</th>
+                                                <th>Resultado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="recent_parameters" t-as="param">
+                                                <tr>
+                                                    <td>
+                                                        <strong t-esc="param.name"/>
+                                                    </td>
+                                                    <td>
+                                                        <span t-esc="param.portal_status"/>
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="param.result_value">
+                                                            <span class="text-success" t-esc="param.result_value"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Sin resultado</span>
+                                                        </t>
+                                                    </td>
+                                                    <td>
+                                                        <a t-att-href="'/my/lims/parameter/' + str(param.id)" 
+                                                           class="btn btn-sm btn-outline-primary">
+                                                            Editar
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </t>
+                                <t t-else="">
+                                    <p class="text-center text-muted">
+                                        No tienes parámetros asignados.
+                                    </p>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ========================================================= -->
+    <!-- LISTA BÁSICA DE PARÁMETROS -->
+    <!-- ========================================================= -->
+    <template id="portal_parameter_list_basic" name="Lista Básica de Parámetros Portal">
+        <t t-call="portal.portal_layout">
+            <t t-set="title">Laboratorio - Parámetros</t>
+            
+            <div class="container mt-3">
+                <!-- Header -->
+                <div class="row">
+                    <div class="col-12">
+                        <h2>
+                            <i class="fa fa-list text-primary"></i> 
+                            Mis Parámetros
+                        </h2>
+                        <p class="text-muted">
+                            <span t-esc="total_count"/> parámetros encontrados
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Filtros básicos -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="btn-group" role="group">
+                            <a href="/my/lims/pending?status=assigned" 
+                               t-att-class="'btn ' + ('btn-primary' if current_status == 'assigned' else 'btn-outline-primary')">
+                                Asignados
+                            </a>
+                            <a href="/my/lims/pending?status=in_progress" 
+                               t-att-class="'btn ' + ('btn-primary' if current_status == 'in_progress' else 'btn-outline-primary')">
+                                En Proceso
+                            </a>
+                            <a href="/my/lims/pending?status=completed" 
+                               t-att-class="'btn ' + ('btn-primary' if current_status == 'completed' else 'btn-outline-primary')">
+                                Completados
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Lista -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body">
+                                <t t-if="parameters">
+                                    <table class="table table-hover">
+                                        <thead>
+                                            <tr>
+                                                <th>Parámetro</th>
+                                                <th>Muestra</th>
+                                                <th>Estado</th>
+                                                <th>Prioridad</th>
+                                                <th>Resultado</th>
+                                                <th>Acciones</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <t t-foreach="parameters" t-as="param">
+                                                <tr>
+                                                    <td>
+                                                        <strong t-esc="param.name"/>
+                                                    </td>
+                                                    <td>
+                                                        <span t-esc="param.analysis_id.sample_code"/>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge badge-secondary" t-esc="param.portal_status"/>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge badge-info" t-esc="param.portal_priority"/>
+                                                    </td>
+                                                    <td>
+                                                        <t t-if="param.result_value">
+                                                            <span class="text-success" t-esc="param.result_value"/>
+                                                        </t>
+                                                        <t t-else="">
+                                                            <span class="text-muted">Pendiente</span>
+                                                        </t>
+                                                    </td>
+                                                    <td>
+                                                        <a t-att-href="'/my/lims/parameter/' + str(param.id)" 
+                                                           class="btn btn-sm btn-outline-primary">
+                                                            Editar
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            </t>
+                                        </tbody>
+                                    </table>
+                                </t>
+                                <t t-else="">
+                                    <div class="text-center py-4">
+                                        <p class="text-muted">No se encontraron parámetros.</p>
+                                        <a href="/my/lims" class="btn btn-primary">
+                                            Volver al Dashboard
+                                        </a>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- ========================================================= -->
+    <!-- FORMULARIO BÁSICO DE PARÁMETRO -->
+    <!-- ========================================================= -->
+    <template id="portal_parameter_form_basic" name="Formulario Básico de Parámetro Portal">
+        <t t-call="portal.portal_layout">
+            <t t-set="title" t-value="'Laboratorio - ' + parameter.name"/>
+            
+            <div class="container mt-3">
+                <!-- Header -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="d-flex justify-content-between align-items-center mb-4">
+                            <div>
+                                <h2>
+                                    <i class="fa fa-flask text-primary"></i>
+                                    <span t-esc="parameter.name"/>
+                                </h2>
+                                <p class="text-muted">
+                                    Muestra: <strong t-esc="analysis.sample_code"/>
+                                </p>
+                            </div>
+                            
+                            <div>
+                                <a href="/my/lims/pending" class="btn btn-outline-secondary">
+                                    <i class="fa fa-arrow-left"></i> Volver
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario -->
+                <form t-att-action="'/my/lims/parameter/' + str(parameter.id) + '/save'" method="post">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    
+                    <div class="row">
+                        <!-- Panel principal -->
+                        <div class="col-md-8">
+                            <!-- Información básica -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5>Información del Parámetro</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <p><strong>Nombre:</strong> <span t-esc="parameter.name"/></p>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <p><strong>Estado:</strong> <span t-esc="parameter.portal_status"/></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Captura de resultado -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h5>Resultado</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="result_value">Resultado Principal *</label>
+                                        <input type="text" 
+                                               class="form-control" 
+                                               id="result_value" 
+                                               name="result_value"
+                                               t-att-value="parameter.result_value or ''"
+                                               placeholder="Ingresa el resultado..."/>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="portal_priority">Prioridad</label>
+                                        <select class="form-control" id="portal_priority" name="portal_priority">
+                                            <option value="low" t-att-selected="parameter.portal_priority == 'low'">Baja</option>
+                                            <option value="normal" t-att-selected="parameter.portal_priority == 'normal'">Normal</option>
+                                            <option value="high" t-att-selected="parameter.portal_priority == 'high'">Alta</option>
+                                            <option value="urgent" t-att-selected="parameter.portal_priority == 'urgent'">Urgente</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="portal_notes">Notas</label>
+                                        <textarea class="form-control" 
+                                                  id="portal_notes" 
+                                                  name="portal_notes" 
+                                                  rows="3"
+                                                  placeholder="Observaciones..."
+                                                  t-esc="parameter.portal_notes or ''"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Panel lateral -->
+                        <div class="col-md-4">
+                            <!-- Información de muestra -->
+                            <div class="card mb-4">
+                                <div class="card-header">
+                                    <h6>Información de Muestra</h6>
+                                </div>
+                                <div class="card-body">
+                                    <p><strong>Código:</strong> <span t-esc="analysis.sample_code"/></p>
+                                    <t t-if="analysis.customer_id">
+                                        <p><strong>Cliente:</strong> <span t-esc="analysis.customer_id.name"/></p>
+                                    </t>
+                                </div>
+                            </div>
+
+                            <!-- Acciones -->
+                            <div class="card">
+                                <div class="card-header">
+                                    <h6>Acciones</h6>
+                                </div>
+                                <div class="card-body">
+                                    <button type="submit" name="action" value="save" class="btn btn-primary btn-block">
+                                        Guardar
+                                    </button>
+                                    
+                                    <button type="submit" name="action" value="complete" class="btn btn-success btn-block"
+                                            onclick="return confirm('¿Marcar como completado?')">
+                                        Guardar y Completar
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <!-- ========================================================= -->
+    <!-- TEMPLATE DE ERROR BÁSICO -->
+    <!-- ========================================================= -->
+    <template id="portal_error_basic" name="Error Portal Básico">
+        <t t-call="portal.portal_layout">
+            <t t-set="title">Error - Laboratorio</t>
+            
+            <div class="container mt-5">
+                <div class="row justify-content-center">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-body text-center py-4">
+                                <i class="fa fa-exclamation-triangle fa-3x text-warning mb-3"></i>
+                                <h4>Error</h4>
+                                <p t-esc="error_message"/>
+                                <a href="/my/lims" class="btn btn-primary">
+                                    Volver al Dashboard
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

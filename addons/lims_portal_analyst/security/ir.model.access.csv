@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_lims_analysis_portal_analyst,lims.analysis.v2 portal analyst,lims_analysis_v2.model_lims_analysis_v2,group_portal_analyst,1,0,0,0
+access_lims_parameter_portal_analyst,lims.parameter.analysis.v2 portal analyst,lims_analysis_v2.model_lims_parameter_analysis_v2,group_portal_analyst,1,1,0,0
+access_res_users_portal_analyst,res.users portal analyst,base.model_res_users,group_portal_analyst,1,0,0,0
+access_res_partner_portal_analyst,res.partner portal analyst,base.model_res_partner,group_portal_analyst,1,0,0,0
