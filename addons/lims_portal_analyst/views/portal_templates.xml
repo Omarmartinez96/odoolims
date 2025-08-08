@@ -2,15 +2,10 @@
 <odoo>
     
     <!-- ========================================================= -->
-    <!-- TEMPLATE BASE BÁSICO PARA PORTAL LIMS -->
+    <!-- TEMPLATE BASE BÁSICO PARA PORTAL LIMS - SIMPLIFICADO FASE 1 -->
     <!-- ========================================================= -->
-    <template id="portal_layout_lims_basic" name="Portal LIMS Layout Básico" inherit_id="portal.portal_layout">
-        <xpath expr="//div[@class='navbar-nav']" position="inside">
-            <a href="/my/lims" class="nav-link">
-                <i class="fa fa-flask"></i> Laboratorio
-            </a>
-        </xpath>
-    </template>
+    <!-- Por ahora sin modificar el layout, acceso directo por URL -->
+    <!-- En FASE 2 agregaremos navegación al menú -->
 
     <!-- ========================================================= -->
     <!-- DASHBOARD BÁSICO -->
