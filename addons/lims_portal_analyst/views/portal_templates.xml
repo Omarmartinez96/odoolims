@@ -773,4 +773,313 @@
         </t>
     </template>
 
+    <!-- ========================================================= -->
+    <!-- LISTA AVANZADA ESTILO BACKEND -->
+    <!-- ========================================================= -->
+    <template id="portal_parameters_advanced_list" name="Lista Avanzada de Parámetros">
+        <t t-call="portal.portal_layout">
+            <t t-set="title">Laboratorio - Parámetros</t>
+            
+            <!-- CSS específico para simular backend -->
+            <style>
+                .odoo-like-header {
+                    background: #f8f9fa;
+                    border-bottom: 1px solid #dee2e6;
+                    padding: 12px 20px;
+                    margin: -15px -15px 20px -15px;
+                }
+                .odoo-like-table {
+                    background: white;
+                    border-radius: 8px;
+                    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+                }
+                .odoo-like-table th {
+                    background: #f8f9fa;
+                    border-bottom: 2px solid #dee2e6;
+                    font-weight: 600;
+                    color: #495057;
+                    padding: 12px 8px;
+                }
+                .odoo-like-table td {
+                    padding: 10px 8px;
+                    border-bottom: 1px solid #f1f1f1;
+                    vertical-align: middle;
+                }
+                .odoo-like-table tr:hover {
+                    background: #f8f9fa;
+                }
+                .badge-priority-urgent { background: #dc3545; }
+                .badge-priority-high { background: #fd7e14; }
+                .badge-priority-normal { background: #6c757d; }
+                .badge-priority-low { background: #28a745; }
+                .badge-status-sin_procesar { background: #6c757d; }
+                .badge-status-en_proceso { background: #17a2b8; }
+                .badge-status-finalizado { background: #28a745; }
+                .pagination-info {
+                    color: #6c757d;
+                    font-size: 0.9rem;
+                }
+            </style>
+            
+            <div class="container-fluid mt-3">
+                
+                <!-- Header estilo Odoo -->
+                <div class="odoo-like-header">
+                    <div class="row align-items-center">
+                        <div class="col-md-6">
+                            <h3 class="mb-0">
+                                <i class="fa fa-flask text-primary"></i> 
+                                Parámetros de Análisis
+                            </h3>
+                            <small class="text-muted">
+                                <span t-esc="total_count"/> registros encontrados
+                            </small>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <a href="/my/lims" class="btn btn-outline-secondary">
+                                <i class="fa fa-arrow-left"></i> Dashboard
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Filtros y búsqueda estilo backend -->
+                <div class="row mb-3">
+                    <div class="col-12">
+                        <div class="card">
+                            <div class="card-body py-2">
+                                <form method="get" action="/my/lims/available" class="row align-items-end">
+                                    
+                                    <!-- Búsqueda -->
+                                    <div class="col-md-3">
+                                        <label class="form-label">🔍 Buscar</label>
+                                        <input type="text" name="search" class="form-control form-control-sm" 
+                                            t-att-value="search" 
+                                            placeholder="Nombre, muestra, cliente..."/>
+                                    </div>
+                                    
+                                    <!-- Filtro principal -->
+                                    <div class="col-md-2">
+                                        <label class="form-label">📋 Estado</label>
+                                        <select name="filterby" class="form-control form-control-sm">
+                                            <option value="all" t-att-selected="filterby == 'all'">Todos</option>
+                                            <option value="available" t-att-selected="filterby == 'available'">📋 Disponibles</option>
+                                            <option value="my_assigned" t-att-selected="filterby == 'my_assigned'">👤 Mis Asignados</option>
+                                            <option value="urgent" t-att-selected="filterby == 'urgent'">🚨 Urgentes</option>
+                                            <option value="completed" t-att-selected="filterby == 'completed'">✅ Completados</option>
+                                            <option value="microbiological" t-att-selected="filterby == 'microbiological'">🦠 Microbiológicos</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Ordenamiento -->
+                                    <div class="col-md-2">
+                                        <label class="form-label">📊 Ordenar por</label>
+                                        <select name="sortby" class="form-control form-control-sm">
+                                            <option value="date" t-att-selected="sortby == 'date'">Fecha</option>
+                                            <option value="name" t-att-selected="sortby == 'name'">Nombre</option>
+                                            <option value="priority" t-att-selected="sortby == 'priority'">Prioridad</option>
+                                            <option value="customer" t-att-selected="sortby == 'customer'">Cliente</option>
+                                            <option value="status" t-att-selected="sortby == 'status'">Estado</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- Botones -->
+                                    <div class="col-md-2">
+                                        <button type="submit" class="btn btn-primary btn-sm">
+                                            <i class="fa fa-search"></i> Filtrar
+                                        </button>
+                                        <a href="/my/lims/available" class="btn btn-outline-secondary btn-sm">
+                                            <i class="fa fa-times"></i>
+                                        </a>
+                                    </div>
+                                    
+                                    <!-- Info de paginación -->
+                                    <div class="col-md-3 text-right pagination-info">
+                                        Página <strong t-esc="page"/> de <strong t-esc="total_pages"/>
+                                        <br/>
+                                        <small>(<span t-esc="(page-1) * per_page + 1"/> - <span t-esc="min(page * per_page, total_count)"/> de <span t-esc="total_count"/>)</small>
+                                    </div>
+                                    
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tabla principal estilo Odoo -->
+                <div class="row">
+                    <div class="col-12">
+                        <div class="odoo-like-table">
+                            <t t-if="parameters">
+                                <table class="table table-sm mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th style="width: 3%;">
+                                                <input type="checkbox" id="select-all" onclick="toggleAllCheckboxes()"/>
+                                            </th>
+                                            <th style="width: 20%;">Parámetro</th>
+                                            <th style="width: 12%;">Muestra</th>
+                                            <th style="width: 15%;">Cliente</th>
+                                            <th style="width: 8%;">Categoría</th>
+                                            <th style="width: 10%;">Estado</th>
+                                            <th style="width: 8%;">Prioridad</th>
+                                            <th style="width: 12%;">Asignado a</th>
+                                            <th style="width: 12%;">Acciones</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="parameters" t-as="param">
+                                            <tr t-att-data-id="param.id">
+                                                <td>
+                                                    <input type="checkbox" t-att-value="param.id" class="param-checkbox"/>
+                                                </td>
+                                                <td>
+                                                    <div>
+                                                        <strong t-esc="param.name"/>
+                                                        <t t-if="param.microorganism">
+                                                            <br/>
+                                                            <small class="text-muted" t-esc="param.microorganism"/>
+                                                        </t>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-info" t-esc="param.analysis_id.sample_code"/>
+                                                </td>
+                                                <td>
+                                                    <t t-if="param.analysis_id.customer_id">
+                                                        <span t-esc="param.analysis_id.customer_id.name"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="text-muted">Sin cliente</span>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <span class="badge badge-secondary" t-esc="param.category"/>
+                                                </td>
+                                                <td>
+                                                    <span t-att-class="'badge badge-status-' + param.analysis_status_checkbox" 
+                                                        t-esc="param.analysis_status_checkbox"/>
+                                                </td>
+                                                <td>
+                                                    <span t-att-class="'badge badge-priority-' + param.portal_priority" 
+                                                        t-esc="param.portal_priority"/>
+                                                </td>
+                                                <td>
+                                                    <t t-if="param.analyst_assigned_id">
+                                                        <small t-esc="param.analyst_assigned_id.name"/>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="text-success">📋 Disponible</span>
+                                                    </t>
+                                                </td>
+                                                <td>
+                                                    <div class="btn-group btn-group-sm">
+                                                        
+                                                        <!-- Botón VER/EDITAR -->
+                                                        <a t-att-href="'/my/lims/parameter/' + str(param.id)" 
+                                                        class="btn btn-outline-primary btn-sm"
+                                                        title="Ver/Editar">
+                                                            <i class="fa fa-edit"></i>
+                                                        </a>
+                                                        
+                                                        <!-- Botón TOMAR -->
+                                                        <t t-if="not param.analyst_assigned_id">
+                                                            <form t-att-action="'/my/lims/parameter/' + str(param.id) + '/take'" 
+                                                                method="post" style="display: inline;">
+                                                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                                                <button type="submit" class="btn btn-success btn-sm" title="Tomar parámetro">
+                                                                    <i class="fa fa-hand-paper-o"></i>
+                                                                </button>
+                                                            </form>
+                                                        </t>
+                                                        
+                                                        <!-- Botón LIBERAR -->
+                                                        <t t-elif="param.analyst_assigned_id.id == request.env.user.id">
+                                                            <form t-att-action="'/my/lims/parameter/' + str(param.id) + '/release'" 
+                                                                method="post" style="display: inline;">
+                                                                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                                                <button type="submit" class="btn btn-warning btn-sm" 
+                                                                        title="Liberar parámetro"
+                                                                        onclick="return confirm('¿Liberar este parámetro?')">
+                                                                    <i class="fa fa-hand-peace-o"></i>
+                                                                </button>
+                                                            </form>
+                                                        </t>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                                
+                                <!-- Paginación estilo Odoo -->
+                                <div class="card-footer d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <small class="text-muted">
+                                            Mostrando <span t-esc="(page-1) * per_page + 1"/> a <span t-esc="min(page * per_page, total_count)"/> 
+                                            de <span t-esc="total_count"/> registros
+                                        </small>
+                                    </div>
+                                    
+                                    <nav>
+                                        <ul class="pagination pagination-sm mb-0">
+                                            <li t-att-class="'page-item' + (' disabled' if not has_previous else '')">
+                                                <a class="page-link" 
+                                                t-att-href="'/my/lims/available?page=' + str(previous_page) + '&amp;sortby=' + sortby + '&amp;search=' + search + '&amp;filterby=' + filterby">
+                                                    Anterior
+                                                </a>
+                                            </li>
+                                            
+                                            <t t-foreach="range(max(1, page-2), min(total_pages+1, page+3))" t-as="p">
+                                                <li t-att-class="'page-item' + (' active' if p == page else '')">
+                                                    <a class="page-link" 
+                                                    t-att-href="'/my/lims/available?page=' + str(p) + '&amp;sortby=' + sortby + '&amp;search=' + search + '&amp;filterby=' + filterby"
+                                                    t-esc="p"/>
+                                                </li>
+                                            </t>
+                                            
+                                            <li t-att-class="'page-item' + (' disabled' if not has_next else '')">
+                                                <a class="page-link" 
+                                                t-att-href="'/my/lims/available?page=' + str(next_page) + '&amp;sortby=' + sortby + '&amp;search=' + search + '&amp;filterby=' + filterby">
+                                                    Siguiente
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </nav>
+                                </div>
+                                
+                            </t>
+                            <t t-else="">
+                                <div class="text-center py-5">
+                                    <i class="fa fa-search fa-3x text-muted mb-3"></i>
+                                    <h5>No se encontraron parámetros</h5>
+                                    <p class="text-muted">Intenta cambiar los filtros de búsqueda</p>
+                                    <a href="/my/lims/available" class="btn btn-primary">
+                                        <i class="fa fa-refresh"></i> Limpiar Filtros
+                                    </a>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- JavaScript para funcionalidad -->
+            <script>
+                function toggleAllCheckboxes() {
+                    const selectAll = document.getElementById('select-all');
+                    const checkboxes = document.querySelectorAll('.param-checkbox');
+                    checkboxes.forEach(cb => cb.checked = selectAll.checked);
+                }
+                
+                // Auto-submit form cuando cambia el filtro
+                document.querySelectorAll('select[name="filterby"], select[name="sortby"]').forEach(select => {
+                    select.addEventListener('change', function() {
+                        this.form.submit();
+                    });
+                });
+            </script>
+        </t>
+    </template>
+
 </odoo>

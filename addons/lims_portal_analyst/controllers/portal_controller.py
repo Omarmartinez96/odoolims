@@ -259,40 +259,83 @@ class LimsPortalBasicController(CustomerPortal):
     # === NUEVA RUTA: PARÁMETROS DISPONIBLES ===
     # ===============================================
     @http.route('/my/lims/available', type='http', auth='user', website=True)
-    def lims_available_parameters(self, **kwargs):
-        """Lista de parámetros disponibles (sin asignar)"""
+    def lims_available_parameters(self, page=1, sortby='date', search='', filterby='all', **kwargs):
+        """Lista mejorada estilo backend con paginación y ordenamiento"""
         access_check = self._check_portal_access()
         if access_check is not True:
             return access_check
         
         try:
-            # Construir filtros desde URL
-            filters = {
-                'status_filter': kwargs.get('status', 'available'),
-                'customer_id': kwargs.get('customer'),
-                'category': kwargs.get('category'),
-                'result_type': kwargs.get('result_type'),
-                'search': kwargs.get('search', '').strip()
+            # Configuración de paginación
+            page = int(page)
+            per_page = 20
+            offset = (page - 1) * per_page
+            
+            # Opciones de ordenamiento
+            sort_options = {
+                'date': 'analysis_start_date desc, id desc',
+                'name': 'name asc',
+                'priority': 'portal_priority desc, name asc',
+                'customer': 'analysis_id.customer_id, name asc',
+                'status': 'analysis_status_checkbox, name asc'
             }
+            order = sort_options.get(sortby, sort_options['date'])
             
-            # Limpiar filtros vacíos
-            filters = {k: v for k, v in filters.items() if v}
+            # Construcción de filtros
+            domain = []
             
-            parameters = self._get_analyst_parameters(filters)
+            # Filtro principal
+            if filterby == 'available':
+                domain.append(('analyst_assigned_id', '=', False))
+            elif filterby == 'my_assigned':
+                domain.append(('analyst_assigned_id', '=', request.env.user.id))
+            elif filterby == 'urgent':
+                domain.append(('portal_priority', '=', 'urgent'))
+            elif filterby == 'completed':
+                domain.append(('analysis_status_checkbox', '=', 'finalizado'))
+            elif filterby == 'microbiological':
+                domain.append(('category', '=', 'microbiological'))
             
-            # Obtener opciones para filtros
+            # Búsqueda de texto
+            if search:
+                domain.extend([
+                    '|', '|', '|', 
+                    ('name', 'ilike', search),
+                    ('microorganism', 'ilike', search),
+                    ('analysis_id.sample_code', 'ilike', search),
+                    ('analysis_id.customer_id.name', 'ilike', search)
+                ])
+            
+            # Obtener parámetros con paginación
+            Parameter = request.env['lims.parameter.analysis.v2']
+            total_count = Parameter.search_count(domain)
+            parameters = Parameter.search(domain, order=order, limit=per_page, offset=offset)
+            
+            # Calcular paginación
+            total_pages = (total_count + per_page - 1) // per_page
+            
+            # Obtener datos para filtros
             customers = request.env['res.partner'].search([('is_company', '=', True)], order='name')
             
             values = {
-                'page_name': 'lims_available',
+                'page_name': 'lims_parameters_advanced',
                 'parameters': parameters,
                 'customers': customers,
-                'current_filters': filters,
-                'total_count': len(parameters),
+                'total_count': total_count,
+                'page': page,
+                'total_pages': total_pages,
+                'per_page': per_page,
+                'sortby': sortby,
+                'search': search,
+                'filterby': filterby,
+                'has_previous': page > 1,
+                'has_next': page < total_pages,
+                'previous_page': page - 1 if page > 1 else 1,
+                'next_page': page + 1 if page < total_pages else total_pages,
             }
             
-            return request.render('lims_portal_analyst.portal_available_parameters', values)
+            return request.render('lims_portal_analyst.portal_parameters_advanced_list', values)
             
         except Exception as e:
-            _logger.error(f"Error en parámetros disponibles: {str(e)}")
-            return request.redirect('/my/lims?error=available_error')
+            _logger.error(f"Error en lista avanzada: {str(e)}")
+            return request.redirect('/my/lims?error=list_error')
