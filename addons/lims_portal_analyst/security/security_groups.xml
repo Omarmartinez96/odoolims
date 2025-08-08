@@ -12,26 +12,26 @@
 
         <!-- ========== REGLA BÁSICA DE ACCESO ========== -->
         
-        <!-- Los analistas solo pueden ver sus parámetros asignados -->
-        <record id="rule_parameter_analyst_own" model="ir.rule">
-            <field name="name">Portal Analyst: Only Own Parameters</field>
+        <!-- DESPUÉS - Los analistas pueden ver TODOS los parámetros -->
+        <record id="rule_parameter_analyst_all" model="ir.rule">
+            <field name="name">Portal Analyst: All Parameters Read Access</field>
             <field name="model_id" ref="lims_analysis_v2.model_lims_parameter_analysis_v2"/>
-            <field name="domain_force">[('analyst_assigned_id', '=', user.id)]</field>
+            <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('group_portal_analyst'))]"/>
             <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="True"/>
+            <field name="perm_write" eval="False"/>
             <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
         </record>
 
-        <!-- Los analistas pueden ver análisis relacionados (solo lectura) -->
-        <record id="rule_analysis_analyst_readonly" model="ir.rule">
-            <field name="name">Portal Analyst: Related Analysis Read-Only</field>
-            <field name="model_id" ref="lims_analysis_v2.model_lims_analysis_v2"/>
-            <field name="domain_force">[('parameter_analysis_ids.analyst_assigned_id', '=', user.id)]</field>
+        <!-- Los analistas solo pueden ESCRIBIR en sus parámetros asignados o sin asignar -->
+        <record id="rule_parameter_analyst_write" model="ir.rule">
+            <field name="name">Portal Analyst: Write Own or Unassigned</field>
+            <field name="model_id" ref="lims_analysis_v2.model_lims_parameter_analysis_v2"/>
+            <field name="domain_force">['|', ('analyst_assigned_id', '=', user.id), ('analyst_assigned_id', '=', False)]</field>
             <field name="groups" eval="[(4, ref('group_portal_analyst'))]"/>
-            <field name="perm_read" eval="True"/>
-            <field name="perm_write" eval="False"/>
+            <field name="perm_read" eval="False"/>
+            <field name="perm_write" eval="True"/>
             <field name="perm_create" eval="False"/>
             <field name="perm_unlink" eval="False"/>
         </record>

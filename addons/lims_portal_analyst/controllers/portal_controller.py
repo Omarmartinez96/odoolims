@@ -15,48 +15,50 @@ class LimsPortalBasicController(CustomerPortal):
             return request.redirect('/my')
         return True
 
-    def _get_analyst_parameters(self, status_filter=None):
-        """Obtener parámetros del analista - VERSIÓN BÁSICA"""
-        domain = [('analyst_assigned_id', '=', request.env.user.id)]
-        
-        if status_filter:
-            domain.append(('portal_status', '=', status_filter))
-        
-        return request.env['lims.parameter.analysis.v2'].search(
-            domain, order='portal_priority desc, assignment_date asc'
-        )
+    def _get_analyst_parameters(self, filters=None):
+        """Obtener parámetros con filtros - VERSIÓN AMPLIADA"""
+        return request.env['lims.parameter.analysis.v2'].get_all_lab_parameters(filters)
 
     # ===============================================
     # === DASHBOARD BÁSICO ===
     # ===============================================
     @http.route('/my/lims', type='http', auth='user', website=True)
     def lims_dashboard_basic(self, **kwargs):
-        """Dashboard básico del analista portal"""
+        """Dashboard mejorado con estadísticas globales"""
         access_check = self._check_portal_access()
         if access_check is not True:
             return access_check
         
         try:
-            # Estadísticas básicas
-            all_params = self._get_analyst_parameters()
-            pending_params = self._get_analyst_parameters('assigned')
-            in_progress_params = self._get_analyst_parameters('in_progress')
-            completed_params = self._get_analyst_parameters('completed')
+            # Estadísticas globales del laboratorio
+            stats = request.env['lims.parameter.analysis.v2'].get_lab_statistics()
             
-            # Últimos 5 parámetros
-            recent_params = all_params[:5]
+            # Mis parámetros recientes
+            my_params = self._get_analyst_parameters({'status_filter': 'my_assigned'})[:5]
+            
+            # Parámetros urgentes disponibles
+            urgent_available = self._get_analyst_parameters({
+                'status_filter': 'available', 
+                'portal_priority': 'urgent'
+            })[:3]
             
             values = {
                 'page_name': 'lims_dashboard',
                 'user_name': request.env.user.name,
-                'total_assigned': len(all_params),
-                'pending_count': len(pending_params),
-                'in_progress_count': len(in_progress_params),
-                'completed_count': len(completed_params),
-                'recent_parameters': recent_params,
+                'stats': stats,
+                'my_recent_parameters': my_params,
+                'urgent_available': urgent_available,
             }
             
-            return request.render('lims_portal_analyst.portal_dashboard_basic', values)
+            return request.render('lims_portal_analyst.portal_dashboard_enhanced', values)
+            
+        except Exception as e:
+            _logger.error(f"Error en dashboard mejorado: {str(e)}")
+            values = {
+                'error_message': 'Error al cargar el dashboard.',
+                'page_name': 'lims_error'
+            }
+            return request.render('lims_portal_analyst.portal_error_basic', values)
             
         except Exception as e:
             _logger.error(f"Error en dashboard básico: {str(e)}")
@@ -200,3 +202,97 @@ class LimsPortalBasicController(CustomerPortal):
         }
         
         return request.render('lims_portal_analyst.portal_error_basic', values)
+    
+    # ===============================================
+    # === NUEVA RUTA: TOMAR PARÁMETRO ===
+    # ===============================================
+    @http.route('/my/lims/parameter/<int:param_id>/take', type='http', auth='user', website=True, methods=['POST'], csrf=True)
+    def lims_parameter_take(self, param_id, **post):
+        """Tomar/asignar parámetro al analista actual"""
+        access_check = self._check_portal_access()
+        if access_check is not True:
+            return access_check
+        
+        try:
+            parameter = request.env['lims.parameter.analysis.v2'].browse(param_id)
+            
+            if not parameter.exists():
+                return request.redirect('/my/lims/available?error=not_found')
+            
+            parameter.take_parameter()
+            
+            return request.redirect(f'/my/lims/parameter/{param_id}?taken=1')
+            
+        except UserError as e:
+            return request.redirect(f'/my/lims/available?error={str(e)}')
+        except Exception as e:
+            _logger.error(f"Error tomando parámetro {param_id}: {str(e)}")
+            return request.redirect('/my/lims/available?error=take_failed')
+
+    # ===============================================
+    # === NUEVA RUTA: LIBERAR PARÁMETRO ===
+    # ===============================================
+    @http.route('/my/lims/parameter/<int:param_id>/release', type='http', auth='user', website=True, methods=['POST'], csrf=True)
+    def lims_parameter_release(self, param_id, **post):
+        """Liberar parámetro asignado"""
+        access_check = self._check_portal_access()
+        if access_check is not True:
+            return access_check
+        
+        try:
+            parameter = request.env['lims.parameter.analysis.v2'].browse(param_id)
+            
+            if not parameter.exists():
+                return request.redirect('/my/lims/pending?error=not_found')
+            
+            parameter.release_parameter()
+            
+            return request.redirect('/my/lims/available?released=1')
+            
+        except UserError as e:
+            return request.redirect(f'/my/lims/parameter/{param_id}?error={str(e)}')
+        except Exception as e:
+            _logger.error(f"Error liberando parámetro {param_id}: {str(e)}")
+            return request.redirect(f'/my/lims/parameter/{param_id}?error=release_failed')
+
+    # ===============================================
+    # === NUEVA RUTA: PARÁMETROS DISPONIBLES ===
+    # ===============================================
+    @http.route('/my/lims/available', type='http', auth='user', website=True)
+    def lims_available_parameters(self, **kwargs):
+        """Lista de parámetros disponibles (sin asignar)"""
+        access_check = self._check_portal_access()
+        if access_check is not True:
+            return access_check
+        
+        try:
+            # Construir filtros desde URL
+            filters = {
+                'status_filter': kwargs.get('status', 'available'),
+                'customer_id': kwargs.get('customer'),
+                'category': kwargs.get('category'),
+                'result_type': kwargs.get('result_type'),
+                'search': kwargs.get('search', '').strip()
+            }
+            
+            # Limpiar filtros vacíos
+            filters = {k: v for k, v in filters.items() if v}
+            
+            parameters = self._get_analyst_parameters(filters)
+            
+            # Obtener opciones para filtros
+            customers = request.env['res.partner'].search([('is_company', '=', True)], order='name')
+            
+            values = {
+                'page_name': 'lims_available',
+                'parameters': parameters,
+                'customers': customers,
+                'current_filters': filters,
+                'total_count': len(parameters),
+            }
+            
+            return request.render('lims_portal_analyst.portal_available_parameters', values)
+            
+        except Exception as e:
+            _logger.error(f"Error en parámetros disponibles: {str(e)}")
+            return request.redirect('/my/lims?error=available_error')
