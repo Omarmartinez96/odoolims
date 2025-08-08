@@ -602,6 +602,12 @@
                                     Estos controles garantizan la calidad y confiabilidad de los resultados.
                                 </div>
                                 
+                                <style>
+                                    .o_list_view .o_list_table {
+                                        min-width: 1200px !important;
+                                    }
+                                </style>
+                                
                                 <!-- Botón para copiar desde plantilla -->
                                 <div class="oe_button_box" style="margin-bottom: 15px;">
                                     <button type="object" 
@@ -611,33 +617,35 @@
                                             help="Copiar controles desde la plantilla del parámetro"/>
                                 </div>
                                 
-                                <field name="executed_qc_ids" nolabel="1">
-                                    <list string="Controles de Calidad" editable="bottom">
-                                        <field name="qc_type_id" string="Tipo de Control" width="25%"/>
-                                        <field name="expected_result" string="Resultado Esperado" width="15%"/>
-                                        <field name="actual_result" string="Resultado Obtenido" width="15%"/>
-                                        
-                                        <field name="control_status" string="Estado" width="15%"
-                                               decoration-success="control_status == 'passed'"
-                                               decoration-warning="control_status == 'in_progress'"
-                                               decoration-danger="control_status == 'failed'"
-                                               decoration-muted="control_status == 'not_applicable'"/>
-                                        
-                                        <field name="execution_date" string="Fecha" width="10%"/>
-                                        <field name="executed_by" string="Realizado Por" width="15%"/>
-                                        
-                                        <!-- Botones rápidos -->
-                                        <button name="action_mark_passed" type="object" 
-                                                string="✅" class="btn-success btn-sm" 
-                                                title="Marcar como exitoso"/>
-                                        <button name="action_mark_failed" type="object" 
-                                                string="❌" class="btn-danger btn-sm" 
-                                                title="Marcar como fallido"/>
-                                        <button name="action_reset_control" type="object" 
-                                                string="🔄" class="btn-secondary btn-sm" 
-                                                title="Restablecer"/>
-                                    </list>
-                                </field>
+                                <div style="width: 100%; overflow-x: auto;">
+                                    <field name="executed_qc_ids" nolabel="1">
+                                        <list string="Controles de Calidad" editable="top" create="true" delete="true">
+                                            <field name="qc_type_id" string="Tipo de Control" width="20%"/>
+                                            <field name="expected_result" string="Resultado Esperado" width="12%"/>
+                                            <field name="actual_result" string="Resultado Obtenido" width="12%"/>
+                                            
+                                            <field name="control_status" string="Estado" width="12%"
+                                                decoration-success="control_status == 'passed'"
+                                                decoration-warning="control_status == 'in_progress'"
+                                                decoration-danger="control_status == 'failed'"
+                                                decoration-muted="control_status == 'not_applicable'"/>
+                                            
+                                            <field name="execution_date" string="Fecha" width="8%"/>
+                                            <field name="executed_by" string="Realizado Por" width="12%"/>
+                                            
+                                            <!-- Botones rápidos optimizados -->
+                                            <button name="action_mark_passed" type="object" 
+                                                    string="✅" class="btn-success btn-sm" 
+                                                    title="Marcar como exitoso" width="4%"/>
+                                            <button name="action_mark_failed" type="object" 
+                                                    string="❌" class="btn-danger btn-sm" 
+                                                    title="Marcar como fallido" width="4%"/>
+                                            <button name="action_reset_control" type="object" 
+                                                    string="🔄" class="btn-secondary btn-sm" 
+                                                    title="Restablecer" width="4%"/>
+                                        </list>
+                                    </field>
+                                </div>
                             </page>
 
                             <!-- ========== TAB DE CONFIRMACIÓN ========== -->
