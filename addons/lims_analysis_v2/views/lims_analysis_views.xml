@@ -422,7 +422,7 @@
                 (0, 0, {'view_mode': 'form', 'view_id': ref('view_lims_analysis_v2_form')})
             ]"/>
             <field name="search_view_id" ref="view_lims_analysis_v2_search"/>
-            <field name="context">{'group_by': 'custody_chain_id'}</field>
+           <field name="context">{'group_by': 'custody_chain_id', 'create': False}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     No hay análisis disponibles
