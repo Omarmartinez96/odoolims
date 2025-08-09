@@ -573,24 +573,18 @@
                                            context="{'default_process_type': 'confirmation', 'default_media_usage': 'pruebas_bioquimicas'}">
                                         
                                         <list string="Medios para Confirmación" create="true" delete="true" edit="true">
-                                            <field name="media_source" string="Origen" width="15%"/>
+                                            <field name="media_source" string="Origen" width="25%"/>
                                             <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                             <field name="culture_media_batch_id" 
                                                 string="Lote Interno"
                                                 invisible="media_source != 'internal'"
-                                                width="20%"/>
-                                            <field name="external_batch_code" 
-                                                string="Lote Externo" 
-                                                invisible="media_source != 'external'"
-                                                width="20%"/>
-                                            <field name="media_usage" string="Uso" width="20%"/>
-                                            <field name="requires_incubation" string="¿Incubación?"/>
+                                                width="25%"/>
                                             <field name="incubation_status" 
                                                 invisible="requires_incubation == False"
                                                 decoration-success="incubation_status == 'completed'"
                                                 decoration-warning="incubation_status == 'overdue'"
                                                 decoration-info="incubation_status == 'active'"/>
-                                            <field name="qualitative_result" string="Resultado" optional="show"/>
+                                            <field name="qualitative_result" string="Resultado" width="25%"/>
                                         </list>
                                         
                                         <form string="Medio de Confirmación">
