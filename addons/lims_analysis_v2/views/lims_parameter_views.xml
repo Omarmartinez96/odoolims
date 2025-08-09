@@ -261,15 +261,7 @@
                                                     <field name="incubation_end_time_real" placeholder="HH:MM"/>
                                                 </group>
                                             </group>
-
-                                            <group string="🧪 Resultado en este Medio (Si Aplica)">
-                                                <field name="qualitative_result"/>
-                                            </group>
-
-                                            <group string="📝 Notas de Preparación">
-                                                <field name="preparation_notes" nolabel="1"
-                                                       placeholder="Instrucciones especiales, observaciones, etc..."/>
-                                            </group>
+                                            
                                         </form>
                                     </field>
                                 </group>
