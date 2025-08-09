@@ -564,7 +564,7 @@
 
                             <!-- ========== TAB DE DATOS CRUDOS (SOLO MICROBIOLOGÍA CUANTITATIVA) ========== -->
                             <page string="🔢 Datos Crudos de Diluciones" 
-                                  invisible="category != 'microbiological' or result_type != 'quantitative'">
+                                invisible="category != 'microbiological' or result_type != 'quantitative'">
                                 
                                 <div class="alert alert-info" style="margin-bottom: 15px;">
                                     <strong>📝 Información:</strong> Esta tabla es para registrar datos crudos únicamente. 
@@ -590,7 +590,7 @@
                                 <!-- Cálculos informativos -->
                                 <group string="📊 Cálculos Informativos (Solo Referencia)">
                                     <field name="dilution_calculations" nolabel="1" readonly="1" 
-                                           widget="text" style="font-family: monospace;"/>
+                                        widget="text" style="font-family: monospace;"/>
                                 </group>
                             </page>
 
