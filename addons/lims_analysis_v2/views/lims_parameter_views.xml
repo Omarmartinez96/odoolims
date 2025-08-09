@@ -538,8 +538,8 @@
                                 
                                 <field name="raw_dilution_data_ids" nolabel="1">
                                     <list string="Diluciones" editable="bottom">
-                                        <field name="method_type" width="20%"/>
-                                        <field name="dilution_factor" width="10%"/>
+                                        <field name="method_type" width="25%"/>
+                                        <field name="dilution_factor" width="5%"/>
                                         <!-- UFC -->
                                         <field name="ufc_count" invisible="method_type != 'ufc'" width="10%"/>
                                         <!-- NMP -->
@@ -547,8 +547,7 @@
                                         <field name="total_tubes" invisible="method_type != 'nmp'" width="10%"/>
                                         <field name="nmp_result" invisible="method_type != 'nmp'" width="10%"/>
                                         <!-- Resultado calculado -->
-                                        <field name="calculated_result" readonly="1" width="10%"/>
-                                        <field name="observations" width="20%"/>
+                                        <field name="calculated_result" readonly="1" width="20%"/>
                                     </list>
                                 </field>
                                 
