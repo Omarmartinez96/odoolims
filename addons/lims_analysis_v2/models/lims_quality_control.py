@@ -173,7 +173,6 @@ class LimsExecutedQualityControlV2(models.Model):
         if self.control_status in ['passed', 'failed'] and not self.execution_date:
             self.execution_date = fields.Date.context_today(self)
             self.execution_time = fields.Datetime.now().strftime('%H:%M')
-            self.executed_by_name = self.env.user.name
     
     @api.onchange('qc_type_id')
     def _onchange_qc_type_id(self):
