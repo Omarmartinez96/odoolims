@@ -261,7 +261,7 @@
                                                     <field name="incubation_end_time_real" placeholder="HH:MM"/>
                                                 </group>
                                             </group>
-                                            
+
                                         </form>
                                     </field>
                                 </group>
@@ -392,24 +392,18 @@
                                            context="{'default_process_type': 'qualitative', 'default_media_usage': 'desarrollo_selectivo'}">
 
                                         <list string="Medios para Cualitativos" create="true" delete="true" edit="true">
-                                            <field name="media_source" string="Origen" width="15%"/>
-                                            <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
+                                            <field name="media_source" string="Origen" width="20%"/>
+                                            <field name="culture_media_name" string="Nombre del Medio" width="20%"/>
                                             <field name="culture_media_batch_id" 
                                                 string="Lote Interno"
                                                 invisible="media_source != 'internal'"
                                                 width="20%"/>
-                                            <field name="external_batch_code" 
-                                                string="Lote Externo" 
-                                                invisible="media_source != 'external'"
-                                                width="20%"/>
-                                            <field name="media_usage" string="Uso" width="20%"/>
-                                            <field name="requires_incubation" string="¿Incubación?"/>
-                                            <field name="incubation_status" 
+                                            <field name="incubation_status" width="20%" 
                                                 invisible="requires_incubation == False"
                                                 decoration-success="incubation_status == 'completed'"
                                                 decoration-warning="incubation_status == 'overdue'"
                                                 decoration-info="incubation_status == 'active'"/>
-                                            <field name="qualitative_result" string="Resultado" optional="show"/>
+                                            <field name="qualitative_result" string="Resultado" width="20%"/>
                                         </list>
                                         
                                         <form string="Medio para Cualitativo">
@@ -475,10 +469,6 @@
                                                 <field name="qualitative_result"/>
                                             </group>
 
-                                            <group string="📝 Notas de Preparación">
-                                                <field name="preparation_notes" nolabel="1"
-                                                       placeholder="Instrucciones especiales, observaciones, etc..."/>
-                                            </group>
                                         </form>
                                     </field>
                                 </group>
@@ -666,10 +656,6 @@
                                                 <field name="qualitative_result"/>
                                             </group>
 
-                                            <group string="📝 Notas de Preparación">
-                                                <field name="preparation_notes" nolabel="1"
-                                                       placeholder="Instrucciones especiales, observaciones, etc..."/>
-                                            </group>
                                         </form>
                                     </field>
                                 </group>
