@@ -573,13 +573,13 @@
                                            context="{'default_process_type': 'confirmation', 'default_media_usage': 'pruebas_bioquimicas'}">
                                         
                                         <list string="Medios para Confirmación" create="true" delete="true" edit="true">
-                                            <field name="media_source" string="Origen" width="25%"/>
-                                            <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
+                                            <field name="media_source" string="Origen" width="20%"/>
+                                            <field name="culture_media_name" string="Nombre del Medio" width="20%"/>
                                             <field name="culture_media_batch_id" 
                                                 string="Lote Interno"
                                                 invisible="media_source != 'internal'"
-                                                width="25%"/>
-                                            <field name="incubation_status" 
+                                                width="20%"/>
+                                            <field name="incubation_status" width="20%" 
                                                 invisible="requires_incubation == False"
                                                 decoration-success="incubation_status == 'completed'"
                                                 decoration-warning="incubation_status == 'overdue'"
