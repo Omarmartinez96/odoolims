@@ -86,20 +86,14 @@
                                            context="{'default_process_type': 'pre_enrichment', 'default_media_usage': 'enriquecimiento'}">
 
                                         <list string="Medios de Pre-enriquecimiento" create="true" delete="true" edit="true">
-                                            <field name="culture_media_name" string="Nombre del Medio" width="20%"/>
+                                            <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                             <field name="culture_media_batch_id" 
                                                 string="Lote Interno"
                                                 invisible="media_source != 'internal'"
                                                 width="25%"/>
-                                            <field name="incubation_equipment" width="10%"
+                                            <field name="incubation_equipment" width="25%"
                                                 invisible="requires_incubation == False"
                                                 placeholder="Equipo de incubación"/>
-                                            <field name="incubation_end_date" width="10%"
-                                                invisible="requires_incubation == False"
-                                                placeholder="Fecha fin"/>
-                                            <field name="incubation_end_time" width="10%" 
-                                                invisible="requires_incubation == False"
-                                                placeholder="HH:MM"/>
                                             <field name="incubation_status" width="25%" 
                                                 invisible="requires_incubation == False"
                                                 decoration-success="incubation_status == 'completed'"
@@ -166,6 +160,7 @@
                                                 </group>
                                             </group>
 
+
                                         </form>
                                     </field>
                                 </group>
@@ -195,24 +190,17 @@
                                            context="{'default_process_type': 'selective_enrichment', 'default_media_usage': 'desarrollo_selectivo'}">
 
                                         <list string="Medios Selectivos Utilizados" create="true" delete="true" edit="true">
-                                            <field name="media_source" string="Origen" width="15%"/>
+                                            <field name="media_source" string="Origen" width="25%"/>
                                             <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                             <field name="culture_media_batch_id" 
                                                 string="Lote Interno"
                                                 invisible="media_source != 'internal'"
-                                                width="20%"/>
-                                            <field name="external_batch_code" 
-                                                string="Lote Externo" 
-                                                invisible="media_source != 'external'"
-                                                width="20%"/>
-                                            <field name="media_usage" string="Uso" width="20%"/>
-                                            <field name="requires_incubation" string="¿Incubación?"/>
-                                            <field name="incubation_status" 
+                                                width="25%"/>
+                                            <field name="incubation_status" width="25%" 
                                                 invisible="requires_incubation == False"
                                                 decoration-success="incubation_status == 'completed'"
                                                 decoration-warning="incubation_status == 'overdue'"
                                                 decoration-info="incubation_status == 'active'"/>
-                                            <field name="qualitative_result" string="Resultado" optional="show"/>
                                         </list>
                                         
                                         <form string="Medio Selectivo Utilizado">
