@@ -343,24 +343,17 @@
                                            context="{'default_process_type': 'quantitative', 'default_media_usage': 'diluyente'}">
 
                                         <list string="Medios para Análisis Cuantitativo" create="true" delete="true" edit="true">
-                                            <field name="media_source" string="Origen" width="16%"/>
-                                            <field name="culture_media_name" string="Nombre del Medio" width="12%"/>
+                                            <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                             <field name="culture_media_batch_id" 
                                                 string="Lote Interno"
                                                 invisible="media_source != 'internal'"
-                                                width="12%"/>
-                                            <field name="external_batch_code" 
-                                                string="Lote Externo" 
-                                                invisible="media_source != 'external'"
-                                                width="12%"/>
-                                            <field name="media_usage" string="Uso" width="12%"/>
-                                            <field name="requires_incubation" string="¿Incubación?" width="12%"/>
-                                            <field name="incubation_status" width="12%" 
+                                                width="25%"/>
+                                            <field name="media_usage" string="Uso" width="25%"/>
+                                            <field name="incubation_status" width="25%" 
                                                 invisible="requires_incubation == False"
                                                 decoration-success="incubation_status == 'completed'"
                                                 decoration-warning="incubation_status == 'overdue'"
                                                 decoration-info="incubation_status == 'active'"/>
-                                            <field name="qualitative_result" string="Resultado" width="12%"/>
                                         </list>
                                         
                                         <form string="Medio Utilizado para Cuantitativo">
