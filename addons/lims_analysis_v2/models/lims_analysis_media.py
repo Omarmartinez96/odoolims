@@ -358,32 +358,3 @@ class LimsAnalysisMediaV2(models.Model):
             self.media_usage = 'desarrollo_selectivo'
         elif self.process_type == 'confirmation':
             self.media_usage = 'pruebas_bioquimicas'
-
-    # ===============================================
-    # === MÉTODOS DE ACCIÓN ===
-    # ===============================================
-    def action_mark_completed(self):
-        """Marcar incubación como completada"""
-        self.write({
-            'incubation_end_date_real': fields.Date.context_today(self),
-            'incubation_end_time_real': fields.Datetime.now().strftime('%H:%M')
-        })
-        
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Incubación Completada',
-                'message': f'Muestra {self.sample_code} retirada de incubadora',
-                'type': 'success',
-            }
-        }
-
-    def action_refresh_status(self):
-        """Botón para refrescar estado manualmente"""
-        self._compute_incubation_status()
-        self._compute_time_remaining()
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'reload',
-        }

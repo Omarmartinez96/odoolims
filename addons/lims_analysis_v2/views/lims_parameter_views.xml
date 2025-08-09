@@ -177,11 +177,6 @@
                                                 <group>
                                                     <field name="incubation_end_date_real"/>
                                                     <field name="incubation_end_time_real" placeholder="HH:MM"/>
-                                                    <button name="action_mark_completed" 
-                                                            type="object" 
-                                                            string="✅ Marcar Completada" 
-                                                            class="btn-success"
-                                                            invisible="incubation_status == 'completed'"/>
                                                 </group>
                                             </group>
 
@@ -298,11 +293,6 @@
                                                 <group>
                                                     <field name="incubation_end_date_real"/>
                                                     <field name="incubation_end_time_real" placeholder="HH:MM"/>
-                                                    <button name="action_mark_completed" 
-                                                            type="object" 
-                                                            string="✅ Marcar Completada" 
-                                                            class="btn-success"
-                                                            invisible="incubation_status == 'completed'"/>
                                                 </group>
                                             </group>
 
@@ -520,11 +510,6 @@
                                                 <group>
                                                     <field name="incubation_end_date_real"/>
                                                     <field name="incubation_end_time_real" placeholder="HH:MM"/>
-                                                    <button name="action_mark_completed" 
-                                                            type="object" 
-                                                            string="✅ Marcar Completada" 
-                                                            class="btn-success"
-                                                            invisible="incubation_status == 'completed'"/>
                                                 </group>
                                             </group>
 
@@ -717,11 +702,6 @@
                                                 <group>
                                                     <field name="incubation_end_date_real"/>
                                                     <field name="incubation_end_time_real" placeholder="HH:MM"/>
-                                                    <button name="action_mark_completed" 
-                                                            type="object" 
-                                                            string="✅ Marcar Completada" 
-                                                            class="btn-success"
-                                                            invisible="incubation_status == 'completed'"/>
                                                 </group>
                                             </group>
 
