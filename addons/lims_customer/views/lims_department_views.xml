@@ -21,17 +21,39 @@
             </field>
         </record>
 
-        <!-- VISTA FORMULARIO de Departamentos -->
+        <!-- VISTA DE BÚSQUEDA para Departamentos -->
+        <record id="view_lims_department_search" model="ir.ui.view">
+            <field name="name">lims.department.search</field>
+            <field name="model">lims.department</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Departamento"/>
+                    <field name="branch_id" string="Sucursal"/>
+                    <separator/>
+                    <group expand="0" string="Agrupar Por">
+                        <filter string="Sucursal" name="group_branch" context="{'group_by':'branch_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- VISTA FORMULARIO de Departamentos (con breadcrumbs) -->
         <record id="view_lims_department_form" model="ir.ui.view">
             <field name="name">lims.department.form</field>
             <field name="model">lims.department</field>
             <field name="arch" type="xml">
                 <form string="Departamento">
                     <sheet>
+                        <div class="oe_title">
+                            <label for="branch_id" class="oe_edit_only" string="Sucursal: "/>
+                            <h2><field name="branch_id" readonly="1" class="o_text_overflow"/></h2>
+                            <label for="name" class="oe_edit_only" string="Departamento: "/>
+                            <h1><field name="name" placeholder="Nombre del departamento" class="o_text_overflow"/></h1>
+                        </div>
+                        
                         <group>
                             <!-- Campo 'branch_id' para enlazar con Sucursal (solo lectura) -->
-                            <field name="branch_id" readonly="1" required="1"/>
-                            <field name="name" required="1"/>
+                            <field name="branch_id" required="1" invisible="1"/>
                         </group>
                         <!-- Botón para ver Contactos: invisible si el Departamento no está guardado -->
                         <group>

@@ -8,7 +8,7 @@
             <field name="domain">[('branch_id','=', context.get('default_branch_id'))]</field>
         </record>
 
-        <!-- VISTA LISTA Sucursales (sin grandes cambios) -->
+        <!-- VISTA LISTA Sucursales -->
         <record id="view_lims_branch_list" model="ir.ui.view">
             <field name="name">lims.branch.list</field>
             <field name="model">lims.branch</field>
@@ -21,21 +21,44 @@
             </field>
         </record>
 
-        <!-- VISTA FORMULARIO Sucursales (ajustada claramente el campo customer_id con dominio) -->
+        <!-- VISTA DE BÚSQUEDA para Sucursales -->
+        <record id="view_lims_branch_search" model="ir.ui.view">
+            <field name="name">lims.branch.search</field>
+            <field name="model">lims.branch</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Sucursal"/>
+                    <field name="customer_id" string="Cliente"/>
+                    <field name="address" string="Dirección"/>
+                    <separator/>
+                    <filter string="Con Dirección" name="has_address" domain="[('address','!=',False)]"/>
+                    <group expand="0" string="Agrupar Por">
+                        <filter string="Cliente" name="group_customer" context="{'group_by':'customer_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- VISTA FORMULARIO Sucursales (ajustada con breadcrumbs) -->
         <record id="view_lims_branch_form" model="ir.ui.view">
             <field name="name">lims.branch.form</field>
             <field name="model">lims.branch</field>
             <field name="arch" type="xml">
                 <form string="Sucursal">
                     <sheet>
+                        <div class="oe_title">
+                            <label for="customer_id" class="oe_edit_only" string="Cliente: "/>
+                            <h2><field name="customer_name" readonly="1" class="o_text_overflow"/></h2>
+                            <label for="name" class="oe_edit_only" string="Sucursal: "/>
+                            <h1><field name="name" placeholder="Nombre de la sucursal" class="o_text_overflow"/></h1>
+                        </div>
+                        
                         <group>
-                            <field name="name" required="1"/>
                             <field name="address"/>
                             <!-- Ahora apunta claramente a res.partner (Clientes LIMS) -->
                             <field name="customer_id"
                                    domain="[('is_lims_customer', '=', True)]"
                                    required="1"/>
-                            <field name="customer_name" readonly="1"/>
                             <field name="client_code" readonly="1"/>
                             <button name="%(action_lims_departments)d"
                                     string="Ver Departamentos"

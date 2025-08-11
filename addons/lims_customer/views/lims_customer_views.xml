@@ -33,6 +33,31 @@
             </field>
         </record>
 
+        <!-- Vista de búsqueda para clientes -->
+        <record id="view_lims_customer_search" model="ir.ui.view">
+            <field name="name">lims.customer.search</field>
+            <field name="model">res.partner</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Nombre/Razón Social"/>
+                    <field name="client_code" string="Código Cliente"/>
+                    <field name="vat" string="RFC"/>
+                    <field name="email" string="Email"/>
+                    <field name="city" string="Ciudad"/>
+                    <separator/>
+                    <filter string="Con RFC" name="has_rfc" domain="[('vat','!=',False)]"/>
+                    <filter string="Sin RFC" name="no_rfc" domain="[('vat','=',False)]"/>
+                    <filter string="Con Email" name="has_email" domain="[('email','!=',False)]"/>
+                    <separator/>
+                    <group expand="0" string="Agrupar Por">
+                        <filter string="País" name="group_country" context="{'group_by':'country_id'}"/>
+                        <filter string="Estado" name="group_state" context="{'group_by':'state_id'}"/>
+                        <filter string="Ciudad" name="group_city" context="{'group_by':'city'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
         <!-- Vista formulario INDEPENDIENTE para clientes -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form</field>
@@ -40,6 +65,19 @@
             <field name="arch" type="xml">
                 <form string="Cliente">
                     <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button class="oe_stat_button" type="action" name="%(action_lims_branches)d"
+                                    context="{'default_customer_id': id}" icon="fa-building">
+                                <field name="branch_count" widget="statinfo" string="Sucursales"/>
+                            </button>
+                            <button class="oe_stat_button" type="object" icon="fa-users">
+                                <field name="total_departments" widget="statinfo" string="Departamentos"/>
+                            </button>
+                            <button class="oe_stat_button" type="object" icon="fa-address-book">
+                                <field name="total_contacts" widget="statinfo" string="Contactos"/>
+                            </button>
+                        </div>
+                        
                         <group>
                             <field name="name" required="1" string="Razón Social"/>
                             <field name="is_lims_customer" invisible="1"/>
@@ -63,15 +101,6 @@
 
                         <group string="Datos Fiscales para CFDI">
                             <field name="l10n_mx_edi_fiscal_regime" string="Régimen Fiscal" required="1"/>
-                        </group>
-
-                        <group>
-                            <button name="%(action_lims_branches)d"
-                                    string="Ver Sucursales"
-                                    type="action"
-                                    class="oe_stat_button"
-                                    context="{'default_customer_id': id}"
-                                    invisible="id==False"/>
                         </group>
 
                         <notebook>

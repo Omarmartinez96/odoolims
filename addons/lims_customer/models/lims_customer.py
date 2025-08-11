@@ -1,5 +1,5 @@
 # lims_customer.py
-from odoo import models, fields
+from odoo import models, fields, api
 
 class LimsCustomer(models.Model):
     _inherit = 'res.partner'
@@ -29,3 +29,13 @@ class LimsCustomer(models.Model):
         'customer_id',
         string="Sucursales"
     )
+    branch_count = fields.Integer(string='Número de Sucursales', compute='_compute_counts')
+    total_departments = fields.Integer(string='Total Departamentos', compute='_compute_counts')
+    total_contacts = fields.Integer(string='Total Contactos', compute='_compute_counts')
+
+    @api.depends('branch_ids', 'branch_ids.department_ids', 'branch_ids.department_ids.contact_ids')
+    def _compute_counts(self):
+        for record in self:
+            record.branch_count = len(record.branch_ids)
+            record.total_departments = sum(len(branch.department_ids) for branch in record.branch_ids)
+            record.total_contacts = sum(len(dept.contact_ids) for branch in record.branch_ids for dept in branch.department_ids)
