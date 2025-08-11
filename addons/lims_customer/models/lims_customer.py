@@ -39,3 +39,11 @@ class LimsCustomer(models.Model):
             record.branch_count = len(record.branch_ids)
             record.total_departments = sum(len(branch.department_ids) for branch in record.branch_ids)
             record.total_contacts = sum(len(dept.contact_ids) for branch in record.branch_ids for dept in branch.department_ids)
+
+    def action_view_departments(self):
+        """Método dummy para botón de departamentos"""
+        return True
+
+    def action_view_contacts(self):
+        """Método dummy para botón de contactos"""
+        return True
