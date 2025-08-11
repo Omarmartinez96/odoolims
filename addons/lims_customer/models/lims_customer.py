@@ -7,6 +7,9 @@ class LimsCustomer(models.Model):
     is_lims_customer = fields.Boolean(string='Cliente LIMS', default=True)
     client_code = fields.Char(string="Código del Cliente")  # <- 🔴 SIN required=True 🔴
 
+    # Campo computado para ordenamiento numérico
+    client_code_sequence = fields.Integer(string='Secuencia de Código', compute='_compute_client_code_sequence', store=True)
+
     # Campos adicionales directos de res.partner (para claridad)
     vat = fields.Char(string="RFC / TAX ID")
     street = fields.Char(string="Calle y número ")
@@ -40,6 +43,21 @@ class LimsCustomer(models.Model):
             record.total_departments = sum(len(branch.department_ids) for branch in record.branch_ids)
             record.total_contacts = sum(len(dept.contact_ids) for branch in record.branch_ids for dept in branch.department_ids)
 
+    @api.depends('client_code')
+    def _compute_client_code_sequence(self):
+        import re
+        for record in self:
+            if record.client_code:
+                # Extraer números del código (ej: HTP-001 -> 1)
+                numbers = re.findall(r'\d+', record.client_code)
+                if numbers:
+                    # Tomar el último número encontrado (generalmente el consecutivo)
+                    record.client_code_sequence = int(numbers[-1])
+                else:
+                    record.client_code_sequence = 9999  # Al final si no tiene números
+            else:
+                record.client_code_sequence = 9999  # Al final si no tiene código
+
     def action_view_departments(self):
         """Método dummy para botón de departamentos"""
         return True
@@ -47,3 +65,5 @@ class LimsCustomer(models.Model):
     def action_view_contacts(self):
         """Método dummy para botón de contactos"""
         return True
+    
+    _order = 'client_code_sequence asc, client_code asc'
