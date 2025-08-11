@@ -70,10 +70,10 @@
                                     context="{'default_customer_id': id}" icon="fa-building">
                                 <field name="branch_count" widget="statinfo" string="Sucursales"/>
                             </button>
-                            <button class="oe_stat_button" type="object" icon="fa-users">
+                            <button class="oe_stat_button" type="button" icon="fa-users">
                                 <field name="total_departments" widget="statinfo" string="Departamentos"/>
                             </button>
-                            <button class="oe_stat_button" type="object" icon="fa-address-book">
+                            <button class="oe_stat_button" type="button" icon="fa-address-book">
                                 <field name="total_contacts" widget="statinfo" string="Contactos"/>
                             </button>
                         </div>
