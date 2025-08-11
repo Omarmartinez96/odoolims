@@ -150,19 +150,16 @@
             <field name="name">Cadenas de Custodia</field>
             <field name="res_model">lims.custody_chain</field>
             <field name="view_mode">list,form</field>
-            <field name="view_ids" eval="[
-                (5, 0, 0),
-                (0, 0, {'view_mode': 'list', 'view_id': ref('view_custody_chain_reception_list')}),
-                (0, 0, {'view_mode': 'form', 'view_id': ref('view_custody_chain_reception_form')})
-            ]"/>
             <field name="domain">[('chain_of_custody_state', 'in', ['in_progress', 'done'])]</field>
             <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    No hay cadenas de custodia para recepción
-                </p>
-                <p>
-                    Aquí aparecerán las cadenas de custodia listas para recibir muestras
-                </p>
+                <![CDATA[
+                    <p class="o_view_nocontent_smiling_face">
+                        No hay cadenas de custodia para recepción
+                    </p>
+                    <p>
+                        Aquí aparecerán las cadenas de custodia listas para recibir muestras
+                    </p>
+                ]]>
             </field>
         </record>
 
