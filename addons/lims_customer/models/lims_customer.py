@@ -8,7 +8,7 @@ class LimsCustomer(models.Model):
     client_code = fields.Char(string="Código del Cliente")  # <- 🔴 SIN required=True 🔴
 
     # Campo computado para ordenamiento numérico
-    client_code_sequence = fields.Integer(string='Secuencia de Código', compute='_compute_client_code_sequence', store=True)
+    client_code_sequence = fields.Integer(string='Secuencia de Código', compute='_compute_client_code_sequence')
 
     # Campos adicionales directos de res.partner (para claridad)
     vat = fields.Char(string="RFC / TAX ID")
