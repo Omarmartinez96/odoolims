@@ -1,5 +1,6 @@
 # lims_customer.py
-from odoo import models, fields, api, UserError
+from odoo import models, fields, api
+from odoo.exceptions import UserError
 
 class LimsCustomer(models.Model):
     _inherit = 'res.partner'
