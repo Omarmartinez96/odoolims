@@ -184,14 +184,5 @@ class LimsCustomer(models.Model):
         if not self.vat:
             raise UserError("Se requiere RFC para generar el código de cliente")
         
+        # Solo generar y asignar al campo, SIN guardar
         self.client_code = self._generate_client_code(self.vat)
-        
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': '✅ Código Generado',
-                'message': f'Código generado: {self.client_code}',
-                'type': 'success'
-            }
-        }
