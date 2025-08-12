@@ -1,5 +1,5 @@
 # lims_customer.py
-from odoo import models, fields, api
+from odoo import models, fields, api, UserError
 
 class LimsCustomer(models.Model):
     _inherit = 'res.partner'
@@ -177,3 +177,20 @@ class LimsCustomer(models.Model):
                     'type': 'success'
                 }
             }
+            
+    def action_generate_client_code(self):
+        """Generar código de cliente basado en RFC"""
+        if not self.vat:
+            raise UserError("Se requiere RFC para generar el código de cliente")
+        
+        self.client_code = self._generate_client_code(self.vat)
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': '✅ Código Generado',
+                'message': f'Código generado: {self.client_code}',
+                'type': 'success'
+            }
+        }

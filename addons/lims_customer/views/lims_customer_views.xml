@@ -82,8 +82,13 @@
                         <group>
                             <field name="name" required="1" string="Razón Social"/>
                             <field name="is_lims_customer" invisible="1"/>
-                            <field name="vat" string="RFC"/>
+                            <field name="vat" string="RFC" required="1"/>
                             <field name="client_code"/>
+                            <button name="action_generate_client_code" 
+                                    string="🔄 Generar Código" 
+                                    type="object"
+                                    class="btn-success"
+                                    help="Generar código automático basado en RFC"/>
                         </group>
 
                         <group string="Responsable de Cuenta">
