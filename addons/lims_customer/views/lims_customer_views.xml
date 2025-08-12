@@ -84,7 +84,7 @@
                             <field name="is_lims_customer" invisible="1"/>
                             <field name="vat" string="RFC" required="1"/>
                             <field name="client_code"/>
-                            <button name="action_generate_client_code" 
+                            <button name="action_generate_code_wizard" 
                                     string="🔄 Generar Código" 
                                     type="object"
                                     class="btn-success"

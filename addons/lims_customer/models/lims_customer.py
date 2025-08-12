@@ -188,3 +188,17 @@ class LimsCustomer(models.Model):
         
         # Solo generar y asignar al campo, SIN guardar
         self.client_code = self._generate_client_code(self.vat)
+
+    def action_generate_code_wizard(self):
+        """Wizard para generar código sin validaciones"""
+        return {
+            'name': 'Generar Código de Cliente',
+            'type': 'ir.actions.act_window',
+            'res_model': 'lims.client.code.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_partner_id': self.id,
+                'default_vat': self.vat or ''
+            }
+        }
