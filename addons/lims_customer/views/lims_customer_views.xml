@@ -29,6 +29,7 @@
                     <field name="phone"/>
                     <field name="city"/>
                     <field name="country_id"/>
+                    <field name="client_code_sequence" invisible="1"/>
                 </list>
             </field>
         </record>

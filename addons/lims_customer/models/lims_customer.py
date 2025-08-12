@@ -114,6 +114,45 @@ class LimsCustomer(models.Model):
         next_num = str(max_num + 1).zfill(3)
         return f'{prefix}-{next_num}'
     
+    @api.depends('client_code')
+    def _compute_client_code_sequence(self):
+        import re
+        for record in self:
+            if record.client_code:
+                # Extraer números del código (ej: ABC-001 -> 1)
+                numbers = re.findall(r'\d+', record.client_code)
+                if numbers:
+                    # Tomar el último número encontrado (el consecutivo)
+                    record.client_code_sequence = int(numbers[-1])
+                else:
+                    record.client_code_sequence = 99999  # Al final si no tiene números
+            else:
+                record.client_code_sequence = 99999  # Al final si no tiene código
+
+    @api.model
+    def search(self, args, offset=0, limit=None, order=None, count=False):
+        # Si no se especifica orden y es vista de clientes LIMS, ordenar por consecutivo
+        if not order and any(('is_lims_customer', '=', True) in args for args in args if isinstance(args, (list, tuple))):
+            # Forzar cálculo de sequence para todos los registros
+            all_records = super().search(args, offset=0, limit=None, order='client_code', count=False)
+            all_records._compute_client_code_sequence()
+            
+            # Ordenar por sequence
+            sorted_records = all_records.sorted(lambda r: (r.client_code_sequence, r.client_code))
+            
+            if count:
+                return len(sorted_records)
+            
+            # Aplicar offset y limit después del ordenamiento
+            if offset:
+                sorted_records = sorted_records[offset:]
+            if limit:
+                sorted_records = sorted_records[:limit]
+                
+            return sorted_records
+        
+        return super().search(args, offset=offset, limit=limit, order=order, count=count)
+
     def action_generate_missing_codes(self):
         """Generar códigos para clientes que no los tengan"""
         clients_without_code = self.search([
