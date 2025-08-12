@@ -14,7 +14,7 @@ class LimsCustomer(models.Model):
     )
 
     # Campos adicionales directos de res.partner (para claridad)
-    vat = fields.Char(string="RFC / TAX ID")
+    vat = fields.Char(string="RFC / TAX ID", required=True)
     street = fields.Char(string="Calle y número ")
     street2 = fields.Char(string="Calle 2")
     city = fields.Char(string="Ciudad")
@@ -69,3 +69,73 @@ class LimsCustomer(models.Model):
         """Método dummy para botón de contactos"""
         return True
     
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if vals.get('is_lims_customer') and not vals.get('client_code') and vals.get('vat'):
+                vals['client_code'] = self._generate_client_code(vals['vat'])
+        
+        return super().create(vals_list)
+
+    def write(self, vals):
+        # Si cambia el RFC y no tiene client_code, generarlo
+        if vals.get('vat') and not self.client_code:
+            vals['client_code'] = self._generate_client_code(vals['vat'])
+        
+        return super().write(vals)
+
+    def _generate_client_code(self, rfc):
+        """Generar código basado en RFC: ABC123... -> ABC-001"""
+        if not rfc or len(rfc) < 3:
+            return False
+        
+        # Tomar las 3 primeras letras del RFC
+        prefix = rfc[:3].upper()
+        
+        # Buscar el mayor consecutivo existente para este prefijo
+        existing = self.search([
+            ('client_code', 'like', f'{prefix}-%'),
+            ('client_code', '!=', False)
+        ])
+        
+        # Extraer números consecutivos
+        max_num = 0
+        for record in existing:
+            if record.client_code:
+                try:
+                    # Formato: ABC-001 -> extraer 001
+                    parts = record.client_code.split('-')
+                    if len(parts) == 2:
+                        num = int(parts[1])
+                        max_num = max(max_num, num)
+                except (ValueError, IndexError):
+                    continue
+        
+        # Generar siguiente consecutivo
+        next_num = str(max_num + 1).zfill(3)
+        return f'{prefix}-{next_num}'
+    
+    def action_generate_missing_codes(self):
+        """Generar códigos para clientes que no los tengan"""
+        clients_without_code = self.search([
+            ('is_lims_customer', '=', True),
+            ('client_code', '=', False),
+            ('vat', '!=', False)
+        ])
+        
+        generated = 0
+        for client in clients_without_code:
+            if client.vat:
+                client.client_code = client._generate_client_code(client.vat)
+                generated += 1
+        
+        if generated > 0:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Códigos Generados',
+                    'message': f'Se generaron {generated} códigos de cliente automáticamente.',
+                    'type': 'success'
+                }
+            }

@@ -143,6 +143,18 @@
                   action="action_lims_customers"
                   sequence="2"/>
 
+        <!-- Acción para generar códigos faltantes -->
+        <record id="action_generate_client_codes" model="ir.actions.server">
+            <field name="name">Generar Códigos Faltantes</field>
+            <field name="model_id" ref="base.model_res_partner"/>
+            <field name="binding_model_id" ref="base.model_res_partner"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+                action = records.filtered('is_lims_customer').action_generate_missing_codes()
+            </field>
+        </record>
+
         <!-- Vista formulario sucursales -->
         <record id="view_lims_branch_form" model="ir.ui.view">
             <field name="name">lims.branch.form</field>
