@@ -114,8 +114,8 @@
                             </group>
                         </group>
 
-                        <!-- Datos Fiscales (Solo si existe el módulo de localización mexicana) -->
-                        <group string="Datos Fiscales" invisible="country_id != ref('base.mx')">
+                        <!-- Datos Fiscales -->
+                        <group string="Datos Fiscales">
                             <field name="l10n_mx_edi_fiscal_regime" string="Régimen Fiscal"/>
                         </group>
 
