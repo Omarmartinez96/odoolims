@@ -152,14 +152,12 @@
             <field name="view_mode">list,form</field>
             <field name="domain">[('chain_of_custody_state', 'in', ['in_progress', 'done'])]</field>
             <field name="help" type="html">
-                <![CDATA[
-                    <p class="o_view_nocontent_smiling_face">
-                        No hay cadenas de custodia para recepción
-                    </p>
-                    <p>
-                        Aquí aparecerán las cadenas de custodia listas para recibir muestras
-                    </p>
-                ]]>
+                <p class="o_view_nocontent_smiling_face">
+                    No hay cadenas de custodia para recepción
+                </p>
+                <p>
+                    Aquí aparecerán las cadenas de custodia listas para recibir muestras
+                </p>
             </field>
         </record>
 
