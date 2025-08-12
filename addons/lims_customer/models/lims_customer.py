@@ -5,18 +5,21 @@ from odoo.exceptions import UserError
 class LimsCustomer(models.Model):
     _inherit = 'res.partner'
 
+    # ========== CAMPOS PRINCIPALES ==========
     is_lims_customer = fields.Boolean(string='Cliente LIMS', default=True)
-    client_code = fields.Char(string="Código del Cliente", required=True)
-
-    # Campo computado para ordenamiento numérico (CON STORE)
-    client_code_sequence = fields.Integer(
-        string='Secuencia de Código', 
-        compute='_compute_client_code_sequence', 
+    client_code = fields.Char(string="Código del Cliente")
+    
+    # Campo almacenado para ordenamiento numérico
+    client_sequence = fields.Integer(
+        string='Número Consecutivo',
+        compute='_compute_client_sequence',
+        store=True,  # ✅ SÍ almacenado para poder ordenar
+        help='Número extraído del código cliente para ordenamiento (001, 002, etc.)'
     )
 
-    # Campos adicionales directos de res.partner (para claridad)
+    # Campos heredados redefinidos para claridad
     vat = fields.Char(string="RFC / TAX ID", required=True)
-    street = fields.Char(string="Calle y número ")
+    street = fields.Char(string="Calle y número")
     street2 = fields.Char(string="Calle 2")
     city = fields.Char(string="Ciudad")
     state_id = fields.Many2one('res.country.state', string="Estado")
@@ -30,15 +33,19 @@ class LimsCustomer(models.Model):
         default='company'
     )
 
+    # ========== RELACIONES ==========
     branch_ids = fields.One2many(
         'lims.branch',
         'customer_id',
         string="Sucursales"
     )
+    
+    # ========== CAMPOS COMPUTADOS PARA SMART BUTTONS ==========
     branch_count = fields.Integer(string='Número de Sucursales', compute='_compute_counts')
     total_departments = fields.Integer(string='Total Departamentos', compute='_compute_counts')
     total_contacts = fields.Integer(string='Total Contactos', compute='_compute_counts')
 
+    # ========== MÉTODOS COMPUTADOS ==========
     @api.depends('branch_ids', 'branch_ids.department_ids', 'branch_ids.department_ids.contact_ids')
     def _compute_counts(self):
         for record in self:
@@ -47,33 +54,28 @@ class LimsCustomer(models.Model):
             record.total_contacts = sum(len(dept.contact_ids) for branch in record.branch_ids for dept in branch.department_ids)
 
     @api.depends('client_code')
-    def _compute_client_code_sequence(self):
-        import re
+    def _compute_client_sequence(self):
+        """Extraer SOLO el número consecutivo para ordenamiento"""
         for record in self:
-            if record.client_code:
-                # Extraer números del código (ej: LMP-001 -> 1)
-                numbers = re.findall(r'\d+', record.client_code)
-                if numbers:
-                    # Tomar el último número encontrado (generalmente el consecutivo)
-                    record.client_code_sequence = int(numbers[-1])
-                else:
-                    record.client_code_sequence = 9999  # Al final si no tiene números
+            if record.client_code and '-' in record.client_code:
+                try:
+                    # Extraer número después del guión: ABC-001 -> 1
+                    num_part = record.client_code.split('-')[-1]
+                    record.client_sequence = int(num_part) if num_part.isdigit() else 99999
+                except (ValueError, IndexError):
+                    record.client_sequence = 99999
             else:
-                record.client_code_sequence = 9999  # Al final si no tiene código
+                record.client_sequence = 99999
 
-    def action_view_departments(self):
-        """Método dummy para botón de departamentos"""
-        return True
-
-    def action_view_contacts(self):
-        """Método dummy para botón de contactos"""
-        return True
-    
+    # ========== MÉTODOS DE CREACIÓN Y ACTUALIZACIÓN ==========
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
-            if vals.get('is_lims_customer') and not vals.get('client_code') and vals.get('vat'):
-                vals['client_code'] = self._generate_client_code(vals['vat'])
+            if vals.get('is_lims_customer'):
+                # Solo generar código automáticamente si no existe pero hay RFC
+                if not vals.get('client_code') and vals.get('vat'):
+                    vals['client_code'] = self._generate_client_code(vals['vat'])
+                # ❌ QUITADO: Ya no es obligatorio tener código
         
         return super().create(vals_list)
 
@@ -84,6 +86,7 @@ class LimsCustomer(models.Model):
         
         return super().write(vals)
 
+    # ========== GENERACIÓN DE CÓDIGOS ==========
     def _generate_client_code(self, rfc):
         """Generar código basado en RFC: ABC123... -> ABC-001"""
         if not rfc or len(rfc) < 3:
@@ -93,11 +96,10 @@ class LimsCustomer(models.Model):
         prefix = rfc[:3].upper()
         
         # Buscar el mayor consecutivo existente para este prefijo
-        # EXCLUIR el registro actual para evitar recursión
         existing = self.env['res.partner'].search([
             ('client_code', 'like', f'{prefix}-%'),
             ('client_code', '!=', False),
-            ('id', '!=', self.id)  # ← CLAVE: Excluir el registro actual
+            ('id', '!=', self.id)  # Excluir el registro actual
         ])
         
         # Extraer números consecutivos
@@ -116,46 +118,17 @@ class LimsCustomer(models.Model):
         # Generar siguiente consecutivo
         next_num = str(max_num + 1).zfill(3)
         return f'{prefix}-{next_num}'
-    
-    @api.depends('client_code')
-    def _compute_client_code_sequence(self):
-        import re
-        for record in self:
-            if record.client_code:
-                # Extraer números del código (ej: ABC-001 -> 1)
-                numbers = re.findall(r'\d+', record.client_code)
-                if numbers:
-                    # Tomar el último número encontrado (el consecutivo)
-                    record.client_code_sequence = int(numbers[-1])
-                else:
-                    record.client_code_sequence = 99999  # Al final si no tiene números
-            else:
-                record.client_code_sequence = 99999  # Al final si no tiene código
 
-    @api.model
-    def search(self, args, offset=0, limit=None, order=None, count=False):
-        # Si no se especifica orden y es vista de clientes LIMS, ordenar por consecutivo
-        if not order and any(('is_lims_customer', '=', True) in args for args in args if isinstance(args, (list, tuple))):
-            # Forzar cálculo de sequence para todos los registros
-            all_records = super().search(args, offset=0, limit=None, order='client_code', count=False)
-            all_records._compute_client_code_sequence()
-            
-            # Ordenar por sequence
-            sorted_records = all_records.sorted(lambda r: (r.client_code_sequence, r.client_code))
-            
-            if count:
-                return len(sorted_records)
-            
-            # Aplicar offset y limit después del ordenamiento
-            if offset:
-                sorted_records = sorted_records[offset:]
-            if limit:
-                sorted_records = sorted_records[:limit]
-                
-            return sorted_records
-        
-        return super().search(args, offset=offset, limit=limit, order=order, count=count)
+    # ========== ACCIÓN MASIVA PARA CÓDIGOS FALTANTES ==========
+    def action_view_departments(self):
+        """Acción para ver departamentos (placeholder)"""
+        return True
 
+    def action_view_contacts(self):
+        """Acción para ver contactos (placeholder)"""
+        return True
+
+    # ========== ACCIÓN MASIVA PARA CÓDIGOS FALTANTES ==========
     def action_generate_missing_codes(self):
         """Generar códigos para clientes que no los tengan"""
         clients_without_code = self.search([
@@ -180,25 +153,13 @@ class LimsCustomer(models.Model):
                     'type': 'success'
                 }
             }
-            
-    def action_generate_client_code(self):
-        """Generar código de cliente basado en RFC"""
-        if not self.vat:
-            raise UserError("Se requiere RFC para generar el código de cliente")
-        
-        # Solo generar y asignar al campo, SIN guardar
-        self.client_code = self._generate_client_code(self.vat)
-
-    def action_generate_code_wizard(self):
-        """Wizard para generar código sin validaciones"""
-        return {
-            'name': 'Generar Código de Cliente',
-            'type': 'ir.actions.act_window',
-            'res_model': 'lims.client.code.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_partner_id': self.id,
-                'default_vat': self.vat or ''
+        else:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Sin Cambios',
+                    'message': 'Todos los clientes ya tienen código asignado.',
+                    'type': 'info'
+                }
             }
-        }

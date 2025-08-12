@@ -1,6 +1,8 @@
 <odoo>
     <data>
-        <!-- Acción ventana para sucursales (filtrado por cliente) -->
+        
+        <!-- ========== ACCIONES PARA SMART BUTTONS ========== -->
+        <!-- Acción para sucursales filtradas por cliente -->
         <record id="action_lims_branches" model="ir.actions.act_window">
             <field name="name">Sucursales</field>
             <field name="res_model">lims.branch</field>
@@ -8,20 +10,13 @@
             <field name="domain">[("customer_id", "=", context.get("default_customer_id"))]</field>
         </record>
 
-        <!-- Acción ventana para departamentos (filtrado por sucursal) -->
-        <record id="action_lims_departments" model="ir.actions.act_window">
-            <field name="name">Departamentos</field>
-            <field name="res_model">lims.department</field>
-            <field name="view_mode">list,form</field>
-            <field name="domain">[('branch_id', '=', context.get('default_branch_id'))]</field>
-        </record>
-
-        <!-- Vista lista para clientes -->
+        <!-- ========== VISTA LISTA CON ORDENAMIENTO POR SECUENCIA ========== -->
         <record id="view_lims_customer_list" model="ir.ui.view">
             <field name="name">lims.customer.list</field>
             <field name="model">res.partner</field>
             <field name="arch" type="xml">
-                <list string="Clientes" default_order="client_code asc">
+                <!-- ✅ AHORA SÍ funciona porque client_sequence está almacenado -->
+                <list string="Clientes" default_order="client_sequence asc, client_code asc">
                     <field name="client_code"/>
                     <field name="name"/>
                     <field name="vat"/>
@@ -29,12 +24,13 @@
                     <field name="phone"/>
                     <field name="city"/>
                     <field name="country_id"/>
-                    <field name="client_code_sequence" invisible="1"/>
+                    <!-- Campo para debug (opcional, se puede hacer invisible) -->
+                    <field name="client_sequence" string="Sec"/>
                 </list>
             </field>
         </record>
 
-        <!-- Vista de búsqueda para clientes -->
+        <!-- ========== VISTA DE BÚSQUEDA AVANZADA ========== -->
         <record id="view_lims_customer_search" model="ir.ui.view">
             <field name="name">lims.customer.search</field>
             <field name="model">res.partner</field>
@@ -46,10 +42,13 @@
                     <field name="email" string="Email"/>
                     <field name="city" string="Ciudad"/>
                     <separator/>
+                    <!-- Filtros útiles -->
                     <filter string="Con RFC" name="has_rfc" domain="[('vat','!=',False)]"/>
                     <filter string="Sin RFC" name="no_rfc" domain="[('vat','=',False)]"/>
                     <filter string="Con Email" name="has_email" domain="[('email','!=',False)]"/>
+                    <filter string="Sin Código" name="no_code" domain="[('client_code','=',False)]"/>
                     <separator/>
+                    <!-- Agrupaciones -->
                     <group expand="0" string="Agrupar Por">
                         <filter string="País" name="group_country" context="{'group_by':'country_id'}"/>
                         <filter string="Estado" name="group_state" context="{'group_by':'state_id'}"/>
@@ -59,13 +58,15 @@
             </field>
         </record>
 
-        <!-- Vista formulario INDEPENDIENTE para clientes -->
+        <!-- ========== VISTA FORMULARIO OPTIMIZADA ========== -->
         <record id="view_lims_customer_form" model="ir.ui.view">
             <field name="name">lims.customer.form</field>
             <field name="model">res.partner</field>
             <field name="arch" type="xml">
-                <form string="Cliente">
+                <form string="Cliente LIMS">
                     <sheet>
+                        
+                        <!-- Smart Buttons -->
                         <div class="oe_button_box" name="button_box">
                             <button class="oe_stat_button" type="action" name="%(action_lims_branches)d"
                                     context="{'default_customer_id': id}" icon="fa-building">
@@ -78,42 +79,53 @@
                                 <field name="total_contacts" widget="statinfo" string="Contactos"/>
                             </button>
                         </div>
-                        
-                        <group>
-                            <field name="name" required="1" string="Razón Social"/>
-                            <field name="is_lims_customer" invisible="1"/>
-                            <field name="vat" string="RFC" required="1"/>
-                            <field name="client_code"/>
-                            <button name="action_generate_code_wizard" 
-                                    string="🔄 Generar Código" 
-                                    type="object"
-                                    class="btn-success"
-                                    help="Generar código automático basado en RFC"/>
+
+                        <!-- Información Principal -->
+                        <group string="Información Principal">
+                            <group>
+                                <field name="name" required="1" string="Razón Social" placeholder="Nombre completo de la empresa"/>
+                                <field name="vat" string="RFC" required="1" placeholder="RFC de la empresa"/>
+                                <field name="is_lims_customer" invisible="1"/>
+                            </group>
+                            <group>
+                                <field name="client_code" placeholder="Se genera automáticamente al guardar con RFC"/>
+                                <!-- Campo para mostrar la secuencia extraída (opcional) -->
+                                <field name="client_sequence" readonly="1" string="Secuencia" 
+                                       help="Número extraído automáticamente para ordenamiento"/>
+                            </group>
                         </group>
 
-                        <group string="Responsable de Cuenta">
-                            <field name="email" string="Correo electrónico"/>
-                            <field name="phone" string="Teléfono"/>
+                        <!-- Información de Contacto -->
+                        <group string="Información de Contacto">
+                            <group>
+                                <field name="email" string="Correo electrónico" placeholder="correo@empresa.com"/>
+                                <field name="phone" string="Teléfono" placeholder="+52 123 456 7890"/>
+                            </group>
                         </group>
 
-                        <group string="Dirección Fiscal Completa">
-                            <field name="street" string="Calle y Exterior"/>
-                            <field name="street2" string="Colonia / Interior"/>
-                            <field name="city" string="Ciudad"/>
-                            <field name="state_id" string="Estado"/>
-                            <field name="zip" string="Código Postal"/>
-                            <field name="country_id" string="País"/>
+                        <!-- Dirección Completa -->
+                        <group string="Dirección Fiscal">
+                            <group>
+                                <field name="street" string="Calle y Número Exterior" placeholder="Calle Principal #123"/>
+                                <field name="street2" string="Colonia / Número Interior" placeholder="Colonia Centro, Int. 2"/>
+                                <field name="city" string="Ciudad" placeholder="Ciudad"/>
+                            </group>
+                            <group>
+                                <field name="state_id" string="Estado"/>
+                                <field name="zip" string="Código Postal" placeholder="12345"/>
+                                <field name="country_id" string="País"/>
+                            </group>
                         </group>
 
-                        <group string="Datos Fiscales para CFDI">
-                            <field name="l10n_mx_edi_fiscal_regime" string="Régimen Fiscal" required="1"/>
+                        <!-- Datos Fiscales (Solo si existe el módulo de localización mexicana) -->
+                        <group string="Datos Fiscales" invisible="country_id != ref('base.mx')">
+                            <field name="l10n_mx_edi_fiscal_regime" string="Régimen Fiscal"/>
                         </group>
 
+                        <!-- Sucursales en Notebook -->
                         <notebook>
                             <page string="Sucursales">
-                                <field name="branch_ids"
-                                       context="{'default_customer_id': id}"
-                                       options="{'form_view_ref': 'view_lims_branch_form'}">
+                                <field name="branch_ids" context="{'default_customer_id': id}">
                                     <list create="true" edit="false">
                                         <field name="name"/>
                                         <field name="address"/>
@@ -121,69 +133,78 @@
                                 </field>
                             </page>
                         </notebook>
+
                     </sheet>
                 </form>
             </field>
         </record>
 
-        <!-- Acción para clientes -->
+        <!-- ========== ACCIÓN PRINCIPAL SIMPLIFICADA ========== -->
         <record id="action_lims_customers" model="ir.actions.act_window">
-            <field name="name">Clientes</field>
+            <field name="name">Clientes LIMS</field>
             <field name="res_model">res.partner</field>
             <field name="view_mode">list,form</field>
-            <field name="domain">[('is_lims_customer', '=', True), ('is_company', '=', True), ('client_code', '!=', False)]</field>
-            <field name="context">{'default_is_lims_customer': True}</field>
+            <!-- Dominio: Solo clientes LIMS que sean empresas -->
+            <field name="domain">[('is_lims_customer', '=', True), ('is_company', '=', True)]</field>
+            <!-- Contexto simplificado -->
+            <field name="context">{
+                'default_is_lims_customer': True,
+                'default_is_company': True
+            }</field>
+            <!-- Vistas específicas -->
             <field name="view_ids" eval="[
                 (5, 0, 0),
                 (0, 0, {'view_mode': 'list', 'view_id': ref('view_lims_customer_list')}),
                 (0, 0, {'view_mode': 'form', 'view_id': ref('view_lims_customer_form')})
             ]"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    ¡Crear el primer cliente LIMS!
+                </p>
+                <p>
+                    Los clientes LIMS manejan sucursales, departamentos y contactos organizados.
+                    El código se genera automáticamente basado en el RFC.
+                </p>
+            </field>
         </record>
 
-        <!-- Menú principal de gestión de clientes -->
+        <!-- ========== MENÚS PRINCIPALES ========== -->
         <menuitem id="lims_customer_menu" name="Gestión de Clientes" sequence="1"/>
-
-        <!-- Submenú Clientes -->
-        <menuitem id="lims_customers_menu" name="Clientes"
+        
+        <menuitem id="lims_customers_menu" 
+                  name="Clientes"
                   parent="lims_customer_menu"
                   action="action_lims_customers"
                   sequence="2"/>
 
-        <!-- Acción para generar códigos faltantes -->
-        <record id="action_generate_client_codes" model="ir.actions.server">
-            <field name="name">Generar Códigos Faltantes</field>
-            <field name="model_id" ref="base.model_res_partner"/>
-            <field name="binding_model_id" ref="base.model_res_partner"/>
-            <field name="binding_view_types">list</field>
-            <field name="state">code</field>
-            <field name="code">
-                action = records.filtered('is_lims_customer').action_generate_missing_codes()
-            </field>
-        </record>
-
-        <!-- Vista formulario sucursales -->
-        <record id="view_lims_branch_form" model="ir.ui.view">
-            <field name="name">lims.branch.form</field>
+        <!-- ========== VISTAS PARA SUCURSALES (SIMPLIFICADAS) ========== -->
+        <record id="view_lims_branch_form_simple" model="ir.ui.view">
+            <field name="name">lims.branch.form.simple</field>
             <field name="model">lims.branch</field>
             <field name="arch" type="xml">
                 <form string="Sucursal">
                     <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Nombre de la sucursal" required="1"/>
+                            </h1>
+                            <h3>
+                                <field name="customer_name" readonly="1"/>
+                            </h3>
+                        </div>
+                        
                         <group>
-                            <field name="name" required="1"/>
-                            <field name="address"/>
+                            <field name="address" placeholder="Dirección de la sucursal"/>
+                            <field name="customer_id" invisible="1"/>
                             <field name="client_code" readonly="1"/>
-                            <button name="%(action_lims_departments)d"
-                                    string="Ver Departamentos"
-                                    type="action"
-                                    class="oe_stat_button"
-                                    context="{'default_branch_id': id}"
-                                    invisible="id==False"/>
                         </group>
+
                         <notebook>
                             <page string="Departamentos">
                                 <field name="department_ids">
                                     <list editable="bottom">
-                                        <field name="name"/>
+                                        <field name="name" placeholder="Nombre del departamento"/>
+                                        <field name="address" placeholder="Dirección específica"/>
                                     </list>
                                 </field>
                             </page>
@@ -193,15 +214,15 @@
             </field>
         </record>
 
-        <!-- Vista lista sucursales -->
-        <record id="view_lims_branch_list" model="ir.ui.view">
-            <field name="name">lims.branch.list</field>
+        <record id="view_lims_branch_list_simple" model="ir.ui.view">
+            <field name="name">lims.branch.list.simple</field>
             <field name="model">lims.branch</field>
             <field name="arch" type="xml">
                 <list string="Sucursales">
                     <field name="name"/>
                     <field name="address"/>
-                    <field name="customer_id"/>
+                    <field name="customer_name"/>
+                    <field name="client_code"/>
                 </list>
             </field>
         </record>
