@@ -93,9 +93,11 @@ class LimsCustomer(models.Model):
         prefix = rfc[:3].upper()
         
         # Buscar el mayor consecutivo existente para este prefijo
-        existing = self.search([
+        # EXCLUIR el registro actual para evitar recursión
+        existing = self.env['res.partner'].search([
             ('client_code', 'like', f'{prefix}-%'),
-            ('client_code', '!=', False)
+            ('client_code', '!=', False),
+            ('id', '!=', self.id)  # ← CLAVE: Excluir el registro actual
         ])
         
         # Extraer números consecutivos
@@ -105,7 +107,7 @@ class LimsCustomer(models.Model):
                 try:
                     # Formato: ABC-001 -> extraer 001
                     parts = record.client_code.split('-')
-                    if len(parts) == 2:
+                    if len(parts) == 2 and parts[1].isdigit():
                         num = int(parts[1])
                         max_num = max(max_num, num)
                 except (ValueError, IndexError):
