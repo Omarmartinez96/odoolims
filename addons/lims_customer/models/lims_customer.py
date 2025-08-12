@@ -66,4 +66,4 @@ class LimsCustomer(models.Model):
         """Método dummy para botón de contactos"""
         return True
     
-    _order = 'client_code_sequence asc, client_code asc'
+    _order = 'client_code asc'
