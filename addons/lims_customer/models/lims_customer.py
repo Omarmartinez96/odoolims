@@ -7,8 +7,12 @@ class LimsCustomer(models.Model):
     is_lims_customer = fields.Boolean(string='Cliente LIMS', default=True)
     client_code = fields.Char(string="Código del Cliente")  # <- 🔴 SIN required=True 🔴
 
-    # Campo computado para ordenamiento numérico
-    client_code_sequence = fields.Integer(string='Secuencia de Código', compute='_compute_client_code_sequence')
+    # Campo computado para ordenamiento numérico (CON STORE)
+    client_code_sequence = fields.Integer(
+        string='Secuencia de Código', 
+        compute='_compute_client_code_sequence', 
+        store=True
+    )
 
     # Campos adicionales directos de res.partner (para claridad)
     vat = fields.Char(string="RFC / TAX ID")
@@ -48,7 +52,7 @@ class LimsCustomer(models.Model):
         import re
         for record in self:
             if record.client_code:
-                # Extraer números del código (ej: HTP-001 -> 1)
+                # Extraer números del código (ej: LMP-001 -> 1)
                 numbers = re.findall(r'\d+', record.client_code)
                 if numbers:
                     # Tomar el último número encontrado (generalmente el consecutivo)
@@ -66,4 +70,4 @@ class LimsCustomer(models.Model):
         """Método dummy para botón de contactos"""
         return True
     
-    _order = 'client_code asc'
+    _order = 'client_code_sequence asc, client_code asc'
