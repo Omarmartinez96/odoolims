@@ -21,7 +21,7 @@
             <field name="name">lims.customer.list</field>
             <field name="model">res.partner</field>
             <field name="arch" type="xml">
-                <list string="Clientes" default_order="client_code_sequence asc, client_code asc">
+                <list string="Clientes" default_order="client_code asc">
                     <field name="client_code"/>
                     <field name="name"/>
                     <field name="vat"/>
@@ -29,7 +29,6 @@
                     <field name="phone"/>
                     <field name="city"/>
                     <field name="country_id"/>
-                    <field name="client_code_sequence" invisible="1"/>
                 </list>
             </field>
         </record>
