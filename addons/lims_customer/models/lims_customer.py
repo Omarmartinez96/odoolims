@@ -5,7 +5,7 @@ class LimsCustomer(models.Model):
     _inherit = 'res.partner'
 
     is_lims_customer = fields.Boolean(string='Cliente LIMS', default=True)
-    client_code = fields.Char(string="Código del Cliente", required=True)
+    client_code = fields.Char(string="Código del Cliente")
 
     # Campo computado para ordenamiento numérico (CON STORE)
     client_code_sequence = fields.Integer(
