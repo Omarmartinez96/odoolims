@@ -5,13 +5,12 @@ class LimsCustomer(models.Model):
     _inherit = 'res.partner'
 
     is_lims_customer = fields.Boolean(string='Cliente LIMS', default=True)
-    client_code = fields.Char(string="Código del Cliente")  # <- 🔴 SIN required=True 🔴
+    client_code = fields.Char(string="Código del Cliente")  
 
     # Campo computado para ordenamiento numérico (CON STORE)
     client_code_sequence = fields.Integer(
         string='Secuencia de Código', 
         compute='_compute_client_code_sequence', 
-        store=True
     )
 
     # Campos adicionales directos de res.partner (para claridad)
@@ -70,4 +69,3 @@ class LimsCustomer(models.Model):
         """Método dummy para botón de contactos"""
         return True
     
-    _order = 'client_code_sequence asc, client_code asc'
