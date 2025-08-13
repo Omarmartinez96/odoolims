@@ -4,7 +4,6 @@ from odoo.exceptions import UserError
 
 class LimsCustomer(models.Model):
     _inherit = 'res.partner'
-    _order = 'client_sequence asc, name asc'
 
     # ========== CAMPOS PRINCIPALES ==========
     is_lims_customer = fields.Boolean(string='Cliente LIMS', default=True)
@@ -125,43 +124,41 @@ class LimsCustomer(models.Model):
     def search(self, args, offset=0, limit=None, order=None, count=False):
         """Ordenamiento numérico para clientes LIMS"""
         
-        # DEBUG: Imprimir para ver qué está pasando
+        # DEBUG: Ver parámetros
         import logging
         _logger = logging.getLogger(__name__)
-        _logger.info(f"SEARCH DEBUG - args: {args}, order: {order}")
+        _logger.info(f"SEARCH - args: {args}, order: {order}")
         
-        # FORZAR ordenamiento si es búsqueda de clientes LIMS sin orden específico
-        if not order and args and any('is_lims_customer' in str(args)):
-            # Buscar registros normalmente
-            result = super().search(args, offset=0, limit=None, order='id', count=False)
+        # Si no hay orden Y es vista de clientes
+        if not order and args:
+            # Buscar todos los resultados
+            all_ids = super().search(args, offset=0, limit=None, count=False)
             
             if count:
-                return len(result)
+                return len(all_ids)
+            
+            # Ordenar manualmente por consecutivo
+            if all_ids:
+                all_records = self.browse(all_ids)
                 
-            if result:
-                # Ordenar por consecutivo extraído del código
-                records = self.browse(result)
-                def get_sequence(record):
-                    if record.client_code and '-' in record.client_code:
-                        try:
-                            num_str = record.client_code.split('-')[-1]
-                            return int(num_str) if num_str.isdigit() else 99999
-                        except:
-                            return 99999
+                # Función para extraer número consecutivo
+                def sort_key(rec):
+                    if rec.client_code and '-' in rec.client_code:
+                        parts = rec.client_code.split('-')
+                        if len(parts) >= 2 and parts[-1].isdigit():
+                            return int(parts[-1])
                     return 99999
                 
-                sorted_records = sorted(records, key=get_sequence)
+                # Ordenar
+                sorted_recs = sorted(all_records, key=sort_key)
                 
-                # Aplicar offset y limit
-                if offset:
-                    sorted_records = sorted_records[offset:]
-                if limit:
-                    sorted_records = sorted_records[:limit]
-                    
-                return [r.id for r in sorted_records]
-            
-            return result
-            
+                # Aplicar paginación
+                start = offset or 0
+                end = start + limit if limit else len(sorted_recs)
+                
+                return [r.id for r in sorted_recs[start:end]]
+        
+        # Caso normal
         return super().search(args, offset=offset, limit=limit, order=order, count=count)
 
     # ========== ACCIÓN MASIVA PARA CÓDIGOS FALTANTES ==========
