@@ -1,34 +1,94 @@
 <odoo>
     <data>
-        <!-- VISTA LISTA de Contactos -->
+        <!-- VISTA LISTA de Contactos (MEJORADA) -->
         <record id="view_lims_contact_list" model="ir.ui.view">
             <field name="name">lims.contact.list</field>
             <field name="model">lims.contact</field>
             <field name="arch" type="xml">
                 <list string="Contactos">
-                    <field name="name"/>
-                    <field name="email"/>
-                    <field name="phone"/>
+                    <field name="name" string="Nombre"/>
+                    <field name="job_title" string="Puesto"/>
+                    <field name="email" string="Email"/>
+                    <field name="phone" string="Teléfono"/>
                     <field name="department_id" string="Departamento"/>
                 </list>
             </field>
         </record>
 
-        <!-- VISTA FORMULARIO de Contactos -->
+        <!-- VISTA FORMULARIO de Contactos (MEJORADA) -->
         <record id="view_lims_contact_form" model="ir.ui.view">
             <field name="name">lims.contact.form</field>
             <field name="model">lims.contact</field>
             <field name="arch" type="xml">
                 <form string="Contacto">
                     <sheet>
-                        <group>
-                            <field name="department_id" readonly="1" required="1"/>
-                            <field name="name" required="1"/>
-                            <field name="email"/>
-                            <field name="phone"/>
+                        <!-- Título con breadcrumbs -->
+                        <div class="oe_title">
+                            <label for="department_id" class="oe_edit_only" string="Departamento"/>
+                            <h2>
+                                <field name="department_id" readonly="1" required="1" class="o_text_overflow"/>
+                            </h2>
+                            <label for="name" class="oe_edit_only" string="Nombre del Contacto"/>
+                            <h1>
+                                <field name="name" placeholder="Nombre completo del contacto..." class="o_text_overflow" required="1"/>
+                            </h1>
+                        </div>
+
+                        <!-- Información Principal del Contacto -->
+                        <group string="Información del Contacto">
+                            <group>
+                                <field name="job_title" 
+                                       string="Puesto" 
+                                       placeholder="Ej: Gerente de Ventas, Coordinador, etc."/>
+                                
+                                <field name="email" 
+                                       string="Email" 
+                                       widget="email"
+                                       placeholder="contacto@empresa.com"/>
+                            </group>
+                            <group>
+                                <field name="phone" 
+                                       string="Teléfono" 
+                                       widget="phone"
+                                       placeholder="+52 123 456 7890"/>
+                            </group>
                         </group>
+
+                        <!-- Información Técnica (Campo partner_id si existe) -->
+                        <group string="Información Técnica" invisible="partner_id == False">
+                            <field name="partner_id" 
+                                   string="Contacto en Odoo"
+                                   help="Registro vinculado en el módulo de contactos de Odoo"
+                                   readonly="1"/>
+                        </group>
+
                     </sheet>
                 </form>
+            </field>
+        </record>
+
+        <!-- VISTA DE BÚSQUEDA para Contactos (NUEVA) -->
+        <record id="view_lims_contact_search" model="ir.ui.view">
+            <field name="name">lims.contact.search</field>
+            <field name="model">lims.contact</field>
+            <field name="arch" type="xml">
+                <search>
+                    <field name="name" string="Nombre"/>
+                    <field name="job_title" string="Puesto"/>
+                    <field name="email" string="Email"/>
+                    <field name="department_id" string="Departamento"/>
+                    <separator/>
+                    <!-- Filtros útiles -->
+                    <filter string="Con Email" name="has_email" domain="[('email','!=',False)]"/>
+                    <filter string="Con Teléfono" name="has_phone" domain="[('phone','!=',False)]"/>
+                    <filter string="Con Puesto" name="has_job" domain="[('job_title','!=',False)]"/>
+                    <separator/>
+                    <!-- Agrupaciones -->
+                    <group expand="0" string="Agrupar Por">
+                        <filter string="Departamento" name="group_department" context="{'group_by':'department_id'}"/>
+                        <filter string="Puesto" name="group_job" context="{'group_by':'job_title'}"/>
+                    </group>
+                </search>
             </field>
         </record>
     </data>

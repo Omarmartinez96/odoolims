@@ -20,6 +20,8 @@ class LimsContact(models.Model):
         help="Se utiliza para funciones nativas como correos."
     )
 
+    job_title = fields.Char(string="Puesto", help="Cargo o puesto del contacto en la empresa")
+
     @api.model_create_multi
     def create(self, vals_list):
         contacts = super().create(vals_list)

@@ -95,6 +95,7 @@
                                 <field name="contact_ids" context="{'default_department_id': id}">
                                     <list create="false" edit="false" delete="false">
                                         <field name="name" string="Contacto"/>
+                                        <field name="job_title" string="Puesto"/>
                                         <field name="email" string="Email"/>
                                         <field name="phone" string="Teléfono"/>
                                     </list>
