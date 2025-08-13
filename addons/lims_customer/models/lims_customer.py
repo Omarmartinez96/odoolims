@@ -122,24 +122,28 @@ class LimsCustomer(models.Model):
     # ========== ORDENAMIENTO OPTIMIZADO ==========
     @api.model
     def search(self, args, offset=0, limit=None, order=None, count=False):
-        """Ordenamiento numérico inteligente para clientes LIMS"""
-        # DEBUG: Forzar ordenamiento para clientes LIMS
-        if not order and any('client_code' in str(arg) for arg in args):
-            order = None  # Forzar nuestro ordenamiento personalizado
-            
-            # Buscar registros con ordenamiento básico
-            result = super().search(args, offset=0, limit=None, order='client_code asc', count=False)
+        """Ordenamiento numérico para clientes LIMS"""
+        # FORZAR ordenamiento si es búsqueda de clientes LIMS sin orden específico
+        if not order and args and any('is_lims_customer' in str(args)):
+            # Buscar registros normalmente
+            result = super().search(args, offset=0, limit=None, order='id', count=False)
             
             if count:
                 return len(result)
                 
             if result:
-                # Ordenar por número consecutivo
+                # Ordenar por consecutivo extraído del código
                 records = self.browse(result)
-                sorted_records = records.sorted(key=lambda r: (
-                    int(r.client_code.split('-')[-1]) if r.client_code and '-' in r.client_code and r.client_code.split('-')[-1].isdigit() else 99999,
-                    r.client_code or ''
-                ))
+                def get_sequence(record):
+                    if record.client_code and '-' in record.client_code:
+                        try:
+                            num_str = record.client_code.split('-')[-1]
+                            return int(num_str) if num_str.isdigit() else 99999
+                        except:
+                            return 99999
+                    return 99999
+                
+                sorted_records = sorted(records, key=get_sequence)
                 
                 # Aplicar offset y limit
                 if offset:
@@ -147,7 +151,7 @@ class LimsCustomer(models.Model):
                 if limit:
                     sorted_records = sorted_records[:limit]
                     
-                return sorted_records.ids
+                return [r.id for r in sorted_records]
             
             return result
             
