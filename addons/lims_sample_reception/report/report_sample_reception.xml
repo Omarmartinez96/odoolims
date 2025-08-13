@@ -118,8 +118,8 @@
                             </tbody>
                         </table>
 
-                        <!-- Separador -->
-                        <hr style="margin: 20px 0; border: 1px solid #333;"/>
+                        <!-- Separador superior -->
+                        <div style="margin-top: 20px; background-color: rgb(218,227,243); height: 12px; padding: 3px 2px; text-align: center; vertical-align: middle; margin-bottom: 20px;"></div>
 
                         <!-- Resumen de recepción -->
                         <t t-set="total_samples" t-value="len(doc.sample_ids)"/>
@@ -236,12 +236,13 @@
                             </div>
                         </t>
 
+                    <!-- Separador inferior -->
+                    <div style="margin-top: 20px; background-color: rgb(218,227,243); height: 12px; padding: 3px 2px; text-align: center; vertical-align: middle; margin-bottom: 15px;"></div>
 
                     <!-- Total de muestras al final -->
-                    <div style="text-align: center; margin: 30px 0 20px 0; font-size: 16px; font-weight: bold; border-top: 2px solid; padding-top: 15px;">
+                    <div style="text-align: center; margin-top: 15px; font-size: 16px; font-weight: bold;">
                         Total de muestras recibidas: <span t-esc="len(doc.sample_ids)"/>
                     </div>
-
 
                     </div>
                 </div>

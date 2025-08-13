@@ -122,8 +122,8 @@
               </tbody>
             </table>
 
-            <!-- Separador -->
-            <hr style="margin: 20px 0; border: 1px solid;"/>
+            <!-- Separador superior -->
+            <div style="margin-top: 20px; background-color: rgb(218,227,243); height: 12px; padding: 3px 2px; text-align: center; vertical-align: middle; margin-bottom: 20px;"></div>
 
             <!-- Muestras -->
             <h3 style="font-size: 18px; margin-bottom: 15px;">Muestras Recolectadas</h3>
@@ -292,10 +292,12 @@
               </div>
             </t>
 
+            <!-- Separador inferior -->
+            <div style="margin-top: 20px; background-color: rgb(218,227,243); height: 12px; padding: 3px 2px; text-align: center; vertical-align: middle; margin-bottom: 15px;"></div>
 
             <!-- Total de muestras al final -->
-            <div style="text-align: center; margin: 30px 0 20px 0; font-size: 16px; font-weight: bold; border-top: 2px solid; padding-top: 15px;">
-                Total de muestras recolectadas:<span t-esc="len(doc.sample_ids)"/>
+            <div style="text-align: center; margin-top: 15px; font-size: 16px; font-weight: bold;">
+                Total de muestras recolectadas: <span t-esc="len(doc.sample_ids)"/>
             </div>
 
             <!-- Información adicional -->
