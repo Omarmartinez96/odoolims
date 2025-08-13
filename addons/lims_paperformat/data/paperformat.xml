@@ -12,10 +12,8 @@
       <field name="margin_right">5</field>
       <field name="header_line" eval="False"/>
       <field name="header_spacing">35</field> 
-      <field name="dpi">300</field>
+      <field name="dpi">90</field>
       <field name="disable_shrinking" eval="True"/>
-      <field name="print_page_width">0</field>
-      <field name="print_page_height">0</field>
     </record>
 
     <record id="paperformat_lims_test_report" model="report.paperformat">
@@ -29,10 +27,8 @@
         <field name="margin_right">5</field>
         <field name="header_line" eval="False"/>
         <field name="header_spacing">45</field>  
-        <field name="dpi">300</field>
+        <field name="dpi">90</field>
         <field name="disable_shrinking" eval="True"/>
-        <field name="print_page_width">0</field>
-        <field name="print_page_height">0</field>
     </record>
     
   </data>
