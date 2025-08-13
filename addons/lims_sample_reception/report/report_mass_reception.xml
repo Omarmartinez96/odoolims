@@ -19,7 +19,7 @@
                         margin-top: 20px;
                     }
                     .consolidated-table th {
-                        background-color: rgb(218,227,243)
+                        background-color: rgba(218, 227, 243, 1);
                         color: black;
                         padding: 8px 4px;
                         text-align: left;
