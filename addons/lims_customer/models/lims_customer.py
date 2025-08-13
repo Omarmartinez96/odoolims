@@ -12,7 +12,8 @@ class LimsCustomer(models.Model):
     # Campo almacenado para ordenamiento numérico
     client_sequence = fields.Integer(
         string='Número Consecutivo',
-        default=99999,
+        compute='_compute_client_sequence',
+        store=False,  # 🔧 PASO 1: Sin store temporalmente
         help='Número extraído del código cliente para ordenamiento (001, 002, etc.)'
     )
 
@@ -52,6 +53,20 @@ class LimsCustomer(models.Model):
             record.total_departments = sum(len(branch.department_ids) for branch in record.branch_ids)
             record.total_contacts = sum(len(dept.contact_ids) for branch in record.branch_ids for dept in branch.department_ids)
 
+    @api.depends('client_code')
+    def _compute_client_sequence(self):
+        """Extraer SOLO el número consecutivo para ordenamiento"""
+        for record in self:
+            if record.client_code and '-' in record.client_code:
+                try:
+                    # Extraer número después del guión: ABC-001 -> 1
+                    num_part = record.client_code.split('-')[-1]
+                    record.client_sequence = int(num_part) if num_part.isdigit() else 99999
+                except (ValueError, IndexError):
+                    record.client_sequence = 99999
+            else:
+                record.client_sequence = 99999
+
     # ========== MÉTODOS DE CREACIÓN Y ACTUALIZACIÓN ==========
     @api.model_create_multi
     def create(self, vals_list):
@@ -60,22 +75,9 @@ class LimsCustomer(models.Model):
                 # Solo generar código automáticamente si no existe pero hay RFC
                 if not vals.get('client_code') and vals.get('vat'):
                     vals['client_code'] = self._generate_client_code(vals['vat'])
-                # Calcular secuencia si hay código
-                if vals.get('client_code'):
-                    vals['client_sequence'] = self._extract_sequence(vals['client_code'])
+                # ❌ QUITADO: Ya no es obligatorio tener código
         
         return super().create(vals_list)
-
-
-    def _extract_sequence(self, client_code):
-        """Extraer número consecutivo del código"""
-        if client_code and '-' in client_code:
-            try:
-                num_part = client_code.split('-')[-1]
-                return int(num_part) if num_part.isdigit() else 99999
-            except:
-                return 99999
-        return 99999
 
     def write(self, vals):
         # Si cambia el RFC y no tiene client_code, generarlo
