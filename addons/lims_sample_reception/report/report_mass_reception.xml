@@ -19,8 +19,8 @@
                         margin-top: 20px;
                     }
                     .consolidated-table th {
-                        background-color: #2c5aa0;
-                        color: white;
+                        background-color: #DAE3F3
+                        color: black;
                         padding: 8px 4px;
                         border: 1px solid #333;
                         text-align: left;
