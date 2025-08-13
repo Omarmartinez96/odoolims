@@ -39,43 +39,85 @@
             </field>
         </record>
 
-        <!-- VISTA FORMULARIO Sucursales (ajustada con breadcrumbs) -->
+        <!-- VISTA FORMULARIO Sucursales (MEJORADA) -->
         <record id="view_lims_branch_form" model="ir.ui.view">
             <field name="name">lims.branch.form</field>
             <field name="model">lims.branch</field>
             <field name="arch" type="xml">
                 <form string="Sucursal">
                     <sheet>
-                        <div class="oe_title">
-                            <label for="customer_id" class="oe_edit_only" string="Cliente: "/>
-                            <h2><field name="customer_name" readonly="1" class="o_text_overflow"/></h2>
-                            <label for="name" class="oe_edit_only" string="Sucursal: "/>
-                            <h1><field name="name" placeholder="Nombre de la sucursal" class="o_text_overflow"/></h1>
-                        </div>
-                        
-                        <group>
-                            <field name="address"/>
-                            <!-- Ahora apunta claramente a res.partner (Clientes LIMS) -->
-                            <field name="customer_id"
-                                   domain="[('is_lims_customer', '=', True)]"
-                                   required="1"/>
-                            <field name="client_code" readonly="1"/>
+                        <!-- Smart Button para Departamentos (MÁS VISIBLE) -->
+                        <div class="oe_button_box" name="button_box">
                             <button name="%(action_lims_departments)d"
-                                    string="Ver Departamentos"
+                                    string="Gestionar Departamentos"
                                     type="action"
                                     class="oe_stat_button"
+                                    icon="fa-users"
                                     context="{'default_branch_id': id}"
-                                    modifiers="{'invisible': [['id','=',False]]}"/>
+                                    invisible="id == False">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="department_ids" nolabel="1" widget="statinfo" string="Departamentos"/>
+                                    </span>
+                                    <span class="o_stat_text">Departamentos</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <!-- Título con breadcrumbs mejorados -->
+                        <div class="oe_title">
+                            <label for="customer_id" class="oe_edit_only" string="Cliente"/>
+                            <h2>
+                                <field name="customer_name" readonly="1" class="o_text_overflow"/>
+                                <span class="text-muted"> / </span>
+                                <span class="badge badge-info">
+                                    <field name="client_code" readonly="1" nolabel="1"/>
+                                </span>
+                            </h2>
+                            <label for="name" class="oe_edit_only" string="Nombre de la Sucursal"/>
+                            <h1>
+                                <field name="name" placeholder="Nombre de la sucursal..." class="o_text_overflow" required="1"/>
+                            </h1>
+                        </div>
+                        
+                        <!-- Información Principal de la Sucursal -->
+                        <group string="Información de la Sucursal">
+                            <group>
+                                <field name="address" string="Dirección" placeholder="Dirección completa de la sucursal"/>
+                                <field name="customer_id"
+                                    domain="[('is_lims_customer', '=', True)]"
+                                    required="1"
+                                    invisible="1"/>
+                            </group>
                         </group>
 
-                        <!-- Notebook Departamentos (sin cambios) -->
+                        <!-- Lista de Departamentos (SOLO LECTURA) -->
                         <notebook>
                             <page string="Departamentos">
+                                <!-- Mensaje informativo -->
+                                <div class="alert alert-info" role="alert" style="margin-bottom: 15px;">
+                                    <strong>📋 Vista de Departamentos:</strong> 
+                                    Para agregar, editar o eliminar departamentos, utiliza el botón 
+                                    <strong>"Gestionar Departamentos"</strong> en la parte superior.
+                                </div>
+                                
+                                <!-- Lista readonly -->
                                 <field name="department_ids">
-                                    <list editable="bottom">
-                                        <field name="name"/>
+                                    <list create="false" edit="false" delete="false">
+                                        <field name="name" string="Departamento"/>
+                                        <field name="address" string="Dirección"/>
                                     </list>
                                 </field>
+                                
+                                <!-- Botón adicional para gestionar (por si no ven el smart button) -->
+                                <div class="text-center" style="margin-top: 15px;">
+                                    <button name="%(action_lims_departments)d"
+                                            string="➕ Gestionar Departamentos"
+                                            type="action"
+                                            class="btn btn-primary"
+                                            context="{'default_branch_id': id}"
+                                            invisible="id == False"/>
+                                </div>
                             </page>
                         </notebook>
 
@@ -83,5 +125,6 @@
                 </form>
             </field>
         </record>
+        
     </data>
 </odoo>
