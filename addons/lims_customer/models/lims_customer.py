@@ -125,7 +125,7 @@ class LimsCustomer(models.Model):
         """Ordenamiento numérico inteligente para clientes LIMS"""
         # Solo aplicar ordenamiento especial en vista de clientes LIMS
         if (not order and 
-            any(('is_lims_customer', '=', True) in arg for arg in args if isinstance(arg, (list, tuple)))):
+            any('is_lims_customer' in str(arg) for arg in args)):
             
             # Buscar registros con ordenamiento básico
             result = super().search(args, offset=0, limit=None, order='client_code asc', count=False)

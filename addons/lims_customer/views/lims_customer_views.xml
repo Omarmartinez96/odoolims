@@ -144,7 +144,7 @@
             <field name="res_model">res.partner</field>
             <field name="view_mode">list,form</field>
             <!-- Dominio: Solo clientes LIMS que sean empresas -->
-            <field name="domain">[('is_lims_customer', '=', True), ('is_company', '=', True), ('parent_id', '=', False)]</field>
+            <field name="domain">[('is_lims_customer', '=', True), ('is_company', '=', True), ('parent_id', '=', False), ('client_code', '!=', False)]</field>
             <!-- Contexto con bandera para ordenamiento -->
             <field name="context">{
                 'default_is_lims_customer': True,
