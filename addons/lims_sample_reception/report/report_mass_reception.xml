@@ -19,10 +19,9 @@
                         margin-top: 20px;
                     }
                     .consolidated-table th {
-                        background-color: #DAE3F3
+                        background-color: rgb(218,227,243)
                         color: black;
                         padding: 8px 4px;
-                        border: 1px solid #333;
                         text-align: left;
                         font-weight: bold;
                     }
