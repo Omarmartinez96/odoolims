@@ -4,6 +4,7 @@ from odoo.exceptions import UserError
 
 class LimsCustomer(models.Model):
     _inherit = 'res.partner'
+    _order = 'client_sequence asc, name asc'
 
     # ========== CAMPOS PRINCIPALES ==========
     is_lims_customer = fields.Boolean(string='Cliente LIMS', default=True)
@@ -123,6 +124,12 @@ class LimsCustomer(models.Model):
     @api.model
     def search(self, args, offset=0, limit=None, order=None, count=False):
         """Ordenamiento numérico para clientes LIMS"""
+        
+        # DEBUG: Imprimir para ver qué está pasando
+        import logging
+        _logger = logging.getLogger(__name__)
+        _logger.info(f"SEARCH DEBUG - args: {args}, order: {order}")
+        
         # FORZAR ordenamiento si es búsqueda de clientes LIMS sin orden específico
         if not order and args and any('is_lims_customer' in str(args)):
             # Buscar registros normalmente
