@@ -14,7 +14,7 @@
                     font-size: 12px;
                     }
                     body, .o_report_layout, table, td, th, span, div, p {
-                        font-family: "DejaVu Sans", sans-serif !important;
+                        font-family: Arial, sans-serif !important;
                     }
                     .reception-section {
                         margin-top: 15px;
