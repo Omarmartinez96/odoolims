@@ -9,6 +9,12 @@ class LimsCustomer(models.Model):
     is_lims_customer = fields.Boolean(string='Cliente LIMS', default=True)
     client_code = fields.Char(string="Código del Cliente")
 
+    client_sequence = fields.Integer(
+        string='Consecutivo',
+        default=1,
+        help='Número para ordenamiento manual'
+    )
+
     # Campos heredados redefinidos para claridad
     vat = fields.Char(string="RFC / TAX ID", required=True)
     street = fields.Char(string="Calle y número")
