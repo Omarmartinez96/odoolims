@@ -9,6 +9,12 @@ class LimsCustomer(models.Model):
     is_lims_customer = fields.Boolean(string='Cliente LIMS', default=True)
     client_code = fields.Char(string="Código del Cliente")
 
+    client_sequence = fields.Integer(
+        string='Consecutivo',
+        default=99999,
+        help='Número para ordenamiento (1, 2, 3, etc.)'
+    )
+
     # Campos heredados redefinidos para claridad
     vat = fields.Char(string="RFC / TAX ID", required=True)
     street = fields.Char(string="Calle y número")
@@ -96,44 +102,6 @@ class LimsCustomer(models.Model):
         # Generar siguiente consecutivo
         next_num = str(max_num + 1).zfill(3)
         return f'{prefix}-{next_num}'
-
-    # ========== ORDENAMIENTO POR CONSECUTIVO ==========
-    @api.model
-    def search(self, args, offset=0, limit=None, order=None, count=False):
-        """Ordenamiento numérico para clientes LIMS"""
-        
-        # Si no hay orden específico Y es búsqueda de clientes LIMS
-        if not order and args and any('is_lims_customer' in str(args)):
-            # Buscar todos los registros
-            all_ids = super().search(args, offset=0, limit=None, count=False)
-            
-            if count:
-                return len(all_ids)
-            
-            if all_ids:
-                # Ordenar por número consecutivo extraído
-                all_records = self.browse(all_ids)
-                
-                def extract_number(record):
-                    if record.client_code and '-' in record.client_code:
-                        try:
-                            num_str = record.client_code.split('-')[-1]
-                            return int(num_str) if num_str.isdigit() else 99999
-                        except:
-                            return 99999
-                    return 99999
-                
-                # Ordenar por número consecutivo
-                sorted_records = sorted(all_records, key=extract_number)
-                
-                # Aplicar paginación
-                start = offset or 0
-                end = start + limit if limit else len(sorted_records)
-                
-                return [r.id for r in sorted_records[start:end]]
-        
-        # Caso normal - delegar al método padre
-        return super().search(args, offset=offset, limit=limit, order=order, count=count)
 
     # ========== ACCIÓN MASIVA PARA CÓDIGOS FALTANTES ==========
     def action_view_departments(self):

@@ -16,7 +16,7 @@
             <field name="model">res.partner</field>
             <field name="arch" type="xml">
                 <!-- Sin default_order - usa método search personalizado -->
-                <list string="Clientes">
+                <list string="Clientes" default_order="client_sequence asc, client_code asc">
                     <field name="client_code"/>
                     <field name="name"/>
                     <field name="vat"/>
