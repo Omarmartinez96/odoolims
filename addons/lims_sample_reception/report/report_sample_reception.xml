@@ -10,7 +10,6 @@
             <t>
                 <style>
                     .parameter-row {
-                    background-color: #e8f4fd;
                     font-size: 12px;
                     }
                     body, .o_report_layout, table, td, th, span, div, p {
@@ -149,7 +148,7 @@
                                 <table style="width: 100%; border-collapse: collapse;">
                                     <tr>
                                         <td style="width: 70%; vertical-align: top;">
-                                            <h4 style="margin: 0 0 10px 0; color: #2c5aa0;">
+                                            <h4 style="margin: 0 0 10px 0; color: #DAE3F3;">
                                                 <span t-if="reception and reception.sample_code" t-esc="reception.sample_code"/>
                                                 <span t-else="">Sin código</span>
                                                 - <span t-esc="sample.sample_identifier"/>
