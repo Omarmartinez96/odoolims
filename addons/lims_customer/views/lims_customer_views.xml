@@ -10,13 +10,13 @@
             <field name="domain">[("customer_id", "=", context.get("default_customer_id"))]</field>
         </record>
 
-        <!-- ========== VISTA LISTA SIN ORDENAMIENTO AUTOMÁTICO ========== -->
+        <!-- ========== VISTA LISTA CON ORDENAMIENTO POR SECUENCIA ========== -->
         <record id="view_lims_customer_list" model="ir.ui.view">
             <field name="name">lims.customer.list</field>
             <field name="model">res.partner</field>
             <field name="arch" type="xml">
-                <!-- ⚠️ Sin default_order porque client_sequence no está almacenado -->
-                <list string="Clientes">
+                <!-- ✅ Ordenamiento por secuencia: 1, 2, 3, 10, 11... -->
+                <list string="Clientes" default_order="client_sequence asc, client_code asc">
                     <field name="client_code"/>
                     <field name="name"/>
                     <field name="vat"/>
@@ -24,8 +24,8 @@
                     <field name="phone"/>
                     <field name="city"/>
                     <field name="country_id"/>
-                    <!-- Campo para debug (opcional, se puede hacer invisible) -->
-                    <field name="client_sequence" string="Sec"/>
+                    <!-- Mostrar secuencia para verificar ordenamiento -->
+                    <field name="client_sequence" string="Consecutivo"/>
                 </list>
             </field>
         </record>
@@ -89,6 +89,8 @@
                             </group>
                             <group>
                                 <field name="client_code" placeholder="Se genera automáticamente al guardar con RFC"/>
+                                <field name="client_sequence" readonly="1" string="Consecutivo" 
+                                       help="Número extraído para ordenamiento"/>
                             </group>
                         </group>
 
@@ -136,18 +138,17 @@
             </field>
         </record>
 
-        <!-- ========== ACCIÓN PRINCIPAL CON CONTEXTO PARA ORDENAMIENTO ========== -->
+        <!-- ========== ACCIÓN PRINCIPAL SIMPLIFICADA ========== -->
         <record id="action_lims_customers" model="ir.actions.act_window">
             <field name="name">Clientes LIMS</field>
             <field name="res_model">res.partner</field>
             <field name="view_mode">list,form</field>
             <!-- Dominio: Solo clientes LIMS que sean empresas -->
             <field name="domain">[('is_lims_customer', '=', True), ('is_company', '=', True)]</field>
-            <!-- Contexto con bandera para ordenamiento -->
+            <!-- Contexto simplificado -->
             <field name="context">{
                 'default_is_lims_customer': True,
-                'default_is_company': True,
-                'lims_customer_view': True
+                'default_is_company': True
             }</field>
             <!-- Vistas específicas -->
             <field name="view_ids" eval="[
