@@ -17,7 +17,7 @@
           span,
           div,
           p {
-            font-family: "DejaVu Sans", sans-serif !important;
+            font-family: Arial, sans-serif !important;
           }
           
           /* Evitar page-breaks dentro de las filas */
