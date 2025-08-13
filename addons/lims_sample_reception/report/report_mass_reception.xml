@@ -131,7 +131,7 @@
                     </table>
 
                     <!-- Separador superior  -->
-                    <div style="margin-top: 20px; background-color: rgb(218,227,243); height: 25px; padding: 6px 4px; text-align: center; vertical-align: middle; margin-bottom: 20px;"></div>
+                    <div style="margin-top: 20px; background-color: rgb(218,227,243); height: 12px; padding: 3px 2px; text-align: center; vertical-align: middle; margin-bottom: 20px;"></div>
 
                     <!-- Tabla consolidada -->
                     <table class="consolidated-table">
@@ -252,8 +252,11 @@
                         </tbody>
                     </table>
 
+                    <!-- Separador inferior -->
+                    <div style="margin-top: 20px; background-color: rgb(218,227,243); height: 12px; padding: 3px 2px; text-align: center; vertical-align: middle; margin-bottom: 15px;"></div>
+
                     <!-- Resumen final -->
-                    <div style="margin-top: 30px; text-align: center; border-top: 2px solid; padding-top: 15px;">
+                    <div style="text-align: center; margin-top: 15px;">
                         <t t-set="total_samples" t-value="sum([len(doc.sample_ids) for doc in docs])"/>
                         <p style="font-size: 16px; font-weight: bold;">
                             Total de muestras recibidas: <span t-esc="total_samples"/>
