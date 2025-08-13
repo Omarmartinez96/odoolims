@@ -282,8 +282,8 @@
 
             <!-- 🆕 SECCIÓN DE FIRMA DIGITAL -->
             <t t-if="doc.customer_signature">
-              <div class="signature-section">
-                <h3 style="font-size: 16px; margin: 0 0 15px 0; padding-top: 10px; color: black; text-align: center;">
+              <div class="signature-section" style="margin-top: 20px;">
+                <h3 style="font-size: 16px; margin: 0 0 15px 0; color: black; text-align: center;">
                   FIRMA DE CONFORMIDAD DEL CLIENTE
                 </h3>
                 
