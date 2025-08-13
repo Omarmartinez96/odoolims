@@ -118,7 +118,7 @@
                                 <field name="l10n_mx_edi_fiscal_regime" string="Régimen Fiscal"/>
                             </group>
                             <group>
-                                <field name="client_code" string="Código de Cliente" readonly="1" placeholder="Se genera automáticamente al guardar con RFC"/>
+                                <field name="client_code" string="Código de Cliente" placeholder="Se genera automáticamente al guardar con RFC"/>
                             </group>
                         </group>
 
