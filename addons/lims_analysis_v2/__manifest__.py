@@ -1,5 +1,5 @@
 {
-    'name': 'Análisis de Muestras LIMS v2',
+    'name': 'Análisis de Muestras',
     'version': '2.0.0',
     'summary': 'Sistema completo de análisis de laboratorio - Versión optimizada',
     'description': '''

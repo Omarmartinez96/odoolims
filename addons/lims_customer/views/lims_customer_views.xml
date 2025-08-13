@@ -176,7 +176,7 @@
                   name="Clientes"
                   parent="lims_customer_menu"
                   action="action_lims_customers"
-                  sequence="2"/>
+                  sequence="1"/>
 
         <!-- ========== VISTAS PARA SUCURSALES (SIMPLIFICADAS) ========== -->
         <record id="view_lims_branch_form_simple" model="ir.ui.view">

@@ -9,6 +9,7 @@
         - Controles de calidad de medios
         - Configuraciones base para análisis
     ''',
+    'sequence': 15,
     'category': 'LIMS',
     'author': 'Omar Martinez',
     'depends': [

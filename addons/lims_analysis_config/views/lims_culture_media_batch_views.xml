@@ -19,8 +19,8 @@
 
         <!-- ========== SOLO MENÚS DE CONFIGURACIÓN ========== -->
         <menuitem id="menu_lims_analysis_config_root" 
-                  name="Configuración LIMS" 
-                  sequence="15"/>
+                  name="Configuración de Variables" 
+                  sequence="5"/>
                   
         <menuitem id="menu_lims_lab_equipment" 
                   name="Equipos de Laboratorio" 

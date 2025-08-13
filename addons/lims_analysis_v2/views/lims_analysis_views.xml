@@ -470,8 +470,8 @@
 
         <!-- ========== MENÚS ========== -->
         <menuitem id="menu_lims_analysis_v2_root" 
-                  name="Análisis LIMS v2" 
-                  sequence="25"/>
+                  name="Análisis de Muestras" 
+                  sequence="4"/>
 
         <menuitem id="menu_lims_analysis_v2_main" 
                 name="🔬 Análisis de Muestras" 

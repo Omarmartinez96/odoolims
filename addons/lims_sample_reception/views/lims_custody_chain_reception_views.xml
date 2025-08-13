@@ -164,7 +164,7 @@
         <!-- Menú principal del módulo -->
         <menuitem id="lims_sample_reception_menu_root" 
                   name="Recepción de Muestras" 
-                  sequence="15"/>
+                  sequence="3"/>
 
         <!-- Submenú para cadenas de custodia -->
         <menuitem id="menu_custody_chains_reception"

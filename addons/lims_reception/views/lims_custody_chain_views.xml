@@ -195,7 +195,7 @@
     </record>
 
     <!-- Menús -->
-    <menuitem id="lims_custody_menu_root" name="Cadenas de Custodia" sequence="10"/>
+    <menuitem id="lims_custody_menu_root" name="Cadenas de Custodia" sequence="2"/>
     <menuitem id="lims_custody_menu" name="Cadenas de Custodia"
               parent="lims_custody_menu_root"
               action="action_lims_custody_chains" sequence="1"/>
