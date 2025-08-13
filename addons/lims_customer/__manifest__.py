@@ -2,6 +2,7 @@
     'name': 'Gestión de Clientes',
     'version': '1.0',
     'author': 'Omar Martinez',
+    'sequence': 10,
     'category': 'LIMS',
     'summary': 'Gestión personalizada de clientes para LIMS',
     'depends': [

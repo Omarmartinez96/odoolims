@@ -14,6 +14,7 @@
         - Sistema de revisiones completo con historial
         - Gestión avanzada de incubaciones con estados en tiempo real
     ''',
+    'sequence': 40,
     'category': 'LIMS',
     'author': 'Omar Martinez',
     'website': 'https://www.proteuslaboratorio.com',
