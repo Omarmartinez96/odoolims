@@ -13,7 +13,7 @@ class LimsCustomer(models.Model):
     client_sequence = fields.Integer(
         string='Número Consecutivo',
         compute='_compute_client_sequence',
-        store=False,  # 🔧 PASO 1: Sin store temporalmente
+        store=True,
         help='Número extraído del código cliente para ordenamiento (001, 002, etc.)'
     )
 
@@ -118,48 +118,6 @@ class LimsCustomer(models.Model):
         # Generar siguiente consecutivo
         next_num = str(max_num + 1).zfill(3)
         return f'{prefix}-{next_num}'
-
-    # ========== ORDENAMIENTO OPTIMIZADO ==========
-    @api.model
-    def search(self, args, offset=0, limit=None, order=None, count=False):
-        """Ordenamiento numérico para clientes LIMS"""
-        
-        # DEBUG: Ver parámetros
-        import logging
-        _logger = logging.getLogger(__name__)
-        _logger.info(f"SEARCH - args: {args}, order: {order}")
-        
-        # Si no hay orden Y es vista de clientes
-        if not order and args:
-            # Buscar todos los resultados
-            all_ids = super().search(args, offset=0, limit=None, count=False)
-            
-            if count:
-                return len(all_ids)
-            
-            # Ordenar manualmente por consecutivo
-            if all_ids:
-                all_records = self.browse(all_ids)
-                
-                # Función para extraer número consecutivo
-                def sort_key(rec):
-                    if rec.client_code and '-' in rec.client_code:
-                        parts = rec.client_code.split('-')
-                        if len(parts) >= 2 and parts[-1].isdigit():
-                            return int(parts[-1])
-                    return 99999
-                
-                # Ordenar
-                sorted_recs = sorted(all_records, key=sort_key)
-                
-                # Aplicar paginación
-                start = offset or 0
-                end = start + limit if limit else len(sorted_recs)
-                
-                return [r.id for r in sorted_recs[start:end]]
-        
-        # Caso normal
-        return super().search(args, offset=offset, limit=limit, order=order, count=count)
 
     # ========== ACCIÓN MASIVA PARA CÓDIGOS FALTANTES ==========
     def action_view_departments(self):
