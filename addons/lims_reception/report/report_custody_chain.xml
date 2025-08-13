@@ -283,7 +283,7 @@
             <!-- 🆕 SECCIÓN DE FIRMA DIGITAL -->
             <t t-if="doc.customer_signature">
               <div class="signature-section">
-                <h3 style="font-size: 16px; padding-top: 10px; margin: 0 0 15px 0; color: black; text-align: center;">
+                <h3 style="font-size: 16px; margin: 0 0 15px 0; padding-top: 10px; color: black; text-align: center;">
                   FIRMA DE CONFORMIDAD DEL CLIENTE
                 </h3>
                 
@@ -292,7 +292,7 @@
                     <td style="width: 50%; vertical-align: top; padding: 10px;">
                       <div style="text-align: center;">
                         <img t-att-src="image_data_uri(doc.customer_signature)" 
-                             style="max-width: 200px; max-height: 100px; border: 1px solid #ddd; padding: 5px;"/>
+                             style="max-width: 200px; max-height: 100px; padding: 5px;"/>
                         <div style="margin-top: 10px; border-top: 1px solid #333; padding-top: 5px;">
                           <strong>Firma del Cliente</strong>
                         </div>
