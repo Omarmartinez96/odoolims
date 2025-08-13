@@ -9,7 +9,7 @@
         - Asignar códigos de muestra automáticamente
         - Controlar estados de recepción
     ''',
-    'sequence': 30,
+    'sequence': 12,
     'category': 'LIMS',
     'author': 'Omar Martinez.',
     'depends': [

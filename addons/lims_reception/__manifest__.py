@@ -5,7 +5,7 @@
     'description': """
         Módulo para registrar Cadenas de Custodia y Muestras dentro de un LIMS básico.
     """,
-    'sequence': 20,
+    'sequence': 11,
     'category': 'LIMS',
     'author': "Omar Martinez",
     'depends': [
