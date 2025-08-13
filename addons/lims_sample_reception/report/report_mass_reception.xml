@@ -130,8 +130,8 @@
                         </tr>
                     </table>
 
-                    <!-- Separador superior -->
-                    <div style="margin-top: 20px; text-align: center; border-top: 2px solid; padding-top: 15px; margin-bottom: 20px;"></div>
+                    <!-- Separador superior  -->
+                    <div style="margin-top: 20px; background-color: rgb(218,227,243); height: 25px; padding: 6px 4px; text-align: center; vertical-align: middle; margin-bottom: 20px;"></div>
 
                     <!-- Tabla consolidada -->
                     <table class="consolidated-table">
