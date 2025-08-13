@@ -37,50 +37,85 @@
             </field>
         </record>
 
-        <!-- VISTA FORMULARIO de Departamentos (con breadcrumbs) -->
+        <!-- VISTA FORMULARIO de Departamentos (MEJORADA) -->
         <record id="view_lims_department_form" model="ir.ui.view">
             <field name="name">lims.department.form</field>
             <field name="model">lims.department</field>
             <field name="arch" type="xml">
                 <form string="Departamento">
                     <sheet>
-                        <div class="oe_title">
-                            <label for="branch_id" class="oe_edit_only" string="Sucursal: "/>
-                            <h2><field name="branch_id" readonly="1" class="o_text_overflow"/></h2>
-                            <label for="name" class="oe_edit_only" string="Departamento: "/>
-                            <h1><field name="name" placeholder="Nombre del departamento" class="o_text_overflow"/></h1>
-                        </div>
-                        
-                        <group>
-                            <!-- Campo 'branch_id' para enlazar con Sucursal (solo lectura) -->
-                            <field name="branch_id" required="1" invisible="1"/>
-                        </group>
-                        <!-- Botón para ver Contactos: invisible si el Departamento no está guardado -->
-                        <group>
+                        <!-- Smart Button para Contactos (MÁS VISIBLE) -->
+                        <div class="oe_button_box" name="button_box">
                             <button name="%(action_lims_contacts)d"
-                                    string="Ver Contactos"
+                                    string="Gestionar Contactos"
                                     type="action"
                                     class="oe_stat_button"
+                                    icon="fa-address-book"
                                     context="{'default_department_id': id}"
-                                    modifiers="{'invisible': [['id','=',False]]}"/>
+                                    invisible="id == False">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_value">
+                                        <field name="contact_ids" nolabel="1" widget="statinfo" string="Contactos"/>
+                                    </span>
+                                    <span class="o_stat_text">Contactos</span>
+                                </div>
+                            </button>
+                        </div>
+
+                        <!-- Título con breadcrumbs mejorados -->
+                        <div class="oe_title">
+                            <label for="branch_id" class="oe_edit_only" string="Sucursal"/>
+                            <h2>
+                                <field name="branch_id" readonly="1" class="o_text_overflow" required="1"/>
+                            </h2>
+                            <label for="name" class="oe_edit_only" string="Nombre del Departamento"/>
+                            <h1>
+                                <field name="name" placeholder="Nombre del departamento..." class="o_text_overflow" required="1"/>
+                            </h1>
+                        </div>
+                        
+                        <!-- Información Principal del Departamento -->
+                        <group string="Información del Departamento">
+                            <group>
+                                <field name="address" string="Dirección" placeholder="Dirección específica del departamento (opcional)"/>
+                            </group>
                         </group>
 
-                        <!-- Pestaña de Contactos: invisible si el Departamento no está guardado -->
-                        <notebook modifiers="{'invisible': [['id','=',False]]}">
+                        <!-- Lista de Contactos (SOLO LECTURA) -->
+                        <notebook>
                             <page string="Contactos">
-                                <!-- One2many a lims.contact -->
+                                <!-- Mensaje informativo -->
+                                <div class="alert alert-info" role="alert" style="margin-bottom: 15px;">
+                                    <strong>👥 Vista de Contactos:</strong> 
+                                    Para agregar, editar o eliminar contactos, utiliza el botón 
+                                    <strong>"Gestionar Contactos"</strong> en la parte superior.
+                                </div>
+                                
+                                <!-- Lista readonly -->
                                 <field name="contact_ids" context="{'default_department_id': id}">
-                                    <list create="true">
-                                        <field name="name"/>
-                                        <field name="email"/>
-                                        <field name="phone"/>
+                                    <list create="false" edit="false" delete="false">
+                                        <field name="name" string="Contacto"/>
+                                        <field name="email" string="Email"/>
+                                        <field name="phone" string="Teléfono"/>
                                     </list>
                                 </field>
+                                
+                                <!-- Botón adicional para gestionar (por si no ven el smart button) -->
+                                <div class="text-center" style="margin-top: 15px;">
+                                    <button name="%(action_lims_contacts)d"
+                                            string="👥 Gestionar Contactos"
+                                            type="action"
+                                            class="btn btn-primary"
+                                            context="{'default_department_id': id}"
+                                            invisible="id == False"/>
+                                </div>
                             </page>
                         </notebook>
+
                     </sheet>
                 </form>
             </field>
         </record>
+
     </data>
 </odoo>
