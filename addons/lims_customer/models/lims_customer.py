@@ -119,6 +119,40 @@ class LimsCustomer(models.Model):
         next_num = str(max_num + 1).zfill(3)
         return f'{prefix}-{next_num}'
 
+    # ========== ORDENAMIENTO OPTIMIZADO ==========
+    @api.model
+    def search(self, args, offset=0, limit=None, order=None, count=False):
+        """Ordenamiento numérico inteligente para clientes LIMS"""
+        # Solo aplicar ordenamiento especial en vista de clientes LIMS
+        if (not order and 
+            any(('is_lims_customer', '=', True) in arg for arg in args if isinstance(arg, (list, tuple)))):
+            
+            # Buscar registros con ordenamiento básico
+            result = super().search(args, offset=0, limit=None, order='client_code asc', count=False)
+            
+            if count:
+                return len(result)
+                
+            if result:
+                # Ordenar por número consecutivo
+                records = self.browse(result)
+                sorted_records = records.sorted(key=lambda r: (
+                    int(r.client_code.split('-')[-1]) if r.client_code and '-' in r.client_code and r.client_code.split('-')[-1].isdigit() else 99999,
+                    r.client_code or ''
+                ))
+                
+                # Aplicar offset y limit
+                if offset:
+                    sorted_records = sorted_records[offset:]
+                if limit:
+                    sorted_records = sorted_records[:limit]
+                    
+                return sorted_records.ids
+            
+            return result
+            
+        return super().search(args, offset=offset, limit=limit, order=order, count=count)
+
     # ========== ACCIÓN MASIVA PARA CÓDIGOS FALTANTES ==========
     def action_view_departments(self):
         """Acción para ver departamentos (placeholder)"""
