@@ -148,7 +148,7 @@
                                 <table style="width: 100%; border-collapse: collapse;">
                                     <tr>
                                         <td style="width: 70%; vertical-align: top;">
-                                            <h4 style="margin: 0 0 10px 0; color: #DAE3F3;">
+                                            <h4 style="margin: 0 0 10px 0; color: #2c5aa0;">
                                                 <span t-if="reception and reception.sample_code" t-esc="reception.sample_code"/>
                                                 <span t-else="">Sin código</span>
                                                 - <span t-esc="sample.sample_identifier"/>
@@ -161,7 +161,7 @@
                                                     <table class="table table-borderless mt-1" 
                                                         style="width:100%; font-size:12px; border-collapse:collapse;">
                                                         <thead>
-                                                            <tr style="background-color:#2c5aa0; color: white;">
+                                                            <tr style="background-color:#DAE3F3; color: black;">
                                                                 <th style="padding:6px; text-align:left; width:50%;">Parámetro</th>
                                                                 <th style="padding:6px; text-align:left; width:50%;">Método</th>
                                                             </tr>
