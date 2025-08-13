@@ -123,9 +123,9 @@ class LimsCustomer(models.Model):
     @api.model
     def search(self, args, offset=0, limit=None, order=None, count=False):
         """Ordenamiento numérico inteligente para clientes LIMS"""
-        # Solo aplicar ordenamiento especial en vista de clientes LIMS
-        if (not order and 
-            any('is_lims_customer' in str(arg) for arg in args)):
+        # DEBUG: Forzar ordenamiento para clientes LIMS
+        if not order and any('client_code' in str(arg) for arg in args):
+            order = None  # Forzar nuestro ordenamiento personalizado
             
             # Buscar registros con ordenamiento básico
             result = super().search(args, offset=0, limit=None, order='client_code asc', count=False)
