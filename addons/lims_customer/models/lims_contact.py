@@ -26,14 +26,4 @@ class LimsContact(models.Model):
     def create(self, vals_list):
         contacts = super().create(vals_list)
 
-        for contact in contacts:
-            if not contact.partner_id and contact.email:
-                partner = self.env['res.partner'].create({
-                    'name': contact.name,
-                    'email': contact.email,
-                    'phone': contact.phone,
-                    'type': 'contact',
-                })
-                contact.partner_id = partner.id
-
         return contacts

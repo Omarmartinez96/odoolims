@@ -54,14 +54,6 @@
                             </group>
                         </group>
 
-                        <!-- Información Técnica (Campo partner_id si existe) -->
-                        <group string="Información Técnica" invisible="partner_id == False">
-                            <field name="partner_id" 
-                                   string="Contacto en Odoo"
-                                   help="Registro vinculado en el módulo de contactos de Odoo"
-                                   readonly="1"/>
-                        </group>
-
                     </sheet>
                 </form>
             </field>
