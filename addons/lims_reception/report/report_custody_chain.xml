@@ -18,7 +18,7 @@
           span,
           div,
           p {
-            font-family: 'Liberation Sans', 'DejaVu Sans', Arial, sans-serif !important;
+            font-family: Arial, sans-serif !important;
             font-size: 14px !important;
             line-height: 1.3 !important;
             -webkit-font-smoothing: antialiased !important;
@@ -31,11 +31,9 @@
             margin-top: 15px;
             border: 1px solid #ddd;
             padding: 10px;
-            background-color: #f9f9f9;
           }
           
           .parameter-row {
-            background-color: #e8f4fd;
             font-size: 12px;
           }
 
