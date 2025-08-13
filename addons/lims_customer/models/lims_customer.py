@@ -13,7 +13,7 @@ class LimsCustomer(models.Model):
     client_sequence = fields.Integer(
         string='Número Consecutivo',
         compute='_compute_client_sequence',
-        store=True,  # ✅ Almacenado para ordenamiento eficiente
+        store=False,  # 🔧 PASO 1: Sin store temporalmente
         help='Número extraído del código cliente para ordenamiento (001, 002, etc.)'
     )
 

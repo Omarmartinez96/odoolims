@@ -10,13 +10,13 @@
             <field name="domain">[("customer_id", "=", context.get("default_customer_id"))]</field>
         </record>
 
-        <!-- ========== VISTA LISTA CON ORDENAMIENTO POR SECUENCIA ========== -->
+        <!-- ========== VISTA LISTA CON ORDENAMIENTO EN PYTHON ========== -->
         <record id="view_lims_customer_list" model="ir.ui.view">
             <field name="name">lims.customer.list</field>
             <field name="model">res.partner</field>
             <field name="arch" type="xml">
-                <!-- ✅ Ordenamiento por secuencia: 1, 2, 3, 10, 11... -->
-                <list string="Clientes" default_order="client_sequence asc, client_code asc">
+                <!-- Sin default_order - usa método search personalizado -->
+                <list string="Clientes">
                     <field name="client_code"/>
                     <field name="name"/>
                     <field name="vat"/>
@@ -138,17 +138,18 @@
             </field>
         </record>
 
-        <!-- ========== ACCIÓN PRINCIPAL SIMPLIFICADA ========== -->
+        <!-- ========== ACCIÓN PRINCIPAL CON CONTEXTO PARA ORDENAMIENTO ========== -->
         <record id="action_lims_customers" model="ir.actions.act_window">
             <field name="name">Clientes LIMS</field>
             <field name="res_model">res.partner</field>
             <field name="view_mode">list,form</field>
             <!-- Dominio: Solo clientes LIMS que sean empresas -->
             <field name="domain">[('is_lims_customer', '=', True), ('is_company', '=', True)]</field>
-            <!-- Contexto simplificado -->
+            <!-- Contexto con bandera para ordenamiento -->
             <field name="context">{
                 'default_is_lims_customer': True,
-                'default_is_company': True
+                'default_is_company': True,
+                'lims_customer_view': True
             }</field>
             <!-- Vistas específicas -->
             <field name="view_ids" eval="[
