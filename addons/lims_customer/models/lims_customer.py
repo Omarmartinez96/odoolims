@@ -11,8 +11,8 @@ class LimsCustomer(models.Model):
 
     client_sequence = fields.Integer(
         string='Consecutivo',
-        default=99999,
-        help='Número para ordenamiento (1, 2, 3, etc.)'
+        default=1,
+        help='Número para ordenamiento manual'
     )
 
     # Campos heredados redefinidos para claridad
