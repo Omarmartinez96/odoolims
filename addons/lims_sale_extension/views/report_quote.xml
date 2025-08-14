@@ -208,8 +208,8 @@
             <!-- Tabla de líneas - Header fijo -->
             <table class="table table-borderless" style="width:100%; font-size:12px; border-collapse:collapse; border-spacing:0; margin-bottom:5px;">
               <thead>
-                <tr style="background-color:rgb(218,227,243); height: 15px; line-height: 1.2;">
-                  <th style="width:55%; padding:2px 4px; text-align:left; vertical-align:middle; box-sizing: border-box;"><strong>Descripción</strong></th>
+                <tr style="background-color:rgb(218,227,243); height: 15px; line-height: 1.5;">
+                  <th style="width:55%; padding:4px 4px; text-align:left; vertical-align:middle; box-sizing: border-box;"><strong>Descripción</strong></th>
                   <th style="width:11.25%; padding:2px 4px; text-align:center; vertical-align:middle; box-sizing: border-box;"><strong>Cant.</strong></th>
                   <th style="width:11.25%; padding:2px 4px; text-align:right; vertical-align:middle; box-sizing: border-box;"><strong>Precio unit.</strong></th>
                   <th style="width:11.25%; padding:2px 4px; text-align:right; vertical-align:middle; box-sizing: border-box;"><strong>Desc.</strong></th>
@@ -269,8 +269,8 @@
                 </t>
                 
                 <!-- Fila de fin de cotización -->
-                <tr style="line-height: 1.2;">
-                  <td colspan="5" style="background-color:rgb(218,227,243); height: 15px; padding:2px 4px; text-align:center; vertical-align:middle; box-sizing: border-box;">
+                <tr style="line-height: 1.5;">
+                  <td colspan="5" style="background-color:rgb(218,227,243); height: 15px; padding:4px 4px; text-align:center; vertical-align:middle; box-sizing: border-box;">
                     <strong>— FIN DE COTIZACIÓN —</strong>
                   </td>
                 </tr>
