@@ -7,7 +7,7 @@
             <field name="report_type">qweb-pdf</field>
             <field name="report_name">lims_sample_reception.report_mass_reception_document</field>
             <field name="report_file">lims_sample_reception.report_mass_reception_document</field>
-            <field name="print_report_name">'Informe Consolidado de Recepción - ' + datetime.datetime.now().strftime('%d%m%Y') + '.pdf'</field>
+            <field name="print_report_name">'Informe Consolidado de Recepción - + '.pdf'</field>
             <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
         </record>
     </data>
