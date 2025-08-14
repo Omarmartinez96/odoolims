@@ -80,7 +80,7 @@
       <div class="header" style="padding: 10px 20px;">
         <img t-if="company.logo"
             t-att-src="image_data_uri(company.logo)"
-            style="max-height: 120px; width: auto;"/>
+            style="max-height: 100px; width: auto;"/>
       </div>
 
       <!-- FOOTER FIJO -->
