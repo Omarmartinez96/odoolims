@@ -206,7 +206,7 @@
               </tbody>
             </table>
             <!-- Tabla de líneas - Header fijo -->
-           <table class="table table-borderless" style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0; margin-bottom:5px;">
+           <table class="table table-borderless" style="width:100%; font-size:12px; border-collapse:collapse; border-spacing:0; margin-bottom:5px;">
              <thead>
                <tr style="background-color:rgb(218,227,243); height: 35px;">
                  <th style="width:55%; padding:8px 4px; text-align:left; vertical-align:middle;"><strong>Descripción</strong></th>
@@ -218,8 +218,8 @@
              </thead>
            </table>
 
-<!-- Tabla consolidada sin bordes -->
-            <table class="table table-borderless" style="width:100%; font-size:14px; border-collapse:collapse; border-spacing:0; margin-top:5px;">
+            <!-- Tabla consolidada sin bordes -->
+            <table class="table table-borderless" style="width:100%; font-size:12px; border-collapse:collapse; border-spacing:0; margin-top:5px;">
               <tbody>
                 <t t-foreach="doc.order_line" t-as="line">
                   <t t-if="line.display_type != 'line_note'">
@@ -234,22 +234,22 @@
                         <t t-set="full_desc" t-value="line.product_id.description_sale or line.product_id.name or ''"/>
                         <t t-foreach="full_desc.split('\n')" t-as="ln">
                           <t t-if="ln.strip()">
-                            <div style="font-size:11px; margin:1px 0; line-height:1.3;">
+                            <div style="font-size:9px; margin:1px 0; line-height:1.3;">
                               <span t-esc="ln.strip()"/>
                             </div>
                           </t>
                         </t>
                       </td>
-                      <td style="width:11.25%; padding:4px 2px; text-align:center; font-size:11px; vertical-align:top;">
+                      <td style="width:11.25%; padding:4px 2px; text-align:center; font-size:9px; vertical-align:top;">
                           <span t-field="line.product_uom_qty" t-field-options="{'widget':'float','precision':0}"/>
                       </td>
-                      <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px; vertical-align:top;">
+                      <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:9px; vertical-align:top;">
                           <span t-field="line.price_unit" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                       </td>
-                      <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px; vertical-align:top;">
+                      <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:9px; vertical-align:top;">
                           <span t-esc="('%.2f' % line.discount) + '%'"/>
                       </td>
-                      <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:11px; vertical-align:top;">
+                      <td style="width:11.25%; padding:4px 2px; text-align:right; font-size:9px; vertical-align:top;">
                           <span t-field="line.price_subtotal" t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                       </td>
                     </tr>
@@ -259,7 +259,7 @@
                     <!-- Fila de nota -->
                     <tr>
                       <td style="width:55%; padding:2px 4px; vertical-align:top;">
-                        <div style="font-size:10px; color:#666; font-style:italic; margin-left:10px;">
+                        <div style="font-size:8px; color:#666; font-style:italic; margin-left:10px;">
                           <strong>Nota:</strong> <span t-esc="line.name"/>
                         </div>
                       </td>
@@ -270,7 +270,7 @@
                 
                 <!-- Fila de fin de cotización -->
                 <tr>
-                  <td colspan="5" style="background-color:rgb(218,227,243); height: 25px; padding:6px 4px; text-align:center; vertical-align:middle;">
+                  <td colspan="5" style="background-color:rgb(218,227,243); height: 15px; padding:6px 4px; text-align:center; vertical-align:middle;">
                     <strong>— FIN DE COTIZACIÓN —</strong>
                   </td>
                 </tr>
@@ -282,7 +282,7 @@
 
             <!-- Totales -->
             <div class="totals-section" style="width:100%; margin-top:20px;">
-              <table style="width:50%; float:right; font-size:12px; border-collapse:collapse;">
+              <table style="width:50%; float:right; font-size:10px; border-collapse:collapse;">
                 <!-- Subtotal -->
                 <tr>
                   <td style="text-align:left; padding:6px; border-top:1px solid #ddd;">
@@ -306,10 +306,10 @@
                 </tr>
                 <!-- Total -->
                 <tr>
-                  <td style="text-align:left; padding:6px; font-size:14px; border-top:2px solid #000;">
+                  <td style="text-align:left; padding:6px; font-size:12px; border-top:2px solid #000;">
                     <strong>Total:</strong>
                   </td>
-                  <td style="text-align:right; padding:6px; font-size:14px; border-top:2px solid #000;">
+                  <td style="text-align:right; padding:6px; font-size:12px; border-top:2px solid #000;">
                     <span t-field="doc.amount_total"
                           t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
                   </td>
@@ -318,22 +318,22 @@
             </div>
 
             <!-- Total en letra centrado -->
-            <div style="clear:both; margin-top:30px; padding-top:10px; font-size:12px; text-align:center;">
+            <div style="clear:both; margin-top:30px; padding-top:8px; font-size:12px; text-align:center;">
               <em><span t-esc="doc.currency_id.amount_to_text(doc.amount_total).upper()"/></em>
             </div>
 
             <!-- Términos de pago izquierda -->
-            <div style="margin-top:10px; font-size:12px; text-align:left;">
+            <div style="margin-top:10px; font-size:10px; text-align:left;">
               <strong>Términos de pago:</strong> <span t-esc="doc.payment_term_id.name"/>
             </div>
 
             <!-- Emitido por izquierda -->
-            <div style="margin-top:10px; font-size:12px; text-align:left;">
+            <div style="margin-top:10px; font-size:10px; text-align:left;">
               <strong>Emitido por:</strong> <span t-esc="doc.user_id.name"/>
             </div>
 
             <!-- Notas de símbolos separadas -->
-            <div style="margin-top:20px; font-size:10px; text-align:left;">
+            <div style="margin-top:20px; font-size:8px; text-align:left;">
               <em>* Acreditado, ** Subrogado</em>
             </div>
 
@@ -345,10 +345,10 @@
                       style="max-height:100px; max-width:300px;"/>
                 </t>
                 <div style="border-top:1px solid #000; width:40%; margin:10px auto 0;"/>
-                <p style="margin-top:5px; font-size:12px;">
+                <p style="margin-top:5px; font-size:10px;">
                   <strong>FIRMA DEL CLIENTE</strong>
                 </p>
-                <p style="margin-top:5px; font-size:10px;">
+                <p style="margin-top:5px; font-size:8px;">
                   <strong>Al firmar esta cotización, confirmarla por cualquier medio (verbal, telefónico, 
                           escrito, electrónico) y/o emitir la orden de compra correspondiente, el cliente 
                           acepta expresamente las condiciones y políticas de servicio detalladas en 
@@ -363,7 +363,7 @@
                 <div class="col-12">
                   <h5 style="margin-bottom:6px;">Condiciones y políticas de servicio</h5>
                   <ul style="
-                      font-size: 10px;
+                      font-size: 8px;
                       line-height: 1.5;
                       list-style-type: none;
                       margin: 0;
