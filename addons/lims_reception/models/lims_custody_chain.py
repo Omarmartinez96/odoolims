@@ -348,7 +348,7 @@ class LimsCustodyChain(models.Model):
                 receptions = self.env['lims.sample.reception'].search([
                     ('sample_id', 'in', chain.sample_ids.ids)
                 ])
-                analyses = self.env['lims.analysis'].search([
+                analyses = self.env['lims.analysis.v2'].search([
                     ('sample_reception_id', 'in', receptions.ids)
                 ])
                 
