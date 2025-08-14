@@ -103,23 +103,5 @@
       </field>
     </record>
 
-    <!-- MENÚS REORGANIZADOS PARA MEJOR ACCESO -->
-    <menuitem id="menu_lims_configuration" 
-              name="⚙️ Configuración" 
-              parent="lims_custody_menu_root" 
-              sequence="30"/>
-
-    <menuitem id="menu_lims_sample_types" 
-              name="Tipos de Muestra" 
-              parent="menu_lims_configuration" 
-              action="action_lims_sample_types" 
-              sequence="10"/>
-
-    <menuitem id="menu_lims_container_types" 
-              name="Tipos de Recipiente" 
-              parent="menu_lims_configuration" 
-              action="action_lims_container_types" 
-              sequence="20"/>
-
   </data>
 </odoo>

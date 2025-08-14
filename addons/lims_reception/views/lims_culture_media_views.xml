@@ -61,13 +61,6 @@
             </field>
         </record>
 
-        <!-- FUNCIÓN: Menú para acceder al catálogo -->
-        <!-- PARA QUE: Los usuarios puedan administrar el catálogo desde el menú -->
-        <menuitem id="menu_lims_culture_media" 
-                  name="Medios de Cultivo" 
-                  parent="menu_lims_configuration" 
-                  action="action_lims_culture_media" 
-                  sequence="30"/>
 
     </data>
 </odoo>

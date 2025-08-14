@@ -40,5 +40,36 @@
                 action="lims_reception.action_lims_culture_media" 
                 sequence="30"/>
 
+        <!-- NUEVOS MENÚS TRASLADADOS -->
+        <menuitem id="menu_lims_sample_types" 
+                name="Tipos de Muestra" 
+                parent="menu_lims_analysis_config_root" 
+                action="lims_reception.action_lims_sample_types" 
+                sequence="40"/>
+
+        <menuitem id="menu_lims_container_types" 
+                name="Tipos de Recipiente" 
+                parent="menu_lims_analysis_config_root" 
+                action="lims_reception.action_lims_container_types" 
+                sequence="50"/>
+
+        <menuitem id="menu_quality_control_types" 
+                name="Tipos de Control de Calidad" 
+                parent="menu_lims_analysis_config_root" 
+                action="lims_reception.action_quality_control_types" 
+                sequence="60"/>
+
+        <menuitem id="menu_parameter_templates" 
+                name="Plantillas de Parámetros" 
+                parent="menu_lims_analysis_config_root" 
+                action="lims_reception.action_parameter_templates" 
+                sequence="70"/>
+
+        <menuitem id="menu_sample_templates" 
+                name="Plantillas de Muestras"
+                parent="menu_lims_analysis_config_root"
+                action="lims_reception.action_lims_sample_templates" 
+                sequence="80"/>
+
     </data>
 </odoo>

@@ -66,12 +66,5 @@
             </field>
         </record>
 
-        <!-- Menú para Tipos de Control -->
-        <menuitem id="menu_quality_control_types" 
-                  name="Tipos de Control de Calidad" 
-                  parent="menu_lims_configuration" 
-                  action="action_quality_control_types" 
-                  sequence="30"/>
-
     </data>
 </odoo>

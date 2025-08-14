@@ -55,12 +55,5 @@
             <field name="view_mode">list,form</field>
         </record>
 
-        <!-- Menú para Plantillas de MUESTRAS -->
-        <menuitem id="lims_sample_templates_menu" 
-                  name="Plantillas de Muestras"
-                  parent="lims_custody_menu_root"
-                  action="action_lims_sample_templates" 
-                  sequence="20"/>
-
     </data>
 </odoo>

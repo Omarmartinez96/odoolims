@@ -241,12 +241,5 @@
             </field>
         </record>
 
-        <!-- Menú para Plantillas -->
-        <menuitem id="menu_parameter_templates" 
-                  name="Plantillas de Parámetros" 
-                  parent="lims_custody_menu_root" 
-                  action="action_parameter_templates" 
-                  sequence="25"/>
-
     </data>
 </odoo>
