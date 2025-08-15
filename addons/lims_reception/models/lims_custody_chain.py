@@ -378,3 +378,23 @@ class LimsCustodyChain(models.Model):
                 _logger.info(f"ELIMINACIÓN EN CASCADA: {message}")
         
         return super().unlink()
+    
+    def copy(self, default=None):
+        """Personalizar duplicado de cadenas de custodia"""
+        if default is None:
+            default = {}
+        
+        # Resetear campos específicos para la nueva cadena
+        default.update({
+            'custody_chain_code': '/',  # Se genera automático en create()
+            'chain_of_custody_state': 'draft',  # Volver a borrador
+            'customer_signature': False,  # Limpiar firma
+            'signature_date': False,
+            'signature_name': False,
+            'signature_position': False,
+            'is_signed': False,
+            'date_chainofcustody': fields.Date.context_today(self),  # Fecha actual
+            'time_chainofcustody': datetime.now().strftime('%H:%M'),  # Hora actual
+        })
+        
+        return super().copy(default)

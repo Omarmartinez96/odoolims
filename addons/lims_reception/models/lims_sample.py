@@ -246,3 +246,16 @@ class LimsSample(models.Model):
                 # Para registros huérfanos, no mostrar
                 continue
         return result
+    
+    def copy(self, default=None):
+        """Personalizar duplicado de muestras"""
+        if default is None:
+            default = {}
+        
+        # NO copiar identificación y descripción de muestra
+        default.update({
+            'sample_identifier': '',
+            'sample_description': '',
+        })
+        
+        return super().copy(default)
