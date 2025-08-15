@@ -258,7 +258,19 @@ class LimsSample(models.Model):
         if 'sample_description' not in default:
             default['sample_description'] = ''
         
-        # Crear la nueva muestra
+        # Crear la nueva muestra SIN parámetros primero
         new_sample = super().copy(default)
+        
+        # Ahora copiar manualmente cada parámetro
+        for parameter in self.parameter_ids:
+            parameter.copy({
+                'sample_id': new_sample.id,
+            })
+        
+        # También copiar resultados de campo
+        for field_result in self.field_result_ids:
+            field_result.copy({
+                'sample_id': new_sample.id,
+            })
         
         return new_sample

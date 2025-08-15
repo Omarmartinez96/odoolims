@@ -332,3 +332,25 @@ class LimsSampleParameter(models.Model):
                 'expected_result': 'Estéril',
                 'sequence': 10
             })
+
+    def copy(self, default=None):
+        """Personalizar duplicado de parámetros CON medios de cultivo y controles"""
+        if default is None:
+            default = {}
+        
+        # Crear el nuevo parámetro
+        new_parameter = super().copy(default)
+        
+        # Copiar manualmente los medios de cultivo
+        for culture_media in self.culture_media_ids:
+            culture_media.copy({
+                'parameter_id': new_parameter.id,
+            })
+        
+        # Copiar manualmente los controles de calidad
+        for quality_control in self.quality_control_ids:
+            quality_control.copy({
+                'parameter_id': new_parameter.id,
+            })
+        
+        return new_parameter
