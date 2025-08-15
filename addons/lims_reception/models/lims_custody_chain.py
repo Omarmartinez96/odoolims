@@ -55,6 +55,18 @@ class LimsCustodyChain(models.Model):
     )
 # ============ INHABILITADO =================
 
+    date_chainofcustody = fields.Date(
+        string="Fecha de Cadena de Custodia",
+        default=fields.Date.context_today,
+        help="Fecha en que se crea la cadena de custodia"   
+    )
+
+    time_chainofcustody = fields.Char(
+        string="Hora de Cadena de Custodia",
+        default=lambda self: datetime.now().strftime('%H:%M'),
+        help="Hora en que se crea la cadena de custodia"
+    )
+
     sample_ids = fields.One2many(
         'lims.sample', 
         'custody_chain_id', 

@@ -11,6 +11,8 @@
           <sheet>
             <group string="Datos de la Cadena de Custodia">
               <field name="custody_chain_code" placeholder="Se genera automaticamente"/>
+              <field name="date_chainof_custody" placeholder="Fecha de la cadena de custodia"/>
+              <field name="time_chainof_custody" placeholder="Hora de la cadena de custodia (HH:MM)"/>
               <field name="cliente_id" placeholder="Selecciona el cliente"/>  
               <field name="client_code" readonly="1"/>
               <field name="sucursal_id" placeholder="Selecciona la sucursal"/> 
