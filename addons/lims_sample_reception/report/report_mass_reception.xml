@@ -107,16 +107,15 @@
                                 </t>
                             </td>
                         </tr>
-
-                        <tr>
-                            <td style="width: 50%; text-align: right;">
-                                <strong>Cadenas procesadas:</strong> <span t-esc="len(docs)"/>
-                            </td>
-                        </tr>
                         <tr>
                             <td colspan="2">
                                 <strong>Cadenas incluidas:</strong> 
                                 <span t-esc="', '.join([doc.custody_chain_code for doc in docs])"/>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td style="width: 50%; text-align: right;">
+                                <strong>Cadenas procesadas:</strong> <span t-esc="len(docs)"/>
                             </td>
                         </tr>
                     </table>
