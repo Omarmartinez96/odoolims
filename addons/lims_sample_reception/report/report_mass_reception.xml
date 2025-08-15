@@ -18,6 +18,9 @@
                         font-size: 10px;
                         margin-top: 20px;
                     }
+                    .date-column { 
+                        font-size: 9px; 
+                    }
                     .consolidated-table th {
                         background-color: rgba(218, 227, 243, 1);
                         color: black;
@@ -127,12 +130,13 @@
                     <table class="consolidated-table">
                         <thead>
                             <tr>
+                                <th style="width: 8%;">Fecha Recepción</th>
                                 <th style="width: 14%;">Cadena de Custodia</th>
-                                <th style="width: 16%;">Identificación de Muestra</th>
-                                <th style="width: 12%;">Sitio de Muestreo</th>
-                                <th style="width: 12%;">Código de Muestra</th>
-                                <th style="width: 10%;">Temp. Recepción</th>
-                                <th style="width: 10%;">Estado</th>
+                                <th style="width: 14%;">Identificación de Muestra</th>
+                                <th style="width: 10%;">Sitio de Muestreo</th>
+                                <th style="width: 10%;">Código de Muestra</th>
+                                <th style="width: 8%;">Temp. Recepción</th>
+                                <th style="width: 8%;">Estado</th>
                                 <th style="width: 16%;">Parámetros y Métodos</th>
                                 <th style="width: 10%;">Observaciones</th>
                             </tr>
@@ -142,6 +146,17 @@
                                 <t t-foreach="doc.sample_ids" t-as="sample">
                                     <t t-set="reception" t-value="env['lims.sample.reception'].search([('sample_id', '=', sample.id)], limit=1)"/>
                                     <tr>
+                                        <!-- Fecha de Recepción -->
+                                        <td class="date-column">
+                                            <t t-if="reception and reception.reception_date">
+                                                <t t-set="fecha_rec" t-value="reception.reception_date.strftime('%d/%m/%Y')"/>
+                                                <span t-esc="fecha_rec"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span style="color: #999;">Sin fecha</span>
+                                            </t>
+                                        </td>
+
                                         <!-- Cadena de Custodia -->
                                         <td><span t-esc="doc.custody_chain_code"/></td>
                                         
