@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vista del Wizard de Duplicado -->
+        <record id="view_custody_chain_duplicate_wizard_form" model="ir.ui.view">
+            <field name="name">lims.custody_chain.duplicate.wizard.form</field>
+            <field name="model">lims.custody_chain.duplicate.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Confirmar Duplicado de Cadena de Custodia">
+                    <div class="alert alert-warning" role="alert" style="margin-bottom: 20px;">
+                        <h4><i class="fa fa-warning"/> ⚠️ Está a punto de duplicar una cadena de custodia</h4>
+                        <p><strong>¿Está seguro de duplicar?</strong></p>
+                        
+                        <p>Tenga en cuenta que esta acción:</p>
+                        <ul>
+                            <li>• Copiará <strong>exactamente</strong> todos los campos y creará una nueva cadena de custodia</li>
+                            <li>• Duplicará <strong>todas las muestras</strong> con sus parámetros de análisis</li>
+                            <li>• Solo se limpiarán las <strong>identificaciones de muestra</strong> para que las complete manualmente</li>
+                            <li>• Se generará un <strong>nuevo código</strong> de cadena de custodia automáticamente</li>
+                        </ul>
+                        
+                        <div style="background-color: #e8f4fd; padding: 10px; border-left: 4px solid #2196f3; margin-top: 15px;">
+                            <p><strong>💡 Esta función se utiliza cuando se requieren múltiples cadenas de custodia de una sola recolección o muestreo.</strong></p>
+                        </div>
+                    </div>
+
+                    <group>
+                        <field name="custody_chain_id" readonly="1"/>
+                        <field name="samples_count" readonly="1"/>
+                        <field name="parameters_count" readonly="1"/>
+                    </group>
+
+                    <footer>
+                        <button name="action_confirm_duplicate" 
+                                type="object" 
+                                string="✅ Sí, Duplicar Cadena" 
+                                class="btn-primary"/>
+                        <button string="❌ Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

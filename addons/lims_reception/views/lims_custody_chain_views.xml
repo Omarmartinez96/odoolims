@@ -138,6 +138,13 @@
             <div style="margin-top: 20px;">
               <div class="oe_button_box" style="display: flex; gap: 10px; justify-content: center;">
                 
+                <!-- Botón Duplicar Personalizado -->
+                <button name="action_duplicate_with_confirmation"
+                        type="object"
+                        string="📋 Duplicar Cadena"
+                        class="btn-secondary"
+                        help="Duplicar cadena de custodia con todas sus muestras"/>
+
                 <!-- Botón Vista Previa y Firma -->
                 <button name="action_preview_and_sign"
                         type="object"

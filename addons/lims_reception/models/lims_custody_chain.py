@@ -410,3 +410,18 @@ class LimsCustodyChain(models.Model):
             })
         
         return new_chain
+    
+    def action_duplicate_with_confirmation(self):
+        """Mostrar wizard de confirmación antes de duplicar"""
+        self.ensure_one()
+        
+        return {
+            'name': _('Confirmar Duplicado'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'lims.custody_chain.duplicate.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_custody_chain_id': self.id,
+            }
+        }
