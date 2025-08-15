@@ -46,10 +46,15 @@ class LimsCustodyChain(models.Model):
         string="Departamento", 
         domain="[('branch_id', '=', sucursal_id)]"
     )
+
+# ============ INHABILITADO =================
+
     date_created = fields.Datetime(
         string="Fecha de Creación", 
         default=fields.Datetime.now
     )
+# ============ INHABILITADO =================
+
     sample_ids = fields.One2many(
         'lims.sample', 
         'custody_chain_id', 

@@ -21,7 +21,6 @@
                      invisible="departamento_id == False"
                      placerholder="Selecciona los contactos relacionados a este servicio"/>
               <field name="quotation_id" placeholder="Selecciona la cotizacion relacionada a este servicio"/>
-              <field name="date_created" widget="datetime" placeholder="Inserta la fecha de creacion de registro"/>
               <field name="chain_of_custody_state" widget="radio"/> 
             </group>
 
@@ -181,7 +180,6 @@
           <field name="departamento_id"/>
           <field name="chain_of_custody_state"/>
           <field name="is_signed"/>
-          <field name="date_created"/>
         </list>
       </field>
     </record>
