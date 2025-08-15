@@ -380,21 +380,33 @@ class LimsCustodyChain(models.Model):
         return super().unlink()
     
     def copy(self, default=None):
-        """Personalizar duplicado de cadenas de custodia"""
+        """Personalizar duplicado de cadenas de custodia CON muestras"""
         if default is None:
             default = {}
         
         # Resetear campos específicos para la nueva cadena
         default.update({
-            'custody_chain_code': '/',  # Se genera automático en create()
-            'chain_of_custody_state': 'draft',  # Volver a borrador
-            'customer_signature': False,  # Limpiar firma
+            'custody_chain_code': '/',
+            'chain_of_custody_state': 'draft',
+            'customer_signature': False,
             'signature_date': False,
             'signature_name': False,
             'signature_position': False,
             'is_signed': False,
-            'date_chainofcustody': fields.Date.context_today(self),  # Fecha actual
-            'time_chainofcustody': datetime.now().strftime('%H:%M'),  # Hora actual
+            'date_chainofcustody': fields.Date.context_today(self),
+            'time_chainofcustody': datetime.now().strftime('%H:%M'),
         })
         
-        return super().copy(default)
+        # Crear la nueva cadena SIN las muestras primero
+        new_chain = super().copy(default)
+        
+        # Ahora copiar manualmente cada muestra
+        for sample in self.sample_ids:
+            # Copiar la muestra con identificación vacía
+            sample.copy({
+                'custody_chain_id': new_chain.id,
+                'sample_identifier': '',
+                'sample_description': '',
+            })
+        
+        return new_chain

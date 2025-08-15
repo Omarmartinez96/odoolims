@@ -248,14 +248,17 @@ class LimsSample(models.Model):
         return result
     
     def copy(self, default=None):
-        """Personalizar duplicado de muestras"""
+        """Personalizar duplicado de muestras CON todos sus parámetros"""
         if default is None:
             default = {}
         
-        # NO copiar identificación y descripción de muestra
-        default.update({
-            'sample_identifier': '',
-            'sample_description': '',
-        })
+        # Solo limpiar identificación y descripción si no se especifica
+        if 'sample_identifier' not in default:
+            default['sample_identifier'] = ''
+        if 'sample_description' not in default:
+            default['sample_description'] = ''
         
-        return super().copy(default)
+        # Crear la nueva muestra
+        new_sample = super().copy(default)
+        
+        return new_sample
