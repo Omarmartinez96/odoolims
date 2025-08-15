@@ -178,6 +178,7 @@
         <list string="Cadenas de Custodia">
           <field name="custody_chain_code"/>
           <field name="cliente_id"/>
+          <field name="date_chainofcustody" placeholder="Fecha de la cadena de custodia"/>
           <field name="sucursal_id"/>
           <field name="departamento_id"/>
           <field name="chain_of_custody_state"/>

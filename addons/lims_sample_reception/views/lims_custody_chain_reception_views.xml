@@ -10,6 +10,7 @@
                 <list string="Cadenas de Custodia - Recepción" create="false" edit="false">
                     <field name="custody_chain_code"/>
                     <field name="cliente_id"/>
+                    <field name="date_chainofcustody" placeholder="Fecha de la cadena de custodia"/>
                     <field name="client_code"/>
                     <field name="chain_of_custody_state"/>
                     
