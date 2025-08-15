@@ -51,7 +51,7 @@
                             Teléfono: (664) 973-8185
                         </td>
                         <td style="width: 33%; text-align: center; padding: 3px;">
-                            FOR-021 Rev. 01 | PROC-005
+                            FOR-139 Rev. 00 | PROC-011
                         </td>
                         <td style="width: 33%; text-align: right; padding: 3px;">
                             contacto@proteuslaboratorio.com
@@ -115,8 +115,7 @@
                                 <t t-set="d_today" t-value="today.strftime('%d')"/>
                                 <t t-set="m_today" t-value="today.strftime('%m')"/>
                                 <t t-set="y_today" t-value="today.strftime('%Y')"/>
-                                <t t-set="h_today" t-value="today.strftime('%H:%M')"/>
-                                <span t-esc="d_today + '/' + meses[m_today] + '/' + y_today + ' ' + h_today"/>
+                                <span t-esc="d_today + '/' + meses[m_today] + '/' + y_today"/>
                             </td>
                             <td style="width: 50%; text-align: right;">
                                 <strong>Cadenas procesadas:</strong> <span t-esc="len(docs)"/>
@@ -174,7 +173,7 @@
                                         <!-- Temperatura de Recepción -->
                                         <td>
                                             <t t-if="sample.collection_temperature">
-                                                <span t-esc="sample.collection_temperature"/>°C
+                                                <span t-esc="sample.collection_temperature"/>
                                             </t>
                                             <t t-else="">
                                                 <span style="color: #999;">N/A</span>
