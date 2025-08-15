@@ -109,14 +109,6 @@
                         </tr>
 
                         <tr>
-                            <td style="width: 50%;">
-                                <strong>Fecha del reporte:</strong>
-                                <t t-set="today" t-value="datetime.datetime.now()"/>
-                                <t t-set="d_today" t-value="today.strftime('%d')"/>
-                                <t t-set="m_today" t-value="today.strftime('%m')"/>
-                                <t t-set="y_today" t-value="today.strftime('%Y')"/>
-                                <span t-esc="d_today + '/' + meses[m_today] + '/' + y_today"/>
-                            </td>
                             <td style="width: 50%; text-align: right;">
                                 <strong>Cadenas procesadas:</strong> <span t-esc="len(docs)"/>
                             </td>
