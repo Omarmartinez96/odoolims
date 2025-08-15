@@ -149,8 +149,10 @@
                                         <!-- Fecha de Recepción -->
                                         <td class="date-column">
                                             <t t-if="reception and reception.reception_date">
-                                                <t t-set="fecha_rec" t-value="reception.reception_date.strftime('%d/%m/%Y')"/>
-                                                <span t-esc="fecha_rec"/>
+                                                <t t-set="d_rec" t-value="reception.reception_date.strftime('%d')"/>
+                                                <t t-set="m_rec" t-value="reception.reception_date.strftime('%m')"/>
+                                                <t t-set="y_rec" t-value="reception.reception_date.strftime('%Y')"/>
+                                                <span t-esc="d_rec + '/' + meses[m_rec] + '/' + y_rec"/>
                                             </t>
                                             <t t-else="">
                                                 <span style="color: #999;">Sin fecha</span>
