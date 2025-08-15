@@ -10,3 +10,4 @@ access_lims_quality_control_type,lims.quality.control.type,model_lims_quality_co
 access_lims_quality_control,lims.quality.control,model_lims_quality_control,base.group_user,1,1,1,1
 access_lims_culture_media,lims.culture.media,model_lims_culture_media,base.group_user,1,1,1,1
 access_lims_parameter_culture_media,lims.parameter.culture.media,model_lims_parameter_culture_media,base.group_user,1,1,1,1
+access_lims_custody_chain_duplicate_wizard,lims.custody_chain.duplicate.wizard,model_lims_custody_chain_duplicate_wizard,base.group_user,1,1,1,1
