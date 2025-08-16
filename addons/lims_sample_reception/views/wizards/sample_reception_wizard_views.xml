@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vista del Wizard de Recepción -->
+        <record id="view_sample_reception_wizard_form" model="ir.ui.view">
+            <field name="name">lims.sample.reception.wizard.form</field>
+            <field name="model">lims.sample.reception.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Recepción de Muestras">
+                    <div class="alert alert-info" role="alert" style="margin-bottom: 20px;">
+                        <h4><i class="fa fa-check-circle"/> 📥 Marcar Muestras como Recibidas</h4>
+                        
+                        <div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 15px 0;">
+                            <p><strong>⚠️ Al marcar como recibida, usted acepta que las muestras:</strong></p>
+                            <ul style="margin: 10px 0;">
+                                <li>• Se encuentran en <strong>buenas condiciones</strong></li>
+                                <li>• Tienen <strong>temperatura adecuada</strong></li>
+                                <li>• El <strong>recipiente está íntegro</strong> y es adecuado</li>
+                                <li>• El <strong>volumen/cantidad es suficiente</strong></li>
+                                <li>• Las <strong>condiciones de preservación son correctas</strong></li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Información de las muestras -->
+                    <group>
+                        <field name="reception_mode" invisible="1"/>
+                        <field name="sample_id" invisible="1"/>
+                        <field name="sample_ids" invisible="1"/>
+                        
+                        <field name="samples_count" readonly="1"/>
+                        <field name="sample_code" readonly="1"/>
+                    </group>
+
+                    <group string="Muestras a Recibir">
+                        <field name="samples_info" nolabel="1" readonly="1" widget="text"/>
+                    </group>
+
+                    <!-- Datos de recepción -->
+                    <group string="📅 Información de Recepción">
+                        <group>
+                            <field name="reception_date"/>
+                            <field name="reception_time" placeholder="14:30"/>
+                        </group>
+                        <group>
+                            <field name="received_by_initials" placeholder="ABC"/>
+                        </group>
+                    </group>
+
+                    <!-- Observaciones -->
+                    <group string="📝 Observaciones">
+                        <field name="reception_notes" nolabel="1" 
+                               placeholder="Observaciones generales sobre la recepción..."/>
+                    </group>
+
+                    <footer>
+                        <button name="action_confirm_reception" 
+                                type="object" 
+                                string="✅ Marcar como Recibida(s)" 
+                                class="btn-primary"/>
+                        <button string="❌ Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

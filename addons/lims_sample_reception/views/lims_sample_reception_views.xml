@@ -19,14 +19,15 @@
             </field>
         </record>
 
-        <!-- Vista Formulario de Recepción -->
+        <!-- Vista Formulario de Recepción SIMPLIFICADA -->
         <record id="view_sample_reception_form" model="ir.ui.view">
             <field name="name">lims.sample.reception.form</field>
             <field name="model">lims.sample.reception</field>
             <field name="arch" type="xml">
                 <form string="Recepción de Muestra">
                     <header>
-                        <field name="reception_state" widget="statusbar" statusbar_visible="no_recibida,rechazada,recibida"/>               
+                        <field name="reception_state" widget="statusbar" 
+                            statusbar_visible="no_recibida,rechazada,recibida"/>               
                     </header>
                     
                     <sheet>
@@ -48,97 +49,25 @@
                                 <field name="reception_date"/>
                                 <field name="reception_time" placeholder="14:30"/>
                                 <field name="received_by"/>
-                                <field name="can_change_state" invisible="1"/>
+                                <field name="received_by_initials"/>
                             </group>
                         </group>
+
+                        <!-- Estado de recepción -->
                         <group string="📊 Estado de Recepción">
-                            <field name="reception_state" widget="radio" 
-                                invisible="can_change_state == False"/>
-                            <div invisible="can_change_state == True">
-                                <span style="color: orange;">⚠️ Responda TODOS los puntos del checklist para cambiar el estado</span>
-                            </div>
+                            <field name="reception_state" widget="radio"/>
                         </group>
 
-                        <!-- Checklist de Recepción -->
-                        <group string="✅ Checklist de Recepción">
-                            
-                            <!-- Condiciones -->
-                            <field name="check_conditions" widget="radio"/>
-                            <field name="conditions_notes" 
-                                placeholder="Especifique el problema..."
-                                invisible="check_conditions != 'no'"/>
-                            <field name="can_process_conditions" 
-                                invisible="check_conditions != 'no'"/>
-                            
-                            <!-- Temperatura -->
-                            <field name="check_temperature" widget="radio"/>
-                            <field name="temperature_notes" 
-                                placeholder="Especifique el problema..."
-                                invisible="check_temperature != 'no'"/>
-                            <field name="can_process_temperature" 
-                                invisible="check_temperature != 'no'"/>
-                            
-                            <!-- Recipiente -->
-                            <field name="check_container" widget="radio"/>
-                            <field name="container_notes" 
-                                placeholder="Especifique el problema..."
-                                invisible="check_container != 'no'"/>
-                            <field name="can_process_container" 
-                                invisible="check_container != 'no'"/>
-                            
-                            <!-- Volumen -->
-                            <field name="check_volume" widget="radio"/>
-                            <field name="volume_notes" 
-                                placeholder="Especifique el problema..."
-                                invisible="check_volume != 'no'"/>
-                            <field name="can_process_volume" 
-                                invisible="check_volume != 'no'"/>
-                            
-                            <!-- Preservación -->
-                            <field name="check_preservation" widget="radio"/>
-                            <field name="preservation_notes" 
-                                placeholder="Especifique el problema..."
-                                invisible="check_preservation != 'no'"/>
-                            <field name="can_process_preservation" 
-                                invisible="check_preservation != 'no'"/>
-                            
-                        </group>
-
-                        <!-- Parámetros de la Muestra -->
+                        <!-- Parámetros de la Muestra (solo lectura) -->
                         <group string="🔬 Parámetros de Análisis">
-                            <field name="sample_id" invisible="1"/>
-                            <field name="parameter_ids" 
-                                context="{'default_sample_id': sample_id}"
-                                nolabel="1">
-                                <list string="Parámetros" editable="bottom" create="true" delete="true">
-                                    <field name="template_id" 
-                                        string="Parámetro"
-                                        domain="[('is_template', '=', True)]"
-                                        options="{'no_create': True, 'no_open': True}"/>
+                            <field name="parameter_ids" nolabel="1" readonly="1">
+                                <list string="Parámetros">
+                                    <field name="name"/>
                                     <field name="microorganism"/>
                                     <field name="method"/>
                                     <field name="category"/>
                                     <field name="unit"/>
                                 </list>
-                                
-                                <form string="Parámetro">
-                                    <group>
-                                        <field name="template_id" 
-                                            string="Seleccionar Plantilla" 
-                                            domain="[('is_template', '=', True)]"
-                                            placeholder="Elegir parámetro desde configuración"
-                                            options="{'no_create': True, 'no_open': True}"/>
-                                    </group>
-                                    <group>
-                                        <field name="name" required="1"/>
-                                        <field name="method"/>
-                                        <field name="category"/>
-                                    </group>
-                                    <group>
-                                        <field name="microorganism"/>
-                                        <field name="unit"/>
-                                    </group>
-                                </form>
                             </field>
                         </group>
 
@@ -151,6 +80,26 @@
                         <group string="🔒 Observaciones Internas">
                             <field name="internal_reception_notes" nolabel="1" 
                                 placeholder="Notas internas del laboratorio (solo para uso interno)..."/>
+                        </group>
+
+                        <!-- Campos deprecados ocultos para compatibilidad -->
+                        <group string="Campos de Compatibilidad" invisible="1">
+                            <field name="check_conditions" invisible="1"/>
+                            <field name="check_temperature" invisible="1"/>
+                            <field name="check_container" invisible="1"/>
+                            <field name="check_volume" invisible="1"/>
+                            <field name="check_preservation" invisible="1"/>
+                            <field name="can_change_state" invisible="1"/>
+                            <field name="conditions_notes" invisible="1"/>
+                            <field name="temperature_notes" invisible="1"/>
+                            <field name="container_notes" invisible="1"/>
+                            <field name="volume_notes" invisible="1"/>
+                            <field name="preservation_notes" invisible="1"/>
+                            <field name="can_process_conditions" invisible="1"/>
+                            <field name="can_process_temperature" invisible="1"/>
+                            <field name="can_process_container" invisible="1"/>
+                            <field name="can_process_volume" invisible="1"/>
+                            <field name="can_process_preservation" invisible="1"/>
                         </group>
 
                     </sheet>

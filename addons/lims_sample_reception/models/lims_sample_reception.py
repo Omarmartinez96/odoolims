@@ -9,6 +9,8 @@ class LimsSampleReception(models.Model):
     _rec_name = 'sample_code'
     _order = 'reception_date desc, create_date desc'
 
+    # ==================== CAMPOS ACTIVOS ====================
+    
     # Relación con la muestra original
     sample_id = fields.Many2one(
         'lims.sample',
@@ -36,7 +38,7 @@ class LimsSampleReception(models.Model):
         readonly=True
     )
     
-    # 🆕 CÓDIGO DE MUESTRA GENERADO
+    # CÓDIGO DE MUESTRA GENERADO
     sample_code = fields.Char(
         string='Código de Muestra',
         copy=False,
@@ -44,7 +46,7 @@ class LimsSampleReception(models.Model):
         help='Se genera automáticamente: ABC-000/XXXX'
     )
     
-    # 🆕 FECHA Y HORA DE RECEPCIÓN
+    # FECHA Y HORA DE RECEPCIÓN
     reception_date = fields.Date(
         string='Fecha de Recepción',
         default=fields.Date.context_today,
@@ -56,137 +58,98 @@ class LimsSampleReception(models.Model):
         help='Formato: HH:MM (ej: 14:30)'
     )
     
-    # 🆕 CHECKLIST DE RECEPCIÓN
-    check_conditions = fields.Selection([
-        ('si', 'Sí'),
-        ('no', 'No'),
-        ('na', 'N/A')
-    ], string='¿La muestra está en buenas condiciones?')
-    
-    check_temperature = fields.Selection([
-        ('si', 'Sí'),
-        ('no', 'No'),
-        ('na', 'N/A')
-    ], string='¿La temperatura de recepción es adecuada?')
-    
-    check_container = fields.Selection([
-        ('si', 'Sí'),
-        ('no', 'No'),
-        ('na', 'N/A')
-    ], string='¿El recipiente está íntegro y es el adecuado para el tipo de muestra?')
-    
-    check_volume = fields.Selection([
-        ('si', 'Sí'),
-        ('no', 'No'),
-        ('na', 'N/A')
-    ], string='¿El volumen/cantidad es suficiente?')
-    
-    check_preservation = fields.Selection([
-        ('si', 'Sí'),
-        ('no', 'No'),
-        ('na', 'N/A')
-    ], string='¿Las condiciones de preservación son correctas?')
-        
-    # Campos de observaciones cuando la respuesta es NO
-    conditions_notes = fields.Text(
-        string='Observaciones - Condiciones',
-        invisible=True
-    )
-    can_process_conditions = fields.Boolean(
-        string='¿Se puede procesar?',
-        invisible=True
-    )
-
-    temperature_notes = fields.Text(
-        string='Observaciones - Temperatura',
-        invisible=True
-    )
-    can_process_temperature = fields.Boolean(
-        string='¿Se puede procesar?',
-        invisible=True
-    )
-
-    container_notes = fields.Text(
-        string='Observaciones - Recipiente',
-        invisible=True
-    )
-    can_process_container = fields.Boolean(
-        string='¿Se puede procesar?',
-        invisible=True
-    )
-
-    volume_notes = fields.Text(
-        string='Observaciones - Volumen',
-        invisible=True
-    )
-    can_process_volume = fields.Boolean(
-        string='¿Se puede procesar?',
-        invisible=True
-    )
-
-    preservation_notes = fields.Text(
-        string='Observaciones - Preservación',
-        invisible=True
-    )
-    can_process_preservation = fields.Boolean(
-        string='¿Se puede procesar?',
-        invisible=True
-    )
-
-    # 🆕 ESTADOS DE RECEPCIÓN
+    # ESTADOS DE RECEPCIÓN (MANTENER RECHAZADA)
     reception_state = fields.Selection([
         ('no_recibida', 'No Recibida'),
         ('rechazada', 'Rechazada'),
         ('recibida', 'Recibida')
     ], string='Estado de Recepción', default='no_recibida')
     
-    # Campo computado para habilitar cambio de estado
-    can_change_state = fields.Boolean(
-        string='Puede cambiar estado',
-        compute='_compute_can_change_state',
-        store=True
+    # CAMPOS NUEVOS SIMPLIFICADOS
+    received_by_initials = fields.Char(
+        string='Iniciales de quien recibió',
+        size=5,
+        help='Iniciales de la persona que recibió la muestra'
     )
     
-    # Observaciones
+    # Observaciones (ACTIVAS)
     reception_notes = fields.Text(
         string='Observaciones de Recepción'
     )
-    # Observaciones internas de recepción
     internal_reception_notes = fields.Text(
         string='Observaciones Internas de Recepción',
         help='Notas internas del laboratorio sobre la recepción'
     )
 
-    # Técnico que recibe
+    # Técnico que recibe (mantener por compatibilidad)
     received_by = fields.Many2one(
         'res.users',
         string='Recibido por',
         default=lambda self: self.env.user
     )
     
-    # Relación con parámetros (MOVIDO AQUÍ)
+    # Relación con parámetros (IMPORTANTE - MANTENER)
     parameter_ids = fields.One2many(
         related='sample_id.parameter_ids',
         string='Parámetros de la Muestra',
         readonly=False
     )
     
-    # MÉTODOS DE LimsSampleReception
-    @api.depends('check_conditions', 'check_temperature', 
-                'check_container', 'check_volume', 'check_preservation')
-    def _compute_can_change_state(self):
-        """Permite cambiar estado solo si TODOS los checks están completados"""
-        for record in self:
-            checks = [
-                record.check_conditions,
-                record.check_temperature,
-                record.check_container,
-                record.check_volume,
-                record.check_preservation
-            ]
-            # Todos los checks deben tener una respuesta (no estar vacíos)
-            all_answered = all(check for check in checks)
-            record.can_change_state = all_answered
+    # ==================== CAMPOS DEPRECADOS ====================
+    # NOTA: Estos campos están deprecados y solo se mantienen por 
+    # compatibilidad con registros existentes. NO USAR EN NUEVAS FUNCIONALIDADES.
+    
+    # Checklist deprecado
+    check_conditions = fields.Selection([
+        ('si', 'Sí'),
+        ('no', 'No'),
+        ('na', 'N/A')
+    ], string='¿La muestra está en buenas condiciones? [DEPRECADO]')
+    
+    check_temperature = fields.Selection([
+        ('si', 'Sí'),
+        ('no', 'No'),
+        ('na', 'N/A')
+    ], string='¿La temperatura de recepción es adecuada? [DEPRECADO]')
+    
+    check_container = fields.Selection([
+        ('si', 'Sí'),
+        ('no', 'No'),
+        ('na', 'N/A')
+    ], string='¿El recipiente está íntegro? [DEPRECADO]')
+    
+    check_volume = fields.Selection([
+        ('si', 'Sí'),
+        ('no', 'No'),
+        ('na', 'N/A')
+    ], string='¿El volumen/cantidad es suficiente? [DEPRECADO]')
+    
+    check_preservation = fields.Selection([
+        ('si', 'Sí'),
+        ('no', 'No'),
+        ('na', 'N/A')
+    ], string='¿Las condiciones de preservación son correctas? [DEPRECADO]')
+    
+    # Campos de observaciones deprecados
+    conditions_notes = fields.Text(string='Observaciones - Condiciones [DEPRECADO]', invisible=True)
+    can_process_conditions = fields.Boolean(string='¿Se puede procesar? [DEPRECADO]', invisible=True)
+    temperature_notes = fields.Text(string='Observaciones - Temperatura [DEPRECADO]', invisible=True)
+    can_process_temperature = fields.Boolean(string='¿Se puede procesar? [DEPRECADO]', invisible=True)
+    container_notes = fields.Text(string='Observaciones - Recipiente [DEPRECADO]', invisible=True)
+    can_process_container = fields.Boolean(string='¿Se puede procesar? [DEPRECADO]', invisible=True)
+    volume_notes = fields.Text(string='Observaciones - Volumen [DEPRECADO]', invisible=True)
+    can_process_volume = fields.Boolean(string='¿Se puede procesar? [DEPRECADO]', invisible=True)
+    preservation_notes = fields.Text(string='Observaciones - Preservación [DEPRECADO]', invisible=True)
+    can_process_preservation = fields.Boolean(string='¿Se puede procesar? [DEPRECADO]', invisible=True)
+    
+    # Campo computado deprecado
+    can_change_state = fields.Boolean(
+        string='Puede cambiar estado [DEPRECADO]',
+        compute='_compute_can_change_state_deprecated',
+        store=True
+    )
+    
+    # ==================== MÉTODOS ACTIVOS ====================
     
     @api.model_create_multi
     def create(self, vals_list):
@@ -235,47 +198,6 @@ class LimsSampleReception(models.Model):
                 ])
                 if duplicate:
                     raise UserError(f'El código de muestra "{record.sample_code}" ya existe. Debe ser único.')
-                
-    @api.onchange('check_conditions')
-    def _onchange_check_conditions(self):
-        if self.check_conditions != 'no':
-            self.conditions_notes = False
-            self.can_process_conditions = False
-
-    @api.onchange('check_temperature')
-    def _onchange_check_temperature(self):
-        if self.check_temperature != 'no':
-            self.temperature_notes = False
-            self.can_process_temperature = False
-
-    @api.onchange('check_container')
-    def _onchange_check_container(self):
-        if self.check_container != 'no':
-            self.container_notes = False
-            self.can_process_container = False
-
-    @api.onchange('check_volume')
-    def _onchange_check_volume(self):
-        if self.check_volume != 'no':
-            self.volume_notes = False
-            self.can_process_volume = False
-
-    @api.onchange('check_preservation')
-    def _onchange_check_preservation(self):
-        if self.check_preservation != 'no':
-            self.preservation_notes = False
-            self.can_process_preservation = False
-
-    @api.onchange('template_id')
-    def _onchange_template_id(self):
-        if self.template_id:
-            template = self.template_id
-            # SOLO campos esenciales para recepción
-            self.name = template.name
-            self.method = template.method
-            self.category = template.category
-            self.microorganism = template.microorganism
-            self.unit = template.unit
 
     def write(self, vals):
         """Override write para crear análisis automáticamente cuando se marca como recibida"""
@@ -285,29 +207,90 @@ class LimsSampleReception(models.Model):
         if vals.get('reception_state') == 'recibida':
             for record in self:
                 # Verificar que no exista ya un análisis para esta recepción
-                existing_analysis = self.env['lims.analysis.v2'].search([
-                    ('sample_reception_id', '=', record.id)
-                ])
-                
-                if not existing_analysis:
-                    # Crear análisis automáticamente (SIN analyst_id)
-                    analysis = self.env['lims.analysis.v2'].create({
-                        'sample_reception_id': record.id,
-                        # Removido: 'analyst_id': self.env.user.id,
-                    })
+                try:
+                    existing_analysis = self.env['lims.analysis.v2'].search([
+                        ('sample_reception_id', '=', record.id)
+                    ])
                     
-                    # Mostrar notificación de éxito
-                    self.env['bus.bus']._sendone(
-                        self.env.user.partner_id, 
-                        'simple_notification', 
-                        {
-                            'title': 'Análisis Creado',
-                            'message': f'Se creó automáticamente el análisis para la muestra {record.sample_code}',
-                            'type': 'success'
-                        }
-                    )
+                    if not existing_analysis:
+                        # Crear análisis automáticamente (SIN analyst_id)
+                        analysis = self.env['lims.analysis.v2'].create({
+                            'sample_reception_id': record.id,
+                            # Removido: 'analyst_id': self.env.user.id,
+                        })
+                        
+                        # Mostrar notificación de éxito
+                        self.env['bus.bus']._sendone(
+                            self.env.user.partner_id, 
+                            'simple_notification', 
+                            {
+                                'title': 'Análisis Creado',
+                                'message': f'Se creó automáticamente el análisis para la muestra {record.sample_code}',
+                                'type': 'success'
+                            }
+                        )
+                except Exception:
+                    # Si el modelo de análisis no existe, continuar sin error
+                    pass
         
         return result
+    
+    # ==================== MÉTODOS DEPRECADOS ====================
+    # NOTA: Estos métodos están deprecados y solo se mantienen por compatibilidad
+    
+    @api.depends('check_conditions', 'check_temperature', 
+                'check_container', 'check_volume', 'check_preservation')
+    def _compute_can_change_state_deprecated(self):
+        """MÉTODO DEPRECADO - Mantener solo por compatibilidad"""
+        for record in self:
+            record.can_change_state = True  # Siempre True para evitar errores
+    
+    @api.onchange('check_conditions')
+    def _onchange_check_conditions(self):
+        """MÉTODO DEPRECADO - No hacer nada"""
+        if self.check_conditions != 'no':
+            self.conditions_notes = False
+            self.can_process_conditions = False
+
+    @api.onchange('check_temperature')
+    def _onchange_check_temperature(self):
+        """MÉTODO DEPRECADO - No hacer nada"""
+        if self.check_temperature != 'no':
+            self.temperature_notes = False
+            self.can_process_temperature = False
+
+    @api.onchange('check_container')
+    def _onchange_check_container(self):
+        """MÉTODO DEPRECADO - No hacer nada"""
+        if self.check_container != 'no':
+            self.container_notes = False
+            self.can_process_container = False
+
+    @api.onchange('check_volume')
+    def _onchange_check_volume(self):
+        """MÉTODO DEPRECADO - No hacer nada"""
+        if self.check_volume != 'no':
+            self.volume_notes = False
+            self.can_process_volume = False
+
+    @api.onchange('check_preservation')
+    def _onchange_check_preservation(self):
+        """MÉTODO DEPRECADO - No hacer nada"""
+        if self.check_preservation != 'no':
+            self.preservation_notes = False
+            self.can_process_preservation = False
+
+    @api.onchange('template_id')
+    def _onchange_template_id(self):
+        """MÉTODO DEPRECADO - No hacer nada"""
+        if self.template_id:
+            template = self.template_id
+            # SOLO campos esenciales para recepción
+            self.name = template.name
+            self.method = template.method
+            self.category = template.category
+            self.microorganism = template.microorganism
+            self.unit = template.unit
 
 
 # CLASE 2: Herencia de LimsSample
@@ -368,6 +351,22 @@ class LimsSample(models.Model):
             else:
                 record.sample_reception_state = 'No recibida'
 
+    # NUEVO MÉTODO PARA WIZARD INDIVIDUAL
+    def action_individual_reception_wizard(self):
+        """Abrir wizard para recepción individual"""
+        self.ensure_one()
+        
+        return {
+            'name': _('Recepción Individual de Muestra'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'lims.sample.reception.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_reception_mode': 'individual',
+                'default_sample_id': self.id,
+            }
+        }
 
 # CLASE 3: Herencia de LimsCustodyChain  
 class LimsCustodyChain(models.Model):
@@ -548,3 +547,24 @@ class LimsCustodyChain(models.Model):
                 record.reception_status_display = 'Completo'
             else:
                 record.reception_status_display = 'En Proceso'
+
+    # NUEVO MÉTODO PARA WIZARD MASIVO
+    def action_mass_reception_wizard(self):
+        """Abrir wizard para recepción masiva"""
+        self.ensure_one()
+        
+        # Si no hay muestras, mostrar error
+        if not self.sample_ids:
+            raise UserError(_('No hay muestras en esta cadena de custodia.'))
+        
+        return {
+            'name': _('Recepción Masiva de Muestras'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'lims.sample.reception.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_reception_mode': 'mass',
+                'default_sample_ids': [(6, 0, self.sample_ids.ids)],
+            }
+        }

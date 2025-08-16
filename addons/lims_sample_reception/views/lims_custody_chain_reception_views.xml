@@ -96,23 +96,33 @@ x                                <field name="chain_of_custody_state" readonly="
                             </div>
                         </div>
 
-                        <!-- Lista de muestras con acceso a recepción -->
+                        <!-- Lista de muestras con checkboxes y botones -->
                         <notebook>
                             <page string="Muestras para Recepción">
+                                <!-- Botón para recepción masiva -->
+                                <div style="margin-bottom: 10px;">
+                                    <button name="action_mass_reception_wizard"
+                                            type="object"
+                                            string="📥 Recibir Seleccionadas"
+                                            class="btn-success"
+                                            title="Recibir múltiples muestras seleccionadas"/>
+                                </div>
+                                
                                 <field name="sample_ids" readonly="1">
-                                    <list string="Muestras" create="false" edit="false">
+                                    <list string="Muestras" create="false" edit="false" 
+                                        multi_edit="1" editable="false">
                                         <field name="sample_identifier"/>
                                         <field name="sample_description"/>
                                         <field name="sample_type_id"/>
                                         <field name="sample_reception_state"
-                                               decoration-success="sample_reception_state == 'Recibida'"
-                                               decoration-danger="sample_reception_state == 'Rechazada'" 
-                                               decoration-warning="sample_reception_state == 'No Recibida' or sample_reception_state == 'No recibida'"/>
-                                        <button name="action_create_reception"
+                                            decoration-success="sample_reception_state == 'Recibida'"
+                                            decoration-danger="sample_reception_state == 'Rechazada'"
+                                            decoration-warning="sample_reception_state == 'No Recibida' or sample_reception_state == 'No recibida'"/>
+                                        <button name="action_individual_reception_wizard"
                                                 type="object"
                                                 string="📥 Recibir"
                                                 class="btn-primary"
-                                                title="Crear o abrir recepción"/>
+                                                title="Recibir esta muestra individual"/>
                                     </list>
                                 </field>
                             </page>
