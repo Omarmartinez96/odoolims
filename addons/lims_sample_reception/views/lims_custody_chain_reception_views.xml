@@ -61,7 +61,7 @@
                                 <field name="departamento_id" readonly="1"/>
                             </group>
                             <group string="📅 Información de la Cadena">
-x                                <field name="chain_of_custody_state" readonly="1"/>
+                                <field name="chain_of_custody_state" readonly="1"/>
                                 <field name="client_code" readonly="1"/>
                             </group>
                         </group>
@@ -96,36 +96,42 @@ x                                <field name="chain_of_custody_state" readonly="
                             </div>
                         </div>
 
-                        <!-- Lista de muestras con checkboxes y botones -->
-                        <notebook>
-                            <page string="Muestras para Recepción">
-                                <!-- Botón para recepción masiva -->
-                                <div style="margin-bottom: 10px;">
-                                    <button name="action_mass_reception_wizard"
+                        <!-- Botón para selección múltiple -->
+                        <div style="margin-bottom: 10px;">
+                            <button name="action_mass_reception_wizard"
+                                    type="object"
+                                    string="📥 Recibir Todas las Muestras"
+                                    class="btn-success"
+                                    title="Recibir todas las muestras de esta cadena"/>
+                            
+                            <button name="%(action_samples_reception_multiselect)d"
+                                    type="action"
+                                    string="🔲 Selección Múltiple"
+                                    class="btn-warning"
+                                    title="Abrir vista para seleccionar muestras específicas"/>
+                        </div>
+
+
+
+                        <!-- Lista de muestras SIN notebook para permitir selección múltiple -->
+                        <group string="Muestras para Recepción">
+                            <field name="sample_ids" nolabel="1">
+                                <list string="Muestras" create="false" edit="false">
+                                    <field name="sample_identifier"/>
+                                    <field name="sample_description"/>
+                                    <field name="sample_type_id"/>
+                                    <field name="sample_reception_state"
+                                        decoration-success="sample_reception_state == 'Recibida'"
+                                        decoration-danger="sample_reception_state == 'Rechazada'"
+                                        decoration-warning="sample_reception_state == 'No Recibida' or sample_reception_state == 'No recibida'"/>
+                                    <button name="action_individual_reception_wizard"
                                             type="object"
-                                            string="📥 Recibir Seleccionadas"
-                                            class="btn-success"
-                                            title="Recibir múltiples muestras seleccionadas"/>
-                                </div>
-                                
-                                <field name="sample_ids" readonly="1">
-                                    <list string="Muestras" create="false" edit="false">
-                                        <field name="sample_identifier"/>
-                                        <field name="sample_description"/>
-                                        <field name="sample_type_id"/>
-                                        <field name="sample_reception_state"
-                                            decoration-success="sample_reception_state == 'Recibida'"
-                                            decoration-danger="sample_reception_state == 'Rechazada'"
-                                            decoration-warning="sample_reception_state == 'No Recibida' or sample_reception_state == 'No recibida'"/>
-                                        <button name="action_individual_reception_wizard"
-                                                type="object"
-                                                string="📥 Recibir"
-                                                class="btn-primary"
-                                                title="Recibir esta muestra individual"/>
-                                    </list>
-                                </field>
-                            </page>
-                        </notebook>
+                                            string="📥 Recibir"
+                                            class="btn-primary"
+                                            title="Recibir esta muestra individual"/>
+                                </list>
+                            </field>
+                        </group>
 
                         <!-- Botones de acción -->
                         <div style="margin-top: 20px;">
@@ -151,6 +157,39 @@ x                                <field name="chain_of_custody_state" readonly="
                     </sheet>
                 </form>
             </field>
+        </record>
+
+        <!-- Vista lista especializada para selección múltiple -->
+        <record id="view_custody_chain_reception_list_samples" model="ir.ui.view">
+            <field name="name">lims.custody_chain.reception.list.samples</field>
+            <field name="model">lims.sample</field>
+            <field name="arch" type="xml">
+                <list string="Muestras para Recepción" create="false" edit="false">
+                    <field name="sample_identifier"/>
+                    <field name="sample_description"/>
+                    <field name="sample_type_id"/>
+                    <field name="sample_reception_state"
+                        decoration-success="sample_reception_state == 'Recibida'"
+                        decoration-danger="sample_reception_state == 'Rechazada'"
+                        decoration-warning="sample_reception_state == 'No Recibida' or sample_reception_state == 'No recibida'"/>
+                    <button name="action_individual_reception_wizard"
+                            type="object"
+                            string="📥 Recibir"
+                            class="btn-primary"
+                            title="Recibir esta muestra individual"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Acción para vista de muestras con selección múltiple -->
+        <record id="action_samples_reception_multiselect" model="ir.actions.act_window">
+            <field name="name">Seleccionar Muestras para Recepción</field>
+            <field name="res_model">lims.sample</field>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="view_custody_chain_reception_list_samples"/>
+            <field name="domain">[('custody_chain_id', '=', active_id)]</field>
+            <field name="context">{'default_custody_chain_id': active_id}</field>
+            <field name="target">current</field>
         </record>
 
         <!-- Acción para cadenas de custodia en recepción -->

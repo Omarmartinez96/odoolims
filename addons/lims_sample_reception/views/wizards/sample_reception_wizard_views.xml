@@ -11,9 +11,9 @@
                     <div class="alert alert-info" role="alert" style="margin-bottom: 20px;">
                         <h4><i class="fa fa-check-circle"/> 📥 Marcar Muestras como Recibidas</h4>
                         
-                        <div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #ffc107; margin: 15px 0;">
+                        <div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #856404; margin: 15px 0; color: #856404;">
                             <p><strong>⚠️ Al marcar como recibida, usted acepta que las muestras:</strong></p>
-                            <ul style="margin: 10px 0;">
+                            <ul style="margin: 10px 0; color: #856404;">
                                 <li>• Se encuentran en <strong>buenas condiciones</strong></li>
                                 <li>• Tienen <strong>temperatura adecuada</strong></li>
                                 <li>• El <strong>recipiente está íntegro</strong> y es adecuado</li>

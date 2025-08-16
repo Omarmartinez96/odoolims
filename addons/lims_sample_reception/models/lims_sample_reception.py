@@ -548,13 +548,19 @@ class LimsCustodyChain(models.Model):
             else:
                 record.reception_status_display = 'En Proceso'
 
-    # NUEVO MÉTODO PARA WIZARD MASIVO
     def action_mass_reception_wizard(self):
         """Abrir wizard para recepción masiva"""
         self.ensure_one()
         
-        # Si no hay muestras, mostrar error
-        if not self.sample_ids:
+        # Si se llama desde la vista de lista con selecciones
+        selected_ids = self.env.context.get('active_ids', [])
+        if selected_ids and self.env.context.get('active_model') == 'lims.sample':
+            samples = self.env['lims.sample'].browse(selected_ids)
+        else:
+            # Si se llama desde el formulario de cadena de custodia
+            samples = self.sample_ids
+        
+        if not samples:
             raise UserError(_('No hay muestras en esta cadena de custodia.'))
         
         return {
@@ -565,6 +571,6 @@ class LimsCustodyChain(models.Model):
             'target': 'new',
             'context': {
                 'default_reception_mode': 'mass',
-                'default_sample_ids': [(6, 0, self.sample_ids.ids)],
+                'default_sample_ids': [(6, 0, samples.ids)],
             }
         }
