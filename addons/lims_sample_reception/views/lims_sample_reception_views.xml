@@ -2,123 +2,74 @@
 <odoo>
     <data>
         
-        <!-- Vista Lista de Recepciones -->
-        <record id="view_sample_reception_list" model="ir.ui.view">
-            <field name="name">lims.sample.reception.list</field>
-            <field name="model">lims.sample.reception</field>
+        <!-- Vista del Wizard de Recepción -->
+        <record id="view_sample_reception_wizard_form" model="ir.ui.view">
+            <field name="name">lims.sample.reception.wizard.form</field>
+            <field name="model">lims.sample.reception.wizard</field>
             <field name="arch" type="xml">
-                <list string="Recepciones de Muestras">
-                    <field name="sample_code"/>
-                    <field name="sample_identifier"/>
-                    <field name="cliente_id"/>
-                    <field name="reception_date"/>
-                    <field name="reception_time"/>
-                    <field name="reception_state"/>
-                    <field name="received_by"/>
-                </list>
-            </field>
-        </record>
-
-        <!-- Vista Formulario de Recepción SIMPLIFICADA -->
-        <record id="view_sample_reception_form" model="ir.ui.view">
-            <field name="name">lims.sample.reception.form</field>
-            <field name="model">lims.sample.reception</field>
-            <field name="arch" type="xml">
-                <form string="Recepción de Muestra">
-                    <header>
-                        <field name="reception_state" widget="statusbar" 
-                            statusbar_visible="no_recibida,rechazada,recibida"/>               
-                    </header>
+                <form string="Procesamiento de Muestras">
                     
-                    <sheet>
-                        <div class="oe_title">
-                            <h1>
-                                <field name="sample_code" placeholder="Se genera automáticamente"/>
-                            </h1>
-                        </div>
+                    <!-- Título principal -->
+                    <div class="alert alert-info" role="alert" style="margin-bottom: 20px;">
+                        <h4><i class="fa fa-check-circle"/> Procesamiento de Muestras</h4>
+                        <p>Seleccione el estado final para las muestras y complete la información requerida.</p>
+                    </div>
 
-                        <!-- Información básica -->
+                    <!-- Información de las muestras -->
+                    <group>
+                        <field name="reception_mode" invisible="1"/>
+                        <field name="sample_id" invisible="1"/>
+                        <field name="sample_ids" invisible="1"/>
+                        
+                        <field name="samples_count" readonly="1"/>
+                        <field name="sample_code" readonly="1"/>
+                    </group>
+
+                    <group string="Muestras a Procesar">
+                        <field name="samples_info" nolabel="1" readonly="1" widget="text"/>
+                    </group>
+
+                    <!-- SELECCIÓN DE ESTADO -->
+                    <group string="Estado de Recepción">
+                        <field name="reception_state" widget="radio" required="1"/>
+                    </group>
+
+                    <!-- TEXTO DE CONFIRMACIÓN DINÁMICO -->
+                    <field name="confirmation_text" nolabel="1" readonly="1"/>
+
+                    <!-- Datos de recepción -->
+                    <group string="Información de Procesamiento">
                         <group>
-                            <group string="🧪 Información de la Muestra">
-                                <field name="sample_id" invisible="1"/>
-                                <field name="sample_identifier" readonly="1"/>
-                                <field name="custody_chain_id" readonly="1"/>
-                                <field name="cliente_id" readonly="1"/>
-                            </group>
-                            <group string="📅 Datos de Recepción">
-                                <field name="reception_date"/>
-                                <field name="reception_time" placeholder="14:30"/>
-                                <field name="received_by"/>
-                                <field name="received_by_initials"/>
-                            </group>
+                            <field name="reception_date"/>
+                            <field name="reception_time" placeholder="14:30"/>
                         </group>
-
-                        <!-- Estado de recepción -->
-                        <group string="📊 Estado de Recepción">
-                            <field name="reception_state" widget="radio"/>
+                        <group>
+                            <field name="received_by_initials" placeholder="ABC"/>
                         </group>
+                    </group>
 
-                        <!-- Parámetros de la Muestra (solo lectura) -->
-                        <group string="🔬 Parámetros de Análisis">
-                            <field name="parameter_ids" nolabel="1" readonly="1">
-                                <list string="Parámetros">
-                                    <field name="name"/>
-                                    <field name="microorganism"/>
-                                    <field name="method"/>
-                                    <field name="category"/>
-                                    <field name="unit"/>
-                                </list>
-                            </field>
-                        </group>
+                    <!-- Observaciones o motivo de rechazo -->
+                    <group string="Observaciones" invisible="reception_state != 'recibida'">
+                        <field name="reception_notes" nolabel="1" 
+                               placeholder="Observaciones generales sobre la recepción..."/>
+                    </group>
 
-                        <!-- Observaciones -->
-                        <group string="📝 Observaciones">
-                            <field name="reception_notes" nolabel="1" 
-                                placeholder="Observaciones generales sobre la recepción (visible para el cliente)..."/>
-                        </group>
+                    <group string="Motivo de Rechazo" invisible="reception_state != 'rechazada'">
+                        <field name="rejection_reason" nolabel="1" 
+                               placeholder="Especifique detalladamente por qué se rechaza la muestra..."
+                               required="reception_state == 'rechazada'"/>
+                    </group>
 
-                        <group string="🔒 Observaciones Internas">
-                            <field name="internal_reception_notes" nolabel="1" 
-                                placeholder="Notas internas del laboratorio (solo para uso interno)..."/>
-                        </group>
-
-                        <!-- Campos deprecados ocultos para compatibilidad -->
-                        <group string="Campos de Compatibilidad" invisible="1">
-                            <field name="check_conditions" invisible="1"/>
-                            <field name="check_temperature" invisible="1"/>
-                            <field name="check_container" invisible="1"/>
-                            <field name="check_volume" invisible="1"/>
-                            <field name="check_preservation" invisible="1"/>
-                            <field name="can_change_state" invisible="1"/>
-                            <field name="conditions_notes" invisible="1"/>
-                            <field name="temperature_notes" invisible="1"/>
-                            <field name="container_notes" invisible="1"/>
-                            <field name="volume_notes" invisible="1"/>
-                            <field name="preservation_notes" invisible="1"/>
-                            <field name="can_process_conditions" invisible="1"/>
-                            <field name="can_process_temperature" invisible="1"/>
-                            <field name="can_process_container" invisible="1"/>
-                            <field name="can_process_volume" invisible="1"/>
-                            <field name="can_process_preservation" invisible="1"/>
-                        </group>
-
-                    </sheet>
+                    <footer>
+                        <button name="action_confirm_reception" 
+                                type="object" 
+                                string="Confirmar Procesamiento" 
+                                class="btn-primary"/>
+                        <button string="Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
                 </form>
-            </field>
-        </record>
-
-        <!-- Acción principal -->
-        <record id="action_sample_receptions" model="ir.actions.act_window">
-            <field name="name">Recepciones de Muestras</field>
-            <field name="res_model">lims.sample.reception</field>
-            <field name="view_mode">list,form</field>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    No hay recepciones registradas
-                </p>
-                <p>
-                    Las recepciones se crean desde las cadenas de custodia
-                </p>
             </field>
         </record>
 

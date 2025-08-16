@@ -25,6 +25,12 @@ class SampleReceptionWizard(models.TransientModel):
         string='Muestras Seleccionadas'
     )
     
+    # *** NUEVO CAMPO: Estado de recepción ***
+    reception_state = fields.Selection([
+        ('recibida', 'Recibida'),
+        ('rechazada', 'Rechazada'),
+    ], string='Marcar como', default='recibida', required=True)
+    
     # Información de recepción
     sample_code = fields.Char(
         string='Código de Muestra',
@@ -44,7 +50,7 @@ class SampleReceptionWizard(models.TransientModel):
     )
     
     received_by_initials = fields.Char(
-        string='Iniciales de quien recibió',
+        string='Iniciales de quien procesó',
         required=True,
         size=5,
         help='Máximo 5 caracteres'
@@ -52,6 +58,12 @@ class SampleReceptionWizard(models.TransientModel):
     
     reception_notes = fields.Text(
         string='Observaciones de la Muestra'
+    )
+    
+    # *** NUEVO CAMPO: Motivo de rechazo ***
+    rejection_reason = fields.Text(
+        string='Motivo de Rechazo',
+        help='Especifique el motivo por el cual se rechaza la muestra'
     )
     
     # Campos computados para mostrar información
@@ -64,6 +76,43 @@ class SampleReceptionWizard(models.TransientModel):
         string='Información de Muestras',
         compute='_compute_samples_info'
     )
+    
+    # *** NUEVO CAMPO COMPUTADO: Texto de confirmación ***
+    confirmation_text = fields.Html(
+        string='Texto de Confirmación',
+        compute='_compute_confirmation_text'
+    )
+    
+    @api.depends('reception_state')
+    def _compute_confirmation_text(self):
+        for record in self:
+            if record.reception_state == 'recibida':
+                record.confirmation_text = '''
+                    <div style="background-color: #d4edda; padding: 15px; border-left: 4px solid #28a745; margin: 15px 0; color: #155724;">
+                        <p><strong>✅ Al marcar como RECIBIDA, usted acepta que las muestras:</strong></p>
+                        <ul style="margin: 10px 0; color: #155724;">
+                            <li>• Se encuentran en <strong>buenas condiciones</strong></li>
+                            <li>• Tienen <strong>temperatura adecuada</strong></li>
+                            <li>• El <strong>recipiente está íntegro</strong> y es adecuado</li>
+                            <li>• El <strong>volumen/cantidad es suficiente</strong></li>
+                            <li>• Las <strong>condiciones de preservación son correctas</strong></li>
+                        </ul>
+                    </div>
+                '''
+            elif record.reception_state == 'rechazada':
+                record.confirmation_text = '''
+                    <div style="background-color: #f8d7da; padding: 15px; border-left: 4px solid #dc3545; margin: 15px 0; color: #721c24;">
+                        <p><strong>❌ Al marcar como RECHAZADA, usted confirma que las muestras:</strong></p>
+                        <ul style="margin: 10px 0; color: #721c24;">
+                            <li>• <strong>NO cumplen</strong> con las condiciones requeridas</li>
+                            <li>• <strong>NO pueden ser procesadas</strong> para análisis</li>
+                            <li>• Requieren <strong>nueva toma de muestra</strong></li>
+                        </ul>
+                        <p style="font-weight: bold; color: #721c24;">⚠️ Es OBLIGATORIO especificar el motivo de rechazo</p>
+                    </div>
+                '''
+            else:
+                record.confirmation_text = ''
     
     @api.depends('sample_id', 'sample_ids', 'reception_mode')
     def _compute_samples_info(self):
@@ -102,9 +151,22 @@ class SampleReceptionWizard(models.TransientModel):
                 record.samples_info = ""
                 record.sample_code = ""
     
+    @api.onchange('reception_state')
+    def _onchange_reception_state(self):
+        """Limpiar campos según el estado seleccionado"""
+        if self.reception_state == 'recibida':
+            self.rejection_reason = False
+        elif self.reception_state == 'rechazada':
+            # Al rechazar, mantener los otros campos pero dar prioridad al motivo
+            pass
+    
     def action_confirm_reception(self):
         """Confirmar recepción de muestras"""
         self.ensure_one()
+        
+        # Validar motivo de rechazo
+        if self.reception_state == 'rechazada' and not self.rejection_reason:
+            raise UserError(_('Debe especificar el motivo de rechazo.'))
         
         samples_to_process = []
         if self.reception_mode == 'individual' and self.sample_id:
@@ -122,37 +184,46 @@ class SampleReceptionWizard(models.TransientModel):
                 ('sample_id', '=', sample.id)
             ], limit=1)
             
+            # Preparar datos de recepción
+            reception_data = {
+                'reception_state': self.reception_state,
+                'reception_date': self.reception_date,
+                'reception_time': self.reception_time,
+                'received_by_initials': self.received_by_initials,
+            }
+            
+            # Agregar observaciones según el estado
+            if self.reception_state == 'rechazada':
+                reception_data['reception_notes'] = self.rejection_reason
+            else:
+                reception_data['reception_notes'] = self.reception_notes or ''
+            
             if existing_reception:
                 # Actualizar existente
-                existing_reception.write({
-                    'reception_state': 'recibida',
-                    'reception_date': self.reception_date,
-                    'reception_time': self.reception_time,
-                    'received_by_initials': self.received_by_initials,
-                    'reception_notes': self.reception_notes,
-                })
+                existing_reception.write(reception_data)
                 created_receptions.append(existing_reception)
             else:
                 # Crear nueva recepción
-                new_reception = self.env['lims.sample.reception'].create({
-                    'sample_id': sample.id,
-                    'reception_state': 'recibida',
-                    'reception_date': self.reception_date,
-                    'reception_time': self.reception_time,
-                    'received_by_initials': self.received_by_initials,
-                    'reception_notes': self.reception_notes,
-                })
+                reception_data['sample_id'] = sample.id
+                new_reception = self.env['lims.sample.reception'].create(reception_data)
                 created_receptions.append(new_reception)
         
-        # Mensaje de éxito
-        message = f"Se han marcado como recibidas {len(created_receptions)} muestra(s) exitosamente."
+        # Mensaje de éxito según el estado
+        if self.reception_state == 'recibida':
+            title = '¡Muestras Recibidas!'
+            message = f"Se han marcado como RECIBIDAS {len(created_receptions)} muestra(s) exitosamente."
+            msg_type = 'success'
+        else:
+            title = '¡Muestras Rechazadas!'
+            message = f"Se han marcado como RECHAZADAS {len(created_receptions)} muestra(s)."
+            msg_type = 'warning'
         
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
-                'title': _('¡Recepción Exitosa!'),
+                'title': _(title),
                 'message': _(message),
-                'type': 'success',
+                'type': msg_type,
             }
         }
