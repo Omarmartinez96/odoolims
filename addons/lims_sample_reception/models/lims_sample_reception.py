@@ -574,3 +574,20 @@ class LimsCustodyChain(models.Model):
                 'default_sample_ids': [(6, 0, samples.ids)],
             }
         }
+    
+    def action_samples_reception_multiselect(self):
+        """Abrir vista de muestras para selección múltiple"""
+        self.ensure_one()
+        
+        return {
+            'name': _('Muestras - Selección Múltiple'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'lims.sample',
+            'view_mode': 'list',
+            'view_id': self.env.ref('lims_sample_reception.view_samples_reception_list').id,
+            'domain': [('custody_chain_id', '=', self.id)],
+            'context': {
+                'default_custody_chain_id': self.id,
+            },
+            'target': 'current',
+        }
