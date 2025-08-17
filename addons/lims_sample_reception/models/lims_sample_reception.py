@@ -301,17 +301,6 @@ class LimsSampleReception(models.Model):
         
         return self.env.ref('lims_sample_reception.action_report_sample_label').report_action(self)
 
-    def get_qr_code_data(self):
-        """Generar datos para código QR"""
-        return f"{self.sample_code}|{self.sample_identifier}|{self.cliente_id.name if self.cliente_id else ''}"
-
-    def get_qr_code_url(self):
-        """Generar URL del código QR"""
-        import urllib.parse
-        qr_data = self.get_qr_code_data()
-        encoded_data = urllib.parse.quote(qr_data)
-        return f"/report/barcode/?type=QR&value={encoded_data}&width=100&height=100"
-
 # CLASE 2: Herencia de LimsSample
 class LimsSample(models.Model):
     _inherit = 'lims.sample'
