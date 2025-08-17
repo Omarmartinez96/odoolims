@@ -27,9 +27,10 @@ class SampleReceptionWizard(models.TransientModel):
     
     # *** NUEVO CAMPO: Estado de recepción ***
     reception_state = fields.Selection([
+        ('no_recibida', 'No Recibida'),
         ('recibida', 'Recibida'),
         ('rechazada', 'Rechazada'),
-    ], string='Marcar como', default='recibida', required=True)
+    ], string='Estado Final', default='recibida', required=True)
     
     # Información de recepción
     sample_code = fields.Char(
@@ -111,6 +112,18 @@ class SampleReceptionWizard(models.TransientModel):
                         <p style="font-weight: bold; color: #721c24;">⚠️ Es OBLIGATORIO especificar el motivo de rechazo</p>
                     </div>
                 '''
+            elif record.reception_state == 'no_recibida':
+                record.confirmation_text = '''
+                    <div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #856404; margin: 15px 0; color: #856404;">
+                        <p><strong>⏳ Al marcar como NO RECIBIDA, las muestras:</strong></p>
+                        <ul style="margin: 10px 0; color: #856404;">
+                            <li>• Volverán a su <strong>estado original</strong></li>
+                            <li>• Estarán <strong>pendientes de procesamiento</strong></li>
+                            <li>• Podrán ser procesadas <strong>nuevamente</strong></li>
+                        </ul>
+                        <p style="color: #856404;">💡 Use esta opción para corregir recepciones accidentales</p>
+                    </div>
+                '''
             else:
                 record.confirmation_text = ''
     
@@ -161,7 +174,7 @@ class SampleReceptionWizard(models.TransientModel):
             pass
     
     def action_confirm_reception(self):
-        """Confirmar recepción de muestras"""
+        """Confirmar procesamiento de muestras"""
         self.ensure_one()
         
         # Validar motivo de rechazo
@@ -195,6 +208,8 @@ class SampleReceptionWizard(models.TransientModel):
             # Agregar observaciones según el estado
             if self.reception_state == 'rechazada':
                 reception_data['reception_notes'] = self.rejection_reason
+            elif self.reception_state == 'no_recibida':
+                reception_data['reception_notes'] = 'Estado restaurado a no recibida'
             else:
                 reception_data['reception_notes'] = self.reception_notes or ''
             
@@ -208,16 +223,21 @@ class SampleReceptionWizard(models.TransientModel):
                 new_reception = self.env['lims.sample.reception'].create(reception_data)
                 created_receptions.append(new_reception)
         
-        # Mensaje de éxito según el estado
+        # Mensajes diferenciados según el estado
         if self.reception_state == 'recibida':
             title = '¡Muestras Recibidas!'
             message = f"Se han marcado como RECIBIDAS {len(created_receptions)} muestra(s) exitosamente."
             msg_type = 'success'
-        else:
+        elif self.reception_state == 'rechazada':
             title = '¡Muestras Rechazadas!'
             message = f"Se han marcado como RECHAZADAS {len(created_receptions)} muestra(s)."
             msg_type = 'warning'
+        else:  # no_recibida
+            title = 'Estado Restaurado'
+            message = f"Se han marcado como NO RECIBIDAS {len(created_receptions)} muestra(s). Estado restaurado."
+            msg_type = 'info'
         
+        # CERRAR EL WIZARD y mostrar notificación
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
@@ -225,5 +245,7 @@ class SampleReceptionWizard(models.TransientModel):
                 'title': _(title),
                 'message': _(message),
                 'type': msg_type,
-            }
+            },
+            # Esto cierra el wizard
+            'context': {'close_wizard': True}
         }

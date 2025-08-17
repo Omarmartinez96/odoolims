@@ -29,9 +29,10 @@
                         <field name="samples_info" nolabel="1" readonly="1" widget="text"/>
                     </group>
 
-                    <!-- SELECCIÓN DE ESTADO -->
-                    <group string="Estado de Recepción">
-                        <field name="reception_state" widget="radio" required="1"/>
+                    <!-- SELECCIÓN DE ESTADO CON DROPDOWN -->
+                    <group string="Estado Final de las Muestras">
+                        <field name="reception_state" required="1" 
+                               help="Seleccione el estado final que tendrán las muestras"/>
                     </group>
 
                     <!-- TEXTO DE CONFIRMACIÓN DINÁMICO -->
@@ -48,13 +49,16 @@
                         </group>
                     </group>
 
-                    <!-- Observaciones o motivo de rechazo -->
-                    <group string="Observaciones" invisible="reception_state != 'recibida'">
+                    <!-- Observaciones generales (para recibida y no_recibida) -->
+                    <group string="Observaciones" 
+                           invisible="reception_state == 'rechazada'">
                         <field name="reception_notes" nolabel="1" 
-                               placeholder="Observaciones generales sobre la recepción..."/>
+                               placeholder="Observaciones generales sobre el procesamiento..."/>
                     </group>
 
-                    <group string="Motivo de Rechazo" invisible="reception_state != 'rechazada'">
+                    <!-- Motivo de rechazo (solo para rechazada) -->
+                    <group string="Motivo de Rechazo" 
+                           invisible="reception_state != 'rechazada'">
                         <field name="rejection_reason" nolabel="1" 
                                placeholder="Especifique detalladamente por qué se rechaza la muestra..."
                                required="reception_state == 'rechazada'"/>
@@ -63,7 +67,7 @@
                     <footer>
                         <button name="action_confirm_reception" 
                                 type="object" 
-                                string="Confirmar Procesamiento" 
+                                string="Finalizar" 
                                 class="btn-primary"/>
                         <button string="Cancelar" 
                                 class="btn-secondary" 
