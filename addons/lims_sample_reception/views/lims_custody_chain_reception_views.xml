@@ -85,24 +85,27 @@
                             </div>
                         </div>
 
-                        <!-- Botones de acción superiores - SEPARADOS -->
-                        <div style="margin-bottom: 15px;">
-                            <div class="row">
-                                <div class="col-6">
-                                    <button name="action_mass_reception_wizard" 
-                                            type="object" 
-                                            string="📥 Recibir Todas las Muestras" 
-                                            class="btn-success btn-block" 
-                                            title="Recibir todas las muestras de esta cadena de una vez"/>
-                                </div>
-                                <div class="col-6">
-                                    <button name="action_samples_reception_multiselect" 
-                                            type="object" 
-                                            string="🔲 Selección Múltiple" 
-                                            class="btn-info btn-block" 
-                                            title="Abrir vista para seleccionar muestras específicas"/>
-                                </div>
+                        <!-- Botones de acción superiores - SIMPLE Y SEPARADO -->
+                        <div style="margin-bottom: 20px; text-align: center;">
+                            
+                            <div style="display: inline-block; margin-right: 20px;">
+                                <button name="action_mass_reception_wizard" 
+                                        type="object" 
+                                        string="📥 Recibir Todas las Muestras" 
+                                        class="btn-success" 
+                                        style="min-width: 200px; padding: 8px 16px;"
+                                        title="Recibir todas las muestras de esta cadena"/>
                             </div>
+                            
+                            <div style="display: inline-block; margin-left: 20px;">
+                                <button name="action_samples_reception_multiselect" 
+                                        type="object" 
+                                        string="🔲 Selección Múltiple" 
+                                        class="btn-info" 
+                                        style="min-width: 200px; padding: 8px 16px;"
+                                        title="Seleccionar muestras específicas"/>
+                            </div>
+
                         </div>
 
                         <!-- Lista de muestras -->
