@@ -147,19 +147,8 @@
                 }
                 .code-section {
                     text-align: center;
-                    margin-bottom: 1mm;
-                    display: flex;
-                    align-items: center;
-                    justify-content: flex-start;
+                    margin-bottom: 2mm;
                     width: 100%;
-                    padding-left: 2mm;
-                }
-                .company-logo {
-                    max-width: 2mm;
-                    max-height: 2mm;
-                    margin-right: 0.5mm;
-                    object-fit: contain;
-                    vertical-align: middle;
                 }
                 .sample-info {
                     text-align: center;
@@ -200,15 +189,11 @@
                                         </div>
                                     </div>
                                     
-                                    <!-- Sección del Código con Logo -->
+                                    <!-- Sección del Código -->
                                     <div class="code-section">
-                                        <img t-if="company.logo" 
-                                             t-att-src="image_data_uri(company.logo)"
-                                             class="company-logo"
-                                             alt="Logo"/>
-                                        <div class="sample-info" style="flex: 1;">
+                                        <div class="sample-info">
                                             <div class="sample-code">
-                                                <span t-esc="reception.sample_code"/>
+                                                <span t-esc="reception.sample_code or 'Sin código'"/>
                                             </div>
                                         </div>
                                     </div>
