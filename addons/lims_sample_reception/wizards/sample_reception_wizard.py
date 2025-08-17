@@ -237,15 +237,12 @@ class SampleReceptionWizard(models.TransientModel):
             message = f"Se han marcado como NO RECIBIDAS {len(created_receptions)} muestra(s). Estado restaurado."
             msg_type = 'info'
         
-        # CERRAR EL WIZARD y mostrar notificación
+        # MOSTRAR NOTIFICACIÓN Y CERRAR WIZARD
         return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': _(title),
-                'message': _(message),
+            'effect': {
+                'fadeout': 'slow',
+                'message': message,
                 'type': msg_type,
             },
-            # Esto cierra el wizard
-            'context': {'close_wizard': True}
+            'type': 'ir.actions.act_window_close'
         }
