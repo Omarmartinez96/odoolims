@@ -14,6 +14,7 @@
     'author': 'Omar Martinez.',
     'depends': [
         'base',
+        'web',
         'lims_customer',
         'lims_reception',
     ],
