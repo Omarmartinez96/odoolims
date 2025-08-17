@@ -650,7 +650,7 @@ class LimsCustodyChain(models.Model):
         if not self.sample_ids:
             raise UserError(_('No hay muestras en esta cadena de custodia.'))
         
-        # Verificar muestras sin recepción
+        # Verificar que las muestras tengan recepciones con códigos
         samples_without_reception = []
         for sample in self.sample_ids:
             reception = self.env['lims.sample.reception'].search([
@@ -659,7 +659,6 @@ class LimsCustodyChain(models.Model):
             if not reception or not reception.sample_code or reception.sample_code == '/':
                 samples_without_reception.append(sample.sample_identifier)
         
-        # Si hay muestras sin recepción, mostrar error
         if samples_without_reception:
             raise UserError(_(
                 'Las siguientes muestras no tienen código asignado y no se pueden imprimir etiquetas:\n' +
@@ -667,5 +666,4 @@ class LimsCustodyChain(models.Model):
                 '\n\nPrimero debe crear las recepciones para estas muestras.'
             ))
         
-        # Si todo está bien, generar el reporte
         return self.env.ref('lims_sample_reception.action_report_sample_labels_mass').report_action(self)
