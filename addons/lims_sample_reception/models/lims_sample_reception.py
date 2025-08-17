@@ -330,6 +330,7 @@ class LimsSampleReception(models.Model):
         
         return self.env.ref('lims_sample_reception.action_report_sample_label').report_action(self)
 
+
 # CLASE 2: Herencia de LimsSample
 class LimsSample(models.Model):
     _inherit = 'lims.sample'
@@ -650,7 +651,7 @@ class LimsCustodyChain(models.Model):
         if not self.sample_ids:
             raise UserError(_('No hay muestras en esta cadena de custodia.'))
         
-        # Verificar que las muestras tengan recepciones con códigos
+        # Verificación de muestras sin recepción (código anterior igual)
         samples_without_reception = []
         for sample in self.sample_ids:
             reception = self.env['lims.sample.reception'].search([
