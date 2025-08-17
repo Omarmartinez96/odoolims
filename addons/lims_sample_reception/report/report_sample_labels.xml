@@ -40,9 +40,10 @@
             <div class="page">
                 <t t-foreach="docs" t-as="reception">
                     <div class="label-box">
-                        <!-- QR usando URL nativa de Odoo -->
+                        <!-- QR usando endpoint correcto -->
                         <div class="qr-container">
-                            <img t-att-src="'/report/barcode/?type=QR&amp;value=' + reception.sample_code + '&amp;width=120&amp;height=120'" 
+                            <t t-set="qr_data" t-value="reception.sample_code"/>
+                            <img t-att-src="'/web/barcode/QR/' + qr_data + '?width=120&amp;height=120'" 
                                  style="width: 120px; height: 120px;"
                                  alt="QR Code"/>
                         </div>
@@ -99,9 +100,10 @@
                         <t t-set="reception" t-value="env['lims.sample.reception'].search([('sample_id', '=', sample.id)], limit=1)"/>
                         <t t-if="reception and reception.sample_code and reception.sample_code != '/'">
                             <div class="label-box">
-                                <!-- QR usando URL nativa de Odoo -->
+                                <!-- QR usando endpoint correcto -->
                                 <div class="qr-container">
-                                    <img t-att-src="'/report/barcode/?type=QR&amp;value=' + reception.sample_code + '&amp;width=120&amp;height=120'" 
+                                    <t t-set="qr_data" t-value="reception.sample_code"/>
+                                    <img t-att-src="'/web/barcode/QR/' + qr_data + '?width=120&amp;height=120'" 
                                          style="width: 120px; height: 120px;"
                                          alt="QR Code"/>
                                 </div>
