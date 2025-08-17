@@ -292,6 +292,14 @@ class LimsSampleReception(models.Model):
             self.microorganism = template.microorganism
             self.unit = template.unit
 
+    def action_print_label(self):
+        """Imprimir etiqueta individual de muestra"""
+        self.ensure_one()
+        
+        if not self.sample_code or self.sample_code == '/':
+            raise UserError(_('La muestra debe tener un código asignado para imprimir la etiqueta.'))
+        
+        return self.env.ref('lims_sample_reception.action_report_sample_label').report_action(self)
 
 # CLASE 2: Herencia de LimsSample
 class LimsSample(models.Model):
@@ -367,6 +375,20 @@ class LimsSample(models.Model):
                 'default_sample_id': self.id,
             }
         }
+
+    def action_print_sample_label(self):
+        """Imprimir etiqueta desde muestra"""
+        self.ensure_one()
+        
+        # Buscar la recepción de esta muestra
+        reception = self.env['lims.sample.reception'].search([
+            ('sample_id', '=', self.id)
+        ], limit=1)
+        
+        if not reception:
+            raise UserError(_('Debe crear primero la recepción de esta muestra.'))
+        
+        return reception.action_print_label()
 
 # CLASE 3: Herencia de LimsCustodyChain  
 class LimsCustodyChain(models.Model):
@@ -591,3 +613,28 @@ class LimsCustodyChain(models.Model):
             },
             'target': 'current',
         }
+    
+    def action_print_all_labels(self):
+        """Imprimir etiquetas de todas las muestras"""
+        self.ensure_one()
+        
+        if not self.sample_ids:
+            raise UserError(_('No hay muestras en esta cadena de custodia.'))
+        
+        # Verificar que las muestras tengan recepciones con códigos
+        samples_without_reception = []
+        for sample in self.sample_ids:
+            reception = self.env['lims.sample.reception'].search([
+                ('sample_id', '=', sample.id)
+            ], limit=1)
+            if not reception or not reception.sample_code or reception.sample_code == '/':
+                samples_without_reception.append(sample.sample_identifier)
+        
+        if samples_without_reception:
+            raise UserError(_(
+                'Las siguientes muestras no tienen código asignado y no se pueden imprimir etiquetas:\n' +
+                '\n'.join(samples_without_reception) +
+                '\n\nPrimero debe crear las recepciones para estas muestras.'
+            ))
+        
+        return self.env.ref('lims_sample_reception.action_report_sample_labels_mass').report_action(self)

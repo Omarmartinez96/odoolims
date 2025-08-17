@@ -31,6 +31,9 @@
         'report/report_mass_reception.xml',
         # Tercero: Vistas que referencian a los reportes
         'views/lims_custody_chain_reception_views.xml',
+        # Reportes de etiquetas
+        'report/report_sample_labels_action.xml',
+        'report/report_sample_labels.xml',
     ],
     'installable': True,
     'application': True,

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        <!-- Reporte para etiqueta individual -->
+        <record id="action_report_sample_label" model="ir.actions.report">
+            <field name="name">Etiqueta de Muestra</field>
+            <field name="model">lims.sample.reception</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">lims_sample_reception.report_sample_label_document</field>
+            <field name="report_file">lims_sample_reception.report_sample_label_document</field>
+            <field name="print_report_name">'Etiqueta - ' + (object.sample_code or 'muestra') + '.pdf'</field>
+            <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
+        </record>
+
+        <!-- Reporte para etiquetas masivas -->
+        <record id="action_report_sample_labels_mass" model="ir.actions.report">
+            <field name="name">Etiquetas de Muestras</field>
+            <field name="model">lims.custody_chain</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">lims_sample_reception.report_sample_labels_mass_document</field>
+            <field name="report_file">lims_sample_reception.report_sample_labels_mass_document</field>
+            <field name="print_report_name">'Etiquetas - ' + (object.custody_chain_code or 'muestras') + '.pdf'</field>
+            <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
+        </record>
+    </data>
+</odoo>

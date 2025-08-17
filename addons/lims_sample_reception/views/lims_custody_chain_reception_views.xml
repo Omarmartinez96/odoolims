@@ -85,30 +85,39 @@
                             </div>
                         </div>
 
-                        <!-- Botones de acción superiores - SIMPLE Y SEPARADO -->
+                        <!-- Botones de acción superiores - CON ETIQUETAS -->
                         <div style="margin-bottom: 20px; text-align: center;">
                             
-                            <div style="display: inline-block; margin-right: 20px;">
+                            <div style="display: inline-block; margin-right: 15px;">
                                 <button name="action_mass_reception_wizard" 
                                         type="object" 
                                         string="📥 Recibir Todas las Muestras" 
                                         class="btn-success" 
-                                        style="min-width: 200px; padding: 8px 16px;"
+                                        style="min-width: 180px; padding: 8px 16px;"
                                         title="Recibir todas las muestras de esta cadena"/>
                             </div>
                             
-                            <div style="display: inline-block; margin-left: 20px;">
+                            <div style="display: inline-block; margin-left: 15px; margin-right: 15px;">
                                 <button name="action_samples_reception_multiselect" 
                                         type="object" 
                                         string="🔲 Selección Múltiple" 
                                         class="btn-info" 
-                                        style="min-width: 200px; padding: 8px 16px;"
+                                        style="min-width: 180px; padding: 8px 16px;"
                                         title="Seleccionar muestras específicas"/>
+                            </div>
+
+                            <div style="display: inline-block; margin-left: 15px;">
+                                <button name="action_print_all_labels" 
+                                        type="object" 
+                                        string="🏷️ Imprimir Etiquetas" 
+                                        class="btn-secondary" 
+                                        style="min-width: 180px; padding: 8px 16px;"
+                                        title="Imprimir etiquetas QR de todas las muestras"/>
                             </div>
 
                         </div>
 
-                        <!-- Lista de muestras -->
+                        <!-- Lista de muestras CON BOTÓN DE ETIQUETA -->
                         <group string="Muestras para Recepción">
                             <field name="sample_ids" nolabel="1">
                                 <list string="Muestras" create="false" edit="false">
@@ -116,14 +125,19 @@
                                     <field name="sample_description"/>
                                     <field name="sample_type_id"/>
                                     <field name="sample_reception_state" 
-                                           decoration-success="sample_reception_state == 'Recibida'" 
-                                           decoration-danger="sample_reception_state == 'Rechazada'" 
-                                           decoration-warning="sample_reception_state == 'No Recibida' or sample_reception_state == 'No recibida'"/>
+                                        decoration-success="sample_reception_state == 'Recibida'" 
+                                        decoration-danger="sample_reception_state == 'Rechazada'" 
+                                        decoration-warning="sample_reception_state == 'No Recibida' or sample_reception_state == 'No recibida'"/>
                                     <button name="action_individual_reception_wizard" 
                                             type="object" 
                                             string="Recibir" 
                                             class="btn-primary" 
                                             title="Recibir esta muestra individual"/>
+                                    <button name="action_print_sample_label" 
+                                            type="object" 
+                                            string="🏷️" 
+                                            class="btn-secondary" 
+                                            title="Imprimir etiqueta QR de esta muestra"/>
                                 </list>
                             </field>
                         </group>

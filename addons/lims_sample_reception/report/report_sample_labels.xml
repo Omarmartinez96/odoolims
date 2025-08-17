@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    
+    <!-- Template para etiqueta individual -->
+    <template id="report_sample_label_document">
+        <t t-call="web.html_container">
+            <t t-call-assets="web.report_assets_common" t-js="false"/>
+            <t t-set="company" t-value="env.company"/>
+
+            <style>
+                body { font-family: Arial, sans-serif !important; }
+                .label-container {
+                    width: 6cm;
+                    height: 4cm;
+                    border: 2px solid #000;
+                    padding: 8px;
+                    margin: 10px;
+                    display: inline-block;
+                    vertical-align: top;
+                    page-break-inside: avoid;
+                }
+                .qr-code {
+                    text-align: center;
+                    margin-bottom: 5px;
+                }
+                .sample-info {
+                    text-align: center;
+                    font-size: 10px;
+                    line-height: 1.2;
+                }
+                .sample-code {
+                    font-weight: bold;
+                    font-size: 12px;
+                    margin-bottom: 2px;
+                }
+                .sample-id {
+                    font-size: 9px;
+                    margin-bottom: 2px;
+                }
+                .client-info {
+                    font-size: 8px;
+                    color: #666;
+                }
+            </style>
+
+            <div class="page">
+                <t t-foreach="docs" t-as="reception">
+                    <div class="label-container">
+                        <!-- QR Code -->
+                        <div class="qr-code">
+                            <t t-set="qr_data" t-value="f'{reception.sample_code}|{reception.sample_identifier}'"/>
+                            <img t-att-src="'/report/barcode/?type=QR&amp;value=' + qr_data + '&amp;width=80&amp;height=80'" 
+                                 style="width: 80px; height: 80px;"/>
+                        </div>
+                        
+                        <!-- Sample Info -->
+                        <div class="sample-info">
+                            <div class="sample-code">
+                                <span t-esc="reception.sample_code or 'Sin código'"/>
+                            </div>
+                            <div class="sample-id">
+                                <span t-esc="reception.sample_identifier"/>
+                            </div>
+                            <div class="client-info">
+                                <span t-esc="reception.cliente_id.name or 'Sin cliente'"/>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <!-- Template para etiquetas masivas -->
+    <template id="report_sample_labels_mass_document">
+        <t t-call="web.html_container">
+            <t t-call-assets="web.report_assets_common" t-js="false"/>
+            <t t-set="company" t-value="env.company"/>
+
+            <style>
+                body { font-family: Arial, sans-serif !important; }
+                .label-container {
+                    width: 6cm;
+                    height: 4cm;
+                    border: 2px solid #000;
+                    padding: 8px;
+                    margin: 5px;
+                    display: inline-block;
+                    vertical-align: top;
+                    page-break-inside: avoid;
+                }
+                .qr-code {
+                    text-align: center;
+                    margin-bottom: 5px;
+                }
+                .sample-info {
+                    text-align: center;
+                    font-size: 10px;
+                    line-height: 1.2;
+                }
+                .sample-code {
+                    font-weight: bold;
+                    font-size: 12px;
+                    margin-bottom: 2px;
+                }
+                .sample-id {
+                    font-size: 9px;
+                    margin-bottom: 2px;
+                }
+                .client-info {
+                    font-size: 8px;
+                    color: #666;
+                }
+            </style>
+
+            <div class="page">
+                <t t-foreach="docs" t-as="custody_chain">
+                    <t t-foreach="custody_chain.sample_ids" t-as="sample">
+                        <t t-set="reception" t-value="env['lims.sample.reception'].search([('sample_id', '=', sample.id)], limit=1)"/>
+                        <div class="label-container">
+                            <!-- QR Code -->
+                            <div class="qr-code">
+                                <t t-set="sample_code" t-value="reception.sample_code if reception else 'Sin código'"/>
+                                <t t-set="qr_data" t-value="f'{sample_code}|{sample.sample_identifier}'"/>
+                                <img t-att-src="'/report/barcode/?type=QR&amp;value=' + qr_data + '&amp;width=80&amp;height=80'" 
+                                     style="width: 80px; height: 80px;"/>
+                            </div>
+                            
+                            <!-- Sample Info -->
+                            <div class="sample-info">
+                                <div class="sample-code">
+                                    <span t-esc="sample_code"/>
+                                </div>
+                                <div class="sample-id">
+                                    <span t-esc="sample.sample_identifier"/>
+                                </div>
+                                <div class="client-info">
+                                    <span t-esc="sample.cliente_id.name or 'Sin cliente'"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+            </div>
+        </t>
+    </template>
+
+</odoo>
