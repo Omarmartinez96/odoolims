@@ -95,6 +95,12 @@ class LimsSampleReception(models.Model):
         readonly=False
     )
     
+    # Campo QR computado
+    qr_code_image = fields.Binary(
+        string='Código QR',
+        compute='_compute_qr_code_image'
+    )
+
     # ==================== CAMPOS DEPRECADOS ====================
     # NOTA: Estos campos están deprecados y solo se mantienen por 
     # compatibilidad con registros existentes. NO USAR EN NUEVAS FUNCIONALIDADES.
@@ -235,6 +241,29 @@ class LimsSampleReception(models.Model):
         
         return result
     
+    @api.depends('sample_code')
+    def _compute_qr_code_image(self):
+        """Generar imagen QR"""
+        for record in self:
+            if record.sample_code and record.sample_code != '/':
+                try:
+                    import qrcode
+                    import io
+                    import base64
+                    
+                    qr = qrcode.QRCode(version=1, box_size=10, border=5)
+                    qr.add_data(record.sample_code)
+                    qr.make(fit=True)
+                    
+                    img = qr.make_image(fill_color="black", back_color="white")
+                    buffer = io.BytesIO()
+                    img.save(buffer, format='PNG')
+                    record.qr_code_image = base64.b64encode(buffer.getvalue())
+                except ImportError:
+                    record.qr_code_image = False
+            else:
+                record.qr_code_image = False
+
     # ==================== MÉTODOS DEPRECADOS ====================
     # NOTA: Estos métodos están deprecados y solo se mantienen por compatibilidad
     
