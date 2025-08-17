@@ -3,44 +3,124 @@
     
     <template id="report_sample_label_document">
         <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="o">
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <div class="article" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id">
-                            
-                            <style>
-                                .label-box {
-                                    width: 6cm;
-                                    height: 4cm;
-                                    padding: 8px;
-                                    margin: 5px;
-                                    display: inline-block;
-                                    page-break-inside: avoid;
-                                    background: white;
-                                }
-                                .qr-container { 
-                                    text-align: center; 
-                                    margin-bottom: 8px; 
-                                }
-                                .info-container { 
-                                    text-align: center; 
-                                }
-                                .sample-code { 
-                                    font-weight: bold; 
-                                    font-size: 14px; 
-                                    margin-bottom: 3px;
-                                    color: #000;
-                                }
-                                .sample-id { 
-                                    font-size: 10px; 
-                                    color: #333;
-                                }
-                            </style>
+            <t t-call-assets="web.report_assets_common" t-js="false"/>
+            <t t-set="company" t-value="env.company"/>
 
-                            <div class="label-box">
-                                <div class="qr-container">
-                                    <img t-if="o.qr_code_image" 
-                                         t-att-src="'data:image/png;base64,' + o.qr_code_image.decode('utf-8')" 
+            <style>
+                body {
+                    margin: 0;
+                    padding: 0;
+                    font-family: Arial, sans-serif;
+                }
+                .label-container {
+                    width: 6cm;
+                    height: 4cm;
+                    padding: 8px;
+                    margin: 5px;
+                    display: inline-block;
+                    page-break-inside: avoid;
+                    background: white;
+                }
+                .qr-code {
+                    text-align: center;
+                    margin-bottom: 8px;
+                }
+                .sample-info {
+                    text-align: center;
+                    font-size: 11px;
+                    line-height: 1.3;
+                }
+                .sample-code {
+                    font-weight: bold;
+                    font-size: 14px;
+                    margin-bottom: 3px;
+                    color: #000;
+                }
+                .sample-id {
+                    font-size: 10px;
+                    margin-bottom: 3px;
+                    color: #333;
+                }
+            </style>
+
+            <div class="page">
+                <t t-foreach="docs" t-as="reception">
+                    <div class="label-container">
+                        <div class="qr-code">
+                            <img t-if="reception.qr_code_image" 
+                                 t-att-src="'data:image/png;base64,' + reception.qr_code_image.decode('utf-8')" 
+                                 style="width: 120px; height: 120px;"
+                                 alt="QR Code"/>
+                            <div t-else="" style="width: 120px; height: 120px; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                                Sin QR
+                            </div>
+                        </div>
+                        
+                        <div class="sample-info">
+                            <div class="sample-code">
+                                <span t-esc="reception.sample_code or 'Sin código'"/>
+                            </div>
+                            <div class="sample-id">
+                                <span t-esc="reception.sample_identifier"/>
+                            </div>
+                        </div>
+                    </div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="report_sample_labels_mass_document">
+        <t t-call="web.html_container">
+            <t t-call-assets="web.report_assets_common" t-js="false"/>
+            <t t-set="company" t-value="env.company"/>
+
+            <style>
+                body {
+                    margin: 0;
+                    padding: 0;
+                    font-family: Arial, sans-serif;
+                }
+                .label-container {
+                    width: 6cm;
+                    height: 4cm;
+                    padding: 8px;
+                    margin: 5px;
+                    display: inline-block;
+                    page-break-inside: avoid;
+                    background: white;
+                }
+                .qr-code {
+                    text-align: center;
+                    margin-bottom: 8px;
+                }
+                .sample-info {
+                    text-align: center;
+                    font-size: 11px;
+                    line-height: 1.3;
+                }
+                .sample-code {
+                    font-weight: bold;
+                    font-size: 14px;
+                    margin-bottom: 3px;
+                    color: #000;
+                }
+                .sample-id {
+                    font-size: 10px;
+                    margin-bottom: 3px;
+                    color: #333;
+                }
+            </style>
+
+            <div class="page">
+                <t t-foreach="docs" t-as="custody_chain">
+                    <t t-foreach="custody_chain.sample_ids" t-as="sample">
+                        <t t-set="reception" t-value="env['lims.sample.reception'].search([('sample_id', '=', sample.id)], limit=1)"/>
+                        <t t-if="reception and reception.sample_code and reception.sample_code != '/'">
+                            <div class="label-container">
+                                <div class="qr-code">
+                                    <img t-if="reception and reception.qr_code_image" 
+                                         t-att-src="'data:image/png;base64,' + reception.qr_code_image.decode('utf-8')" 
                                          style="width: 120px; height: 120px;"
                                          alt="QR Code"/>
                                     <div t-else="" style="width: 120px; height: 120px; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
@@ -48,81 +128,19 @@
                                     </div>
                                 </div>
                                 
-                                <div class="info-container">
-                                    <div class="sample-code" t-esc="o.sample_code"/>
-                                    <div class="sample-id" t-esc="o.sample_identifier"/>
+                                <div class="sample-info">
+                                    <div class="sample-code">
+                                        <span t-esc="reception.sample_code"/>
+                                    </div>
+                                    <div class="sample-id">
+                                        <span t-esc="sample.sample_identifier"/>
+                                    </div>
                                 </div>
                             </div>
-                            
-                        </div>
-                    </div>
+                        </t>
+                    </t>
                 </t>
-            </t>
-        </t>
-    </template>
-
-    <template id="report_sample_labels_mass_document">
-        <t t-call="web.html_container">
-            <t t-foreach="docs" t-as="o">
-                <t t-call="web.external_layout">
-                    <div class="page">
-                        <div class="article" t-att-data-oe-model="o._name" t-att-data-oe-id="o.id">
-                            
-                            <style>
-                                .label-box {
-                                    width: 6cm;
-                                    height: 4cm;
-                                    padding: 8px;
-                                    margin: 5px;
-                                    display: inline-block;
-                                    page-break-inside: avoid;
-                                    background: white;
-                                }
-                                .qr-container { 
-                                    text-align: center; 
-                                    margin-bottom: 8px; 
-                                }
-                                .info-container { 
-                                    text-align: center; 
-                                }
-                                .sample-code { 
-                                    font-weight: bold; 
-                                    font-size: 14px; 
-                                    margin-bottom: 3px;
-                                    color: #000;
-                                }
-                                .sample-id { 
-                                    font-size: 10px; 
-                                    color: #333;
-                                }
-                            </style>
-
-                            <t t-foreach="o.sample_ids" t-as="sample">
-                                <t t-set="reception" t-value="env['lims.sample.reception'].search([('sample_id', '=', sample.id)], limit=1)"/>
-                                <t t-if="reception and reception.sample_code and reception.sample_code != '/'">
-                                    <div class="label-box">
-                                        <div class="qr-container">
-                                            <img t-if="reception.qr_code_image" 
-                                                 t-att-src="'data:image/png;base64,' + reception.qr_code_image.decode('utf-8')" 
-                                                 style="width: 120px; height: 120px;"
-                                                 alt="QR Code"/>
-                                            <div t-else="" style="width: 120px; height: 120px; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
-                                                Sin QR
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="info-container">
-                                            <div class="sample-code" t-esc="reception.sample_code"/>
-                                            <div class="sample-id" t-esc="sample.sample_identifier"/>
-                                        </div>
-                                    </div>
-                                </t>
-                            </t>
-                            
-                        </div>
-                    </div>
-                </t>
-            </t>
+            </div>
         </t>
     </template>
 
