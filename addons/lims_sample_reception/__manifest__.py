@@ -18,6 +18,9 @@
         'lims_customer',
         'lims_reception',
     ],
+    'external_dependencies': {
+        'python': ['qrcode', 'Pillow'],
+    },
     'data': [
         'security/ir.model.access.csv',
         'data/sequences.xml',
