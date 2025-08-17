@@ -43,9 +43,9 @@
                     width: 100%;
                 }
                 .company-logo {
-                    width: 8mm;
-                    height: 8mm;
-                    margin-right: 1mm;
+                    width: 4mm;
+                    height: 4mm;
+                    margin-right: 0.5mm;
                     object-fit: contain;
                 }
                 .sample-info {
@@ -139,7 +139,7 @@
                 }
                 .qr-section {
                     text-align: center;
-                    margin-bottom: 3mm;
+                    margin-bottom: 2mm;
                     flex: 1;
                     display: flex;
                     align-items: center;
@@ -147,11 +147,12 @@
                 }
                 .code-section {
                     text-align: center;
-                    margin-bottom: 2mm;
+                    margin-bottom: 1mm;
                     display: flex;
                     align-items: center;
-                    justify-content: center;
+                    justify-content: flex-start;
                     width: 100%;
+                    padding-left: 2mm;
                 }
                 .company-logo {
                     width: 8mm;
