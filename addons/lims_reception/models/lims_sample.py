@@ -282,12 +282,15 @@ class LimsSample(models.Model):
         # Crear copia (ya limpia automáticamente identificación y descripción)
         new_sample = self.copy()
         
+        # Retornar acción que recarga la vista de la cadena de custodia
         return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Muestra Duplicada',
-                'message': f'Se duplicó la muestra. Complete identificación y descripción.',
-                'type': 'success',
+            'type': 'ir.actions.act_window',
+            'name': 'Cadena de Custodia',
+            'res_model': 'lims.custody_chain',
+            'res_id': self.custody_chain_id.id,
+            'view_mode': 'form',
+            'target': 'current',
+            'context': {
+                'active_tab': 'muestras',  # Para abrir directamente el tab de muestras
             }
         }
