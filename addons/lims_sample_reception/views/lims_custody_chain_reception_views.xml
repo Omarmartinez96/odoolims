@@ -85,19 +85,24 @@
                             </div>
                         </div>
 
-                        <!-- Botones de acción superiores -->
+                        <!-- Botones de acción superiores - SEPARADOS -->
                         <div style="margin-bottom: 15px;">
-                            <button name="action_mass_reception_wizard" 
-                                    type="object" 
-                                    string="Recibir Todas las Muestras" 
-                                    class="btn-success" 
-                                    title="Recibir todas las muestras de esta cadena"/>
-                            
-                            <button name="action_samples_reception_multiselect" 
-                                    type="object" 
-                                    string="Selección Múltiple" 
-                                    class="btn-warning" 
-                                    title="Abrir vista para seleccionar muestras específicas"/>
+                            <div class="row">
+                                <div class="col-6">
+                                    <button name="action_mass_reception_wizard" 
+                                            type="object" 
+                                            string="📥 Recibir Todas las Muestras" 
+                                            class="btn-success btn-block" 
+                                            title="Recibir todas las muestras de esta cadena de una vez"/>
+                                </div>
+                                <div class="col-6">
+                                    <button name="action_samples_reception_multiselect" 
+                                            type="object" 
+                                            string="🔲 Selección Múltiple" 
+                                            class="btn-info btn-block" 
+                                            title="Abrir vista para seleccionar muestras específicas"/>
+                                </div>
+                            </div>
                         </div>
 
                         <!-- Lista de muestras -->
