@@ -223,26 +223,27 @@ class SampleReceptionWizard(models.TransientModel):
                 new_reception = self.env['lims.sample.reception'].create(reception_data)
                 created_receptions.append(new_reception)
         
-        # Mensajes diferenciados según el estado
+        # Preparar mensaje de éxito
         if self.reception_state == 'recibida':
-            title = '¡Muestras Recibidas!'
             message = f"Se han marcado como RECIBIDAS {len(created_receptions)} muestra(s) exitosamente."
-            msg_type = 'success'
+            notification_type = 'success'
         elif self.reception_state == 'rechazada':
-            title = '¡Muestras Rechazadas!'
             message = f"Se han marcado como RECHAZADAS {len(created_receptions)} muestra(s)."
-            msg_type = 'warning'
+            notification_type = 'warning'
         else:  # no_recibida
-            title = 'Estado Restaurado'
             message = f"Se han marcado como NO RECIBIDAS {len(created_receptions)} muestra(s). Estado restaurado."
-            msg_type = 'info'
+            notification_type = 'success'
         
-        # MOSTRAR NOTIFICACIÓN Y CERRAR WIZARD
-        return {
-            'effect': {
-                'fadeout': 'slow',
+        # Mostrar notificación usando el bus
+        self.env['bus.bus']._sendone(
+            self.env.user.partner_id, 
+            'simple_notification', 
+            {
+                'title': 'Procesamiento Completado',
                 'message': message,
-                'type': msg_type,
-            },
-            'type': 'ir.actions.act_window_close'
-        }
+                'type': notification_type
+            }
+        )
+        
+        # Cerrar el wizard
+        return {'type': 'ir.actions.act_window_close'}
