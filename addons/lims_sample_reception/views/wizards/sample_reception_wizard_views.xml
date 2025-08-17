@@ -1,44 +1,81 @@
-<!-- SELECCIÓN DE ESTADO CON DROPDOWN -->
-<group string="Estado Final de las Muestras">
-    <field name="reception_state" required="1" 
-           help="Seleccione el estado final que tendrán las muestras"/>
-</group>
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vista del Wizard de Recepción -->
+        <record id="view_sample_reception_wizard_form" model="ir.ui.view">
+            <field name="name">lims.sample.reception.wizard.form</field>
+            <field name="model">lims.sample.reception.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Procesamiento de Muestras">
+                    
+                    <!-- Título principal -->
+                    <div class="alert alert-info" role="alert" style="margin-bottom: 20px;">
+                        <h4><i class="fa fa-check-circle"/> Procesamiento de Muestras</h4>
+                        <p>Seleccione el estado final para las muestras y complete la información requerida.</p>
+                    </div>
 
-<!-- TEXTO DE CONFIRMACIÓN DINÁMICO -->
-<field name="confirmation_text" nolabel="1" readonly="1"/>
+                    <!-- Información de las muestras -->
+                    <group>
+                        <field name="reception_mode" invisible="1"/>
+                        <field name="sample_id" invisible="1"/>
+                        <field name="sample_ids" invisible="1"/>
+                        
+                        <field name="samples_count" readonly="1"/>
+                        <field name="sample_code" readonly="1"/>
+                    </group>
 
-<!-- Datos de recepción -->
-<group string="Información de Procesamiento">
-    <group>
-        <field name="reception_date"/>
-        <field name="reception_time" placeholder="14:30"/>
-    </group>
-    <group>
-        <field name="received_by_initials" placeholder="ABC"/>
-    </group>
-</group>
+                    <group string="Muestras a Procesar">
+                        <field name="samples_info" nolabel="1" readonly="1" widget="text"/>
+                    </group>
 
-<!-- Observaciones generales (para recibida y no_recibida) -->
-<group string="Observaciones" 
-       invisible="reception_state == 'rechazada'">
-    <field name="reception_notes" nolabel="1" 
-           placeholder="Observaciones generales sobre el procesamiento..."/>
-</group>
+                    <!-- SELECCIÓN DE ESTADO CON DROPDOWN -->
+                    <group string="Estado Final de las Muestras">
+                        <field name="reception_state" required="1" 
+                               help="Seleccione el estado final que tendrán las muestras"/>
+                    </group>
 
-<!-- Motivo de rechazo (solo para rechazada) -->
-<group string="Motivo de Rechazo" 
-       invisible="reception_state != 'rechazada'">
-    <field name="rejection_reason" nolabel="1" 
-           placeholder="Especifique detalladamente por qué se rechaza la muestra..."
-           required="reception_state == 'rechazada'"/>
-</group>
+                    <!-- TEXTO DE CONFIRMACIÓN DINÁMICO -->
+                    <field name="confirmation_text" nolabel="1" readonly="1"/>
 
-<footer>
-    <button name="action_confirm_reception" 
-            type="object" 
-            string="Finalizar" 
-            class="btn-primary"/>
-    <button string="Cancelar" 
-            class="btn-secondary" 
-            special="cancel"/>
-</footer>
+                    <!-- Datos de recepción -->
+                    <group string="Información de Procesamiento">
+                        <group>
+                            <field name="reception_date"/>
+                            <field name="reception_time" placeholder="14:30"/>
+                        </group>
+                        <group>
+                            <field name="received_by_initials" placeholder="ABC"/>
+                        </group>
+                    </group>
+
+                    <!-- Observaciones generales (para recibida y no_recibida) -->
+                    <group string="Observaciones" 
+                           invisible="reception_state == 'rechazada'">
+                        <field name="reception_notes" nolabel="1" 
+                               placeholder="Observaciones generales sobre el procesamiento..."/>
+                    </group>
+
+                    <!-- Motivo de rechazo (solo para rechazada) -->
+                    <group string="Motivo de Rechazo" 
+                           invisible="reception_state != 'rechazada'">
+                        <field name="rejection_reason" nolabel="1" 
+                               placeholder="Especifique detalladamente por qué se rechaza la muestra..."
+                               required="reception_state == 'rechazada'"/>
+                    </group>
+
+                    <footer>
+                        <button name="action_confirm_reception" 
+                                type="object" 
+                                string="Finalizar" 
+                                class="btn-primary"/>
+                        <button string="Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>
