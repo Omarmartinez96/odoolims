@@ -274,3 +274,20 @@ class LimsSample(models.Model):
             })
         
         return new_sample
+
+    def action_duplicate_sample(self):
+        """Acción para duplicar muestra desde interfaz"""
+        self.ensure_one()
+        
+        # Crear copia (ya limpia automáticamente identificación y descripción)
+        new_sample = self.copy()
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Muestra Duplicada',
+                'message': f'Se duplicó la muestra. Complete identificación y descripción.',
+                'type': 'success',
+            }
+        }
