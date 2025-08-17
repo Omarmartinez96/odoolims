@@ -42,12 +42,6 @@
                     justify-content: center;
                     width: 100%;
                 }
-                .company-logo {
-                    width: 4mm;
-                    height: 4mm;
-                    margin-right: 0.5mm;
-                    object-fit: contain;
-                }
                 .sample-info {
                     text-align: center;
                     font-family: Arial, sans-serif !important;
@@ -84,13 +78,9 @@
                                 </div>
                             </div>
                             
-                            <!-- Sección del Código con Logo -->
+                            <!-- Sección del Código -->
                             <div class="code-section">
-                                <img t-if="company.logo" 
-                                     t-att-src="image_data_uri(company.logo)"
-                                     class="company-logo"
-                                     alt="Logo"/>
-                                <div class="sample-info" style="flex: 1;">
+                                <div class="sample-info">
                                     <div class="sample-code">
                                         <span t-esc="reception.sample_code or 'Sin código'"/>
                                     </div>
