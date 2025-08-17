@@ -43,9 +43,9 @@
                         <!-- QR usando endpoint correcto -->
                         <div class="qr-container">
                             <t t-set="qr_data" t-value="reception.sample_code"/>
-                            <img t-att-src="'/web/barcode/QR/' + qr_data + '?width=120&amp;height=120'" 
-                                 style="width: 120px; height: 120px;"
-                                 alt="QR Code"/>
+                            <img t-att-src="'https://api.qrserver.com/v1/create-qr-code/?size=120x120&amp;data=' + qr_data" 
+                                style="width: 120px; height: 120px;"
+                                alt="QR Code"/>
                         </div>
                         
                         <div class="info-container">
