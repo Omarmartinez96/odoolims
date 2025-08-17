@@ -155,10 +155,11 @@
                     padding-left: 2mm;
                 }
                 .company-logo {
-                    width: 8mm;
-                    height: 8mm;
-                    margin-right: 1mm;
+                    max-width: 2mm;
+                    max-height: 2mm;
+                    margin-right: 0.5mm;
                     object-fit: contain;
+                    vertical-align: middle;
                 }
                 .sample-info {
                     text-align: center;
