@@ -84,6 +84,7 @@ class LimsCustodyChain(models.Model):
         string='Finalizado por',
         help='Persona que finalizó la cadena de custodia'
     )
+
     quotation_id = fields.Many2one(
         'sale.order', 
         string ="Referencia de cotización"
@@ -458,10 +459,4 @@ class LimsCustodyChain(models.Model):
             }
         }
 
-    @api.constrains('chain_of_custody_state', 'analyst_id')
-    def _check_analyst_required(self):
-        """Validar que se seleccione analista al finalizar"""
-        for record in self:
-            if record.chain_of_custody_state == 'done' and not record.analyst_id:
-                raise ValidationError("Debe seleccionar el analista responsable antes de finalizar la cadena de custodia")
             
