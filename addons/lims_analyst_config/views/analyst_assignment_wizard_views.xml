@@ -17,7 +17,6 @@
                     <!-- Información de la acción -->
                     <div class="alert alert-info" role="alert">
                         <h4><i class="fa fa-shield-alt"/> 🔐 Verificación de Identidad Requerida</h4>
-                        <p><strong>Acción:</strong> <span t-esc="action_description"/></p>
                         <p>Seleccione su nombre e ingrese su PIN para confirmar esta acción.</p>
                     </div>
                     
