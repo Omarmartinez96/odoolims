@@ -10,7 +10,7 @@
             <field name="position">Administrador del Sistema</field>
             <field name="department">Administración</field>
             <field name="signature_text">Admin LIMS</field>
-            <field name="start_date" eval="(DateTime.now() - timedelta(days=365)).strftime('%Y-%m-%d')"/>
+            <field name="start_date" eval="'2024-01-01'"/>
             <field name="notes">Analista administrador del sistema LIMS. PIN por defecto: 1234</field>
             <field name="active">True</field>
         </record>

@@ -98,25 +98,6 @@
             </field>
         </record>
 
-        <!-- Wizard para configurar PIN -->
-        <record id="view_analyst_pin_wizard_form" model="ir.ui.view">
-            <field name="name">analyst.pin.wizard.form</field>
-            <field name="model">analyst.pin.wizard</field>
-            <field name="arch" type="xml">
-                <form string="Configurar PIN del Analista">
-                    <group>
-                        <field name="analyst_id" readonly="1"/>
-                        <field name="new_pin" password="True" placeholder="Ingrese PIN de 4-6 dígitos"/>
-                        <field name="confirm_pin" password="True" placeholder="Confirme el PIN"/>
-                    </group>
-                    <footer>
-                        <button name="set_pin" type="object" string="Establecer PIN" class="btn-primary"/>
-                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
-                    </footer>
-                </form>
-            </field>
-        </record>
-
         <!-- Menú en Configuración de Variables -->
         <menuitem id="menu_lims_analysts" 
                   name="Analistas de Laboratorio" 
