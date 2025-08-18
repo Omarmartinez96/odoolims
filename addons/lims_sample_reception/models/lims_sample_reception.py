@@ -370,6 +370,25 @@ class LimsSample(models.Model):
         compute='_compute_sample_reception_state'
     )
 
+    sample_code = fields.Char(
+        string="Código de Muestra",
+        compute='_compute_sample_code',
+        store=True,
+        help="Código generado en la recepción"
+    )
+
+    @api.depends('id')  # Se recalcula cuando se carga el registro
+    def _compute_sample_code(self):
+        """Obtener código desde la recepción asociada"""
+        for record in self:
+            reception = self.env['lims.sample.reception'].search([
+                ('sample_id', '=', record.id)
+            ], limit=1)
+            
+            if reception and reception.sample_code and reception.sample_code != '/':
+                record.sample_code = reception.sample_code
+            else:
+                record.sample_code = 'Pendiente'
 
     def _compute_sample_reception_state(self):
         """Mostrar estado de recepción de la muestra"""
