@@ -134,42 +134,49 @@ class SampleReceptionWizard(models.TransientModel):
     @api.onchange('sample_lines')
     def _onchange_sample_lines(self):
         """Recalcular códigos cuando se modifican las líneas"""
-        if self.sample_lines:
-            # Reagrupar por cliente
-            client_groups = {}
-            for line in self.sample_lines:
-                if line.sample_id and line.sample_id.cliente_id:
-                    client_code = line.sample_id.cliente_id.client_code or 'XXX'
-                    if client_code not in client_groups:
-                        client_groups[client_code] = []
-                    client_groups[client_code].append(line)
+        if not self.sample_lines:
+            return
             
-            # Recalcular códigos para cada grupo de cliente
-            for client_code, client_lines in client_groups.items():
-                # Buscar el máximo número existente en la base de datos
-                existing = self.env['lims.sample.reception'].search([
-                    ('sample_code', 'like', f'{client_code}/%'),
-                    ('sample_code', '!=', '/')
-                ])
+        # Reagrupar por cliente
+        client_groups = {}
+        for line in self.sample_lines:
+            if line.sample_id and line.sample_id.cliente_id:
+                client_code = line.sample_id.cliente_id.client_code or 'XXX'
+                if client_code not in client_groups:
+                    client_groups[client_code] = []
+                client_groups[client_code].append(line)
+        
+        # Recalcular códigos para cada grupo de cliente
+        for client_code, client_lines in client_groups.items():
+            # Buscar el máximo número existente en la base de datos
+            existing = self.env['lims.sample.reception'].search([
+                ('sample_code', 'like', f'{client_code}/%'),
+                ('sample_code', '!=', '/')
+            ])
+            
+            max_num = 0
+            for rec in existing:
+                try:
+                    parts = rec.sample_code.split('/')
+                    if len(parts) == 2:
+                        num = int(parts[1])
+                        if num > max_num:
+                            max_num = num
+                except:
+                    pass
+            
+            # Ordenar líneas para mantener consistencia
+            client_lines.sort(key=lambda x: x.id or 0)
+            
+            # Asignar códigos secuenciales solo si no tienen código o es el predeterminado
+            for i, line in enumerate(client_lines):
+                next_num = str(max_num + 1 + i).zfill(4)
+                new_suggested = f'{client_code}/{next_num}'
+                line.suggested_code = new_suggested
                 
-                max_num = 0
-                for rec in existing:
-                    try:
-                        parts = rec.sample_code.split('/')
-                        if len(parts) == 2:
-                            num = int(parts[1])
-                            if num > max_num:
-                                max_num = num
-                    except:
-                        pass
-                
-                # Asignar códigos secuenciales
-                for i, line in enumerate(client_lines):
-                    next_num = str(max_num + 1 + i).zfill(4)
-                    new_code = f'{client_code}/{next_num}'
-                    line.suggested_code = new_code
-                    if not line.sample_code or line.sample_code == line.suggested_code:
-                        line.sample_code = new_code
+                # Solo auto-asignar si el código está vacío o es el predeterminado
+                if not line.sample_code or line.sample_code == '/' or line.sample_code == line.suggested_code:
+                    line.sample_code = new_suggested
 
     @api.onchange('reception_state')
     def _onchange_reception_state(self):
@@ -191,7 +198,27 @@ class SampleReceptionWizard(models.TransientModel):
         if not self.sample_lines:
             raise UserError(_('No hay muestras para procesar.'))
         
+        # Validar códigos únicos antes de procesar
+        codes_in_wizard = [line.sample_code for line in self.sample_lines if line.sample_code]
+        if len(codes_in_wizard) != len(set(codes_in_wizard)):
+            raise UserError(_('Hay códigos de muestra duplicados en el wizard. Cada código debe ser único.'))
+        
+        # Validar que no existan códigos duplicados en la base de datos
+        for line in self.sample_lines:
+            if line.sample_code:
+                existing_with_code = self.env['lims.sample.reception'].search([
+                    ('sample_code', '=', line.sample_code),
+                    ('sample_id', '!=', line.sample_id.id)  # Excluir la misma muestra
+                ])
+                if existing_with_code:
+                    raise UserError(_(
+                        f'El código "{line.sample_code}" ya existe en otra muestra. '
+                        f'Los códigos deben ser únicos en todo el sistema.'
+                    ))
+        
         created_receptions = []
+        updated_codes = []
+        
         for line in self.sample_lines:
             if not line.sample_code:
                 raise UserError(_(f'La muestra "{line.sample_identifier}" no tiene código asignado.'))
@@ -203,7 +230,7 @@ class SampleReceptionWizard(models.TransientModel):
             
             # Preparar datos de recepción
             reception_data = {
-                'sample_code': line.sample_code,
+                'sample_code': line.sample_code,  # SIEMPRE actualizar el código
                 'reception_state': self.reception_state,
                 'reception_date': self.reception_date,
                 'reception_time': self.reception_time,
@@ -219,23 +246,38 @@ class SampleReceptionWizard(models.TransientModel):
                 reception_data['reception_notes'] = self.reception_notes or ''
             
             if existing_reception:
+                # Verificar si el código cambió
+                old_code = existing_reception.sample_code
+                if old_code != line.sample_code:
+                    updated_codes.append(f'{old_code} → {line.sample_code}')
+                
+                # Actualizar existente
                 existing_reception.write(reception_data)
                 created_receptions.append(existing_reception)
             else:
+                # Crear nueva recepción
                 reception_data['sample_id'] = line.sample_id.id
                 new_reception = self.env['lims.sample.reception'].create(reception_data)
                 created_receptions.append(new_reception)
+                updated_codes.append(f'Nuevo: {line.sample_code}')
         
         # Preparar mensaje de éxito
         if self.reception_state == 'recibida':
-            message = f"Se han marcado como RECIBIDAS {len(created_receptions)} muestra(s) exitosamente."
+            message = f"✅ Se han marcado como RECIBIDAS {len(created_receptions)} muestra(s) exitosamente."
             notification_type = 'success'
         elif self.reception_state == 'rechazada':
-            message = f"Se han marcado como RECHAZADAS {len(created_receptions)} muestra(s)."
+            message = f"❌ Se han marcado como RECHAZADAS {len(created_receptions)} muestra(s)."
             notification_type = 'warning'
         else:  # no_recibida
-            message = f"Se han marcado como NO RECIBIDAS {len(created_receptions)} muestra(s). Estado restaurado."
+            message = f"⏳ Se han marcado como NO RECIBIDAS {len(created_receptions)} muestra(s). Estado restaurado."
             notification_type = 'success'
+        
+        # Agregar información sobre códigos actualizados
+        if updated_codes:
+            codes_summary = ', '.join(updated_codes[:3])
+            if len(updated_codes) > 3:
+                codes_summary += f' y {len(updated_codes) - 3} más...'
+            message += f'\n\n📝 Códigos procesados: {codes_summary}'
         
         # Mostrar notificación usando el bus
         self.env['bus.bus']._sendone(
