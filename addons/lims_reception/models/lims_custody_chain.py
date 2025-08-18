@@ -361,7 +361,40 @@ class LimsCustodyChain(models.Model):
             
         except Exception as e:
             raise UserError(_("Error al generar el documento: %s") % str(e))
+
+    def action_verify_analyst_custody_chain(self):
+        """Abrir wizard para verificar PIN del analista de cadena de custodia"""
+        self.ensure_one()
+        if not self.analyst_id:
+            raise UserError("Debe seleccionar un analista primero")
         
+        if not self.analyst_id.pin_hash:
+            raise UserError(f"{self.analyst_id.full_name} no tiene PIN configurado")
+        
+        return {
+            'name': f'Verificar PIN - {self.analyst_id.full_name}',
+            'type': 'ir.actions.act_window',
+            'res_model': 'analyst.pin.verify.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_analyst_id': self.analyst_id.id,
+            }
+        }
+
+    @api.constrains('chain_of_custody_state', 'analyst_id')
+    def _check_analyst_verified(self):
+        """Validar que el analista tenga PIN verificado al finalizar"""
+        for record in self:
+            if record.chain_of_custody_state == 'done' and record.analyst_id:
+                if record.analyst_id.pin_hash and not record.analyst_id.is_pin_verified:
+                    raise ValidationError(
+                        f"🔐 Verificación de PIN Requerida\n\n"
+                        f"El analista {record.analyst_id.full_name} debe verificar su PIN "
+                        f"antes de finalizar la cadena de custodia.\n\n"
+                        f"Haga clic en el botón '🔐 Verificar PIN' para continuar."
+                    )
+
     def unlink(self):
         """Override para mostrar información antes de eliminar"""
         for chain in self:
