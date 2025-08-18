@@ -373,11 +373,9 @@ class LimsSample(models.Model):
     sample_code = fields.Char(
         string="Código de Muestra",
         compute='_compute_sample_code',
-        store=True,
         help="Código generado en la recepción"
     )
 
-    @api.depends('id')  # Se recalcula cuando se carga el registro
     def _compute_sample_code(self):
         """Obtener código desde la recepción asociada"""
         for record in self:
