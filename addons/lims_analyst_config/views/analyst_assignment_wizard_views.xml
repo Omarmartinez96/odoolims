@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vista del Wizard Universal de Asignación -->
+        <record id="view_analyst_assignment_wizard_form" model="ir.ui.view">
+            <field name="name">analyst.assignment.wizard.form</field>
+            <field name="model">analyst.assignment.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Asignar Analista con Verificación PIN">
+                    
+                    <!-- Campos ocultos para contexto -->
+                    <field name="source_model" invisible="1"/>
+                    <field name="source_record_id" invisible="1"/>
+                    <field name="source_field" invisible="1"/>
+                    
+                    <!-- Información de la acción -->
+                    <div class="alert alert-info" role="alert">
+                        <h4><i class="fa fa-shield-alt"/> 🔐 Verificación de Identidad Requerida</h4>
+                        <p><strong>Acción:</strong> <span t-esc="action_description"/></p>
+                        <p>Seleccione su nombre e ingrese su PIN para confirmar esta acción.</p>
+                    </div>
+                    
+                    <group>
+                        <group string="👤 Selección de Analista">
+                            <field name="action_description" readonly="1"/>
+                            <field name="analyst_id" 
+                                   placeholder="Seleccione su nombre de la lista"
+                                   options="{'no_create': True, 'no_open': True}"/>
+                        </group>
+                        <group string="🔐 Verificación PIN">
+                            <field name="pin_input" 
+                                   password="True" 
+                                   placeholder="Ingrese su PIN de 4-6 dígitos"
+                                   autofocus="1"/>
+                        </group>
+                    </group>
+                    
+                    <!-- Instrucciones de seguridad -->
+                    <div style="background-color: #fff3cd; padding: 15px; margin: 15px 0; border-left: 4px solid #ffc107;">
+                        <h6 style="margin-top: 0; color: #856404;">⚠️ Política de Seguridad:</h6>
+                        <ul style="margin: 5px 0; color: #856404;">
+                            <li>Solo pueden aparecer analistas con PIN configurado</li>
+                            <li>Debe ingresar su PIN personal para confirmar la acción</li>
+                            <li>Esta verificación garantiza la trazabilidad de actividades</li>
+                        </ul>
+                    </div>
+                    
+                    <footer>
+                        <button name="verify_and_assign" 
+                                type="object" 
+                                string="✅ Verificar PIN y Asignar" 
+                                class="btn-success"/>
+                        <button string="❌ Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

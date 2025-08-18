@@ -154,4 +154,24 @@ class LimsAnalyst(models.Model):
                 'default_analyst_id': self.id,
             }
         }
-    
+
+    @api.model
+    def open_assignment_wizard(self, source_model, source_record_id, source_field, action_description=None):
+        """Método helper para abrir wizard de asignación desde cualquier modelo"""
+        
+        if not action_description:
+            action_description = "Asignar analista"
+        
+        return {
+            'name': f'{action_description} - Verificación PIN',
+            'type': 'ir.actions.act_window',
+            'res_model': 'analyst.assignment.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_source_model': source_model,
+                'default_source_record_id': source_record_id,
+                'default_source_field': source_field,
+                'default_action_description': action_description,
+            }
+        }
