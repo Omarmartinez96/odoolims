@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vista Lista de Analistas -->
+        <record id="view_lims_analyst_list" model="ir.ui.view">
+            <field name="name">lims.analyst.list</field>
+            <field name="model">lims.analyst</field>
+            <field name="arch" type="xml">
+                <list string="Analistas de Laboratorio" create="true" edit="true" delete="true">
+                    <field name="employee_code"/>
+                    <field name="full_name"/>
+                    <field name="initials"/>
+                    <field name="position"/>
+                    <field name="department"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Formulario de Analistas -->
+        <record id="view_lims_analyst_form" model="ir.ui.view">
+            <field name="name">lims.analyst.form</field>
+            <field name="model">lims.analyst</field>
+            <field name="arch" type="xml">
+                <form string="Analista de Laboratorio">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="full_name" placeholder="Ej: María Fernanda López González"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group string="👤 Información Personal">
+                                <field name="employee_code" placeholder="Ej: EMP001"/>
+                                <field name="initials" placeholder="Ej: MFLG"/>
+                                <field name="active"/>
+                            </group>
+                            <group string="🏢 Información Laboral">
+                                <field name="position" placeholder="Ej: Analista Senior"/>
+                                <field name="department" placeholder="Ej: Microbiología"/>
+                                <field name="start_date"/>
+                            </group>
+                        </group>
+
+                        <!-- Sección de Seguridad PIN -->
+                        <group string="🔐 Configuración de Seguridad">
+                            <div class="alert alert-info" role="alert">
+                                <strong>Configuración de PIN:</strong> 
+                                El PIN debe tener entre 4-6 dígitos y se usa para verificar la identidad del analista.
+                            </div>
+                            <button name="action_set_pin" 
+                                    type="object" 
+                                    string="Establecer/Cambiar PIN" 
+                                    class="btn-primary"
+                                    icon="fa-key"/>
+                            <div class="text-muted" attrs="{'invisible': [('pin_hash', '=', False)]}">
+                                ✓ PIN configurado correctamente
+                            </div>
+                        </group>
+
+                        <!-- Sección de Firma -->
+                        <group string="✍️ Firma Digital">
+                            <group>
+                                <field name="signature" widget="image" class="oe_avatar"/>
+                            </group>
+                            <group>
+                                <field name="signature_text" 
+                                       placeholder="Ej: Dra. María F. López"
+                                       help="Firma en formato texto para documentos"/>
+                            </group>
+                        </group>
+
+                        <group string="📝 Notas Adicionales">
+                            <field name="notes" nolabel="1" 
+                                   placeholder="Certificaciones, especialidades, observaciones, etc..."/>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acción para Analistas -->
+        <record id="action_lims_analysts" model="ir.actions.act_window">
+            <field name="name">Analistas de Laboratorio</field>
+            <field name="res_model">lims.analyst</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Registrar el primer analista de laboratorio
+                </p>
+                <p>
+                    Configure los analistas que realizarán actividades en el sistema LIMS.
+                    Cada analista tendrá un PIN único para verificar su identidad.
+                </p>
+            </field>
+        </record>
+
+        <!-- Wizard para configurar PIN -->
+        <record id="view_analyst_pin_wizard_form" model="ir.ui.view">
+            <field name="name">analyst.pin.wizard.form</field>
+            <field name="model">analyst.pin.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Configurar PIN del Analista">
+                    <group>
+                        <field name="analyst_id" readonly="1"/>
+                        <field name="new_pin" password="True" placeholder="Ingrese PIN de 4-6 dígitos"/>
+                        <field name="confirm_pin" password="True" placeholder="Confirme el PIN"/>
+                    </group>
+                    <footer>
+                        <button name="set_pin" type="object" string="Establecer PIN" class="btn-primary"/>
+                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Menú en Configuración de Variables -->
+        <menuitem id="menu_lims_analysts" 
+                  name="Analistas de Laboratorio" 
+                  parent="lims_analysis_config.menu_variables_controles" 
+                  action="action_lims_analysts" 
+                  sequence="5"/>
+
+    </data>
+</odoo>

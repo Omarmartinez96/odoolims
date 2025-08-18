@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- Template para el Dialog de Verificación PIN -->
+        <template id="PinVerificationDialog" name="Pin Verification Dialog">
+            <div class="modal-dialog pin-verification-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">
+                            <i class="fa fa-shield-alt me-2"></i>
+                            Verificación de Identidad
+                        </h5>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <div class="analyst-info">
+                            <h6 class="mb-1">
+                                <i class="fa fa-user me-2"></i>
+                                Analista Seleccionado
+                            </h6>
+                            <strong t-esc="props.analystName"/>
+                        </div>
+
+                        <div class="mb-3">
+                            <label for="pin-input" class="form-label">
+                                <i class="fa fa-key me-1"></i>
+                                Ingrese su PIN de verificación:
+                            </label>
+                            <input 
+                                type="password" 
+                                id="pin-input"
+                                class="form-control pin-input"
+                                placeholder="••••"
+                                maxlength="6"
+                                t-model="state.pin"
+                                t-on-input="onPinInput"
+                                t-on-keydown="onKeyDown"
+                                t-att-disabled="state.isSubmitting"
+                                autofocus="true"/>
+                        </div>
+
+                        <div class="security-note">
+                            <i class="fa fa-info-circle me-1"></i>
+                            Este PIN verifica que usted es quien realizará esta actividad
+                        </div>
+                    </div>
+                    
+                    <div class="modal-footer">
+                        <button 
+                            type="button" 
+                            class="btn btn-secondary" 
+                            t-on-click="onCancel"
+                            t-att-disabled="state.isSubmitting">
+                            <i class="fa fa-times me-1"></i>
+                            Cancelar
+                        </button>
+                        <button 
+                            type="button" 
+                            class="btn btn-verify" 
+                            t-on-click="onConfirm"
+                            t-att-disabled="!state.pin || state.pin.length &lt; 4 || state.isSubmitting">
+                            <i class="fa fa-check me-1"></i>
+                            <span t-if="!state.isSubmitting">Verificar</span>
+                            <span t-if="state.isSubmitting">
+                                <i class="fa fa-spinner fa-spin me-1"></i>
+                                Verificando...
+                            </span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+    </data>
+</odoo>

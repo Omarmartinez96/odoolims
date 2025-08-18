@@ -1,0 +1,57 @@
+.pin-verification-dialog {
+    min-width: 400px;
+}
+
+.pin-verification-dialog .modal-header {
+    background-color: #007bff;
+    color: white;
+    border-bottom: none;
+}
+
+.pin-verification-dialog .analyst-info {
+    background-color: #f8f9fa;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border-left: 4px solid #007bff;
+}
+
+.pin-verification-dialog .pin-input {
+    font-size: 18px;
+    text-align: center;
+    letter-spacing: 2px;
+    padding: 12px;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    background-color: #fff;
+}
+
+.pin-verification-dialog .pin-input:focus {
+    border-color: #007bff;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+    outline: none;
+}
+
+.pin-verification-dialog .security-note {
+    font-size: 12px;
+    color: #6c757d;
+    text-align: center;
+    margin-top: 10px;
+}
+
+.pin-verification-dialog .btn-verify {
+    background-color: #28a745;
+    border-color: #28a745;
+    color: white;
+    font-weight: bold;
+}
+
+.pin-verification-dialog .btn-verify:hover {
+    background-color: #218838;
+    border-color: #1e7e34;
+}
+
+.pin-verification-dialog .btn-verify:disabled {
+    background-color: #6c757d;
+    border-color: #6c757d;
+}
