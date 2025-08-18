@@ -73,6 +73,24 @@ class LimsAnalyst(models.Model):
         help='Notas adicionales sobre el analista'
     )
 
+    # Campos de verificación PIN
+    is_pin_verified = fields.Boolean(
+        string='PIN Verificado',
+        default=False,
+        help='Indica si el PIN del analista ha sido verificado en esta sesión'
+    )
+
+    verified_by_user = fields.Many2one(
+        'res.users',
+        string='Verificado por Usuario',
+        help='Usuario que verificó el PIN'
+    )
+
+    verification_datetime = fields.Datetime(
+        string='Fecha/Hora Verificación',
+        help='Momento en que se verificó el PIN'
+    )
+
     @api.model
     def _hash_pin(self, pin):
         """Encriptar PIN usando SHA-256"""
@@ -151,5 +169,42 @@ class LimsAnalyst(models.Model):
             'target': 'new',
             'context': {
                 'default_analyst_id': self.id,
+            }
+        }
+    
+    def action_verify_pin_form(self):
+        """Abrir wizard para verificar PIN en formularios"""
+        self.ensure_one()
+        if not self.pin_hash:
+            raise ValidationError("Este analista no tiene PIN configurado")
+        
+        return {
+            'name': f'Verificar PIN - {self.full_name}',
+            'type': 'ir.actions.act_window',
+            'res_model': 'analyst.pin.verify.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_analyst_id': self.id,
+            }
+        }
+    
+    def action_clear_verification(self):
+        """Limpiar estado de verificación PIN"""
+        self.ensure_one()
+        self.write({
+            'is_pin_verified': False,
+            'verified_by_user': False,
+            'verification_datetime': False,
+        })
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': '🔄 Verificación Limpiada',
+                'message': f'Estado de verificación limpiado para {self.full_name}',
+                'type': 'info',
+                'sticky': False,
             }
         }

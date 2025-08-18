@@ -21,6 +21,7 @@
         'security/ir.model.access.csv',
         'views/lims_analyst_views.xml',
         'views/analyst_pin_wizard_views.xml',
+        'views/analyst_pin_verify_wizard_views.xml',
         'views/analyst_pin_templates.xml',
         'data/lims_analyst_data.xml',
     ],
