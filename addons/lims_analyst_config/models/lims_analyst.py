@@ -73,13 +73,6 @@ class LimsAnalyst(models.Model):
         help='Notas adicionales sobre el analista'
     )
 
-    # Campos de verificación PIN
-    is_pin_verified = fields.Boolean(
-        string='PIN Verificado',
-        default=False,
-        help='Indica si el PIN del analista ha sido verificado en esta sesión'
-    )
-
     @api.model
     def _hash_pin(self, pin):
         """Encriptar PIN usando SHA-256"""
@@ -94,11 +87,8 @@ class LimsAnalyst(models.Model):
         if not pin.isdigit():
             raise ValidationError("El PIN solo debe contener números")
         
-        # Establecer nuevo PIN y limpiar verificación
-        self.write({
-            'pin_hash': self._hash_pin(pin),
-            'is_pin_verified': False,  # Limpiar verificación al cambiar PIN
-        })
+        # Establecer nuevo PIN
+        self.pin_hash = self._hash_pin(pin)
         return True
 
     def validate_pin(self, pin):
@@ -165,37 +155,3 @@ class LimsAnalyst(models.Model):
             }
         }
     
-    def action_verify_pin_form(self):
-        """Abrir wizard para verificar PIN en formularios"""
-        self.ensure_one()
-        if not self.pin_hash:
-            raise ValidationError("Este analista no tiene PIN configurado")
-        
-        return {
-            'name': f'Verificar PIN - {self.full_name}',
-            'type': 'ir.actions.act_window',
-            'res_model': 'analyst.pin.verify.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_analyst_id': self.id,
-            }
-        }
-    
-    def action_clear_verification(self):
-        """Limpiar estado de verificación PIN"""
-        self.ensure_one()
-        self.write({
-            'is_pin_verified': False,
-        })
-        
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': '🔄 Verificación Limpiada',
-                'message': f'Estado de verificación limpiado para {self.full_name}',
-                'type': 'info',
-                'sticky': False,
-            }
-        }

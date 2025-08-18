@@ -1,4 +1,3 @@
 id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_lims_analyst,lims.analyst,model_lims_analyst,base.group_user,1,1,1,1
 access_analyst_pin_wizard,analyst.pin.wizard,model_analyst_pin_wizard,base.group_user,1,1,1,1
-access_analyst_pin_verify_wizard,analyst.pin.verify.wizard,model_analyst_pin_verify_wizard,base.group_user,1,1,1,1
