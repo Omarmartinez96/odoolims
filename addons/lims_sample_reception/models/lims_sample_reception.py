@@ -376,6 +376,32 @@ class LimsSample(models.Model):
         help="Código generado en la recepción"
     )
 
+    date_chainofcustody = fields.Date(
+        string='Fecha de CC',
+        related='custody_chain_id.date_chainofcustody',
+        readonly=True,
+        store=False
+    )
+
+    def action_mass_reception_selected(self):
+        """Abrir wizard para recepción masiva de muestras seleccionadas"""
+        selected_samples = self.browse(self.env.context.get('active_ids', []))
+        
+        if not selected_samples:
+            raise UserError(_('Debe seleccionar al menos una muestra.'))
+        
+        return {
+            'name': _('Recepción Masiva de Muestras'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'lims.sample.reception.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_reception_mode': 'mass',
+                'default_sample_ids': [(6, 0, selected_samples.ids)],
+            }
+        }
+
     def _compute_sample_code(self):
         """Obtener código desde la recepción asociada"""
         for record in self:
