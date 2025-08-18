@@ -191,30 +191,18 @@ class SampleReceptionWizard(models.TransientModel):
         """Confirmar procesamiento de muestras"""
         self.ensure_one()
         
+        # DEBUG: Verificar qué líneas tenemos
+        print("=== DEBUG WIZARD ===")
+        print(f"Líneas en wizard: {len(self.sample_lines)}")
+        for line in self.sample_lines:
+            print(f"Línea - Sample ID: {line.sample_id.id}, Código: '{line.sample_code}', Identifier: '{line.sample_identifier}'")
+        
         # Validar motivo de rechazo
         if self.reception_state == 'rechazada' and not self.rejection_reason:
             raise UserError(_('Debe especificar el motivo de rechazo.'))
         
         if not self.sample_lines:
             raise UserError(_('No hay muestras para procesar.'))
-        
-        # Validar códigos únicos antes de procesar
-        codes_in_wizard = [line.sample_code for line in self.sample_lines if line.sample_code]
-        if len(codes_in_wizard) != len(set(codes_in_wizard)):
-            raise UserError(_('Hay códigos de muestra duplicados en el wizard. Cada código debe ser único.'))
-        
-        # Validar que no existan códigos duplicados en la base de datos
-        for line in self.sample_lines:
-            if line.sample_code:
-                existing_with_code = self.env['lims.sample.reception'].search([
-                    ('sample_code', '=', line.sample_code),
-                    ('sample_id', '!=', line.sample_id.id)  # Excluir la misma muestra
-                ])
-                if existing_with_code:
-                    raise UserError(_(
-                        f'El código "{line.sample_code}" ya existe en otra muestra. '
-                        f'Los códigos deben ser únicos en todo el sistema.'
-                    ))
         
         created_receptions = []
         updated_codes = []
@@ -223,14 +211,18 @@ class SampleReceptionWizard(models.TransientModel):
             if not line.sample_code:
                 raise UserError(_(f'La muestra "{line.sample_identifier}" no tiene código asignado.'))
             
-            # Verificar si ya existe recepción
+            # DEBUG: Buscar recepción existente
             existing_reception = self.env['lims.sample.reception'].search([
                 ('sample_id', '=', line.sample_id.id)
             ], limit=1)
             
+            print(f"Muestra {line.sample_id.id} - Recepción existente: {existing_reception.id if existing_reception else 'NO EXISTE'}")
+            if existing_reception:
+                print(f"  Código actual: '{existing_reception.sample_code}' -> Nuevo: '{line.sample_code}'")
+            
             # Preparar datos de recepción
             reception_data = {
-                'sample_code': line.sample_code,  # SIEMPRE actualizar el código
+                'sample_code': line.sample_code,
                 'reception_state': self.reception_state,
                 'reception_date': self.reception_date,
                 'reception_time': self.reception_time,
@@ -245,21 +237,29 @@ class SampleReceptionWizard(models.TransientModel):
             else:
                 reception_data['reception_notes'] = self.reception_notes or ''
             
+            print(f"Datos a escribir: {reception_data}")
+            
             if existing_reception:
                 # Verificar si el código cambió
                 old_code = existing_reception.sample_code
+                print(f"ACTUALIZANDO recepción {existing_reception.id}")
+                existing_reception.write(reception_data)
+                print(f"Código después del write: '{existing_reception.sample_code}'")
+                
                 if old_code != line.sample_code:
                     updated_codes.append(f'{old_code} → {line.sample_code}')
                 
-                # Actualizar existente
-                existing_reception.write(reception_data)
                 created_receptions.append(existing_reception)
             else:
                 # Crear nueva recepción
                 reception_data['sample_id'] = line.sample_id.id
+                print(f"CREANDO nueva recepción para muestra {line.sample_id.id}")
                 new_reception = self.env['lims.sample.reception'].create(reception_data)
+                print(f"Nueva recepción creada: ID {new_reception.id}, Código: '{new_reception.sample_code}'")
                 created_receptions.append(new_reception)
                 updated_codes.append(f'Nuevo: {line.sample_code}')
+        
+        print("=== FIN DEBUG ===")
         
         # Preparar mensaje de éxito
         if self.reception_state == 'recibida':
