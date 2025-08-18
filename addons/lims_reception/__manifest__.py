@@ -15,6 +15,7 @@
         'mail',
         'mass_mailing',
         'web',
+        'lims_analyst_config',
     ],
     
     'data': [

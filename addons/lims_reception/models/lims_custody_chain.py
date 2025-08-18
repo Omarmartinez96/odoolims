@@ -1,6 +1,6 @@
 #lims_custody_chain.py 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 import base64
 from datetime import datetime
 import logging
@@ -77,6 +77,12 @@ class LimsCustodyChain(models.Model):
          ('done', 'Finalizado')], 
         string="Estado de CC", 
         default='draft',
+    )
+    # Analista responsable
+    analyst_id = fields.Many2one(
+        'lims.analyst',
+        string='Finalizado por',
+        help='Persona que finalizó la cadena de custodia'
     )
     quotation_id = fields.Many2one(
         'sale.order', 
@@ -425,3 +431,10 @@ class LimsCustodyChain(models.Model):
                 'default_custody_chain_id': self.id,
             }
         }
+
+    @api.constrains('chain_of_custody_state', 'analyst_id')
+    def _check_analyst_required(self):
+        """Validar que se seleccione analista al finalizar"""
+        for record in self:
+            if record.chain_of_custody_state == 'done' and not record.analyst_id:
+                raise ValidationError("Debe seleccionar el analista responsable antes de finalizar la cadena de custodia")
