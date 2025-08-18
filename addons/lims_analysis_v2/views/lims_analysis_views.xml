@@ -336,9 +336,6 @@
                                 context="{'group_by': 'analysis_state'}"/>
                     </group>
 
-                    <filter string="📋 Vista Sin Agrupar" 
-                            name="no_group"
-                            context="{'group_by': ''}"/>
                 </search>
             </field>
         </record>
