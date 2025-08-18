@@ -45,13 +45,14 @@ class AnalystPinWizard(models.TransientModel):
         # Establecer el PIN en el analista
         self.analyst_id.set_pin(self.new_pin)
         
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
+        # Mostrar notificación y cerrar wizard
+        self.env['bus.bus']._sendone(
+            self.env.user.partner_id,
+            'simple_notification',
+            {
                 'title': 'PIN Configurado',
                 'message': f'PIN establecido correctamente para {self.analyst_id.full_name}',
-                'type': 'success',
-                'sticky': False,
+                'type': 'success'
             }
-        }
+        )
+        return {'type': 'ir.actions.act_window_close'}
