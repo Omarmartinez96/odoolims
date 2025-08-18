@@ -131,53 +131,6 @@ class SampleReceptionWizard(models.TransientModel):
                 lines.append((0, 0, {'sample_id': sample.id}))
             self.sample_lines = lines
 
-    @api.onchange('sample_lines')
-    def _onchange_sample_lines(self):
-        """Recalcular códigos cuando se modifican las líneas"""
-        if not self.sample_lines:
-            return
-            
-        # Reagrupar por cliente
-        client_groups = {}
-        for line in self.sample_lines:
-            if line.sample_id and line.sample_id.cliente_id:
-                client_code = line.sample_id.cliente_id.client_code or 'XXX'
-                if client_code not in client_groups:
-                    client_groups[client_code] = []
-                client_groups[client_code].append(line)
-        
-        # Recalcular códigos para cada grupo de cliente
-        for client_code, client_lines in client_groups.items():
-            # Buscar el máximo número existente en la base de datos
-            existing = self.env['lims.sample.reception'].search([
-                ('sample_code', 'like', f'{client_code}/%'),
-                ('sample_code', '!=', '/')
-            ])
-            
-            max_num = 0
-            for rec in existing:
-                try:
-                    parts = rec.sample_code.split('/')
-                    if len(parts) == 2:
-                        num = int(parts[1])
-                        if num > max_num:
-                            max_num = num
-                except:
-                    pass
-            
-            # Ordenar líneas para mantener consistencia
-            client_lines.sort(key=lambda x: x.id or 0)
-            
-            # Asignar códigos secuenciales solo si no tienen código o es el predeterminado
-            for i, line in enumerate(client_lines):
-                next_num = str(max_num + 1 + i).zfill(4)
-                new_suggested = f'{client_code}/{next_num}'
-                line.suggested_code = new_suggested
-                
-                # Solo auto-asignar si el código está vacío o es el predeterminado
-                if not line.sample_code or line.sample_code == '/' or line.sample_code == line.suggested_code:
-                    line.sample_code = new_suggested
-
     @api.onchange('reception_state')
     def _onchange_reception_state(self):
         """Limpiar campos según el estado seleccionado"""
@@ -190,12 +143,6 @@ class SampleReceptionWizard(models.TransientModel):
     def action_confirm_reception(self):
         """Confirmar procesamiento de muestras"""
         self.ensure_one()
-        
-        # DEBUG: Verificar qué líneas tenemos
-        print("=== DEBUG WIZARD ===")
-        print(f"Líneas en wizard: {len(self.sample_lines)}")
-        for line in self.sample_lines:
-            print(f"Línea - Sample ID: {line.sample_id.id}, Código: '{line.sample_code}', Identifier: '{line.sample_identifier}'")
         
         # Validar motivo de rechazo
         if self.reception_state == 'rechazada' and not self.rejection_reason:
@@ -211,18 +158,14 @@ class SampleReceptionWizard(models.TransientModel):
             if not line.sample_code:
                 raise UserError(_(f'La muestra "{line.sample_identifier}" no tiene código asignado.'))
             
-            # DEBUG: Buscar recepción existente
+            # Buscar recepción existente
             existing_reception = self.env['lims.sample.reception'].search([
                 ('sample_id', '=', line.sample_id.id)
             ], limit=1)
             
-            print(f"Muestra {line.sample_id.id} - Recepción existente: {existing_reception.id if existing_reception else 'NO EXISTE'}")
-            if existing_reception:
-                print(f"  Código actual: '{existing_reception.sample_code}' -> Nuevo: '{line.sample_code}'")
-            
             # Preparar datos de recepción
             reception_data = {
-                'sample_code': line.sample_code,
+                'sample_code': line.sample_code,  # Usar EXACTAMENTE el código del wizard
                 'reception_state': self.reception_state,
                 'reception_date': self.reception_date,
                 'reception_time': self.reception_time,
@@ -237,29 +180,23 @@ class SampleReceptionWizard(models.TransientModel):
             else:
                 reception_data['reception_notes'] = self.reception_notes or ''
             
-            print(f"Datos a escribir: {reception_data}")
-            
             if existing_reception:
-                # Verificar si el código cambió
+                # Verificar si el código cambió para mostrar en el mensaje
                 old_code = existing_reception.sample_code
-                print(f"ACTUALIZANDO recepción {existing_reception.id}")
                 existing_reception.write(reception_data)
-                print(f"Código después del write: '{existing_reception.sample_code}'")
                 
                 if old_code != line.sample_code:
                     updated_codes.append(f'{old_code} → {line.sample_code}')
+                else:
+                    updated_codes.append(line.sample_code)
                 
                 created_receptions.append(existing_reception)
             else:
                 # Crear nueva recepción
                 reception_data['sample_id'] = line.sample_id.id
-                print(f"CREANDO nueva recepción para muestra {line.sample_id.id}")
                 new_reception = self.env['lims.sample.reception'].create(reception_data)
-                print(f"Nueva recepción creada: ID {new_reception.id}, Código: '{new_reception.sample_code}'")
                 created_receptions.append(new_reception)
                 updated_codes.append(f'Nuevo: {line.sample_code}')
-        
-        print("=== FIN DEBUG ===")
         
         # Preparar mensaje de éxito
         if self.reception_state == 'recibida':
@@ -272,14 +209,14 @@ class SampleReceptionWizard(models.TransientModel):
             message = f"⏳ Se han marcado como NO RECIBIDAS {len(created_receptions)} muestra(s). Estado restaurado."
             notification_type = 'success'
         
-        # Agregar información sobre códigos actualizados
+        # Mostrar códigos procesados
         if updated_codes:
             codes_summary = ', '.join(updated_codes[:3])
             if len(updated_codes) > 3:
                 codes_summary += f' y {len(updated_codes) - 3} más...'
             message += f'\n\n📝 Códigos procesados: {codes_summary}'
         
-        # Mostrar notificación usando el bus
+        # Mostrar notificación
         self.env['bus.bus']._sendone(
             self.env.user.partner_id, 
             'simple_notification', 
@@ -290,5 +227,4 @@ class SampleReceptionWizard(models.TransientModel):
             }
         )
         
-        # Cerrar el wizard
         return {'type': 'ir.actions.act_window_close'}

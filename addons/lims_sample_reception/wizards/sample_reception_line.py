@@ -34,7 +34,7 @@ class SampleReceptionLine(models.TransientModel):
         help='Editable - se generará automáticamente pero puede modificarse'
     )
     
-    @api.depends('sample_id', 'wizard_id.sample_lines')
+    @api.depends('sample_id')
     def _compute_suggested_code(self):
         for line in self:
             if line.sample_id and line.sample_id.cliente_id:
@@ -57,87 +57,30 @@ class SampleReceptionLine(models.TransientModel):
                     except:
                         pass
                 
-                # Calcular el offset basado en la posición en el wizard
+                # IMPORTANTE: También considerar códigos ya asignados en este wizard
                 if line.wizard_id and line.wizard_id.sample_lines:
-                    # Filtrar líneas del mismo cliente ordenadas por create_date o id
-                    same_client_lines = line.wizard_id.sample_lines.filtered(
-                        lambda l: l.sample_id and l.sample_id.cliente_id == line.sample_id.cliente_id
-                    )
-                    
-                    # Convertir a lista y ordenar para mantener orden consistente
-                    same_client_lines_list = list(same_client_lines)
-                    same_client_lines_list.sort(key=lambda x: x.id or 0)
-                    
-                    # Encontrar la posición de esta línea
-                    line_position = 0
-                    for i, other_line in enumerate(same_client_lines_list):
-                        if other_line == line:
-                            line_position = i
-                            break
-                    
-                    # El número consecutivo considerando la posición
-                    next_num = str(max_num + 1 + line_position).zfill(4)
-                else:
-                    next_num = str(max_num + 1).zfill(4)
+                    for other_line in line.wizard_id.sample_lines:
+                        if (other_line.sample_code and 
+                            other_line.sample_code.startswith(f'{client_code}/') and
+                            other_line.id != line.id):
+                            try:
+                                parts = other_line.sample_code.split('/')
+                                if len(parts) == 2:
+                                    num = int(parts[1])
+                                    if num > max_num:
+                                        max_num = num
+                            except:
+                                pass
                 
+                # Sugerir el siguiente número
+                next_num = str(max_num + 1).zfill(4)
                 line.suggested_code = f'{client_code}/{next_num}'
                 
-                # Auto-asignar si está vacío O si es la primera vez que se calcula
+                # SOLO auto-asignar si está completamente vacío o es el valor por defecto
                 if not line.sample_code or line.sample_code == '/':
                     line.sample_code = line.suggested_code
             else:
                 line.suggested_code = 'XXX/0001'
+                # SOLO auto-asignar si está vacío
                 if not line.sample_code or line.sample_code == '/':
                     line.sample_code = line.suggested_code
-
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Override create para asegurar códigos únicos al crear múltiples líneas"""
-        lines = super().create(vals_list)
-        
-        # Reagrupar por wizard y cliente
-        wizard_groups = {}
-        for line in lines:
-            if line.wizard_id:
-                if line.wizard_id not in wizard_groups:
-                    wizard_groups[line.wizard_id] = {}
-                
-                if line.sample_id and line.sample_id.cliente_id:
-                    client_code = line.sample_id.cliente_id.client_code or 'XXX'
-                    if client_code not in wizard_groups[line.wizard_id]:
-                        wizard_groups[line.wizard_id][client_code] = []
-                    wizard_groups[line.wizard_id][client_code].append(line)
-        
-        # Recalcular códigos para cada grupo
-        for wizard, client_groups in wizard_groups.items():
-            for client_code, client_lines in client_groups.items():
-                # Buscar el máximo número existente en la base de datos
-                existing = self.env['lims.sample.reception'].search([
-                    ('sample_code', 'like', f'{client_code}/%'),
-                    ('sample_code', '!=', '/')
-                ])
-                
-                max_num = 0
-                for rec in existing:
-                    try:
-                        parts = rec.sample_code.split('/')
-                        if len(parts) == 2:
-                            num = int(parts[1])
-                            if num > max_num:
-                                max_num = num
-                    except:
-                        pass
-                
-                # Ordenar por ID para mantener consistencia
-                client_lines.sort(key=lambda x: x.id)
-                
-                # Asignar códigos secuenciales
-                for i, line in enumerate(client_lines):
-                    next_num = str(max_num + 1 + i).zfill(4)
-                    new_code = f'{client_code}/{next_num}'
-                    line.write({
-                        'suggested_code': new_code,
-                        'sample_code': new_code
-                    })
-        
-        return lines
