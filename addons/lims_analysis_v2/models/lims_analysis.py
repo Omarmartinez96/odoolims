@@ -9,7 +9,7 @@ class LimsAnalysisV2(models.Model):
     _name = 'lims.analysis.v2'
     _description = 'Análisis de Muestra v2'
     _rec_name = 'display_name'
-    _order = 'custody_chain_code desc, create_date desc'
+    _order = 'custody_chain_code desc, reception_date desc, create_date desc'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # ===============================================
@@ -845,3 +845,12 @@ class LimsAnalysisV2(models.Model):
             'language': 'es',
             'report_type': 'general_no_ilac'
         })
+    
+    @api.model
+    def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
+        """Override search para forzar orden correcto"""
+        if not order:
+            order = 'custody_chain_code desc, reception_date desc, create_date desc'
+        if not limit:
+            limit = 30
+        return super()._search(args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
