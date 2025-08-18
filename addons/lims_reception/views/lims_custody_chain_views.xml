@@ -27,7 +27,7 @@
             </group>
 
             <!-- GRUPO SEPARADO PARA EL ANALISTA (FUERA DEL GRUPO ANTERIOR) -->
-            <group string="👤 Finalizado por" invisible="chain_of_custody_state != 'done'">
+            <group string="Elaborado por" invisible="chain_of_custody_state != 'done'">
                 
                 <!-- Campo de solo lectura que muestra el analista asignado -->
                 <field name="analyst_id" readonly="1" invisible="not analyst_id"/>
@@ -35,7 +35,7 @@
                 <!-- Botón para asignar analista (cuando no hay ninguno) -->
                 <button name="action_assign_analyst"
                         type="object"
-                        string="👤 Asignar Analista Responsable"
+                        string="Seleccionar responsable"
                         class="btn-primary"
                         invisible="analyst_id"
                         help="Seleccionar y verificar analista que finaliza la cadena"/>
@@ -43,14 +43,14 @@
                 <!-- Botón para cambiar analista (cuando ya hay uno asignado) -->
                 <button name="action_change_analyst"
                         type="object"
-                        string="🔄 Cambiar Analista"
+                        string="🔄 Cambiar responsable"
                         class="btn-secondary"
                         invisible="not analyst_id"
                         help="Cambiar el analista responsable"/>
                         
                 <!-- Mensaje informativo -->
                 <div invisible="analyst_id" style="color: #6c757d; font-style: italic; margin-top: 10px;">
-                    Para finalizar la cadena de custodia, debe asignar un analista responsable con verificación PIN.
+                    Para finalizar la cadena de custodia, debe asignar un responsable con verificación PIN.
                 </div>
                 
             </group>

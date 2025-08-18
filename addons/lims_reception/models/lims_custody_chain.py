@@ -377,11 +377,16 @@ class LimsCustodyChain(models.Model):
         """Cambiar analista responsable"""
         self.ensure_one()
         
-        # Limpiar analista actual
-        self.analyst_id = False
+        # NO limpiar analista actual - el wizard se encarga del cambio
+        # self.analyst_id = False  # ELIMINAR ESTA LÍNEA
         
         # Abrir wizard para seleccionar nuevo analista
-        return self.action_assign_analyst()
+        return self.env['lims.analyst'].open_assignment_wizard(
+            source_model='lims.custody_chain',
+            source_record_id=self.id,
+            source_field='analyst_id',
+            action_description=f'Cambiar analista responsable de cadena {self.custody_chain_code}'
+        )
 
     def unlink(self):
         """Override para mostrar información antes de eliminar"""
