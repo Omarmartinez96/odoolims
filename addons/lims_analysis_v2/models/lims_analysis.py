@@ -9,7 +9,7 @@ class LimsAnalysisV2(models.Model):
     _name = 'lims.analysis.v2'
     _description = 'Análisis de Muestra v2'
     _rec_name = 'display_name'
-    _order = 'create_date desc'
+    _order = 'custody_chain_code desc, create_date desc'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # ===============================================
