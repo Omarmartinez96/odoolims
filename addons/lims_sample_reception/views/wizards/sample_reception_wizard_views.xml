@@ -29,6 +29,13 @@
                         <field name="samples_info" nolabel="1" readonly="1" widget="text"/>
                     </group>
 
+                    <group string="Códigos Personalizados (Opcional)" 
+                        invisible="reception_mode != 'mass'">
+                        <field name="custom_codes" nolabel="1" 
+                            placeholder="ABC/0001, ABC/0002, ABC/0003..."
+                            help="Ingrese códigos separados por comas. Si se deja vacío, se generarán automáticamente"/>
+                    </group>
+
                     <!-- SELECCIÓN DE ESTADO CON DROPDOWN -->
                     <group string="Estado Final de las Muestras">
                         <field name="reception_state" required="1" 

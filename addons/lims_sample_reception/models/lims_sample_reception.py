@@ -195,7 +195,7 @@ class LimsSampleReception(models.Model):
     
     @api.constrains('sample_code')
     def _check_unique_sample_code(self):
-        """Validar que el código de muestra sea único"""
+        """Validar que el código de muestra sea único - PROVISIONAL: Advertencia en lugar de error"""
         for record in self:
             if record.sample_code and record.sample_code != '/':
                 duplicate = self.search([
@@ -203,7 +203,16 @@ class LimsSampleReception(models.Model):
                     ('id', '!=', record.id)
                 ])
                 if duplicate:
-                    raise UserError(f'El código de muestra "{record.sample_code}" ya existe. Debe ser único.')
+                    # PROVISIONAL: Solo mostrar advertencia en lugar de error
+                    self.env['bus.bus']._sendone(
+                        self.env.user.partner_id, 
+                        'simple_notification', 
+                        {
+                            'title': 'Advertencia: Código Duplicado',
+                            'message': f'El código "{record.sample_code}" ya existe en otra muestra.',
+                            'type': 'warning'
+                        }
+                    )
 
     def write(self, vals):
         """Override write para crear análisis automáticamente cuando se marca como recibida"""
