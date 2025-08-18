@@ -847,10 +847,10 @@ class LimsAnalysisV2(models.Model):
         })
     
     @api.model
-    def _search(self, args, offset=0, limit=None, order=None, count=False, access_rights_uid=None):
+    def _search(self, args, offset=0, limit=None, order=None, access_rights_uid=None):
         """Override search para forzar orden correcto"""
         if not order:
             order = 'custody_chain_code desc, reception_date desc, create_date desc'
         if not limit:
             limit = 30
-        return super()._search(args, offset=offset, limit=limit, order=order, count=count, access_rights_uid=access_rights_uid)
+        return super()._search(args, offset=offset, limit=limit, order=order, access_rights_uid=access_rights_uid)
