@@ -178,6 +178,7 @@
                     <field name="custody_chain_id"/>
                     <field name="sample_identifier"/>
                     <field name="sample_description"/>
+                    <field name="sample_code"/>
                     <field name="sample_type_id"/>
                     <field name="sample_reception_state"
                            decoration-success="sample_reception_state == 'Recibida'"
