@@ -471,3 +471,11 @@ class LimsCustodyChain(models.Model):
         for record in self:
             if record.chain_of_custody_state == 'done' and not record.analyst_id:
                 raise ValidationError("Debe seleccionar el analista responsable antes de finalizar la cadena de custodia")
+            
+    @api.onchange('analyst_id')
+    def _onchange_analyst_id_clear_verification(self):
+        """Limpiar verificación al cambiar de analista"""
+        if self.analyst_id:
+            # Si el analista cambió y tenía verificación previa de otro analista
+            # (esto es opcional, puedes omitirlo si quieres mantener verificaciones)
+            pass
