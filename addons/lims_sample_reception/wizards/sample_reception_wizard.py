@@ -25,7 +25,14 @@ class SampleReceptionWizard(models.TransientModel):
         string='Muestras Seleccionadas'
     )
     
-    # *** NUEVO CAMPO: Estado de recepción ***
+    # NUEVO: Líneas de muestras con códigos editables
+    sample_lines = fields.One2many(
+        'lims.sample.reception.line',
+        'wizard_id',
+        string='Muestras con Códigos'
+    )
+    
+    # Estado de recepción
     reception_state = fields.Selection([
         ('no_recibida', 'No Recibida'),
         ('recibida', 'Recibida'),
@@ -33,11 +40,6 @@ class SampleReceptionWizard(models.TransientModel):
     ], string='Estado Final', default='recibida', required=True)
     
     # Información de recepción
-    sample_code = fields.Char(
-        string='Código de Muestra',
-        readonly=True
-    )
-    
     reception_date = fields.Date(
         string='Fecha de Recepción',
         default=fields.Date.context_today,
@@ -61,29 +63,13 @@ class SampleReceptionWizard(models.TransientModel):
         string='Observaciones de la Muestra'
     )
     
-    custom_codes = fields.Text(
-        string='Códigos Personalizados',
-        help='Para recepción masiva: ingrese códigos separados por comas (ej: ABC/0001, ABC/0002)'
-    )
-
-    # *** NUEVO CAMPO: Motivo de rechazo ***
+    # Motivo de rechazo
     rejection_reason = fields.Text(
         string='Motivo de Rechazo',
         help='Especifique el motivo por el cual se rechaza la muestra'
     )
     
-    # Campos computados para mostrar información
-    samples_count = fields.Integer(
-        string='Número de Muestras',
-        compute='_compute_samples_info'
-    )
-    
-    samples_info = fields.Text(
-        string='Información de Muestras',
-        compute='_compute_samples_info'
-    )
-    
-    # *** NUEVO CAMPO COMPUTADO: Texto de confirmación ***
+    # Texto de confirmación
     confirmation_text = fields.Html(
         string='Texto de Confirmación',
         compute='_compute_confirmation_text'
@@ -132,43 +118,19 @@ class SampleReceptionWizard(models.TransientModel):
             else:
                 record.confirmation_text = ''
     
-    @api.depends('sample_id', 'sample_ids', 'reception_mode')
-    def _compute_samples_info(self):
-        for record in self:
-            if record.reception_mode == 'individual' and record.sample_id:
-                record.samples_count = 1
-                record.samples_info = f"• {record.sample_id.sample_identifier}"
-                # Generar código automático
-                if record.sample_id.cliente_id:
-                    client_code = record.sample_id.cliente_id.client_code or 'XXX'
-                    existing = self.env['lims.sample.reception'].search([
-                        ('sample_code', 'like', f'{client_code}/%'),
-                        ('sample_code', '!=', '/')
-                    ])
-                    max_num = 0
-                    for rec in existing:
-                        try:
-                            parts = rec.sample_code.split('/')
-                            if len(parts) == 2:
-                                num = int(parts[1])
-                                if num > max_num:
-                                    max_num = num
-                        except:
-                            pass
-                    next_num = str(max_num + 1).zfill(4)
-                    record.sample_code = f'{client_code}/{next_num} (Sugerido - Editable)'
-            elif record.reception_mode == 'mass' and record.sample_ids:
-                record.samples_count = len(record.sample_ids)
-                info_lines = []
-                for sample in record.sample_ids:
-                    info_lines.append(f"• {sample.sample_identifier}")
-                record.samples_info = "\n".join(info_lines)
-                record.sample_code = f"Automáticos ({len(record.sample_ids)} muestras) - Use 'Códigos Personalizados' para sobrescribir"
-            else:
-                record.samples_count = 0
-                record.samples_info = ""
-                record.sample_code = ""
-    
+    @api.onchange('sample_id', 'sample_ids', 'reception_mode')
+    def _onchange_samples(self):
+        """Crear líneas automáticamente cuando cambian las muestras"""
+        if self.reception_mode == 'individual' and self.sample_id:
+            self.sample_lines = [(5, 0, 0)]  # Limpiar líneas existentes
+            self.sample_lines = [(0, 0, {'sample_id': self.sample_id.id})]
+        elif self.reception_mode == 'mass' and self.sample_ids:
+            self.sample_lines = [(5, 0, 0)]  # Limpiar líneas existentes
+            lines = []
+            for sample in self.sample_ids:
+                lines.append((0, 0, {'sample_id': sample.id}))
+            self.sample_lines = lines
+
     @api.onchange('reception_state')
     def _onchange_reception_state(self):
         """Limpiar campos según el estado seleccionado"""
@@ -186,45 +148,27 @@ class SampleReceptionWizard(models.TransientModel):
         if self.reception_state == 'rechazada' and not self.rejection_reason:
             raise UserError(_('Debe especificar el motivo de rechazo.'))
         
-        samples_to_process = []
-        if self.reception_mode == 'individual' and self.sample_id:
-            samples_to_process = [self.sample_id]
-        elif self.reception_mode == 'mass' and self.sample_ids:
-            samples_to_process = self.sample_ids
-        
-        if not samples_to_process:
+        if not self.sample_lines:
             raise UserError(_('No hay muestras para procesar.'))
         
-        # Procesar códigos personalizados para recepción masiva
-        custom_codes_list = []
-        if self.reception_mode == 'mass' and self.custom_codes:
-            custom_codes_list = [code.strip() for code in self.custom_codes.split(',') if code.strip()]
-            # Validar que el número de códigos coincida con el número de muestras
-            if len(custom_codes_list) != len(samples_to_process):
-                raise UserError(_(
-                    f'El número de códigos personalizados ({len(custom_codes_list)}) '
-                    f'no coincide con el número de muestras seleccionadas ({len(samples_to_process)}). '
-                    f'Debe proporcionar un código por cada muestra separado por comas.'
-                ))
-        
         created_receptions = []
-        for index, sample in enumerate(samples_to_process):
+        for line in self.sample_lines:
+            if not line.sample_code:
+                raise UserError(_(f'La muestra "{line.sample_identifier}" no tiene código asignado.'))
+            
             # Verificar si ya existe recepción
             existing_reception = self.env['lims.sample.reception'].search([
-                ('sample_id', '=', sample.id)
+                ('sample_id', '=', line.sample_id.id)
             ], limit=1)
             
             # Preparar datos de recepción
             reception_data = {
+                'sample_code': line.sample_code,
                 'reception_state': self.reception_state,
                 'reception_date': self.reception_date,
                 'reception_time': self.reception_time,
                 'received_by_initials': self.received_by_initials,
             }
-            
-            # Asignar código personalizado si existe
-            if custom_codes_list and index < len(custom_codes_list):
-                reception_data['sample_code'] = custom_codes_list[index]
             
             # Agregar observaciones según el estado
             if self.reception_state == 'rechazada':
@@ -235,12 +179,10 @@ class SampleReceptionWizard(models.TransientModel):
                 reception_data['reception_notes'] = self.reception_notes or ''
             
             if existing_reception:
-                # Actualizar existente
                 existing_reception.write(reception_data)
                 created_receptions.append(existing_reception)
             else:
-                # Crear nueva recepción
-                reception_data['sample_id'] = sample.id
+                reception_data['sample_id'] = line.sample_id.id
                 new_reception = self.env['lims.sample.reception'].create(reception_data)
                 created_receptions.append(new_reception)
         
@@ -254,10 +196,6 @@ class SampleReceptionWizard(models.TransientModel):
         else:  # no_recibida
             message = f"Se han marcado como NO RECIBIDAS {len(created_receptions)} muestra(s). Estado restaurado."
             notification_type = 'success'
-        
-        # Agregar información sobre códigos personalizados al mensaje
-        if custom_codes_list:
-            message += f" Códigos personalizados aplicados: {', '.join(custom_codes_list[:3])}{'...' if len(custom_codes_list) > 3 else ''}"
         
         # Mostrar notificación usando el bus
         self.env['bus.bus']._sendone(

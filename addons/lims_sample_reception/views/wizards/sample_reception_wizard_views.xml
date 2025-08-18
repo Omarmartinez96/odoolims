@@ -12,28 +12,26 @@
                     <!-- Título principal -->
                     <div class="alert alert-info" role="alert" style="margin-bottom: 20px;">
                         <h4><i class="fa fa-check-circle"/> Procesamiento de Muestras</h4>
-                        <p>Seleccione el estado final para las muestras y complete la información requerida.</p>
+                        <p>Revise y ajuste los códigos de muestra, luego seleccione el estado final.</p>
                     </div>
 
-                    <!-- Información de las muestras -->
+                    <!-- Campos ocultos -->
                     <group>
                         <field name="reception_mode" invisible="1"/>
                         <field name="sample_id" invisible="1"/>
                         <field name="sample_ids" invisible="1"/>
-                        
-                        <field name="samples_count" readonly="1"/>
-                        <field name="sample_code" readonly="1"/>
                     </group>
 
+                    <!-- Tabla de muestras con códigos editables -->
                     <group string="Muestras a Procesar">
-                        <field name="samples_info" nolabel="1" readonly="1" widget="text"/>
-                    </group>
-
-                    <group string="Códigos Personalizados (Opcional)" 
-                        invisible="reception_mode != 'mass'">
-                        <field name="custom_codes" nolabel="1" 
-                            placeholder="ABC/0001, ABC/0002, ABC/0003..."
-                            help="Ingrese códigos separados por comas. Si se deja vacío, se generarán automáticamente"/>
+                        <field name="sample_lines" nolabel="1">
+                            <list string="Muestras" editable="bottom">
+                                <field name="sample_id" readonly="1"/>
+                                <field name="sample_identifier" readonly="1"/>
+                                <field name="suggested_code" readonly="1" string="Sugerido"/>
+                                <field name="sample_code" required="1"/>
+                            </list>
+                        </field>
                     </group>
 
                     <!-- SELECCIÓN DE ESTADO CON DROPDOWN -->
