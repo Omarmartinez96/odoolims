@@ -362,6 +362,41 @@ class LimsCustodyChain(models.Model):
         except Exception as e:
             raise UserError(_("Error al generar el documento: %s") % str(e))
 
+    @api.onchange('analyst_id')
+    def _onchange_analyst_id_verify_pin(self):
+        """Verificar PIN automáticamente al seleccionar analista"""
+        if self.analyst_id and self.analyst_id.pin_hash:
+            if not self.analyst_id.is_pin_verified:
+                # Guardar el analista seleccionado
+                selected_analyst_id = self.analyst_id.id
+                selected_analyst_name = self.analyst_id.full_name
+                
+                # Limpiar temporalmente el campo
+                self.analyst_id = False
+                
+                # Retornar acción para abrir wizard
+                return {
+                    'type': 'ir.actions.act_window',
+                    'name': f'Verificar PIN - {selected_analyst_name}',
+                    'res_model': 'analyst.pin.verify.wizard',
+                    'view_mode': 'form',
+                    'target': 'new',
+                    'context': {
+                        'default_analyst_id': selected_analyst_id,
+                        'custody_chain_id': self.id,
+                        'custody_chain_model': 'lims.custody_chain',
+                    }
+                }
+        elif self.analyst_id and not self.analyst_id.pin_hash:
+            # Si no tiene PIN configurado, mostrar advertencia pero permitir selección
+            return {
+                'warning': {
+                    'title': '⚠️ Analista sin PIN Configurado',
+                    'message': f'{self.analyst_id.full_name} no tiene PIN configurado.\n\n'
+                            f'Se recomienda configurar un PIN para mayor seguridad.'
+                }
+            }
+
     def action_verify_analyst_custody_chain(self):
         """Abrir wizard para verificar PIN del analista de cadena de custodia"""
         self.ensure_one()

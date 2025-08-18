@@ -24,39 +24,11 @@
                      placerholder="Selecciona los contactos relacionados a este servicio"/>
               <field name="quotation_id" placeholder="Selecciona la cotizacion relacionada a este servicio"/>
               <field name="chain_of_custody_state" widget="radio"/> 
-              <!-- REEMPLAZAR POR ESTE BLOQUE COMPLETO -->
+              <field name="chain_of_custody_state" widget="radio"/> 
               <field name="analyst_id" 
                     invisible="chain_of_custody_state != 'done'"
-                    placeholder="Seleccionar analista responsable"/>
-
-              <div invisible="chain_of_custody_state != 'done' or not analyst_id" 
-                  style="margin-top: 10px;">
-                  
-                  <!-- Botón de verificación -->
-                  <button name="action_verify_analyst_custody_chain"
-                          type="object"
-                          string="🔐 Verificar PIN"
-                          class="btn-warning btn-sm"
-                          invisible="analyst_id.is_pin_verified"
-                          help="Verificar identidad del analista"/>
-                  
-                  <!-- Estado de verificación -->
-                  <div invisible="not analyst_id.is_pin_verified" 
-                      style="color: green; font-weight: bold; margin-top: 5px;">
-                      ✅ PIN verificado correctamente
-                  </div>
-                  
-                  <div invisible="analyst_id.is_pin_verified or not analyst_id.pin_hash" 
-                      style="color: orange; font-weight: bold; margin-top: 5px;">
-                      🔒 PIN pendiente de verificación
-                  </div>
-                  
-                  <div invisible="analyst_id.pin_hash" 
-                      style="color: red; font-weight: bold; margin-top: 5px;">
-                      ⚠️ Este analista no tiene PIN configurado
-                  </div>
-                  
-              </div>
+                    placeholder="Seleccionar analista responsable"
+                    help="Al seleccionar, se verificará automáticamente el PIN"/>
             </group>
 
             <!-- 🆕 NUEVA SECCIÓN DE FIRMA -->
