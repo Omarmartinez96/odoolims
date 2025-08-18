@@ -55,7 +55,7 @@
                                     string="Establecer/Cambiar PIN" 
                                     class="btn-primary"
                                     icon="fa-key"/>
-                            <div class="text-muted" t-if="pin_hash">
+                            <div class="text-muted" invisible="not pin_hash">
                                 ✓ PIN configurado correctamente
                             </div>
                         </group>
