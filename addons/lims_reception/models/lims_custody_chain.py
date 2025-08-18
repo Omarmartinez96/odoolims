@@ -362,73 +362,26 @@ class LimsCustodyChain(models.Model):
         except Exception as e:
             raise UserError(_("Error al generar el documento: %s") % str(e))
 
-    @api.onchange('analyst_id')
-    def _onchange_analyst_id_verify_pin(self):
-        """Verificar PIN automáticamente al seleccionar analista"""
-        if self.analyst_id and self.analyst_id.pin_hash:
-            if not self.analyst_id.is_pin_verified:
-                # Guardar el analista seleccionado
-                selected_analyst_id = self.analyst_id.id
-                selected_analyst_name = self.analyst_id.full_name
-                
-                # Limpiar temporalmente el campo
-                self.analyst_id = False
-                
-                # Retornar acción para abrir wizard
-                return {
-                    'type': 'ir.actions.act_window',
-                    'name': f'Verificar PIN - {selected_analyst_name}',
-                    'res_model': 'analyst.pin.verify.wizard',
-                    'view_mode': 'form',
-                    'target': 'new',
-                    'context': {
-                        'default_analyst_id': selected_analyst_id,
-                        'custody_chain_id': self.id,
-                        'custody_chain_model': 'lims.custody_chain',
-                    }
-                }
-        elif self.analyst_id and not self.analyst_id.pin_hash:
-            # Si no tiene PIN configurado, mostrar advertencia pero permitir selección
-            return {
-                'warning': {
-                    'title': '⚠️ Analista sin PIN Configurado',
-                    'message': f'{self.analyst_id.full_name} no tiene PIN configurado.\n\n'
-                            f'Se recomienda configurar un PIN para mayor seguridad.'
-                }
-            }
-
-    def action_verify_analyst_custody_chain(self):
-        """Abrir wizard para verificar PIN del analista de cadena de custodia"""
+    def action_assign_analyst(self):
+        """Abrir wizard para asignar analista responsable"""
         self.ensure_one()
-        if not self.analyst_id:
-            raise UserError("Debe seleccionar un analista primero")
         
-        if not self.analyst_id.pin_hash:
-            raise UserError(f"{self.analyst_id.full_name} no tiene PIN configurado")
-        
-        return {
-            'name': f'Verificar PIN - {self.analyst_id.full_name}',
-            'type': 'ir.actions.act_window',
-            'res_model': 'analyst.pin.verify.wizard',
-            'view_mode': 'form',
-            'target': 'new',
-            'context': {
-                'default_analyst_id': self.analyst_id.id,
-            }
-        }
+        return self.env['lims.analyst'].open_assignment_wizard(
+            source_model='lims.custody_chain',
+            source_record_id=self.id,
+            source_field='analyst_id',
+            action_description=f'Finalizar cadena de custodia {self.custody_chain_code}'
+        )
 
-    @api.constrains('chain_of_custody_state', 'analyst_id')
-    def _check_analyst_verified(self):
-        """Validar que el analista tenga PIN verificado al finalizar"""
-        for record in self:
-            if record.chain_of_custody_state == 'done' and record.analyst_id:
-                if record.analyst_id.pin_hash and not record.analyst_id.is_pin_verified:
-                    raise ValidationError(
-                        f"🔐 Verificación de PIN Requerida\n\n"
-                        f"El analista {record.analyst_id.full_name} debe verificar su PIN "
-                        f"antes de finalizar la cadena de custodia.\n\n"
-                        f"Haga clic en el botón '🔐 Verificar PIN' para continuar."
-                    )
+    def action_change_analyst(self):
+        """Cambiar analista responsable"""
+        self.ensure_one()
+        
+        # Limpiar analista actual
+        self.analyst_id = False
+        
+        # Abrir wizard para seleccionar nuevo analista
+        return self.action_assign_analyst()
 
     def unlink(self):
         """Override para mostrar información antes de eliminar"""
@@ -507,10 +460,3 @@ class LimsCustodyChain(models.Model):
             if record.chain_of_custody_state == 'done' and not record.analyst_id:
                 raise ValidationError("Debe seleccionar el analista responsable antes de finalizar la cadena de custodia")
             
-    @api.onchange('analyst_id')
-    def _onchange_analyst_id_clear_verification(self):
-        """Limpiar verificación al cambiar de analista"""
-        if self.analyst_id:
-            # Si el analista cambió y tenía verificación previa de otro analista
-            # (esto es opcional, puedes omitirlo si quieres mantener verificaciones)
-            pass
