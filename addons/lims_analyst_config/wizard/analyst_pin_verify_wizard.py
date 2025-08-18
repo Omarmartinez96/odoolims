@@ -1,6 +1,5 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
-from datetime import datetime
 
 class AnalystPinVerifyWizard(models.TransientModel):
     _name = 'analyst.pin.verify.wizard'
@@ -28,18 +27,7 @@ class AnalystPinVerifyWizard(models.TransientModel):
         
         # Marcar como verificado
         self.analyst_id.write({
-            'is_pin_verified': True,
-            'verified_by_user': self.env.user.id,
             'verification_datetime': fields.Datetime.now(),
         })
         
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': '✅ PIN Verificado',
-                'message': f'Identidad verificada correctamente para {self.analyst_id.full_name}',
-                'type': 'success',
-                'sticky': False,
-            }
-        }
+        return {'type': 'ir.actions.act_window_close'}

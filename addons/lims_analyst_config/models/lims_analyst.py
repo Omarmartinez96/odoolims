@@ -80,17 +80,6 @@ class LimsAnalyst(models.Model):
         help='Indica si el PIN del analista ha sido verificado en esta sesión'
     )
 
-    verified_by_user = fields.Many2one(
-        'res.users',
-        string='Verificado por Usuario',
-        help='Usuario que verificó el PIN'
-    )
-
-    verification_datetime = fields.Datetime(
-        string='Fecha/Hora Verificación',
-        help='Momento en que se verificó el PIN'
-    )
-
     @api.model
     def _hash_pin(self, pin):
         """Encriptar PIN usando SHA-256"""
@@ -194,8 +183,6 @@ class LimsAnalyst(models.Model):
         self.ensure_one()
         self.write({
             'is_pin_verified': False,
-            'verified_by_user': False,
-            'verification_datetime': False,
         })
         
         return {

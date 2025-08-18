@@ -22,15 +22,8 @@
         'views/lims_analyst_views.xml',
         'views/analyst_pin_wizard_views.xml',
         'views/analyst_pin_verify_wizard_views.xml',
-        'views/analyst_pin_templates.xml',
         'data/lims_analyst_data.xml',
     ],
-    # 'assets': {
-    #     'web.assets_backend': [
-    #         'lims_analyst_config/static/src/js/analyst_pin_widget.js',
-    #         'lims_analyst_config/static/src/css/analyst_pin_widget.css',
-    #     ],
-    # },
     'post_init_hook': 'post_init_hook',
     'installable': True,
     'application': True,

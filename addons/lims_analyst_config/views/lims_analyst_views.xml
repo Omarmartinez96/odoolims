@@ -64,9 +64,7 @@
                         <group string="✅ Estado de Verificación" invisible="not pin_hash">
                             <div class="alert alert-success" role="alert" invisible="not is_pin_verified">
                                 <strong>🔓 PIN Verificado</strong><br/>
-                                <span>Verificado por: </span><field name="verified_by_user" readonly="1" nolabel="1"/>
-                                <br/>
-                                <span>Fecha/Hora: </span><field name="verification_datetime" readonly="1" nolabel="1"/>
+                                El PIN de este analista ha sido verificado correctamente.
                             </div>
                             
                             <div class="alert alert-warning" role="alert" invisible="is_pin_verified">
