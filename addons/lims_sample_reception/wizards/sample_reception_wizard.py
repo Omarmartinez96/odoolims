@@ -131,6 +131,46 @@ class SampleReceptionWizard(models.TransientModel):
                 lines.append((0, 0, {'sample_id': sample.id}))
             self.sample_lines = lines
 
+    @api.onchange('sample_lines')
+    def _onchange_sample_lines(self):
+        """Recalcular códigos cuando se modifican las líneas"""
+        if self.sample_lines:
+            # Reagrupar por cliente
+            client_groups = {}
+            for line in self.sample_lines:
+                if line.sample_id and line.sample_id.cliente_id:
+                    client_code = line.sample_id.cliente_id.client_code or 'XXX'
+                    if client_code not in client_groups:
+                        client_groups[client_code] = []
+                    client_groups[client_code].append(line)
+            
+            # Recalcular códigos para cada grupo de cliente
+            for client_code, client_lines in client_groups.items():
+                # Buscar el máximo número existente en la base de datos
+                existing = self.env['lims.sample.reception'].search([
+                    ('sample_code', 'like', f'{client_code}/%'),
+                    ('sample_code', '!=', '/')
+                ])
+                
+                max_num = 0
+                for rec in existing:
+                    try:
+                        parts = rec.sample_code.split('/')
+                        if len(parts) == 2:
+                            num = int(parts[1])
+                            if num > max_num:
+                                max_num = num
+                    except:
+                        pass
+                
+                # Asignar códigos secuenciales
+                for i, line in enumerate(client_lines):
+                    next_num = str(max_num + 1 + i).zfill(4)
+                    new_code = f'{client_code}/{next_num}'
+                    line.suggested_code = new_code
+                    if not line.sample_code or line.sample_code == line.suggested_code:
+                        line.sample_code = new_code
+
     @api.onchange('reception_state')
     def _onchange_reception_state(self):
         """Limpiar campos según el estado seleccionado"""

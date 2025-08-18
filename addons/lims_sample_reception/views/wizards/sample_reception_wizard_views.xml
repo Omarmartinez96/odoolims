@@ -26,7 +26,6 @@
                     <group string="Muestras a Procesar">
                         <field name="sample_lines" nolabel="1">
                             <list string="Muestras" editable="bottom">
-                                <field name="sample_id" readonly="1"/>
                                 <field name="sample_identifier" readonly="1"/>
                                 <field name="suggested_code" readonly="1" string="Sugerido"/>
                                 <field name="sample_code" required="1"/>
