@@ -63,12 +63,18 @@ class AnalystAssignmentWizard(models.TransientModel):
             self.source_field: self.analyst_id.id
         })
         
+        # Mostrar notificación mediante mensaje interno
+        message = f'✅ {self.analyst_id.full_name} asignado correctamente para: {self.action_description}'
+        
+        # Cerrar wizard y mostrar notificación
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': '✅ Analista Asignado',
-                'message': f'{self.analyst_id.full_name} asignado correctamente para: {self.action_description}',
+                'message': message,
                 'type': 'success',
-            }
+                'sticky': False,
+            },
+            'context': {'close_wizard': True}
         }
