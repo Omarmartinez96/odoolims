@@ -94,7 +94,11 @@ class LimsAnalyst(models.Model):
         if not pin.isdigit():
             raise ValidationError("El PIN solo debe contener números")
         
-        self.pin_hash = self._hash_pin(pin)
+        # Establecer nuevo PIN y limpiar verificación
+        self.write({
+            'pin_hash': self._hash_pin(pin),
+            'is_pin_verified': False,  # Limpiar verificación al cambiar PIN
+        })
         return True
 
     def validate_pin(self, pin):
