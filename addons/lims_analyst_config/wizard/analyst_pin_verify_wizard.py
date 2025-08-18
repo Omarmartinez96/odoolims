@@ -27,7 +27,7 @@ class AnalystPinVerifyWizard(models.TransientModel):
         
         # Marcar como verificado
         self.analyst_id.write({
-            'verification_datetime': fields.Datetime.now(),
+            'is_pin_verified': True,
         })
         
         return {'type': 'ir.actions.act_window_close'}
