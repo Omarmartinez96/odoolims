@@ -7,7 +7,7 @@
             <field name="name">lims.analysis.v2.list</field>
             <field name="model">lims.analysis.v2</field>
             <field name="arch" type="xml">
-                <list string="Análisis de Muestras v2" create="false" limit="30"
+                <list string="Análisis de Muestras v2" create="false" default_group_by="custody_chain_id" expand="1" limit="30"
                       decoration-success="signature_state == 'signed'" 
                       decoration-warning="signature_state == 'cancelled'"
                       decoration-info="has_ready_parameters == True">
@@ -336,9 +336,9 @@
                                 context="{'group_by': 'analysis_state'}"/>
                     </group>
 
-                    <filter string="📋 Agrupar por Cadena" 
-                            name="group_by_chain"
-                            context="{'group_by': 'custody_chain_id'}"/>
+                    <filter string="📋 Vista Sin Agrupar" 
+                            name="no_group"
+                            context="{'group_by': ''}"/>
                 </search>
             </field>
         </record>
@@ -355,7 +355,7 @@
             ]"/>
             <field name="search_view_id" ref="view_lims_analysis_v2_search"/>
             <field name="limit">30</field>
-            <field name="context">{'create': False}</field>
+            <field name="context">{'group_by': 'custody_chain_id', 'create': False}</field>
            
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
