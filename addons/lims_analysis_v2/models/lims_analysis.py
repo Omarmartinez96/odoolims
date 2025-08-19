@@ -846,11 +846,3 @@ class LimsAnalysisV2(models.Model):
             'report_type': 'general_no_ilac'
         })
     
-    @api.model
-    def search(self, args, offset=0, limit=None, order=None, count=False):
-        """Override search para forzar orden correcto"""
-        if not order:
-            order = 'custody_chain_code desc, reception_date desc, create_date desc'
-        if not limit and not count:
-            limit = 30
-        return super().search(args, offset=offset, limit=limit, order=order, count=count)
