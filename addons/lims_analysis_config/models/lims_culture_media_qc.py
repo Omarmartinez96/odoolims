@@ -81,3 +81,10 @@ class LimsCultureMedia(models.Model):
                 name += f" [{len(record.media_qc_ids)} QC]"
             result.append((record.id, name))
         return result
+    
+    def action_assign_sequences(self):
+        """Método temporal para asignar secuencias a registros existentes"""
+        medias_without_sequence = self.search([('sequence', '=', 1)])
+        for i, media in enumerate(medias_without_sequence, start=1):
+            media.sequence = i
+        return True
