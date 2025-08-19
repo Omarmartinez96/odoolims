@@ -54,6 +54,20 @@ class LimsCultureMedia(models.Model):
         string='Controles de Calidad del Medio'
     )
     
+    sequence = fields.Integer(
+        string='Secuencia',
+        help='Número secuencial automático del medio'
+    )
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if 'sequence' not in vals or vals.get('sequence') == 1:
+                # Buscar el último número de secuencia
+                last_media = self.search([], order='sequence desc', limit=1)
+                vals['sequence'] = (last_media.sequence + 1) if last_media else 1
+        return super().create(vals_list)
+
     def name_get(self):
         """
         Sobrescribir para mostrar si tiene controles de calidad

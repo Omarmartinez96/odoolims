@@ -76,7 +76,8 @@ class LimsCultureMediaBatch(models.Model):
                 media = self.env['lims.culture.media'].browse(vals.get('culture_media_id'))
                 if media and media.internal_id:
                     # Formato: TSA-240725-1
-                    date_part = fields.Date.context_today(self).strftime('%d%m%y')
+                    prep_date = fields.Date.from_string(vals.get('preparation_date')) if vals.get('preparation_date') else fields.Date.context_today(self)
+                    date_part = prep_date.strftime('%d%m%y')
                     prefix = f"{media.internal_id}-{date_part}"
                     
                     # Buscar consecutivo
