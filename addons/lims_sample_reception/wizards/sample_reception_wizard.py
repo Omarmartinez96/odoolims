@@ -129,21 +129,53 @@ class SampleReceptionWizard(models.TransientModel):
             else:
                 record.confirmation_text = ''
     
+    @api.model
+    def default_get(self, fields_list):
+        """Pre-cargar datos si es modo edición"""
+        res = super().default_get(fields_list)
+        
+        # Verificar si es modo edición
+        if self.env.context.get('edit_mode'):
+            reception_id = self.env.context.get('reception_id')
+            if reception_id:
+                reception = self.env['lims.sample.reception'].browse(reception_id)
+                if reception.exists():
+                    # Pre-cargar datos de la recepción existente
+                    res.update({
+                        'edit_mode': True,
+                        'reception_id': reception.id,
+                        'reception_state': reception.reception_state,
+                        'reception_date': reception.reception_date,
+                        'reception_time': reception.reception_time,
+                        'received_by_initials': reception.received_by_initials,
+                        'reception_notes': reception.reception_notes,
+                    })
+                    
+                    # Si está rechazada, cargar motivo de rechazo
+                    if reception.reception_state == 'rechazada':
+                        res['rejection_reason'] = reception.reception_notes
+                    
+                    # NUEVO: Pre-cargar las líneas de muestra con el código EXISTENTE
+                    if self.env.context.get('default_reception_mode') == 'individual':
+                        sample_id = self.env.context.get('default_sample_id')
+                        if sample_id:
+                            res['sample_lines'] = [(0, 0, {
+                                'sample_id': sample_id,
+                                'sample_code': reception.sample_code  # Usar código EXISTENTE
+                            })]
+        
+        return res
+
     @api.onchange('sample_id', 'sample_ids', 'reception_mode')
     def _onchange_samples(self):
         """Crear líneas automáticamente cuando cambian las muestras"""
+        # NO hacer nada si estamos en modo edición y ya hay líneas pre-cargadas
+        if self.edit_mode and self.sample_lines:
+            return
+            
         if self.reception_mode == 'individual' and self.sample_id:
             self.sample_lines = [(5, 0, 0)]  # Limpiar líneas existentes
-            
-            # En modo edición, usar el código existente
-            sample_code = False
-            if self.edit_mode and self.reception_id:
-                sample_code = self.reception_id.sample_code
-                
-            self.sample_lines = [(0, 0, {
-                'sample_id': self.sample_id.id,
-                'sample_code': sample_code  # Usar código existente o generar nuevo
-            })]
+            self.sample_lines = [(0, 0, {'sample_id': self.sample_id.id})]
         elif self.reception_mode == 'mass' and self.sample_ids:
             self.sample_lines = [(5, 0, 0)]  # Limpiar líneas existentes
             lines = []
