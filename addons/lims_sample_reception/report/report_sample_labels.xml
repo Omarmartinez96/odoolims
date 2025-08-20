@@ -13,29 +13,12 @@
                     font-family: Arial, sans-serif !important;
                 }
                 
-                .page {
+                .article {
                     margin: 0;
                     padding: 0;
+                    page-break-after: always;
                 }
-            
-                /* Forzar eliminación de bordes de Odoo */
-                .article, .page, .o_report_layout {
-                    border: none !important;
-                    outline: none !important;
-                    box-shadow: none !important;
-                }
-                /* Eliminar márgenes/padding que causan espacios */
-                .label-container {
-                    margin: 0 !important;
-                    padding: 0 !important;
-                    border: none !important;
-                    outline: none !important;
-                }
-                .content-row {
-                    display: table-row;
-                    height: 83mm;
-                }
-                
+
                 .qr-section {
                     display: table-cell;
                     width: 40%;
@@ -55,7 +38,7 @@
                 
                 .sample-code {
                     font-weight: bold;
-                    font-size: 20px;
+                    font-size: 10px;
                     color: #000;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.1;
@@ -67,7 +50,7 @@
                 }
                 
                 .sample-id {
-                    font-size: 18px;
+                    font-size: 9px;
                     color: #333;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.0;
@@ -94,17 +77,6 @@
                     justify-content: center;
                     font-size: 5px;
                     margin: 0 auto;
-                }
-                
-                /* Quitar TODOS los bordes posibles */
-                table, tr, td, div, span {
-                    border: none !important;
-                    outline: none !important;
-                }
-                
-                /* Excepción solo para el placeholder del QR */
-                .no-qr {
-                    border: 1px solid #ccc !important;
                 }
             </style>
 
@@ -151,31 +123,10 @@
                     font-family: Arial, sans-serif !important;
                 }
                 
-                .page {
-                    margin: 0;
-                    padding: 0;
-                }
-                
                 .article {
                     margin: 0;
                     padding: 0;
                     page-break-after: always;
-                }
-                
-                .label-container {
-                    width: 25mm;
-                    height: 85mm;
-                    margin: 0;
-                    padding: 1mm;
-                    display: table;
-                    table-layout: auto;
-                    background: white;
-                    border: none;
-                }
-                
-                .content-row {
-                    display: table-row;
-                    height: 83mm;
                 }
                 
                 .qr-section {
@@ -197,7 +148,7 @@
                 
                 .sample-code {
                     font-weight: bold;
-                    font-size: 20px;
+                    font-size: 10px;
                     color: #000;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.1;
@@ -209,7 +160,7 @@
                 }
                 
                 .sample-id {
-                    font-size: 18px;
+                    font-size: 9px;
                     color: #333;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.0;
@@ -237,17 +188,6 @@
                     font-size: 5px;
                     margin: 0 auto;
                 }
-                
-                /* Quitar TODOS los bordes posibles */
-                table, tr, td, div, span {
-                    border: none !important;
-                    outline: none !important;
-                }
-                
-                /* Excepción solo para el placeholder del QR */
-                .no-qr {
-                    border: 1px solid #ccc !important;
-                }
             </style>
 
             <div class="page">
@@ -256,7 +196,7 @@
                         <t t-set="reception" t-value="env['lims.sample.reception'].search([('sample_id', '=', sample.id)], limit=1)"/>
                         <t t-if="reception and reception.sample_code and reception.sample_code != '/'">
                             <div class="article" t-att-data-oe-model="custody_chain._name" t-att-data-oe-id="custody_chain.id">
-                                <table class="label-container">
+                                <table class="label-container table-borderless">
                                     <tr class="content-row">
                                         <!-- QR Code (Izquierda) -->
                                         <td class="qr-section">
