@@ -21,6 +21,13 @@ class LimsCustodyChain(models.Model):
         string='Contactos Relacionados', 
         domain="[('department_id', '=', departamento_id)]"
     )
+    custody_chain_code = fields.Char(
+        string="Código de Cadena de Custodia", 
+        copy=False, 
+        default='/', 
+        help="Se genera automaticamente al crear la cadena de custodia"
+    )
+
     custody_chain_sequence = fields.Integer(
         string='Secuencia Numérica',
         default=0,
@@ -170,7 +177,6 @@ class LimsCustodyChain(models.Model):
         """Calcula si el documento está firmado basándose en la existencia de la firma"""
         for record in self:
             record.is_signed = bool(record.customer_signature)
-
 
     def action_preview_and_sign(self):
         """Acción para vista previa del PDF y solicitar firma"""
