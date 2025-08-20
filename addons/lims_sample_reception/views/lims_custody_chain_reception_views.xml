@@ -53,7 +53,7 @@
 
         <!-- Search View para Muestras (VERSIÓN SIMPLE) -->
         <record id="view_sample_reception_search" model="ir.ui.view">
-            <field name="name">lims.sample.search</field>
+            <field name="name">lims.sample.reception.search</field>
             <field name="model">lims.sample</field>
             <field name="arch" type="xml">
                 <search string="Buscar Muestras">
