@@ -9,15 +9,8 @@
             <field name="arch" type="xml">
                 <form string="Procesamiento de Muestras">
                     
-                    <!-- Título principal -->
+                    <!-- Título principal SIMPLE -->
                     <div class="alert alert-info" role="alert" style="margin-bottom: 20px;">
-                        <h4 t-if="edit_mode"><i class="fa fa-edit"/> Editar Recepción de Muestra</h4>
-                        <h4 t-else=""><i class="fa fa-check-circle"/> Procesamiento de Muestras</h4>
-                        <p t-if="edit_mode">Modifique los datos de la recepción existente.</p>
-                        <p t-else="">Revise y ajuste los códigos de muestra, luego seleccione el estado final.</p>
-                    </div>
-                        
-                        <!-- POR ESTAS LÍNEAS SIMPLES: -->
                         <h4><i class="fa fa-check-circle"/> Procesamiento de Muestras</h4>
                         <p>Revise y ajuste los códigos de muestra, luego seleccione el estado final.</p>
                     </div>
@@ -35,7 +28,7 @@
                     <group string="Muestras a Procesar">
                         <field name="sample_lines" nolabel="1">
                             <list string="Muestras" editable="bottom">
-                                <field name="sample_id" column_invisible="1"/>  <!-- Campo oculto pero presente -->
+                                <field name="sample_id" column_invisible="1"/>
                                 <field name="sample_identifier" readonly="1"/>
                                 <field name="suggested_code" readonly="1" string="Sugerido"/>
                                 <field name="sample_code" required="1"/>
@@ -63,14 +56,14 @@
                         </group>
                     </group>
 
-                    <!-- Observaciones generales (para recibida y no_recibida) -->
+                    <!-- Observaciones generales -->
                     <group string="Observaciones" 
                            invisible="reception_state == 'rechazada'">
                         <field name="reception_notes" nolabel="1" 
                                placeholder="Observaciones generales sobre el procesamiento..."/>
                     </group>
 
-                    <!-- Motivo de rechazo (solo para rechazada) -->
+                    <!-- Motivo de rechazo -->
                     <group string="Motivo de Rechazo" 
                            invisible="reception_state != 'rechazada'">
                         <field name="rejection_reason" nolabel="1" 
