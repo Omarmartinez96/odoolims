@@ -19,6 +19,21 @@
                     page-break-after: always;
                 }
 
+                .label-container {
+                    width: 100% !important;
+                    height: 100% !important;
+                    margin: 0;
+                    padding: 0;
+                    display: table;
+                    table-layout: auto;
+                    background: white;
+                }
+
+                .content-row {
+                    display: table-row;
+                    height: 100%;
+                }
+
                 .qr-section {
                     display: table-cell;
                     width: 40%;
@@ -129,6 +144,21 @@
                     page-break-after: always;
                 }
                 
+                .label-container {
+                    width: 100% !important;
+                    height: 100% !important;
+                    margin: 0;
+                    padding: 0;
+                    display: table;
+                    table-layout: auto;
+                    background: white;
+                }
+
+                .content-row {
+                    display: table-row;
+                    height: 100%;
+                }
+
                 .qr-section {
                     display: table-cell;
                     width: 40%;
