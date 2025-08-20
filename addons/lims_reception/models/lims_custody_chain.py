@@ -13,6 +13,7 @@ class LimsCustodyChain(models.Model):
     _inherit = ['mail.thread','mail.activity.mixin']
     _description = 'Cadena de Custodia'
     _rec_name = 'custody_chain_code'
+    _order = 'custody_chain_sequence desc, date_chainofcustody desc'
 
     # Campos de la Cadena de Custodia
     contact_ids = fields.Many2many(
@@ -20,11 +21,11 @@ class LimsCustodyChain(models.Model):
         string='Contactos Relacionados', 
         domain="[('department_id', '=', departamento_id)]"
     )
-    custody_chain_code = fields.Char(
-        string="Código de Cadena de Custodia", 
-        copy=False, 
-        default='/', 
-        help="Se genera automaticamente al crear la cadena de custodia"
+    custody_chain_sequence = fields.Integer(
+        string='Secuencia Numérica',
+        compute='_compute_custody_chain_sequence',
+        store=True,
+        help='Número consecutivo extraído del código para ordenamiento correcto'
     )
 
     custody_chain_sequence = fields.Integer(
@@ -185,7 +186,7 @@ class LimsCustodyChain(models.Model):
             sequence = 0
             if record.custody_chain_code:
                 try:
-                    # Buscar solo dígitos antes del primer "/"
+                    # Extraer número antes del "/"
                     parts = str(record.custody_chain_code).split('/')
                     if parts and parts[0].isdigit():
                         sequence = int(parts[0])
