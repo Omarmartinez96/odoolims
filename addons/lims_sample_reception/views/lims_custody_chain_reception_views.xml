@@ -57,19 +57,9 @@
             <field name="model">lims.sample</field>
             <field name="arch" type="xml">
                 <search string="Buscar Muestras">
-                    <!-- Solo campos de búsqueda básicos -->
                     <field name="sample_identifier" string="Identificación"/>
-                    <field name="sample_description" string="Descripción"/>
                     <field name="custody_chain_id" string="Cadena de Custodia"/>
                     <field name="cliente_id" string="Cliente"/>
-                    
-                    <!-- Agrupaciones simples -->
-                    <group expand="0" string="Agrupar Por">
-                        <filter name="group_by_custody_chain" string="Cadena de Custodia" 
-                                context="{'group_by': 'custody_chain_id'}" default="1"/>
-                        <filter name="group_by_cliente" string="Cliente" 
-                                context="{'group_by': 'cliente_id'}"/>
-                    </group>
                 </search>
             </field>
         </record>
