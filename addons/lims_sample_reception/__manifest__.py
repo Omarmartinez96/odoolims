@@ -17,6 +17,7 @@
         'web',
         'lims_customer',
         'lims_reception',
+        'lims_paperformat',
     ],
     'external_dependencies': {
         'python': ['qrcode', 'Pillow'],

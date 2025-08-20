@@ -31,5 +31,22 @@
         <field name="disable_shrinking" eval="True"/>
     </record>
     
+    <record id="paperformat_dymo_label" model="report.paperformat">
+        <field name="name">Etiqueta DYMO 1-1/8" x 3-1/2"</field>
+        <field name="default" eval="False"/>
+        <field name="format">custom</field>
+        <field name="page_height">89</field>
+        <field name="page_width">29</field>
+        <field name="orientation">Portrait</field>
+        <field name="margin_top">0</field>
+        <field name="margin_bottom">0</field>
+        <field name="margin_left">0</field>
+        <field name="margin_right">0</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">0</field>
+        <field name="dpi">203</field>
+        <field name="disable_shrinking" eval="True"/>
+    </record>
+
   </data>
 </odoo>
