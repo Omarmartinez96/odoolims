@@ -469,6 +469,32 @@ class LimsSample(models.Model):
             }
         }
 
+    def action_edit_reception_wizard(self):
+        """Abrir wizard para editar recepción existente"""
+        self.ensure_one()
+        
+        # Buscar la recepción existente
+        reception = self.env['lims.sample.reception'].search([
+            ('sample_id', '=', self.id)
+        ], limit=1)
+        
+        if not reception:
+            raise UserError(_('No se encontró recepción para esta muestra.'))
+        
+        return {
+            'name': _('Editar Recepción de Muestra'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'lims.sample.reception.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_reception_mode': 'individual',
+                'default_sample_id': self.id,
+                'edit_mode': True,
+                'reception_id': reception.id,
+            }
+        }
+
     def action_print_sample_label(self):
         """Imprimir etiqueta desde muestra"""
         self.ensure_one()
