@@ -29,7 +29,7 @@
             <field name="name">lims.custody_chain.reception.list</field>
             <field name="model">lims.custody_chain</field>
             <field name="arch" type="xml">
-                <list string="Cadenas de Custodia - Recepción" create="false" edit="false">
+                <list string="Cadenas de Custodia - Recepción" create="false" edit="false" limit="300">
                     <field name="custody_chain_code"/>
                     <field name="cliente_id"/>
                     <field name="date_chainofcustody"/>
@@ -203,7 +203,8 @@
                 <list string="Muestras para Recepción" 
                     multi_edit="1"
                     create="false" 
-                    edit="false">
+                    edit="false"
+                    limit="300">
                     <header>
                         <button name="action_mass_reception_selected" 
                                 type="object" 
@@ -250,6 +251,23 @@
             <field name="state">code</field>
             <field name="code">
                action = env.ref('lims_sample_reception.action_report_mass_reception').report_action(records)
+            </field>
+        </record>
+
+        <!-- Acción para reporte masivo desde muestras -->
+        <record id="action_mass_reception_report_from_samples" model="ir.actions.server">
+            <field name="name">Generar Informe Consolidado</field>
+            <field name="model_id" ref="lims_sample_reception.model_lims_sample"/>
+            <field name="binding_model_id" ref="lims_sample_reception.model_lims_sample"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+        # Obtener las cadenas de custodia únicas de las muestras seleccionadas
+        custody_chains = records.mapped('custody_chain_id')
+        if custody_chains:
+            action = env.ref('lims_sample_reception.action_report_mass_reception').report_action(custody_chains)
+        else:
+            raise UserError('No se encontraron cadenas de custodia para las muestras seleccionadas.')
             </field>
         </record>
 
