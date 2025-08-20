@@ -2,6 +2,33 @@
 <odoo>
     <data>
 
+        <!-- Vista especializada para recepción - LISTA -->
+        <record id="view_custody_chain_reception_list" model="ir.ui.view">
+            <field name="name">lims.custody_chain.reception.list</field>
+            <field name="model">lims.custody_chain</field>
+            <field name="arch" type="xml">
+                <list string="Cadenas de Custodia - Recepción" create="false" edit="false">
+                    <field name="custody_chain_code"/>
+                    <field name="cliente_id"/>
+                    <field name="date_chainofcustody"/>
+                    <field name="client_code"/>
+                    <field name="chain_of_custody_state"/>
+                    
+                    <!-- Campos de estadísticas de recepción -->
+                    <field name="samples_total"/>
+                    <field name="samples_received" decoration-success="samples_received > 0"/>
+                    <field name="samples_rejected" decoration-danger="samples_rejected > 0"/>
+                    <field name="samples_pending" decoration-warning="samples_pending > 0"/>
+                    
+                    <!-- Estado general computado -->
+                    <field name="reception_status_display" 
+                           decoration-success="reception_status_display == 'Completo'" 
+                           decoration-warning="reception_status_display == 'En Proceso'" 
+                           decoration-muted="reception_status_display == 'Sin Procesar'"/>
+                </list>
+            </field>
+        </record>
+
         <!-- Search View para Cadenas de Custodia -->
         <record id="view_custody_chain_reception_search" model="ir.ui.view">
             <field name="name">lims.custody_chain.reception.search</field>
@@ -11,18 +38,11 @@
                     <!-- Campos de búsqueda rápida -->
                     <field name="custody_chain_code" string="Código de Cadena"/>
                     <field name="cliente_id" string="Cliente"/>
-                    <field name="client_code" string="Código Cliente"/>
                     <field name="date_chainofcustody" string="Fecha"/>
                     
                     <!-- Filtros predefinidos SIMPLIFICADOS -->
                     <separator/>
-                    <filter name="filter_en_progreso" string="En Progreso" 
-                            domain="[('chain_of_custody_state', '=', 'in_progress')]"/>
-                    <filter name="filter_completadas" string="Completadas" 
-                            domain="[('chain_of_custody_state', '=', 'done')]"/>
-                    
-                    <separator/>
-                    <filter name="filter_hoy" string="Hoy" 
+                    <filter name="filter_hoy" string="Cadenas de Hoy" 
                             domain="[('date_chainofcustody', '=', context_today().strftime('%Y-%m-%d'))]"/>
                     <filter name="filter_esta_semana" string="Esta Semana" 
                             domain="[('date_chainofcustody', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
@@ -34,8 +54,6 @@
                     <group expand="0" string="Agrupar Por">
                         <filter name="group_by_cliente" string="Cliente" 
                                 context="{'group_by': 'cliente_id'}"/>
-                        <filter name="group_by_estado" string="Estado de Cadena" 
-                                context="{'group_by': 'chain_of_custody_state'}"/>
                         <filter name="group_by_fecha" string="Fecha" 
                                 context="{'group_by': 'date_chainofcustody'}"/>
                     </group>
@@ -43,7 +61,7 @@
             </field>
         </record>
 
-        <!-- Search View para Muestras -->
+        <!-- Search View para Muestras (SIN campos computados) -->
         <record id="view_sample_reception_search" model="ir.ui.view">
             <field name="name">lims.sample.reception.search</field>
             <field name="model">lims.sample</field>
@@ -51,23 +69,18 @@
                 <search string="Buscar Muestras">
                     <!-- Campos de búsqueda rápida -->
                     <field name="sample_identifier" string="Identificación"/>
-                    <field name="sample_code" string="Código de Muestra"/>
                     <field name="sample_description" string="Descripción"/>
                     <field name="custody_chain_id" string="Cadena de Custodia"/>
                     <field name="cliente_id" string="Cliente"/>
                     
-                    <!-- Filtros predefinidos SIMPLIFICADOS -->
-                    <separator/>
-                    <filter name="filter_pendientes" string="Código Pendiente" 
-                            domain="[('sample_code', '=', 'Pendiente')]"/>
-                    <filter name="filter_con_codigo" string="Con Código Asignado" 
-                            domain="[('sample_code', '!=', 'Pendiente')]"/>
-                    
+                    <!-- Filtros predefinidos SOLO CON CAMPOS BASE -->
                     <separator/>
                     <filter name="filter_hoy" string="Muestras de Hoy" 
                             domain="[('date_chainofcustody', '=', context_today().strftime('%Y-%m-%d'))]"/>
                     <filter name="filter_esta_semana" string="Esta Semana" 
                             domain="[('date_chainofcustody', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                    <filter name="filter_este_mes" string="Este Mes" 
+                            domain="[('date_chainofcustody', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
                     
                     <!-- Agrupaciones -->
                     <separator/>
@@ -139,9 +152,8 @@
                             </div>
                         </div>
 
-                        <!-- Botones de acción superiores - CON ETIQUETAS -->
+                        <!-- Botones de acción superiores -->
                         <div style="margin-bottom: 20px; text-align: center;">
-                            
                             <div style="display: inline-block; margin-right: 15px;">
                                 <button name="action_mass_reception_wizard" 
                                         type="object" 
@@ -150,7 +162,6 @@
                                         style="min-width: 180px; padding: 8px 16px;"
                                         title="Recibir todas las muestras de esta cadena"/>
                             </div>
-                            
                             <div style="display: inline-block; margin-left: 15px; margin-right: 15px;">
                                 <button name="action_samples_reception_multiselect" 
                                         type="object" 
@@ -159,7 +170,6 @@
                                         style="min-width: 180px; padding: 8px 16px;"
                                         title="Seleccionar muestras específicas"/>
                             </div>
-
                             <div style="display: inline-block; margin-left: 15px;">
                                 <button name="action_print_all_labels" 
                                         type="object" 
@@ -168,10 +178,9 @@
                                         style="min-width: 180px; padding: 8px 16px;"
                                         title="Imprimir etiquetas QR de todas las muestras"/>
                             </div>
-
                         </div>
 
-                        <!-- Lista de muestras CON BOTÓN DE ETIQUETA -->
+                        <!-- Lista de muestras -->
                         <group string="Muestras para Recepción">
                             <field name="sample_ids" nolabel="1">
                                 <list string="Muestras" create="false" edit="false">
@@ -200,24 +209,18 @@
                         <!-- Botones de acción inferiores -->
                         <div style="margin-top: 20px;">
                             <div class="oe_button_box" style="display: flex; gap: 10px; justify-content: center;">
-                                
-                                <!-- Botón Informe de Recepción -->
                                 <button name="%(action_report_sample_reception)d" 
                                         type="action" 
                                         string="Informe de Recepción" 
                                         class="btn-info" 
                                         title="Generar informe de recepción de muestras"/>
-
-                                <!-- Botón Enviar por Email -->
                                 <button name="action_send_reception_report_email" 
                                         type="object" 
                                         string="Enviar Informe" 
                                         class="btn-primary" 
                                         title="Enviar informe de recepción por correo electrónico"/>
-
                             </div>
                         </div>
-
                     </sheet>
                 </form>
             </field>
@@ -249,6 +252,7 @@
                         decoration-success="sample_reception_state == 'Recibida'"
                         decoration-danger="sample_reception_state == 'Rechazada'"
                         decoration-warning="sample_reception_state == 'No Recibida' or sample_reception_state == 'No recibida'"/>
+                    
                     <!-- Botón Recibir (para muestras sin código) -->
                     <button name="action_individual_reception_wizard"
                             type="object"
@@ -264,7 +268,6 @@
                             class="btn-warning"
                             title="Editar recepción existente"
                             invisible="sample_code == 'Pendiente'"/>
-
                 </list>
             </field>
         </record>
@@ -305,7 +308,7 @@
             <field name="res_model">lims.sample</field>
             <field name="view_mode">list</field>
             <field name="view_id" ref="view_samples_reception_list"/>
-            <field name="search_view_id" ref="view_samples_reception_search"/>
+            <field name="search_view_id" ref="view_sample_reception_search"/>
             <field name="domain">[('custody_chain_id.chain_of_custody_state', 'in', ['in_progress', 'done'])]</field>
             <field name="context">{
                 'search_default_group_by_custody_chain': 1,
