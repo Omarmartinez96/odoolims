@@ -9,7 +9,7 @@ class LimsAnalysisV2(models.Model):
     _name = 'lims.analysis.v2'
     _description = 'Análisis de Muestra v2'
     _rec_name = 'display_name'
-    _order = 'custody_chain_code desc'
+    _order = 'sequence, custody_chain_code desc, create_date desc'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # ===============================================
@@ -21,6 +21,12 @@ class LimsAnalysisV2(models.Model):
         required=True,
         ondelete='cascade',
         domain=[('reception_state', '=', 'recibida')]
+    )
+
+    sequence = fields.Integer(
+        string='Secuencia',
+        default=10,
+        help='Orden manual de los análisis'
     )
 
     # ===============================================
