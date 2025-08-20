@@ -222,14 +222,13 @@
                                 </table>
 
                                 <!-- Observaciones si existen -->
-                                <t t-if="reception and (reception.reception_notes or reception.internal_reception_notes)">
+                                <t t-if="reception and reception.reception_notes">
                                     <div style="margin-top: 10px; padding-top: 10px; border-top: 1px solid #ddd;">
                                         <t t-if="reception.reception_notes">
                                             <div style="margin-bottom: 5px;">
                                                 <strong>Observaciones:</strong> <span t-esc="reception.reception_notes"/>
                                             </div>
                                         </t>
-
                                     </div>
                                 </t>
                             </div>
