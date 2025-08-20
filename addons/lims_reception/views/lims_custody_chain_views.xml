@@ -244,20 +244,20 @@
         <field name="binding_view_types">list</field>
         <field name="state">code</field>
         <field name="code">
-    # Recalcular todas las cadenas de custodia
-    all_chains = env['lims.custody_chain'].search([])
-    for chain in all_chains:
-        chain._compute_custody_chain_sequence()
+# Recalcular todas las cadenas de custodia
+all_chains = env['lims.custody_chain'].search([])
+for chain in all_chains:
+    chain._compute_custody_chain_sequence()
 
-    action = {
-        'type': 'ir.actions.client',
-        'tag': 'display_notification',
-        'params': {
-            'title': 'Recálculo Completado',
-            'message': f'Se recalcularon {len(all_chains)} cadenas de custodia',
-            'type': 'success',
-        }
+action = {
+    'type': 'ir.actions.client',
+    'tag': 'display_notification',
+    'params': {
+        'title': 'Recálculo Completado',
+        'message': f'Se recalcularon {len(all_chains)} cadenas de custodia',
+        'type': 'success',
     }
+}
         </field>
     </record>
 
