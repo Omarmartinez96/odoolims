@@ -261,11 +261,11 @@
             <field name="binding_view_types">list</field>
             <field name="state">code</field>
             <field name="code">custody_chains = records.mapped('custody_chain_id')
-        if custody_chains:
-            action = env.ref('lims_sample_reception.action_report_mass_reception').report_action(custody_chains)
-        else:
-            raise UserError('No se encontraron cadenas de custodia para las muestras seleccionadas.')</field>
-        </record>
+if custody_chains:
+    action = env.ref('lims_sample_reception.action_report_mass_reception').report_action(custody_chains)
+else:
+    raise UserError('No se encontraron cadenas de custodia para las muestras seleccionadas.')</field>
+        </record>   
 
         <!-- Acción para cadenas de custodia en recepción -->
         <record id="action_custody_chains_reception" model="ir.actions.act_window">
