@@ -17,23 +17,20 @@
                     margin: 0;
                     padding: 0;
                 }
-                
-                .article {
-                    margin: 0;
-                    padding: 0;
+            
+                /* Forzar eliminación de bordes de Odoo */
+                .article, .page, .o_report_layout {
+                    border: none !important;
+                    outline: none !important;
+                    box-shadow: none !important;
                 }
-                
+                /* Eliminar márgenes/padding que causan espacios */
                 .label-container {
-                    width: 25mm;
-                    height: 85mm;
-                    margin: 0;
-                    padding: 1mm;
-                    display: table;
-                    table-layout: fixed;
-                    background: white;
-                    border: none;
+                    margin: 0 !important;
+                    padding: 0 !important;
+                    border: none !important;
+                    outline: none !important;
                 }
-                
                 .content-row {
                     display: table-row;
                     height: 83mm;
@@ -58,7 +55,7 @@
                 
                 .sample-code {
                     font-weight: bold;
-                    font-size: 8px;
+                    font-size: 12px;
                     color: #000;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.1;
@@ -70,7 +67,7 @@
                 }
                 
                 .sample-id {
-                    font-size: 7px;
+                    font-size: 11px;
                     color: #333;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.0;
@@ -81,16 +78,16 @@
                 }
                 
                 .qr-image {
-                    width: 10mm !important;
-                    height: 10mm !important;
+                    width: 14mm !important;
+                    height: 14mm !important;
                     display: block;
                     margin: 0 auto;
                     border: none;
                 }
                 
                 .no-qr {
-                    width: 10mm;
-                    height: 10mm;
+                    width: 14mm;
+                    height: 14mm;
                     border: 1px solid #ccc;
                     display: flex;
                     align-items: center;
@@ -200,7 +197,7 @@
                 
                 .sample-code {
                     font-weight: bold;
-                    font-size: 8px;
+                    font-size: 12px;
                     color: #000;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.1;
@@ -212,7 +209,7 @@
                 }
                 
                 .sample-id {
-                    font-size: 7px;
+                    font-size: 11px;
                     color: #333;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.0;
@@ -223,16 +220,16 @@
                 }
                 
                 .qr-image {
-                    width: 10mm !important;
-                    height: 10mm !important;
+                    width: 14mm !important;
+                    height: 14mm !important;
                     display: block;
                     margin: 0 auto;
                     border: none;
                 }
                 
                 .no-qr {
-                    width: 10mm;
-                    height: 10mm;
+                    width: 14mm;
+                    height: 14mm;
                     border: 1px solid #ccc;
                     display: flex;
                     align-items: center;
