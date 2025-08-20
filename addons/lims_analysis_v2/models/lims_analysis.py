@@ -304,38 +304,6 @@ class LimsAnalysisV2(models.Model):
         for analysis in self:
             analysis.revision_count = len(analysis.revision_ids)
 
-    @api.model
-    def search(self, args, offset=0, limit=None, order=None, count=False):
-        """Override search para ordenamiento correcto por número de cadena"""
-        
-        if order and 'custody_chain_code' in order:
-            all_records = super().search(args, offset=0, limit=None, order=None, count=count)
-            
-            if count:
-                return all_records
-            
-            def get_chain_number(record):
-                try:
-                    if record.custody_chain_code:
-                        parts = record.custody_chain_code.split('/')
-                        if parts and parts[0].isdigit():
-                            return int(parts[0])
-                    return 0
-                except:
-                    return 0
-            
-            reverse_order = 'desc' in order.lower()
-            sorted_records = all_records.sorted(key=get_chain_number, reverse=reverse_order)
-            
-            if offset or limit:
-                start = offset or 0
-                end = (start + limit) if limit else None
-                return sorted_records[start:end]
-            
-            return sorted_records
-        
-        return super().search(args, offset=offset, limit=limit, order=order, count=count)
-
     # ===============================================
     # === MÉTODOS DE CREACIÓN ===
     # ===============================================
