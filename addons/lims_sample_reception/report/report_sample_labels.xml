@@ -111,7 +111,7 @@
             <div class="page">
                 <t t-foreach="docs" t-as="reception">
                     <div class="article" t-att-data-oe-model="reception._name" t-att-data-oe-id="reception.id">
-                        <table class="label-container">
+                        <table class="label-container table-borderless">
                             <tr class="content-row">
                                 <!-- QR Code (Izquierda) -->
                                 <td class="qr-section">
