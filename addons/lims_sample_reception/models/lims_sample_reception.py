@@ -440,6 +440,18 @@ class LimsSample(models.Model):
             else:
                 record.sample_reception_state = 'No recibida'
 
+    def has_sample_code(self):
+        """Método simple para verificar si tiene código de muestra"""
+        reception = self.env['lims.sample.reception'].search([
+            ('sample_id', '=', self.id)
+        ], limit=1)
+        
+        return bool(
+            reception and 
+            reception.sample_code and 
+            reception.sample_code != '/'
+        )
+
     # NUEVO MÉTODO PARA WIZARD INDIVIDUAL
     def action_individual_reception_wizard(self):
         """Abrir wizard para recepción individual"""
@@ -456,32 +468,6 @@ class LimsSample(models.Model):
                 'default_sample_id': self.id,
             }
         }
-
-    # def action_edit_reception_wizard(self):
-    #     """Abrir wizard para editar recepción existente"""
-    #     self.ensure_one()
-        
-    #     # Buscar la recepción existente
-    #     reception = self.env['lims.sample.reception'].search([
-    #         ('sample_id', '=', self.id)
-    #     ], limit=1)
-        
-    #     if not reception:
-    #         raise UserError(_('No se encontró recepción para esta muestra.'))
-        
-    #     return {
-    #         'name': _('Editar Recepción de Muestra'),
-    #         'type': 'ir.actions.act_window',
-    #         'res_model': 'lims.sample.reception.wizard',
-    #         'view_mode': 'form',
-    #         'target': 'new',
-    #         'context': {
-    #             'default_reception_mode': 'individual',
-    #             'default_sample_id': self.id,
-    #             'edit_mode': True,  # Indicador de modo edición
-    #             'reception_id': reception.id,  # ID de la recepción a editar
-    #         }
-    #     }
 
     def action_print_sample_label(self):
         """Imprimir etiqueta desde muestra"""

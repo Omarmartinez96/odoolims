@@ -191,7 +191,6 @@
                     <field name="date_chainofcustody" string="Fecha CC"/>
                     <field name="sample_code"/>
                     <field name="sample_type_id"/>
-                    <!-- <field name="has_reception_code" column_invisible="1"/> -->
                     <field name="sample_reception_state"
                         decoration-success="sample_reception_state == 'Recibida'"
                         decoration-danger="sample_reception_state == 'Rechazada'"
@@ -201,7 +200,16 @@
                             type="object"
                             string="Recibir"
                             class="btn-primary"
-                            title="Recibir esta muestra individual"/>
+                            title="Recibir esta muestra individual"
+                            invisible="sample_code != 'Pendiente'"/>
+
+                    <!-- Botón Editar (para muestras con código asignado) -->
+                    <button name="action_edit_reception_wizard"
+                            type="object"
+                            string="Editar"
+                            class="btn-warning"
+                            title="Editar recepción existente"
+                            invisible="sample_code == 'Pendiente'"/>
 
                 </list>
             </field>
