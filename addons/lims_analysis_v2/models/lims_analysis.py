@@ -9,7 +9,7 @@ class LimsAnalysisV2(models.Model):
     _name = 'lims.analysis.v2'
     _description = 'Análisis de Muestra v2'
     _rec_name = 'display_name'
-    _order = 'custody_chain_code desc, reception_date desc, create_date desc'
+    _order = 'custody_chain_sequence desc, reception_date desc, create_date desc'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # ===============================================
@@ -51,6 +51,14 @@ class LimsAnalysisV2(models.Model):
         readonly=True,
         store=True
     )
+
+    custody_chain_sequence = fields.Integer(
+        string='Secuencia de Cadena',
+        compute='_compute_custody_chain_sequence',
+        store=True,
+        help='Número consecutivo extraído de la cadena de custodia para ordenamiento'
+    )
+
     customer_id = fields.Many2one(
         'res.partner',
         string='Cliente',
@@ -229,6 +237,23 @@ class LimsAnalysisV2(models.Model):
     # ===============================================
     # === MÉTODOS COMPUTADOS ===
     # ===============================================
+
+    @api.depends('custody_chain_code')
+    def _compute_custody_chain_sequence(self):
+        """Extraer número consecutivo de la cadena para ordenamiento correcto"""
+        import re
+        for record in self:
+            if record.custody_chain_code:
+                # Extraer número antes del "/" usando regex
+                match = re.search(r'(\d+)/', record.custody_chain_code)
+                if match:
+                    record.custody_chain_sequence = int(match.group(1))
+                else:
+                    # Si no encuentra patrón, usar 0 como fallback
+                    record.custody_chain_sequence = 0
+            else:
+                record.custody_chain_sequence = 0
+
     @api.depends('sample_reception_id')
     def _compute_display_name(self):
         """Calcular nombre del análisis"""
