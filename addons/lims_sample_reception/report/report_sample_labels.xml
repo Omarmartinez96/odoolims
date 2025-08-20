@@ -38,7 +38,7 @@
                 
                 .qr-section {
                     display: table-cell;
-                    width: 12mm;
+                    width: 40%;
                     vertical-align: middle;
                     text-align: center;
                     padding-right: 1mm;
@@ -47,7 +47,7 @@
                 
                 .info-section {
                     display: table-cell;
-                    width: 12mm;
+                    width: 60%mm;
                     vertical-align: middle;
                     text-align: center;
                     border: none;
@@ -168,7 +168,7 @@
                     margin: 0;
                     padding: 1mm;
                     display: table;
-                    table-layout: fixed;
+                    table-layout: auto;
                     background: white;
                     border: none;
                 }
@@ -180,7 +180,7 @@
                 
                 .qr-section {
                     display: table-cell;
-                    width: 12mm;
+                    width: 40%;
                     vertical-align: middle;
                     text-align: center;
                     padding-right: 1mm;
@@ -189,7 +189,7 @@
                 
                 .info-section {
                     display: table-cell;
-                    width: 12mm;
+                    width: 60%;
                     vertical-align: middle;
                     text-align: center;
                     border: none;
