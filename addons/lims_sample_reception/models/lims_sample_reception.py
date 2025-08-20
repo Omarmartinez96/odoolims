@@ -399,6 +399,25 @@ class LimsSample(models.Model):
         if not selected_samples:
             raise UserError(_('Debe seleccionar al menos una muestra.'))
         
+        # Verificar que no hay muestras ya recibidas
+        already_received = []
+        for sample in selected_samples:
+            reception = self.env['lims.sample.reception'].search([
+                ('sample_id', '=', sample.id)
+            ], limit=1)
+            if reception and reception.reception_state == 'recibida':
+                already_received.append(sample.sample_identifier)
+        
+        if already_received:
+            samples_list = ', '.join(already_received[:3])
+            if len(already_received) > 3:
+                samples_list += f' y {len(already_received) - 3} más'
+            raise UserError(_(
+                f'No se puede procesar la recepción masiva porque las siguientes muestras ya están recibidas:\n\n'
+                f'{samples_list}\n\n'
+                f'Para modificar muestras ya recibidas, use la opción "Editar" individual.'
+            ))
+        
         return {
             'name': _('Recepción Masiva de Muestras'),
             'type': 'ir.actions.act_window',

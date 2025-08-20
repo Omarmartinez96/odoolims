@@ -227,9 +227,8 @@ class SampleReceptionWizard(models.TransientModel):
             # Agregar observaciones según el estado
             if self.reception_state == 'rechazada':
                 reception_data['reception_notes'] = self.rejection_reason
-            elif self.reception_state == 'no_recibida':
-                reception_data['reception_notes'] = 'Estado restaurado a no recibida'
             else:
+                # Para 'recibida' y 'no_recibida', usar observaciones del wizard o mantener existentes
                 reception_data['reception_notes'] = self.reception_notes or ''
             
             if existing_reception:
