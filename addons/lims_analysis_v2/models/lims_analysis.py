@@ -54,7 +54,7 @@ class LimsAnalysisV2(models.Model):
 
     custody_chain_sequence = fields.Integer(
         string='Secuencia de Cadena',
-        compute='_compute_custody_chain_sequence',
+        related='custody_chain_id.custody_chain_sequence',
         store=True,
         help='Número consecutivo extraído de la cadena de custodia para ordenamiento'
     )
@@ -237,22 +237,6 @@ class LimsAnalysisV2(models.Model):
     # ===============================================
     # === MÉTODOS COMPUTADOS ===
     # ===============================================
-
-    @api.depends('custody_chain_code')
-    def _compute_custody_chain_sequence(self):
-        """Extraer número consecutivo de la cadena para ordenamiento correcto"""
-        import re
-        for record in self:
-            if record.custody_chain_code:
-                # Extraer número antes del "/" usando regex
-                match = re.search(r'(\d+)/', record.custody_chain_code)
-                if match:
-                    record.custody_chain_sequence = int(match.group(1))
-                else:
-                    # Si no encuentra patrón, usar 0 como fallback
-                    record.custody_chain_sequence = 0
-            else:
-                record.custody_chain_sequence = 0
 
     @api.depends('sample_reception_id')
     def _compute_display_name(self):
