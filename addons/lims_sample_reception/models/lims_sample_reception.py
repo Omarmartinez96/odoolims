@@ -96,9 +96,9 @@ class LimsSampleReception(models.Model):
     )
     
     # Campo QR computado
-    qr_code_image = fields.Binary(
-        string='Código QR',
-        compute='_compute_qr_code_image'
+    barcode_image = fields.Binary(
+        string='Código de Barras',
+        compute='_compute_barcode_image'
     )
 
     # ==================== CAMPOS DEPRECADOS ====================
@@ -251,27 +251,25 @@ class LimsSampleReception(models.Model):
         return result
     
     @api.depends('sample_code')
-    def _compute_qr_code_image(self):
-        """Generar imagen QR"""
+    def _compute_barcode_image(self):
+        """Generar imagen de código de barras"""
         for record in self:
             if record.sample_code and record.sample_code != '/':
                 try:
-                    import qrcode
+                    import barcode
+                    from barcode.writer import ImageWriter
                     import io
                     import base64
                     
-                    qr = qrcode.QRCode(version=1, box_size=10, border=5)
-                    qr.add_data(record.sample_code)
-                    qr.make(fit=True)
-                    
-                    img = qr.make_image(fill_color="black", back_color="white")
+                    # Usar Code128 que es muy eficiente
+                    code128 = barcode.get('code128', record.sample_code, writer=ImageWriter())
                     buffer = io.BytesIO()
-                    img.save(buffer, format='PNG')
-                    record.qr_code_image = base64.b64encode(buffer.getvalue())
+                    code128.write(buffer)
+                    record.barcode_image = base64.b64encode(buffer.getvalue())
                 except ImportError:
-                    record.qr_code_image = False
+                    record.barcode_image = False
             else:
-                record.qr_code_image = False
+                record.barcode_image = False
 
     # ==================== MÉTODOS DEPRECADOS ====================
     # NOTA: Estos métodos están deprecados y solo se mantienen por compatibilidad

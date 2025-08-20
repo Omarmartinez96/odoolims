@@ -20,7 +20,7 @@
         'lims_paperformat',
     ],
     'external_dependencies': {
-        'python': ['qrcode', 'Pillow'],
+        'python': ['python-barcode', 'Pillow'],
     },
     'data': [
         'security/ir.model.access.csv',

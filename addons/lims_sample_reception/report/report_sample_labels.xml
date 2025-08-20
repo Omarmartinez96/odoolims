@@ -34,7 +34,7 @@
                     height: 100%;
                 }
 
-                .qr-section {
+                .barcode-section {
                     display: table-cell;
                     width: 40%;
                     vertical-align: middle;
@@ -45,7 +45,7 @@
                 
                 .info-section {
                     display: table-cell;
-                    width: 60%;
+                    width: 65%;
                     vertical-align: middle;
                     text-align: center;
                     border: none;
@@ -75,17 +75,17 @@
                     outline: none !important;
                 }
                 
-                .qr-image {
-                    width: 20mm !important;
-                    height: 20mm !important;
+                .barcode-image {
+                    width: 15mm !important;
+                    height: 8mm !important;
                     display: block;
                     margin: 0 auto;
                     border: none;
                 }
-                
-                .no-qr {
-                    width: 20mm;
-                    height: 20mm;
+
+                .no-barcode {
+                    width: 15mm;
+                    height: 8mm;
                     border: 1px solid #ccc;
                     display: flex;
                     align-items: center;
@@ -101,12 +101,12 @@
                         <table class="label-container table-borderless">
                             <tr class="content-row">
                                 <!-- QR Code (Izquierda) -->
-                                <td class="qr-section">
-                                    <img t-if="reception.qr_code_image" 
-                                         t-att-src="'data:image/png;base64,' + reception.qr_code_image.decode('utf-8')" 
-                                         class="qr-image"
-                                         alt="QR Code"/>
-                                    <div t-else="" class="no-qr">Sin QR</div>
+                                <td class="barcode-section">
+                                    <img t-if="reception.barcode_image" 
+                                        t-att-src="'data:image/png;base64,' + reception.barcode_image.decode('utf-8')" 
+                                        class="barcode-image"
+                                        alt="Barcode"/>
+                                    <div t-else="" class="no-barcode">Sin código</div>
                                 </td>
                                 
                                 <!-- Información (Derecha) -->
@@ -159,9 +159,9 @@
                     height: 100%;
                 }
 
-                .qr-section {
+                .barcode-section {
                     display: table-cell;
-                    width: 40%;
+                    width: 35%;
                     vertical-align: middle;
                     text-align: center;
                     padding-right: 1mm;
@@ -170,7 +170,7 @@
                 
                 .info-section {
                     display: table-cell;
-                    width: 60%;
+                    width: 65%;
                     vertical-align: middle;
                     text-align: center;
                     border: none;
@@ -200,17 +200,17 @@
                     outline: none !important;
                 }
                 
-                .qr-image {
-                    width: 20mm !important;
-                    height: 20mm !important;
+                .barcode-image {
+                    width: 15mm !important;
+                    height: 8mm !important;
                     display: block;
                     margin: 0 auto;
                     border: none;
                 }
-                
-                .no-qr {
-                    width: 20mm;
-                    height: 20mm;
+
+                .no-barcode {
+                    width: 15mm;
+                    height: 8mm;
                     border: 1px solid #ccc;
                     display: flex;
                     align-items: center;
@@ -228,13 +228,13 @@
                             <div class="article" t-att-data-oe-model="custody_chain._name" t-att-data-oe-id="custody_chain.id">
                                 <table class="label-container table-borderless">
                                     <tr class="content-row">
-                                        <!-- QR Code (Izquierda) -->
-                                        <td class="qr-section">
-                                            <img t-if="reception and reception.qr_code_image" 
-                                                 t-att-src="'data:image/png;base64,' + reception.qr_code_image.decode('utf-8')" 
-                                                 class="qr-image"
-                                                 alt="QR Code"/>
-                                            <div t-else="" class="no-qr">Sin QR</div>
+                                        <!-- Barcode (Izquierda) -->
+                                        <td class="barcode-section">
+                                            <img t-if="reception.barcode_image" 
+                                                t-att-src="'data:image/png;base64,' + reception.barcode_image.decode('utf-8')" 
+                                                class="barcode-image"
+                                                alt="Barcode"/>
+                                            <div t-else="" class="no-barcode">Sin código</div>
                                         </td>
                                         
                                         <!-- Información (Derecha) -->
