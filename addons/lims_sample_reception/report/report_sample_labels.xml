@@ -13,57 +13,60 @@
                     font-family: Arial, sans-serif !important;
                 }
                 .label-container {
-                    width: 28mm;      /* 1 1/8" */
-                    height: 88mm;     /* 3 1/2" */
-                    padding: 1mm;
+                    width: 83mm;      /* Ancho disponible con márgenes */
+                    height: 25mm;     /* Alto disponible con márgenes */
+                    padding: 2mm;
                     margin: 0;
+                    display: flex;
+                    flex-direction: row;  /* HORIZONTAL */
+                    justify-content: space-between;
+                    align-items: center;
+                    page-break-after: always;  /* Cada etiqueta en página separada */
+                    background: white;
+                    box-sizing: border-box;
+                }
+                .qr-section {
+                    width: 23mm;
+                    height: 23mm;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-shrink: 0;
+                }
+                .info-section {
+                    flex: 1;
+                    margin-left: 3mm;
                     display: flex;
                     flex-direction: column;
                     justify-content: center;
                     align-items: center;
-                    page-break-inside: avoid;
-                    background: white;
                     text-align: center;
-                    box-sizing: border-box;
-                }
-                .qr-section {
-                    text-align: center;
-                    margin-bottom: 3mm;
-                    flex: 1;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-                .code-section {
-                    text-align: center;
-                    margin-bottom: 2mm;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 100%;
-                }
-                .sample-info {
-                    text-align: center;
-                    font-family: Arial, sans-serif !important;
-                    line-height: 1.1;
-                    flex: 0;
+                    height: 100%;
                 }
                 .sample-code {
                     font-weight: bold;
-                    font-size: 8px;
+                    font-size: 11px;
                     margin-bottom: 1mm;
                     color: #000;
                     font-family: Arial, sans-serif !important;
+                    line-height: 1.2;
                 }
                 .sample-id {
-                    font-size: 7px;
+                    font-size: 9px;
                     color: #333;
                     font-family: Arial, sans-serif !important;
+                    line-height: 1.1;
+                    word-wrap: break-word;
+                    max-width: 100%;
                 }
+                
                 @media print {
-                    body { margin: 0 !important; }
-                    .label-container { 
+                    body { 
                         margin: 0 !important; 
+                        padding: 0 !important;
+                    }
+                    .label-container { 
+                        page-break-after: always !important;
                         break-inside: avoid !important;
                     }
                 }
@@ -74,28 +77,22 @@
                     <div class="article" t-att-data-oe-model="reception._name" t-att-data-oe-id="reception.id">
                         <div class="label-container">
                             
-                            <!-- Sección del QR Code -->
+                            <!-- Sección del QR Code (IZQUIERDA) -->
                             <div class="qr-section">
                                 <img t-if="reception.qr_code_image" 
                                      t-att-src="'data:image/png;base64,' + reception.qr_code_image.decode('utf-8')" 
                                      style="width: 20mm; height: 20mm;"
                                      alt="QR Code"/>
-                                <div t-else="" style="width: 20mm; height: 20mm; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 6px;">
+                                <div t-else="" style="width: 20mm; height: 20mm; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 8px;">
                                     Sin QR
                                 </div>
                             </div>
                             
-                            <!-- Sección del Código -->
-                            <div class="code-section">
-                                <div class="sample-info">
-                                    <div class="sample-code">
-                                        <span t-esc="reception.sample_code or 'Sin código'"/>
-                                    </div>
+                            <!-- Sección de Información (DERECHA) -->
+                            <div class="info-section">
+                                <div class="sample-code">
+                                    <span t-esc="reception.sample_code or 'Sin código'"/>
                                 </div>
-                            </div>
-                            
-                            <!-- Sección de Identificación -->
-                            <div class="sample-info">
                                 <div class="sample-id">
                                     <span t-esc="reception.sample_identifier"/>
                                 </div>
@@ -120,92 +117,98 @@
                     font-family: Arial, sans-serif !important;
                 }
                 .label-container {
-                    width: 29mm;      /* 1 1/8" */
-                    height: 89mm;     /* 3 1/2" */
-                    padding: 3mm;
-                    margin: 2mm;
-                    display: inline-flex;
-                    flex-direction: column;
-                    justify-content: center;
+                    width: 83mm;      /* Ancho disponible con márgenes */
+                    height: 25mm;     /* Alto disponible con márgenes */
+                    padding: 2mm;
+                    margin: 0;
+                    display: flex;
+                    flex-direction: row;  /* HORIZONTAL */
+                    justify-content: space-between;
                     align-items: center;
-                    page-break-inside: avoid;
+                    page-break-after: always;  /* Cada etiqueta en página separada */
                     background: white;
-                    text-align: center;
                     box-sizing: border-box;
-                    vertical-align: top;
                 }
                 .qr-section {
-                    text-align: center;
-                    margin-bottom: 2mm;
-                    flex: 1;
+                    width: 23mm;
+                    height: 23mm;
                     display: flex;
                     align-items: center;
                     justify-content: center;
+                    flex-shrink: 0;
                 }
-                .code-section {
+                .info-section {
+                    flex: 1;
+                    margin-left: 3mm;
+                    display: flex;
+                    flex-direction: column;
+                    justify-content: center;
+                    align-items: center;
                     text-align: center;
-                    margin-bottom: 2mm;
-                    width: 100%;
-                }
-                .sample-info {
-                    text-align: center;
-                    font-family: Arial, sans-serif !important;
-                    line-height: 1.1;
-                    flex: 0;
+                    height: 100%;
                 }
                 .sample-code {
                     font-weight: bold;
-                    font-size: 8px;
+                    font-size: 11px;
                     margin-bottom: 1mm;
                     color: #000;
                     font-family: Arial, sans-serif !important;
+                    line-height: 1.2;
                 }
                 .sample-id {
-                    font-size: 7px;
+                    font-size: 9px;
                     color: #333;
                     font-family: Arial, sans-serif !important;
+                    line-height: 1.1;
+                    word-wrap: break-word;
+                    max-width: 100%;
+                }
+                
+                @media print {
+                    body { 
+                        margin: 0 !important; 
+                        padding: 0 !important;
+                    }
+                    .label-container { 
+                        page-break-after: always !important;
+                        break-inside: avoid !important;
+                    }
                 }
             </style>
 
             <div class="page">
                 <t t-foreach="docs" t-as="custody_chain">
-                    <div class="article" t-att-data-oe-model="custody_chain._name" t-att-data-oe-id="custody_chain.id">
-                        <t t-foreach="custody_chain.sample_ids" t-as="sample">
-                            <t t-set="reception" t-value="env['lims.sample.reception'].search([('sample_id', '=', sample.id)], limit=1)"/>
-                            <t t-if="reception and reception.sample_code and reception.sample_code != '/'">
+                    <t t-foreach="custody_chain.sample_ids" t-as="sample">
+                        <t t-set="reception" t-value="env['lims.sample.reception'].search([('sample_id', '=', sample.id)], limit=1)"/>
+                        <t t-if="reception and reception.sample_code and reception.sample_code != '/'">
+                            <div class="article" t-att-data-oe-model="custody_chain._name" t-att-data-oe-id="custody_chain.id">
                                 <div class="label-container">
                                     
-                                    <!-- Sección del QR Code -->
+                                    <!-- Sección del QR Code (IZQUIERDA) -->
                                     <div class="qr-section">
                                         <img t-if="reception and reception.qr_code_image" 
                                              t-att-src="'data:image/png;base64,' + reception.qr_code_image.decode('utf-8')" 
                                              style="width: 20mm; height: 20mm;"
                                              alt="QR Code"/>
-                                        <div t-else="" style="width: 20mm; height: 20mm; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 6px;">
+                                        <div t-else="" style="width: 20mm; height: 20mm; border: 1px solid #ccc; display: flex; align-items: center; justify-content: center; font-size: 8px;">
                                             Sin QR
                                         </div>
                                     </div>
                                     
-                                    <!-- Sección del Código -->
-                                    <div class="code-section">
-                                        <div class="sample-info">
-                                            <div class="sample-code">
-                                                <span t-esc="reception.sample_code or 'Sin código'"/>
-                                            </div>
+                                    <!-- Sección de Información (DERECHA) -->
+                                    <div class="info-section">
+                                        <div class="sample-code">
+                                            <span t-esc="reception.sample_code or 'Sin código'"/>
                                         </div>
-                                    </div>
-                                    
-                                    <!-- Sección de Identificación -->
-                                    <div class="sample-info">
                                         <div class="sample-id">
                                             <span t-esc="sample.sample_identifier"/>
                                         </div>
                                     </div>
                                     
                                 </div>
-                            </t>
+                            </div>
                         </t>
-                    </div>
+                    </t>
                 </t>
             </div>
         </t>
