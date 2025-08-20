@@ -76,11 +76,11 @@ class SampleReceptionLine(models.TransientModel):
                 next_num = str(max_num + 1).zfill(4)
                 line.suggested_code = f'{client_code}/{next_num}'
                 
-                # SOLO auto-asignar si está completamente vacío o es el valor por defecto
-                if not line.sample_code or line.sample_code == '/':
+                # CAMBIO IMPORTANTE: Solo auto-asignar si NO hay código previo
+                if not line.sample_code:
                     line.sample_code = line.suggested_code
             else:
                 line.suggested_code = 'XXX/0001'
-                # SOLO auto-asignar si está vacío
-                if not line.sample_code or line.sample_code == '/':
+                # Solo auto-asignar si NO hay código previo
+                if not line.sample_code:
                     line.sample_code = line.suggested_code

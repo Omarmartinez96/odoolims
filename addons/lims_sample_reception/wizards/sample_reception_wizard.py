@@ -134,9 +134,15 @@ class SampleReceptionWizard(models.TransientModel):
         """Crear líneas automáticamente cuando cambian las muestras"""
         if self.reception_mode == 'individual' and self.sample_id:
             self.sample_lines = [(5, 0, 0)]  # Limpiar líneas existentes
+            
+            # En modo edición, usar el código existente
+            sample_code = False
+            if self.edit_mode and self.reception_id:
+                sample_code = self.reception_id.sample_code
                 
             self.sample_lines = [(0, 0, {
                 'sample_id': self.sample_id.id,
+                'sample_code': sample_code  # Usar código existente o generar nuevo
             })]
         elif self.reception_mode == 'mass' and self.sample_ids:
             self.sample_lines = [(5, 0, 0)]  # Limpiar líneas existentes
