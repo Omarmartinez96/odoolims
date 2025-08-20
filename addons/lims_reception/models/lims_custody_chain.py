@@ -26,6 +26,14 @@ class LimsCustodyChain(models.Model):
         default='/', 
         help="Se genera automaticamente al crear la cadena de custodia"
     )
+
+    custody_chain_sequence = fields.Integer(
+        string='Secuencia Numérica',
+        compute='_compute_custody_chain_sequence',
+        store=True,
+        help='Número consecutivo extraído del código para ordenamiento correcto'
+    )
+
     cliente_id = fields.Many2one(
         'res.partner', 
         string="Cliente", 
@@ -169,6 +177,21 @@ class LimsCustodyChain(models.Model):
         """Calcula si el documento está firmado basándose en la existencia de la firma"""
         for record in self:
             record.is_signed = bool(record.customer_signature)
+
+    @api.depends('custody_chain_code')
+    def _compute_custody_chain_sequence(self):
+        """Extraer número consecutivo del código para ordenamiento correcto"""
+        for record in self:
+            sequence = 0
+            if record.custody_chain_code:
+                try:
+                    # Buscar solo dígitos antes del primer "/"
+                    parts = str(record.custody_chain_code).split('/')
+                    if parts and parts[0].isdigit():
+                        sequence = int(parts[0])
+                except (ValueError, IndexError):
+                    sequence = 0
+            record.custody_chain_sequence = sequence
 
     def action_preview_and_sign(self):
         """Acción para vista previa del PDF y solicitar firma"""
