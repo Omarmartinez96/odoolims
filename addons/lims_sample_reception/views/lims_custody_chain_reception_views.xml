@@ -51,15 +51,16 @@
             </field>
         </record>
 
-        <!-- Search View para Muestras (VERSIÓN SIMPLE) -->
+        <!-- Search View para Muestras (BÁSICO FUNCIONAL) -->
         <record id="view_sample_reception_search" model="ir.ui.view">
-            <field name="name">lims.sample.reception.search</field>
+            <field name="name">sample.reception.search</field>
             <field name="model">lims.sample</field>
             <field name="arch" type="xml">
                 <search string="Buscar Muestras">
-                    <field name="sample_identifier" string="Identificación"/>
-                    <field name="custody_chain_id" string="Cadena de Custodia"/>
-                    <field name="cliente_id" string="Cliente"/>
+                    <field name="sample_identifier"/>
+                    <field name="sample_description"/>
+                    <field name="custody_chain_id"/>
+                    <field name="cliente_id"/>
                 </search>
             </field>
         </record>
