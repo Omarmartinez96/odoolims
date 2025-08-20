@@ -14,14 +14,12 @@
                     <field name="client_code" string="Código Cliente"/>
                     <field name="date_chainofcustody" string="Fecha"/>
                     
-                    <!-- Filtros predefinidos -->
+                    <!-- Filtros predefinidos SIMPLIFICADOS -->
                     <separator/>
-                    <filter name="filter_sin_procesar" string="Sin Procesar" 
-                            domain="[('reception_status_display', '=', 'Sin Procesar')]"/>
-                    <filter name="filter_en_proceso" string="En Proceso" 
-                            domain="[('reception_status_display', '=', 'En Proceso')]"/>
-                    <filter name="filter_completo" string="Completo" 
-                            domain="[('reception_status_display', '=', 'Completo')]"/>
+                    <filter name="filter_en_progreso" string="En Progreso" 
+                            domain="[('chain_of_custody_state', '=', 'in_progress')]"/>
+                    <filter name="filter_completadas" string="Completadas" 
+                            domain="[('chain_of_custody_state', '=', 'done')]"/>
                     
                     <separator/>
                     <filter name="filter_hoy" string="Hoy" 
@@ -36,8 +34,8 @@
                     <group expand="0" string="Agrupar Por">
                         <filter name="group_by_cliente" string="Cliente" 
                                 context="{'group_by': 'cliente_id'}"/>
-                        <filter name="group_by_estado" string="Estado de Recepción" 
-                                context="{'group_by': 'reception_status_display'}"/>
+                        <filter name="group_by_estado" string="Estado de Cadena" 
+                                context="{'group_by': 'chain_of_custody_state'}"/>
                         <filter name="group_by_fecha" string="Fecha" 
                                 context="{'group_by': 'date_chainofcustody'}"/>
                     </group>
@@ -46,7 +44,7 @@
         </record>
 
         <!-- Search View para Muestras -->
-        <record id="view_samples_reception_search" model="ir.ui.view">
+        <record id="view_sample_reception_search" model="ir.ui.view">
             <field name="name">lims.sample.reception.search</field>
             <field name="model">lims.sample</field>
             <field name="arch" type="xml">
@@ -58,23 +56,15 @@
                     <field name="custody_chain_id" string="Cadena de Custodia"/>
                     <field name="cliente_id" string="Cliente"/>
                     
-                    <!-- Filtros predefinidos -->
+                    <!-- Filtros predefinidos SIMPLIFICADOS -->
                     <separator/>
-                    <filter name="filter_pendientes" string="Pendientes" 
+                    <filter name="filter_pendientes" string="Código Pendiente" 
                             domain="[('sample_code', '=', 'Pendiente')]"/>
-                    <filter name="filter_con_codigo" string="Con Código" 
+                    <filter name="filter_con_codigo" string="Con Código Asignado" 
                             domain="[('sample_code', '!=', 'Pendiente')]"/>
                     
                     <separator/>
-                    <filter name="filter_recibidas" string="Recibidas" 
-                            domain="[('sample_reception_state', '=', 'Recibida')]"/>
-                    <filter name="filter_rechazadas" string="Rechazadas" 
-                            domain="[('sample_reception_state', '=', 'Rechazada')]"/>
-                    <filter name="filter_no_recibidas" string="No Recibidas" 
-                            domain="[('sample_reception_state', 'in', ['No Recibida', 'No recibida'])]"/>
-                    
-                    <separator/>
-                    <filter name="filter_hoy" string="Hoy" 
+                    <filter name="filter_hoy" string="Muestras de Hoy" 
                             domain="[('date_chainofcustody', '=', context_today().strftime('%Y-%m-%d'))]"/>
                     <filter name="filter_esta_semana" string="Esta Semana" 
                             domain="[('date_chainofcustody', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
@@ -86,8 +76,6 @@
                                 context="{'group_by': 'custody_chain_id'}" default="1"/>
                         <filter name="group_by_cliente" string="Cliente" 
                                 context="{'group_by': 'cliente_id'}"/>
-                        <filter name="group_by_estado" string="Estado de Recepción" 
-                                context="{'group_by': 'sample_reception_state'}"/>
                         <filter name="group_by_fecha" string="Fecha" 
                                 context="{'group_by': 'date_chainofcustody'}"/>
                     </group>
