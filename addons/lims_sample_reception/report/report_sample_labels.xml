@@ -7,10 +7,6 @@
             <t t-set="company" t-value="env.company"/>
 
             <style>
-                @page {
-                    size: 89mm 29mm;
-                    margin: 0mm;
-                }
                 body {
                     margin: 0 !important;
                     padding: 0 !important;
@@ -57,7 +53,7 @@
                 
                 .sample-code {
                     font-weight: bold;
-                    font-size: 24px;
+                    font-size: 24pt;
                     color: #000;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.1;
@@ -69,7 +65,7 @@
                 }
                 
                 .sample-id {
-                    font-size: 24px;
+                    font-size: 24pt;
                     color: #333;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.0;
@@ -136,10 +132,6 @@
             <t t-set="company" t-value="env.company"/>
 
             <style>
-                @page {
-                    size: 89mm 29mm;
-                    margin: 0mm;
-                }
                 body {
                     margin: 0 !important;
                     padding: 0 !important;
@@ -186,7 +178,7 @@
                 
                 .sample-code {
                     font-weight: bold;
-                    font-size: 24px;
+                    font-size: 24pt;
                     color: #000;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.1;
@@ -198,7 +190,7 @@
                 }
                 
                 .sample-id {
-                    font-size: 24px;
+                    font-size: 24pt;
                     color: #333;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.0;
