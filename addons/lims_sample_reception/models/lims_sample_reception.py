@@ -381,7 +381,8 @@ class LimsSample(models.Model):
 
     has_reception_code = fields.Boolean(
         string='Tiene Código',
-        compute='_compute_has_reception_code'
+        compute='_compute_has_reception_code',
+        store=False  # Forzar cálculo en cada acceso
     )
 
     sample_code = fields.Char(
@@ -445,7 +446,6 @@ class LimsSample(models.Model):
             else:
                 record.sample_reception_state = 'No recibida'
 
-    @api.depends('sample_ids')  # Esto forzará el recálculo
     def _compute_has_reception_code(self):
         """Determinar si la muestra ya tiene código de recepción asignado"""
         for record in self:
