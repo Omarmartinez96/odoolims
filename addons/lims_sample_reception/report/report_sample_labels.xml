@@ -7,17 +7,10 @@
             <t t-set="company" t-value="env.company"/>
 
             <style>
-                @page {
-                    size: 89mm 29mm;
-                    margin: 2mm 3mm;
-                }
-                
                 body {
                     margin: 0 !important;
                     padding: 0 !important;
                     font-family: Arial, sans-serif !important;
-                    width: 83mm;
-                    height: 25mm;
                 }
                 
                 .page {
@@ -31,65 +24,90 @@
                 }
                 
                 .label-container {
-                    width: 83mm;
-                    height: 25mm;
+                    width: 25mm;
+                    height: 85mm;
                     margin: 0;
-                    padding: 0;
+                    padding: 1mm;
                     display: table;
                     table-layout: fixed;
                     background: white;
+                    border: none;
+                }
+                
+                .content-row {
+                    display: table-row;
+                    height: 83mm;
                 }
                 
                 .qr-section {
                     display: table-cell;
-                    width: 25mm;
-                    height: 25mm;
+                    width: 12mm;
                     vertical-align: middle;
                     text-align: center;
-                    padding: 0;
+                    padding-right: 1mm;
+                    border: none;
                 }
                 
                 .info-section {
                     display: table-cell;
-                    width: 58mm;
-                    height: 25mm;
+                    width: 12mm;
                     vertical-align: middle;
                     text-align: center;
-                    padding-left: 2mm;
+                    border: none;
                 }
                 
                 .sample-code {
                     font-weight: bold;
-                    font-size: 12px;
+                    font-size: 8px;
                     color: #000;
                     font-family: Arial, sans-serif !important;
-                    line-height: 1.2;
+                    line-height: 1.1;
                     margin-bottom: 2mm;
+                    word-wrap: break-word;
+                    border: none !important;
+                    background: transparent !important;
+                    outline: none !important;
                 }
                 
                 .sample-id {
-                    font-size: 10px;
+                    font-size: 7px;
                     color: #333;
                     font-family: Arial, sans-serif !important;
-                    line-height: 1.1;
+                    line-height: 1.0;
+                    word-wrap: break-word;
+                    border: none !important;
+                    background: transparent !important;
+                    outline: none !important;
                 }
                 
                 .qr-image {
-                    width: 22mm !important;
-                    height: 22mm !important;
+                    width: 10mm !important;
+                    height: 10mm !important;
                     display: block;
                     margin: 0 auto;
+                    border: none;
                 }
                 
                 .no-qr {
-                    width: 22mm;
-                    height: 22mm;
+                    width: 10mm;
+                    height: 10mm;
                     border: 1px solid #ccc;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 8px;
+                    font-size: 5px;
                     margin: 0 auto;
+                }
+                
+                /* Quitar TODOS los bordes posibles */
+                table, tr, td, div, span {
+                    border: none !important;
+                    outline: none !important;
+                }
+                
+                /* Excepción solo para el placeholder del QR */
+                .no-qr {
+                    border: 1px solid #ccc !important;
                 }
             </style>
 
@@ -97,7 +115,7 @@
                 <t t-foreach="docs" t-as="reception">
                     <div class="article" t-att-data-oe-model="reception._name" t-att-data-oe-id="reception.id">
                         <table class="label-container">
-                            <tr>
+                            <tr class="content-row">
                                 <!-- QR Code (Izquierda) -->
                                 <td class="qr-section">
                                     <img t-if="reception.qr_code_image" 
@@ -130,11 +148,6 @@
             <t t-set="company" t-value="env.company"/>
 
             <style>
-                @page {
-                    size: 89mm 29mm;
-                    margin: 2mm 3mm;
-                }
-                
                 body {
                     margin: 0 !important;
                     padding: 0 !important;
@@ -153,65 +166,90 @@
                 }
                 
                 .label-container {
-                    width: 83mm;
-                    height: 25mm;
+                    width: 25mm;
+                    height: 85mm;
                     margin: 0;
-                    padding: 0;
+                    padding: 1mm;
                     display: table;
                     table-layout: fixed;
                     background: white;
+                    border: none;
+                }
+                
+                .content-row {
+                    display: table-row;
+                    height: 83mm;
                 }
                 
                 .qr-section {
                     display: table-cell;
-                    width: 25mm;
-                    height: 25mm;
+                    width: 12mm;
                     vertical-align: middle;
                     text-align: center;
-                    padding: 0;
+                    padding-right: 1mm;
+                    border: none;
                 }
                 
                 .info-section {
                     display: table-cell;
-                    width: 58mm;
-                    height: 25mm;
+                    width: 12mm;
                     vertical-align: middle;
                     text-align: center;
-                    padding-left: 2mm;
+                    border: none;
                 }
                 
                 .sample-code {
                     font-weight: bold;
-                    font-size: 12px;
+                    font-size: 8px;
                     color: #000;
                     font-family: Arial, sans-serif !important;
-                    line-height: 1.2;
+                    line-height: 1.1;
                     margin-bottom: 2mm;
+                    word-wrap: break-word;
+                    border: none !important;
+                    background: transparent !important;
+                    outline: none !important;
                 }
                 
                 .sample-id {
-                    font-size: 10px;
+                    font-size: 7px;
                     color: #333;
                     font-family: Arial, sans-serif !important;
-                    line-height: 1.1;
+                    line-height: 1.0;
+                    word-wrap: break-word;
+                    border: none !important;
+                    background: transparent !important;
+                    outline: none !important;
                 }
                 
                 .qr-image {
-                    width: 22mm !important;
-                    height: 22mm !important;
+                    width: 10mm !important;
+                    height: 10mm !important;
                     display: block;
                     margin: 0 auto;
+                    border: none;
                 }
                 
                 .no-qr {
-                    width: 22mm;
-                    height: 22mm;
+                    width: 10mm;
+                    height: 10mm;
                     border: 1px solid #ccc;
                     display: flex;
                     align-items: center;
                     justify-content: center;
-                    font-size: 8px;
+                    font-size: 5px;
                     margin: 0 auto;
+                }
+                
+                /* Quitar TODOS los bordes posibles */
+                table, tr, td, div, span {
+                    border: none !important;
+                    outline: none !important;
+                }
+                
+                /* Excepción solo para el placeholder del QR */
+                .no-qr {
+                    border: 1px solid #ccc !important;
                 }
             </style>
 
@@ -222,7 +260,7 @@
                         <t t-if="reception and reception.sample_code and reception.sample_code != '/'">
                             <div class="article" t-att-data-oe-model="custody_chain._name" t-att-data-oe-id="custody_chain.id">
                                 <table class="label-container">
-                                    <tr>
+                                    <tr class="content-row">
                                         <!-- QR Code (Izquierda) -->
                                         <td class="qr-section">
                                             <img t-if="reception and reception.qr_code_image" 
