@@ -53,7 +53,7 @@
                 
                 .sample-code {
                     font-weight: bold;
-                    font-size: 10px;
+                    font-size: 24px;
                     color: #000;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.1;
@@ -65,7 +65,7 @@
                 }
                 
                 .sample-id {
-                    font-size: 9px;
+                    font-size: 24px;
                     color: #333;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.0;
@@ -178,7 +178,7 @@
                 
                 .sample-code {
                     font-weight: bold;
-                    font-size: 10px;
+                    font-size: 24px;
                     color: #000;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.1;
@@ -190,7 +190,7 @@
                 }
                 
                 .sample-id {
-                    font-size: 9px;
+                    font-size: 24px;
                     color: #333;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.0;
