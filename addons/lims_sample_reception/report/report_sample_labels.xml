@@ -7,6 +7,10 @@
             <t t-set="company" t-value="env.company"/>
 
             <style>
+                @page {
+                    size: 89mm 29mm;
+                    margin: 0mm;
+                }
                 body {
                     margin: 0 !important;
                     padding: 0 !important;
@@ -132,6 +136,10 @@
             <t t-set="company" t-value="env.company"/>
 
             <style>
+                @page {
+                    size: 89mm 29mm;
+                    margin: 0mm;
+                }
                 body {
                     margin: 0 !important;
                     padding: 0 !important;
