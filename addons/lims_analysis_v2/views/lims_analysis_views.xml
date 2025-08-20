@@ -7,7 +7,7 @@
             <field name="name">lims.analysis.v2.list</field>
             <field name="model">lims.analysis.v2</field>
             <field name="arch" type="xml">
-                <list string="Análisis de Muestras v2" create="false" default_group_by="custody_chain_id" expand="1" limit="50" groups_limit="50"
+                <list string="Análisis de Muestras v2" create="false" default_group_by="custody_chain_id" expand="1" limit="300" groups_limit="300"
                       decoration-success="signature_state == 'signed'" 
                       decoration-warning="signature_state == 'cancelled'"
                       decoration-info="has_ready_parameters == True">
@@ -351,7 +351,7 @@
                 (0, 0, {'view_mode': 'form', 'view_id': ref('view_lims_analysis_v2_form')})
             ]"/>
             <field name="search_view_id" ref="view_lims_analysis_v2_search"/>
-            <field name="limit">50</field>
+            <field name="limit">300</field>
             <field name="context">{
                 'group_by': 'custody_chain_id', 
                 'create': False,
