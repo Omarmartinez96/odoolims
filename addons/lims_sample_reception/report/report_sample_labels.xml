@@ -47,7 +47,7 @@
                 
                 .info-section {
                     display: table-cell;
-                    width: 60%mm;
+                    width: 60%;
                     vertical-align: middle;
                     text-align: center;
                     border: none;
@@ -55,7 +55,7 @@
                 
                 .sample-code {
                     font-weight: bold;
-                    font-size: 12px;
+                    font-size: 20px;
                     color: #000;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.1;
@@ -67,7 +67,7 @@
                 }
                 
                 .sample-id {
-                    font-size: 11px;
+                    font-size: 18px;
                     color: #333;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.0;
@@ -78,16 +78,16 @@
                 }
                 
                 .qr-image {
-                    width: 14mm !important;
-                    height: 14mm !important;
+                    width: 20mm !important;
+                    height: 20mm !important;
                     display: block;
                     margin: 0 auto;
                     border: none;
                 }
                 
                 .no-qr {
-                    width: 14mm;
-                    height: 14mm;
+                    width: 20mm;
+                    height: 20mm;
                     border: 1px solid #ccc;
                     display: flex;
                     align-items: center;
@@ -197,7 +197,7 @@
                 
                 .sample-code {
                     font-weight: bold;
-                    font-size: 12px;
+                    font-size: 20px;
                     color: #000;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.1;
@@ -209,7 +209,7 @@
                 }
                 
                 .sample-id {
-                    font-size: 11px;
+                    font-size: 18px;
                     color: #333;
                     font-family: Arial, sans-serif !important;
                     line-height: 1.0;
@@ -220,16 +220,16 @@
                 }
                 
                 .qr-image {
-                    width: 14mm !important;
-                    height: 14mm !important;
+                    width: 20mm !important;
+                    height: 20mm !important;
                     display: block;
                     margin: 0 auto;
                     border: none;
                 }
                 
                 .no-qr {
-                    width: 14mm;
-                    height: 14mm;
+                    width: 20mm;
+                    height: 20mm;
                     border: 1px solid #ccc;
                     display: flex;
                     align-items: center;
