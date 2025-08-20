@@ -283,7 +283,14 @@
             <field name="arch" type="xml">
                 <search string="Buscar Análisis v2">
                     <!-- Campos de búsqueda -->
-                    <field name="sample_code"/>
+                    <field name="sample_code" 
+                        filter_domain="['|', '|', '|', '|',
+                                        ('sample_code', 'ilike', self),
+                                        ('custody_chain_code', 'ilike', self),
+                                        ('customer_id.name', 'ilike', self),
+                                        ('sample_identifier', 'ilike', self),
+                                        ('display_name', 'ilike', self)]"
+                        string="🔍 Buscar análisis..."/>
                     <field name="sample_identifier"/>
                     <field name="custody_chain_code"/>
                     <field name="customer_id"/>

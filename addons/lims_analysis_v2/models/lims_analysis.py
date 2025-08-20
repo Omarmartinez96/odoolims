@@ -304,32 +304,6 @@ class LimsAnalysisV2(models.Model):
         for analysis in self:
             analysis.revision_count = len(analysis.revision_ids)
 
-    @api.model
-    def _name_search(self, name, args=None, operator='ilike', limit=100, name_get_uid=None):
-        """Búsqueda mejorada por cliente, cadena, código de muestra"""
-        args = args or []
-        
-        if name:
-            # Buscar en múltiples campos
-            domain = [
-                '|', '|', '|', '|',
-                ('custody_chain_code', operator, name),
-                ('customer_id.name', operator, name),
-                ('sample_code', operator, name),
-                ('sample_identifier', operator, name),
-                ('display_name', operator, name)
-            ]
-            
-            # Combinar con args existentes
-            if args:
-                domain = ['&'] + domain + args
-            else:
-                domain = domain
-                
-            records = self._search(domain, limit=limit, access_rights_uid=name_get_uid)
-            return records
-        
-        return super()._name_search(name, args, operator, limit, name_get_uid)
 
     # ===============================================
     # === MÉTODOS DE CREACIÓN ===
