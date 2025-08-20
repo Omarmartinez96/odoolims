@@ -379,12 +379,6 @@ class LimsSample(models.Model):
         compute='_compute_sample_reception_state'
     )
 
-    has_reception_code = fields.Boolean(
-        string='Tiene Código',
-        compute='_compute_has_reception_code',
-        store=False  # Forzar cálculo en cada acceso
-    )
-
     sample_code = fields.Char(
         string="Código de Muestra",
         compute='_compute_sample_code',
@@ -445,19 +439,6 @@ class LimsSample(models.Model):
                 record.sample_reception_state = states.get(reception.reception_state, 'Sin estado')
             else:
                 record.sample_reception_state = 'No recibida'
-
-    def _compute_has_reception_code(self):
-        """Determinar si la muestra ya tiene código de recepción asignado"""
-        for record in self:
-            reception = self.env['lims.sample.reception'].search([
-                ('sample_id', '=', record.id)
-            ], limit=1)
-            
-            record.has_reception_code = bool(
-                reception and 
-                reception.sample_code and 
-                reception.sample_code != '/'
-            )
 
     # NUEVO MÉTODO PARA WIZARD INDIVIDUAL
     def action_individual_reception_wizard(self):
@@ -534,11 +515,6 @@ class LimsCustodyChain(models.Model):
     )
     samples_pending = fields.Integer(
         string='Pendientes',
-        compute='_compute_reception_stats'
-    )
-
-    reception_status_display = fields.Char(
-        string='Estado General',
         compute='_compute_reception_stats'
     )
 

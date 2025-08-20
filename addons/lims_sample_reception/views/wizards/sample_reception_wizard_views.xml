@@ -11,10 +11,15 @@
                     
                     <!-- Título principal -->
                     <div class="alert alert-info" role="alert" style="margin-bottom: 20px;">
-                        <h4 t-if="edit_mode"><i class="fa fa-edit"/> Editar Recepción de Muestra</h4>
+                        <!-- CAMBIAR ESTAS LÍNEAS: -->
+                        <!-- <h4 t-if="edit_mode"><i class="fa fa-edit"/> Editar Recepción de Muestra</h4>
                         <h4 t-else=""><i class="fa fa-check-circle"/> Procesamiento de Muestras</h4>
                         <p t-if="edit_mode">Modifique los datos de la recepción existente.</p>
-                        <p t-else="">Revise y ajuste los códigos de muestra, luego seleccione el estado final.</p>
+                        <p t-else="">Revise y ajuste los códigos de muestra, luego seleccione el estado final.</p> -->
+                        
+                        <!-- POR ESTAS LÍNEAS SIMPLES: -->
+                        <h4><i class="fa fa-check-circle"/> Procesamiento de Muestras</h4>
+                        <p>Revise y ajuste los códigos de muestra, luego seleccione el estado final.</p>
                     </div>
 
                     <!-- Campos ocultos -->

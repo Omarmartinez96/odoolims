@@ -135,15 +135,15 @@ class SampleReceptionWizard(models.TransientModel):
         if self.reception_mode == 'individual' and self.sample_id:
             self.sample_lines = [(5, 0, 0)]  # Limpiar líneas existentes
             
-            # En modo edición, usar el código existente
-            if self.edit_mode and self.reception_id:
-                sample_code = self.reception_id.sample_code
-            else:
-                sample_code = False  # Se auto-generará
+            # # En modo edición, usar el código existente
+            # if self.edit_mode and self.reception_id:
+            #     sample_code = self.reception_id.sample_code
+            # else:
+            #     sample_code = False  # Se auto-generará
                 
             self.sample_lines = [(0, 0, {
                 'sample_id': self.sample_id.id,
-                'sample_code': sample_code
+                # 'sample_code': sample_code
             })]
         elif self.reception_mode == 'mass' and self.sample_ids:
             self.sample_lines = [(5, 0, 0)]  # Limpiar líneas existentes
@@ -161,33 +161,33 @@ class SampleReceptionWizard(models.TransientModel):
             # Al rechazar, mantener los otros campos pero dar prioridad al motivo
             pass
     
-    @api.model
-    def default_get(self, fields_list):
-        """Pre-cargar datos si es modo edición"""
-        res = super().default_get(fields_list)
+    # @api.model
+    # def default_get(self, fields_list):
+    #     """Pre-cargar datos si es modo edición"""
+    #     res = super().default_get(fields_list)
         
-        # Verificar si es modo edición
-        if self.env.context.get('edit_mode'):
-            reception_id = self.env.context.get('reception_id')
-            if reception_id:
-                reception = self.env['lims.sample.reception'].browse(reception_id)
-                if reception.exists():
-                    # Pre-cargar datos de la recepción existente
-                    res.update({
-                        'edit_mode': True,
-                        'reception_id': reception.id,
-                        'reception_state': reception.reception_state,
-                        'reception_date': reception.reception_date,
-                        'reception_time': reception.reception_time,
-                        'received_by_initials': reception.received_by_initials,
-                        'reception_notes': reception.reception_notes,
-                    })
+    #     # Verificar si es modo edición
+    #     if self.env.context.get('edit_mode'):
+    #         reception_id = self.env.context.get('reception_id')
+    #         if reception_id:
+    #             reception = self.env['lims.sample.reception'].browse(reception_id)
+    #             if reception.exists():
+    #                 # Pre-cargar datos de la recepción existente
+    #                 res.update({
+    #                     'edit_mode': True,
+    #                     'reception_id': reception.id,
+    #                     'reception_state': reception.reception_state,
+    #                     'reception_date': reception.reception_date,
+    #                     'reception_time': reception.reception_time,
+    #                     'received_by_initials': reception.received_by_initials,
+    #                     'reception_notes': reception.reception_notes,
+    #                 })
                     
-                    # Si está rechazada, cargar motivo de rechazo
-                    if reception.reception_state == 'rechazada':
-                        res['rejection_reason'] = reception.reception_notes
+    #                 # Si está rechazada, cargar motivo de rechazo
+    #                 if reception.reception_state == 'rechazada':
+    #                     res['rejection_reason'] = reception.reception_notes
         
-        return res
+    #     return res
 
     def action_confirm_reception(self):
         """Confirmar procesamiento de muestras"""
