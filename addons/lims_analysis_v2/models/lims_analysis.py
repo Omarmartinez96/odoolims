@@ -9,7 +9,7 @@ class LimsAnalysisV2(models.Model):
     _name = 'lims.analysis.v2'
     _description = 'Análisis de Muestra v2'
     _rec_name = 'display_name'
-    _order = 'custody_chain_sequence desc, reception_date desc, create_date desc'
+    _order = 'custody_chain_code desc, reception_date desc, create_date desc'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # ===============================================
@@ -50,13 +50,6 @@ class LimsAnalysisV2(models.Model):
         related='sample_reception_id.sample_id.custody_chain_id.custody_chain_code',
         readonly=True,
         store=True
-    )
-
-    custody_chain_sequence = fields.Integer(
-        string='Secuencia de Cadena',
-        related='custody_chain_id.custody_chain_sequence',
-        store=True,
-        help='Número consecutivo extraído de la cadena de custodia para ordenamiento'
     )
 
     customer_id = fields.Many2one(
@@ -298,6 +291,38 @@ class LimsAnalysisV2(models.Model):
         """Calcular número de revisiones"""
         for analysis in self:
             analysis.revision_count = len(analysis.revision_ids)
+
+    @api.model
+    def search(self, args, offset=0, limit=None, order=None, count=False):
+        """Override search para ordenamiento correcto por número de cadena"""
+        
+        if order and 'custody_chain_code' in order:
+            all_records = super().search(args, offset=0, limit=None, order=None, count=count)
+            
+            if count:
+                return all_records
+            
+            def get_chain_number(record):
+                try:
+                    if record.custody_chain_code:
+                        parts = record.custody_chain_code.split('/')
+                        if parts and parts[0].isdigit():
+                            return int(parts[0])
+                    return 0
+                except:
+                    return 0
+            
+            reverse_order = 'desc' in order.lower()
+            sorted_records = all_records.sorted(key=get_chain_number, reverse=reverse_order)
+            
+            if offset or limit:
+                start = offset or 0
+                end = (start + limit) if limit else None
+                return sorted_records[start:end]
+            
+            return sorted_records
+        
+        return super().search(args, offset, limit, order, count)
 
     # ===============================================
     # === MÉTODOS DE CREACIÓN ===

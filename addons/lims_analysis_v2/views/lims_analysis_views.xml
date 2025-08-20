@@ -14,7 +14,6 @@
                     
                     <!-- Campos invisibles para agrupación -->
                     <field name="custody_chain_id" invisible="1"/>
-                    <field name="custody_chain_sequence" invisible="1"/>
 
                     <!-- Información de la cadena (visible en el grupo) -->
                     <field name="custody_chain_code" string="Cadena"/>
@@ -356,7 +355,7 @@
                 'group_by': 'custody_chain_id', 
                 'create': False,
                 'group_by_no_leaf': True,
-                'orderedBy': [{'name': 'custody_chain_sequence', 'asc': False}]
+                'orderedBy': [{'name': 'custody_chain_code', 'asc': False}]
             }</field>
            
             <field name="help" type="html">
