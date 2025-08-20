@@ -201,8 +201,7 @@
                             type="object"
                             string="Recibir"
                             class="btn-primary"
-                            title="Recibir esta muestra individual"
-                            invisible="has_reception_code"/>
+                            title="Recibir esta muestra individual"/>
 
                 </list>
             </field>
