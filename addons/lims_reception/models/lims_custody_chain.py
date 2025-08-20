@@ -24,12 +24,13 @@ class LimsCustodyChain(models.Model):
     custody_chain_code = fields.Char(
         string="Código de Cadena de Custodia", 
         copy=False, 
-        default='/', 
-        help="Se genera automaticamente al crear la cadena de custodia"
+        store=True,
+        help='Número consecutivo extraído del código para ordenamiento correcto'
     )
 
     custody_chain_sequence = fields.Integer(
         string='Secuencia Numérica',
+        compute='_compute_custody_chain_sequence',
         default=0,
         help='Número consecutivo extraído del código para ordenamiento correcto'
     )
@@ -467,4 +468,16 @@ class LimsCustodyChain(models.Model):
             }
         }
 
-            
+    @api.depends('custody_chain_code')
+    def _compute_custody_chain_sequence(self):
+        """Extraer número consecutivo del código para ordenamiento correcto"""
+        for record in self:
+            sequence = 0
+            if record.custody_chain_code:
+                try:
+                    parts = str(record.custody_chain_code).split('/')
+                    if parts and parts[0].isdigit():
+                        sequence = int(parts[0])
+                except (ValueError, IndexError):
+                    sequence = 0
+            record.custody_chain_sequence = sequence
