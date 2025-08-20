@@ -18,10 +18,8 @@
         'lims_customer',
         'lims_reception',
         'lims_paperformat',
+        'barcodes', 
     ],
-    'external_dependencies': {
-        'python': ['python-barcode', 'Pillow'],
-    },
     'data': [
         'security/ir.model.access.csv',
         'data/sequences.xml',

@@ -252,21 +252,14 @@ class LimsSampleReception(models.Model):
     
     @api.depends('sample_code')
     def _compute_barcode_image(self):
-        """Generar imagen de código de barras"""
+        """Generar imagen de código de barras usando módulo barcodes de Odoo"""
         for record in self:
             if record.sample_code and record.sample_code != '/':
                 try:
-                    import barcode
-                    from barcode.writer import ImageWriter
-                    import io
-                    import base64
-                    
-                    # Usar Code128 que es muy eficiente
-                    code128 = barcode.get('code128', record.sample_code, writer=ImageWriter())
-                    buffer = io.BytesIO()
-                    code128.write(buffer)
-                    record.barcode_image = base64.b64encode(buffer.getvalue())
-                except ImportError:
+                    # Usar el sistema de códigos de barras de Odoo
+                    barcode_data = record.sample_code
+                    record.barcode_image = self.env['ir.actions.report']._run_wkhtmltopdf([], data={'barcode': barcode_data})
+                except:
                     record.barcode_image = False
             else:
                 record.barcode_image = False
