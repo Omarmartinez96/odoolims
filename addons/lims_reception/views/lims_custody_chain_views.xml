@@ -236,6 +236,31 @@
       <field name="view_id" ref="view_lims_custody_chain_list"/>
     </record>
 
+    <!-- Server Action para recalcular todas las secuencias -->
+    <record id="action_recompute_all_sequences" model="ir.actions.server">
+        <field name="name">🔄 Recalcular Todas las Secuencias</field>
+        <field name="model_id" ref="model_lims_custody_chain"/>
+        <field name="binding_model_id" ref="model_lims_custody_chain"/>
+        <field name="binding_view_types">list</field>
+        <field name="state">code</field>
+        <field name="code">
+    # Recalcular todas las cadenas de custodia
+    all_chains = env['lims.custody_chain'].search([])
+    for chain in all_chains:
+        chain._compute_custody_chain_sequence()
+
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Recálculo Completado',
+            'message': f'Se recalcularon {len(all_chains)} cadenas de custodia',
+            'type': 'success',
+        }
+    }
+        </field>
+    </record>
+
     <!-- Menús -->
     <menuitem id="lims_custody_menu_root" 
               name="Cadenas de Custodia" sequence="2"/>

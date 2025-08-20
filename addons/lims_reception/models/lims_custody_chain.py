@@ -481,3 +481,18 @@ class LimsCustodyChain(models.Model):
                 'default_custody_chain_id': self.id,
             }
         }
+
+    def action_recompute_all_sequences(self):
+        """Recalcular todas las secuencias de cadenas"""
+        all_chains = self.env['lims.custody_chain'].search([])
+        for chain in all_chains:
+            chain._compute_custody_chain_sequence()
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Recálculo Completado',
+                'message': f'Se recalcularon {len(all_chains)} cadenas de custodia',
+                'type': 'success',
+            }
+        }
