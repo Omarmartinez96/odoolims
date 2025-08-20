@@ -9,7 +9,7 @@ class LimsAnalysisV2(models.Model):
     _name = 'lims.analysis.v2'
     _description = 'Análisis de Muestra v2'
     _rec_name = 'display_name'
-    _order = 'custody_chain_sequence desc, reception_date desc'
+    _order = 'custody_chain_sequence desc, reception_date desc, create_date desc'
     _inherit = ['mail.thread', 'mail.activity.mixin']
 
     # ===============================================
@@ -61,7 +61,8 @@ class LimsAnalysisV2(models.Model):
     custody_chain_sequence = fields.Integer(
         string='Secuencia de Cadena',
         related='custody_chain_id.custody_chain_sequence',
-        store=True
+        store=True,
+        help='Número consecutivo extraído de la cadena de custodia para ordenamiento'
     )
 
     customer_id = fields.Many2one(
