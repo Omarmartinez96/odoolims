@@ -11,8 +11,10 @@
                     
                     <!-- Título principal -->
                     <div class="alert alert-info" role="alert" style="margin-bottom: 20px;">
-                        <h4><i class="fa fa-check-circle"/> Procesamiento de Muestras</h4>
-                        <p>Revise y ajuste los códigos de muestra, luego seleccione el estado final.</p>
+                        <h4 t-if="edit_mode"><i class="fa fa-edit"/> Editar Recepción de Muestra</h4>
+                        <h4 t-else=""><i class="fa fa-check-circle"/> Procesamiento de Muestras</h4>
+                        <p t-if="edit_mode">Modifique los datos de la recepción existente.</p>
+                        <p t-else="">Revise y ajuste los códigos de muestra, luego seleccione el estado final.</p>
                     </div>
 
                     <!-- Campos ocultos -->
@@ -20,6 +22,8 @@
                         <field name="reception_mode" invisible="1"/>
                         <field name="sample_id" invisible="1"/>
                         <field name="sample_ids" invisible="1"/>
+                        <field name="edit_mode" invisible="1"/>
+                        <field name="reception_id" invisible="1"/>
                     </group>
 
                     <!-- Tabla de muestras con códigos editables -->

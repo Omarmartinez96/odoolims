@@ -379,6 +379,11 @@ class LimsSample(models.Model):
         compute='_compute_sample_reception_state'
     )
 
+    has_reception_code = fields.Boolean(
+        string='Tiene Código',
+        compute='_compute_has_reception_code'
+    )
+
     sample_code = fields.Char(
         string="Código de Muestra",
         compute='_compute_sample_code',
@@ -440,6 +445,20 @@ class LimsSample(models.Model):
             else:
                 record.sample_reception_state = 'No recibida'
 
+    @api.depends('sample_ids')  # Esto forzará el recálculo
+    def _compute_has_reception_code(self):
+        """Determinar si la muestra ya tiene código de recepción asignado"""
+        for record in self:
+            reception = self.env['lims.sample.reception'].search([
+                ('sample_id', '=', record.id)
+            ], limit=1)
+            
+            record.has_reception_code = bool(
+                reception and 
+                reception.sample_code and 
+                reception.sample_code != '/'
+            )
+
     # NUEVO MÉTODO PARA WIZARD INDIVIDUAL
     def action_individual_reception_wizard(self):
         """Abrir wizard para recepción individual"""
@@ -454,6 +473,32 @@ class LimsSample(models.Model):
             'context': {
                 'default_reception_mode': 'individual',
                 'default_sample_id': self.id,
+            }
+        }
+
+    def action_edit_reception_wizard(self):
+        """Abrir wizard para editar recepción existente"""
+        self.ensure_one()
+        
+        # Buscar la recepción existente
+        reception = self.env['lims.sample.reception'].search([
+            ('sample_id', '=', self.id)
+        ], limit=1)
+        
+        if not reception:
+            raise UserError(_('No se encontró recepción para esta muestra.'))
+        
+        return {
+            'name': _('Editar Recepción de Muestra'),
+            'type': 'ir.actions.act_window',
+            'res_model': 'lims.sample.reception.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_reception_mode': 'individual',
+                'default_sample_id': self.id,
+                'edit_mode': True,  # Indicador de modo edición
+                'reception_id': reception.id,  # ID de la recepción a editar
             }
         }
 
