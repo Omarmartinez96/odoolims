@@ -2,30 +2,38 @@
 <odoo>
     <data>
 
-        <!-- Vista especializada para recepción - LISTA -->
-        <record id="view_custody_chain_reception_list" model="ir.ui.view">
-            <field name="name">lims.custody_chain.reception.list</field>
-            <field name="model">lims.custody_chain</field>
+        <!-- Search View para Muestras (SIN campos computados) -->
+        <record id="view_sample_reception_search" model="ir.ui.view">
+            <field name="name">lims.sample.search</field>  <!-- CAMBIO AQUÍ -->
+            <field name="model">lims.sample</field>
             <field name="arch" type="xml">
-                <list string="Cadenas de Custodia - Recepción" create="false" edit="false">
-                    <field name="custody_chain_code"/>
-                    <field name="cliente_id"/>
-                    <field name="date_chainofcustody"/>
-                    <field name="client_code"/>
-                    <field name="chain_of_custody_state"/>
+                <search string="Buscar Muestras">
+                    <!-- Campos de búsqueda rápida -->
+                    <field name="sample_identifier" string="Identificación"/>
+                    <field name="sample_description" string="Descripción"/>
+                    <field name="custody_chain_id" string="Cadena de Custodia"/>
+                    <field name="cliente_id" string="Cliente"/>
                     
-                    <!-- Campos de estadísticas de recepción -->
-                    <field name="samples_total"/>
-                    <field name="samples_received" decoration-success="samples_received > 0"/>
-                    <field name="samples_rejected" decoration-danger="samples_rejected > 0"/>
-                    <field name="samples_pending" decoration-warning="samples_pending > 0"/>
+                    <!-- Filtros predefinidos SOLO CON CAMPOS BASE -->
+                    <separator/>
+                    <filter name="filter_hoy" string="Muestras de Hoy" 
+                            domain="[('date_chainofcustody', '=', context_today().strftime('%Y-%m-%d'))]"/>
+                    <filter name="filter_esta_semana" string="Esta Semana" 
+                            domain="[('date_chainofcustody', '&gt;=', (context_today() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                    <filter name="filter_este_mes" string="Este Mes" 
+                            domain="[('date_chainofcustody', '&gt;=', (context_today().replace(day=1)).strftime('%Y-%m-%d'))]"/>
                     
-                    <!-- Estado general computado -->
-                    <field name="reception_status_display" 
-                           decoration-success="reception_status_display == 'Completo'" 
-                           decoration-warning="reception_status_display == 'En Proceso'" 
-                           decoration-muted="reception_status_display == 'Sin Procesar'"/>
-                </list>
+                    <!-- Agrupaciones -->
+                    <separator/>
+                    <group expand="0" string="Agrupar Por">
+                        <filter name="group_by_custody_chain" string="Cadena de Custodia" 
+                                context="{'group_by': 'custody_chain_id'}" default="1"/>
+                        <filter name="group_by_cliente" string="Cliente" 
+                                context="{'group_by': 'cliente_id'}"/>
+                        <filter name="group_by_fecha" string="Fecha" 
+                                context="{'group_by': 'date_chainofcustody'}"/>
+                    </group>
+                </search>
             </field>
         </record>
 
