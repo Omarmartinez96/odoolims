@@ -334,7 +334,7 @@ class LimsAnalysisV2(models.Model):
             
             return sorted_records
         
-        return super().search(args, offset, limit, order, count)
+        return super().search(args, offset=offset, limit=limit, order=order, count=count)
 
     # ===============================================
     # === MÉTODOS DE CREACIÓN ===
