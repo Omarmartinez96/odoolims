@@ -25,6 +25,11 @@
                     padding: 0;
                 }
                 
+                .article {
+                    margin: 0;
+                    padding: 0;
+                }
+                
                 .label-container {
                     width: 83mm;
                     height: 25mm;
@@ -90,28 +95,30 @@
 
             <div class="page">
                 <t t-foreach="docs" t-as="reception">
-                    <table class="label-container">
-                        <tr>
-                            <!-- QR Code (Izquierda) -->
-                            <td class="qr-section">
-                                <img t-if="reception.qr_code_image" 
-                                     t-att-src="'data:image/png;base64,' + reception.qr_code_image.decode('utf-8')" 
-                                     class="qr-image"
-                                     alt="QR Code"/>
-                                <div t-else="" class="no-qr">Sin QR</div>
-                            </td>
-                            
-                            <!-- Información (Derecha) -->
-                            <td class="info-section">
-                                <div class="sample-code">
-                                    <span t-esc="reception.sample_code or 'Sin código'"/>
-                                </div>
-                                <div class="sample-id">
-                                    <span t-esc="reception.sample_identifier"/>
-                                </div>
-                            </td>
-                        </tr>
-                    </table>
+                    <div class="article" t-att-data-oe-model="reception._name" t-att-data-oe-id="reception.id">
+                        <table class="label-container">
+                            <tr>
+                                <!-- QR Code (Izquierda) -->
+                                <td class="qr-section">
+                                    <img t-if="reception.qr_code_image" 
+                                         t-att-src="'data:image/png;base64,' + reception.qr_code_image.decode('utf-8')" 
+                                         class="qr-image"
+                                         alt="QR Code"/>
+                                    <div t-else="" class="no-qr">Sin QR</div>
+                                </td>
+                                
+                                <!-- Información (Derecha) -->
+                                <td class="info-section">
+                                    <div class="sample-code">
+                                        <span t-esc="reception.sample_code or 'Sin código'"/>
+                                    </div>
+                                    <div class="sample-id">
+                                        <span t-esc="reception.sample_identifier"/>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </t>
             </div>
         </t>
@@ -139,6 +146,12 @@
                     padding: 0;
                 }
                 
+                .article {
+                    margin: 0;
+                    padding: 0;
+                    page-break-after: always;
+                }
+                
                 .label-container {
                     width: 83mm;
                     height: 25mm;
@@ -147,7 +160,6 @@
                     display: table;
                     table-layout: fixed;
                     background: white;
-                    page-break-after: always;
                 }
                 
                 .qr-section {
@@ -208,28 +220,30 @@
                     <t t-foreach="custody_chain.sample_ids" t-as="sample">
                         <t t-set="reception" t-value="env['lims.sample.reception'].search([('sample_id', '=', sample.id)], limit=1)"/>
                         <t t-if="reception and reception.sample_code and reception.sample_code != '/'">
-                            <table class="label-container">
-                                <tr>
-                                    <!-- QR Code (Izquierda) -->
-                                    <td class="qr-section">
-                                        <img t-if="reception and reception.qr_code_image" 
-                                             t-att-src="'data:image/png;base64,' + reception.qr_code_image.decode('utf-8')" 
-                                             class="qr-image"
-                                             alt="QR Code"/>
-                                        <div t-else="" class="no-qr">Sin QR</div>
-                                    </td>
-                                    
-                                    <!-- Información (Derecha) -->
-                                    <td class="info-section">
-                                        <div class="sample-code">
-                                            <span t-esc="reception.sample_code or 'Sin código'"/>
-                                        </div>
-                                        <div class="sample-id">
-                                            <span t-esc="sample.sample_identifier"/>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </table>
+                            <div class="article" t-att-data-oe-model="custody_chain._name" t-att-data-oe-id="custody_chain.id">
+                                <table class="label-container">
+                                    <tr>
+                                        <!-- QR Code (Izquierda) -->
+                                        <td class="qr-section">
+                                            <img t-if="reception and reception.qr_code_image" 
+                                                 t-att-src="'data:image/png;base64,' + reception.qr_code_image.decode('utf-8')" 
+                                                 class="qr-image"
+                                                 alt="QR Code"/>
+                                            <div t-else="" class="no-qr">Sin QR</div>
+                                        </td>
+                                        
+                                        <!-- Información (Derecha) -->
+                                        <td class="info-section">
+                                            <div class="sample-code">
+                                                <span t-esc="reception.sample_code or 'Sin código'"/>
+                                            </div>
+                                            <div class="sample-id">
+                                                <span t-esc="sample.sample_identifier"/>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </t>
                     </t>
                 </t>
