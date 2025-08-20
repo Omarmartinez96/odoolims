@@ -32,7 +32,7 @@
     </record>
     
     <record id="paperformat_dymo_label" model="report.paperformat">
-        <field name="name">Etiqueta DYMO 1-1/8" x 3-1/2" (Horizontal)</field>
+        <field name="name">Etiqueta DYMO 1-1/8" x 3-1/2" (Vertical)</field>
         <field name="default" eval="False"/>
         <field name="format">custom</field>
         <field name="page_height">29</field>
