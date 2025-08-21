@@ -36,8 +36,8 @@ class SampleReceptionLine(models.TransientModel):
     
     sample_code = fields.Char(
         string='Código de Muestra',
-        required=True,
-        help='Editable - se generará automáticamente pero puede modificarse'
+        required=False,
+        help='Se genera automáticamente solo si el estado es "Recibida"'
     )
     
     @api.depends('sample_id')

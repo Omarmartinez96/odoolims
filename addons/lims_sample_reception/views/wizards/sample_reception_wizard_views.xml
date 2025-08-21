@@ -29,10 +29,10 @@
                         <field name="sample_lines" nolabel="1">
                             <list string="Muestras" editable="bottom">
                                 <field name="sample_id" column_invisible="1"/>
-                                <field name="custody_chain_code" readonly="1" string="CC"/>
                                 <field name="sample_identifier" readonly="1"/>
+                                <field name="custody_chain_code" readonly="1" string="CC"/>
                                 <field name="suggested_code" readonly="1" string="Sugerido"/>
-                                <field name="sample_code" placeholder="Se asigna automáticamente si es 'Recibida'"/>
+                                <field name="sample_code" placeholder="Se asigna automáticamente si es 'Recibida'" optional="show"/>
                             </list>
                         </field>
                     </group>
