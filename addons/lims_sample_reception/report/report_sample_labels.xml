@@ -41,22 +41,28 @@
                         <table style="width: 100%; height: 100%; margin: 0; padding: 0; display: table; table-layout: auto; background: white;" class="table-borderless">
                             <tr class="content-row">
                                 <!-- Código de Barras (Izquierda) -->
-                                <td style="display: table-cell; width: 30%; vertical-align: middle; text-align: center; padding: 8mm 1mm 8mm 2mm; border: none;">
-                                    <div t-field="reception.sample_code_barcode" 
-                                        t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 350, 'height': 80}"/>
+                                <td style="display: table-cell; width: 30%; border: none;">
+                                    <div style="display: -webkit-box; -webkit-box-pack: center; -webkit-box-orient: vertical; -webkit-box-align: center; height: 25mm; text-align: center;">
+                                        <div t-field="reception.sample_code_barcode" 
+                                            t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 350, 'height': 80}"/>
+                                    </div>
                                 </td>
 
                                 <!-- Información (Derecha) -->
-                                <td style="display: table-cell; width: 70%; vertical-align: middle; text-align: center; padding: 8mm 2mm; border: none;">
-                                    <t t-set="is_long" t-value="len(reception.sample_identifier or '') > 15"/>
-                                    <t t-set="code_font" t-value="'26px' if is_long else '32px'"/>
-                                    <t t-set="id_font" t-value="'22px' if is_long else '28px'"/>
-                                    
-                                    <div t-attf-style="font-weight: bold; font-size: #{code_font}; color: #000; font-family: Arial, sans-serif; line-height: 1.1; margin-bottom: 2mm; text-align: center;">
-                                        <span t-esc="reception.sample_code or 'Sin código'"/>
-                                    </div>
-                                    <div t-attf-style="font-size: #{id_font}; color: #333; font-family: Arial, sans-serif; line-height: 1.0; text-align: center; word-break: break-word;">
-                                        <span t-esc="reception.sample_identifier"/>
+                                <td style="display: table-cell; width: 70%; border: none;">
+                                    <div style="display: -webkit-box; -webkit-box-pack: center; -webkit-box-orient: vertical; -webkit-box-align: center; height: 25mm; text-align: center;">
+                                        <div>
+                                            <t t-set="is_long" t-value="len(reception.sample_identifier or '') > 15"/>
+                                            <t t-set="code_font" t-value="'26px' if is_long else '32px'"/>
+                                            <t t-set="id_font" t-value="'22px' if is_long else '28px'"/>
+                                            
+                                            <div t-attf-style="font-weight: bold; font-size: #{code_font}; color: #000; font-family: Arial, sans-serif; line-height: 1.1; margin-bottom: 2mm; text-align: center;">
+                                                <span t-esc="reception.sample_code or 'Sin código'"/>
+                                            </div>
+                                            <div t-attf-style="font-size: #{id_font}; color: #333; font-family: Arial, sans-serif; line-height: 1.0; text-align: center; word-break: break-word;">
+                                                <span t-esc="reception.sample_identifier"/>
+                                            </div>
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -110,22 +116,28 @@
                                 <table style="width: 100%; height: 100%; margin: 0; padding: 0; display: table; table-layout: auto; background: white;" class="table-borderless">
                                     <tr class="content-row">
                                         <!-- Código de Barras (Izquierda) -->
-                                        <td style="display: table-cell; width: 30%; vertical-align: middle; text-align: center; padding: 8mm 1mm 8mm 2mm; border: none;">
-                                            <div t-field="reception.sample_code_barcode" 
-                                                t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 350, 'height': 80}"/>
+                                        <td style="display: table-cell; width: 30%; border: none;">
+                                            <div style="display: -webkit-box; -webkit-box-pack: center; -webkit-box-orient: vertical; -webkit-box-align: center; height: 25mm; text-align: center;">
+                                                <div t-field="reception.sample_code_barcode" 
+                                                    t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 350, 'height': 80}"/>
+                                            </div>
                                         </td>
 
                                         <!-- Información (Derecha) -->
-                                        <td style="display: table-cell; width: 70%; vertical-align: middle; text-align: center; padding: 8mm 2mm; border: none;">
-                                            <t t-set="is_long" t-value="len(reception.sample_identifier or '') > 15"/>
-                                            <t t-set="code_font" t-value="'26px' if is_long else '32px'"/>
-                                            <t t-set="id_font" t-value="'22px' if is_long else '28px'"/>
-                                            
-                                            <div t-attf-style="font-weight: bold; font-size: #{code_font}; color: #000; font-family: Arial, sans-serif; line-height: 1.1; margin-bottom: 2mm; text-align: center;">
-                                                <span t-esc="reception.sample_code or 'Sin código'"/>
-                                            </div>
-                                            <div t-attf-style="font-size: #{id_font}; color: #333; font-family: Arial, sans-serif; line-height: 1.0; text-align: center; word-break: break-word;">
-                                                <span t-esc="reception.sample_identifier"/>
+                                        <td style="display: table-cell; width: 70%; border: none;">
+                                            <div style="display: -webkit-box; -webkit-box-pack: center; -webkit-box-orient: vertical; -webkit-box-align: center; height: 25mm; text-align: center;">
+                                                <div>
+                                                    <t t-set="is_long" t-value="len(reception.sample_identifier or '') > 15"/>
+                                                    <t t-set="code_font" t-value="'26px' if is_long else '32px'"/>
+                                                    <t t-set="id_font" t-value="'22px' if is_long else '28px'"/>
+                                                    
+                                                    <div t-attf-style="font-weight: bold; font-size: #{code_font}; color: #000; font-family: Arial, sans-serif; line-height: 1.1; margin-bottom: 2mm; text-align: center;">
+                                                        <span t-esc="reception.sample_code or 'Sin código'"/>
+                                                    </div>
+                                                    <div t-attf-style="font-size: #{id_font}; color: #333; font-family: Arial, sans-serif; line-height: 1.0; text-align: center; word-break: break-word;">
+                                                        <span t-esc="reception.sample_identifier"/>
+                                                    </div>
+                                                </div>
                                             </div>
                                         </td>
                                     </tr>
