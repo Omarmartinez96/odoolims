@@ -84,7 +84,7 @@
                                 <!-- QR Code (Izquierda) -->
                                 <td class="barcode-section">
                                     <div t-field="reception.sample_code" 
-                                        t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 600, 'height': 200, 'img_style': 'width:100%;height:auto;'}"/>
+                                        t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 800, 'height': 300, 'img_style': 'width:90%;height:auto;max-height:15mm;'}"/>
                                 </td>
                                 
                                 <!-- Información (Derecha) -->
@@ -190,7 +190,7 @@
                                         <!-- Barcode (Izquierda) -->
                                         <td class="barcode-section">
                                             <div t-field="reception.sample_code" 
-                                                t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 600, 'height': 200, 'img_style': 'width:100%;height:auto;'}"/>
+                                                t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 800, 'height': 300, 'img_style': 'width:90%;height:auto;max-height:15mm;'}"/>
                                         </td>
                                         
                                         <!-- Información (Derecha) -->
