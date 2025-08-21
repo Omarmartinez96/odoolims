@@ -162,11 +162,23 @@
                                         decoration-danger="sample_reception_state == 'Rechazada'" 
                                         decoration-warning="sample_reception_state == 'No Recibida'"
                                         decoration-muted="sample_reception_state == 'Sin Procesar'"/>
+                                    
+                                    <!-- Botón Recibir (para muestras sin código) -->
                                     <button name="action_individual_reception_wizard" 
                                             type="object" 
                                             string="Recibir" 
                                             class="btn-primary" 
-                                            title="Recibir esta muestra individual"/>
+                                            title="Recibir esta muestra individual"
+                                            invisible="sample_code != 'Pendiente'"/>
+                                    
+                                    <!-- Botón Editar (para muestras con código asignado) -->
+                                    <button name="action_edit_reception_wizard" 
+                                            type="object" 
+                                            string="Editar" 
+                                            class="btn-warning" 
+                                            title="Editar recepción existente"
+                                            invisible="sample_code == 'Pendiente'"/>
+                                    
                                     <button name="action_print_sample_label" 
                                             type="object" 
                                             string="🏷️" 
