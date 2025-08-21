@@ -48,10 +48,10 @@
                                 
                                 <!-- Información (Derecha) -->
                                 <td style="display: table-cell; width: 60%; vertical-align: middle; text-align: center; border: none;">
-                                    <div style="font-weight: bold; font-size: 22px; color: #000; font-family: Arial, sans-serif; line-height: 1.1; margin-bottom: 2mm; text-align: center;">
+                                    <div style="font-weight: bold; font-size: 18px; color: #000; font-family: Arial, sans-serif; line-height: 1.1; margin-bottom: 2mm; text-align: center;">
                                         <span t-esc="reception.sample_code or 'Sin código'"/>
                                     </div>
-                                    <div style="font-size: 18px; color: #333; font-family: Arial, sans-serif; line-height: 1.0; text-align: center;">
+                                    <div style="font-size: 14px; color: #333; font-family: Arial, sans-serif; line-height: 1.0; text-align: center;">
                                         <span t-esc="reception.sample_identifier"/>
                                     </div>
                                 </td>
@@ -113,10 +113,10 @@
                                         
                                         <!-- Información (Derecha) -->
                                         <td style="display: table-cell; width: 65%; vertical-align: middle; text-align: center; border: none;">
-                                            <div style="font-weight: bold; font-size: 22px; color: #000; font-family: Arial, sans-serif; line-height: 1.1; margin-bottom: 2mm; text-align: center;">
+                                            <div style="font-weight: bold; font-size: 18px; color: #000; font-family: Arial, sans-serif; line-height: 1.1; margin-bottom: 2mm; text-align: center;">
                                                 <span t-esc="reception.sample_code or 'Sin código'"/>
                                             </div>
-                                            <div style="font-size: 18px; color: #333; font-family: Arial, sans-serif; line-height: 1.0; text-align: center;">
+                                            <div style="font-size: 14px; color: #333; font-family: Arial, sans-serif; line-height: 1.0; text-align: center;">
                                                 <span t-esc="sample.sample_identifier"/>
                                             </div>
                                         </td>
