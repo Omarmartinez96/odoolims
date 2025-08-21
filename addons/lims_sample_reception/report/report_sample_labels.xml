@@ -43,7 +43,7 @@
                                 <!-- Código de Barras (Izquierda) -->
                                 <td style="display: table-cell; width: 40%; vertical-align: top; text-align: center; padding-top: 30mm; border: none;">
                                     <div t-field="reception.sample_code_barcode" 
-                                        t-options="{'widget': 'barcode', 'symbology': 'Code128', 'width': 650, 'height': 100}"/>
+                                        t-options="{'widget': 'barcode', 'symbology': 'Code128', 'width': 650, 'height': auto}"/>
                                 </td>
 
                                 <!-- Información (Derecha) -->
@@ -112,7 +112,7 @@
                                         <!-- Código de Barras (Izquierda) -->
                                         <td style="display: table-cell; width: 40%; vertical-align: top; text-align: center; padding-top: 30mm; border: none;">
                                             <div t-field="reception.sample_code_barcode" 
-                                                t-options="{'widget': 'barcode', 'symbology': 'Code128', 'width': 650, 'height': 100}"/>
+                                                t-options="{'widget': 'barcode', 'symbology': 'Code128', 'width': 650, 'height': auto}"/>
                                         </td>
 
                                         <!-- Información (Derecha) -->
