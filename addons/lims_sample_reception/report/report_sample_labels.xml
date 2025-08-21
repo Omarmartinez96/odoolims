@@ -41,17 +41,19 @@
                         <table style="width: 100%; height: 100%; margin: 0; padding: 0; display: table; table-layout: auto; background: white;" class="table-borderless">
                             <tr class="content-row">
                                 <!-- Código de Barras (Izquierda) -->
-                                <td style="display: table-cell; width: 30%; border: none;">
-                                    <div style="display: -webkit-box; -webkit-box-pack: center; -webkit-box-orient: vertical; -webkit-box-align: center; height: 25mm; text-align: center;">
-                                        <div t-field="reception.sample_code_barcode" 
-                                            t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 350, 'height': 80}"/>
+                                <td style="display: table-cell; width: 30%; height: 25mm; border: none;">
+                                    <div style="display: table; height: 100%; width: 100%;">
+                                        <div style="display: table-cell; height: 100%; vertical-align: middle; text-align: center;">
+                                            <div t-field="reception.sample_code_barcode" 
+                                                t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 350, 'height': 80}"/>
+                                        </div>
                                     </div>
                                 </td>
 
                                 <!-- Información (Derecha) -->
-                                <td style="display: table-cell; width: 70%; border: none;">
-                                    <div style="display: -webkit-box; -webkit-box-pack: center; -webkit-box-orient: vertical; -webkit-box-align: center; height: 25mm; text-align: center;">
-                                        <div>
+                                <td style="display: table-cell; width: 70%; height: 25mm; border: none;">
+                                    <div style="display: table; height: 100%; width: 100%;">
+                                        <div style="display: table-cell; height: 100%; vertical-align: middle; text-align: center;">
                                             <t t-set="is_long" t-value="len(reception.sample_identifier or '') > 15"/>
                                             <t t-set="code_font" t-value="'26px' if is_long else '32px'"/>
                                             <t t-set="id_font" t-value="'22px' if is_long else '28px'"/>
@@ -116,17 +118,19 @@
                                 <table style="width: 100%; height: 100%; margin: 0; padding: 0; display: table; table-layout: auto; background: white;" class="table-borderless">
                                     <tr class="content-row">
                                         <!-- Código de Barras (Izquierda) -->
-                                        <td style="display: table-cell; width: 30%; border: none;">
-                                            <div style="display: -webkit-box; -webkit-box-pack: center; -webkit-box-orient: vertical; -webkit-box-align: center; height: 25mm; text-align: center;">
-                                                <div t-field="reception.sample_code_barcode" 
-                                                    t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 350, 'height': 80}"/>
+                                        <td style="display: table-cell; width: 30%; height: 25mm; border: none;">
+                                            <div style="display: table; height: 100%; width: 100%;">
+                                                <div style="display: table-cell; height: 100%; vertical-align: middle; text-align: center;">
+                                                    <div t-field="reception.sample_code_barcode" 
+                                                        t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 350, 'height': 80}"/>
+                                                </div>
                                             </div>
                                         </td>
 
                                         <!-- Información (Derecha) -->
-                                        <td style="display: table-cell; width: 70%; border: none;">
-                                            <div style="display: -webkit-box; -webkit-box-pack: center; -webkit-box-orient: vertical; -webkit-box-align: center; height: 25mm; text-align: center;">
-                                                <div>
+                                        <td style="display: table-cell; width: 70%; height: 25mm; border: none;">
+                                            <div style="display: table; height: 100%; width: 100%;">
+                                                <div style="display: table-cell; height: 100%; vertical-align: middle; text-align: center;">
                                                     <t t-set="is_long" t-value="len(reception.sample_identifier or '') > 15"/>
                                                     <t t-set="code_font" t-value="'26px' if is_long else '32px'"/>
                                                     <t t-set="id_font" t-value="'22px' if is_long else '28px'"/>
