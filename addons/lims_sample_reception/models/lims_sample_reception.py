@@ -321,13 +321,10 @@ class LimsSampleReception(models.Model):
 
     @api.depends('sample_code')
     def _compute_sample_code_barcode(self):
-        """Generar código reducido para código de barras"""
+        """Usar código completo para código de barras"""
         for record in self:
-            if record.sample_code and '-' in record.sample_code:
-                # Extraer solo la parte después del guión: PFI-068/0001 -> 068/0001
-                record.sample_code_barcode = record.sample_code.split('-')[1]
-            else:
-                record.sample_code_barcode = record.sample_code or ''
+            # Usar el código COMPLETO en el código de barras
+            record.sample_code_barcode = record.sample_code or ''
 
     # ==================== MÉTODOS DEPRECADOS ====================
     # NOTA: Estos métodos están deprecados y solo se mantienen por compatibilidad
