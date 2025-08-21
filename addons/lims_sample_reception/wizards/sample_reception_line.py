@@ -64,8 +64,7 @@ class SampleReceptionLine(models.TransientModel):
                         line.sample_code = existing_reception.sample_code
                     return
                 
-                # SEGUNDO: Si no hay código existente o estamos creando, calcular el siguiente
-                # Buscar el máximo número existente en la base de datos
+                # SEGUNDO: Calcular el máximo número existente en la base de datos
                 existing = self.env['lims.sample.reception'].search([
                     ('sample_code', 'like', f'{client_code}/%'),
                     ('sample_code', '!=', '/')
@@ -82,30 +81,31 @@ class SampleReceptionLine(models.TransientModel):
                     except:
                         pass
                 
-                # IMPORTANTE: También considerar códigos ya asignados en este wizard
+                # TERCERO: Contar cuántas líneas del MISMO CLIENTE están ANTES de esta línea en el wizard
+                client_lines_before = 0
                 if line.wizard_id and line.wizard_id.sample_lines:
-                    for other_line in line.wizard_id.sample_lines:
-                        if (other_line.sample_code and 
-                            other_line.sample_code.startswith(f'{client_code}/') and
-                            other_line.id != line.id):
-                            try:
-                                parts = other_line.sample_code.split('/')
-                                if len(parts) == 2:
-                                    num = int(parts[1])
-                                    if num > max_num:
-                                        max_num = num
-                            except:
-                                pass
+                    # Obtener todas las líneas ordenadas por ID (orden de creación)
+                    all_lines = line.wizard_id.sample_lines.sorted('id')
+                    
+                    for other_line in all_lines:
+                        # Si llegamos a la línea actual, parar
+                        if other_line.id == line.id:
+                            break
+                        
+                        # Si es del mismo cliente, contar
+                        if (other_line.sample_id and 
+                            other_line.sample_id.cliente_id and
+                            other_line.sample_id.cliente_id.client_code == client_code):
+                            client_lines_before += 1
                 
-                # Sugerir el siguiente número
-                next_num = str(max_num + 1).zfill(4)
+                # CUARTO: Generar el código consecutivo
+                next_num = str(max_num + 1 + client_lines_before).zfill(4)
                 line.suggested_code = f'{client_code}/{next_num}'
                 
                 # NO auto-asignar código - dejar vacío por defecto
                 if not line.sample_code:
-                    line.sample_code = ''  # Dejar vacío por defecto
+                    line.sample_code = ''
             else:
                 line.suggested_code = 'XXX/0001'
-                # NO auto-asignar código por defecto
                 if not line.sample_code:
-                    line.sample_code = ''  # Dejar vacío
+                    line.sample_code = ''
