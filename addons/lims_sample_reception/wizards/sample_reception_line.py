@@ -23,6 +23,12 @@ class SampleReceptionLine(models.TransientModel):
         readonly=True
     )
     
+    custody_chain_code = fields.Char(
+        string='Cadena de Custodia',
+        related='sample_id.custody_chain_id.custody_chain_code',
+        readonly=True
+    )
+
     suggested_code = fields.Char(
         string='Código Sugerido',
         compute='_compute_suggested_code'
@@ -76,11 +82,11 @@ class SampleReceptionLine(models.TransientModel):
                 next_num = str(max_num + 1).zfill(4)
                 line.suggested_code = f'{client_code}/{next_num}'
                 
-                # CAMBIO IMPORTANTE: Solo auto-asignar si NO hay código previo
+                # NO auto-asignar código - dejar vacío por defecto
                 if not line.sample_code:
-                    line.sample_code = line.suggested_code
+                    line.sample_code = ''  # Dejar vacío por defecto
             else:
                 line.suggested_code = 'XXX/0001'
-                # Solo auto-asignar si NO hay código previo
+                # NO auto-asignar código por defecto
                 if not line.sample_code:
-                    line.sample_code = line.suggested_code
+                    line.sample_code = ''  # Dejar vacío

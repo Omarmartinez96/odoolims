@@ -222,8 +222,14 @@ class SampleReceptionWizard(models.TransientModel):
         updated_codes = []
         
         for line in self.sample_lines:
-            if not line.sample_code:
-                raise UserError(_(f'La muestra "{line.sample_identifier}" no tiene código asignado.'))
+            # Solo requerir código si el estado es 'recibida'
+            if self.reception_state == 'recibida':
+                if not line.sample_code or line.sample_code.strip() == '':
+                    # Generar código automáticamente usando el código sugerido
+                    line.sample_code = line.suggested_code
+            else:
+                # Para otros estados, limpiar el código
+                line.sample_code = '/'
             
             # Buscar recepción existente
             existing_reception = self.env['lims.sample.reception'].search([
@@ -243,7 +249,7 @@ class SampleReceptionWizard(models.TransientModel):
             if self.reception_state == 'rechazada':
                 reception_data['reception_notes'] = self.rejection_reason
             else:
-                # Para 'recibida' y 'no_recibida', usar observaciones del wizard o mantener existentes
+                # Para 'recibida', 'no_recibida' y 'sin_procesar', usar observaciones del wizard o mantener existentes
                 reception_data['reception_notes'] = self.reception_notes or ''
             
             if existing_reception:
@@ -254,7 +260,7 @@ class SampleReceptionWizard(models.TransientModel):
                 if old_code != line.sample_code:
                     updated_codes.append(f'{old_code} → {line.sample_code}')
                 else:
-                    updated_codes.append(line.sample_code)
+                    updated_codes.append(line.sample_code if line.sample_code != '/' else 'Sin código')
                 
                 created_receptions.append(existing_reception)
             else:
@@ -262,7 +268,7 @@ class SampleReceptionWizard(models.TransientModel):
                 reception_data['sample_id'] = line.sample_id.id
                 new_reception = self.env['lims.sample.reception'].create(reception_data)
                 created_receptions.append(new_reception)
-                updated_codes.append(f'Nuevo: {line.sample_code}')
+                updated_codes.append(f'Nuevo: {line.sample_code if line.sample_code != "/" else "Sin código"}')
         
         # Preparar mensaje de éxito
         if self.reception_state == 'recibida':
@@ -271,16 +277,19 @@ class SampleReceptionWizard(models.TransientModel):
         elif self.reception_state == 'rechazada':
             message = f"❌ Se han marcado como RECHAZADAS {len(created_receptions)} muestra(s)."
             notification_type = 'warning'
-        else:  # no_recibida
-            message = f"⏳ Se han marcado como NO RECIBIDAS {len(created_receptions)} muestra(s). Estado restaurado."
+        elif self.reception_state == 'no_recibida':
+            message = f"⚠️ Se han marcado como NO RECIBIDAS {len(created_receptions)} muestra(s)."
+            notification_type = 'warning'
+        else:  # sin_procesar
+            message = f"⚪ Se han marcado como SIN PROCESAR {len(created_receptions)} muestra(s)."
             notification_type = 'success'
         
-        # Mostrar códigos procesados
-        if updated_codes:
+        # Mostrar códigos procesados solo si hay códigos
+        if updated_codes and self.reception_state == 'recibida':
             codes_summary = ', '.join(updated_codes[:3])
             if len(updated_codes) > 3:
                 codes_summary += f' y {len(updated_codes) - 3} más...'
-            message += f'\n\n📝 Códigos procesados: {codes_summary}'
+            message += f'\n\n📝 Códigos asignados: {codes_summary}'
         
         # Mostrar notificación
         self.env['bus.bus']._sendone(
