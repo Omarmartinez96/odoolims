@@ -41,13 +41,13 @@
                         <table style="width: 100%; height: 100%; margin: 0; padding: 0; display: table; table-layout: auto; background: white;" class="table-borderless">
                             <tr class="content-row">
                                 <!-- Código de Barras (Izquierda) -->
-                                <td style="display: table-cell; width: 30%; vertical-align: top; text-align: center; padding-top: 10mm; border: none;">
+                                <td style="display: table-cell; width: 30%; vertical-align: top; text-align: center; padding-top: 30mm; border: none;">
                                     <div t-field="reception.sample_code_barcode" 
-                                        t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 350, 'height': 80}"/>
+                                        t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 450, 'height': 80}"/>
                                 </td>
 
                                 <!-- Información (Derecha) -->
-                                <td style="display: table-cell; width: 70%; vertical-align: top; text-align: center; padding-top: 10mm; border: none;">
+                                <td style="display: table-cell; width: 70%; vertical-align: top; text-align: center; padding-top: 30mm; border: none;">
                                     <t t-set="is_long" t-value="len(reception.sample_identifier or '') > 15"/>
                                     <t t-set="code_font" t-value="'26px' if is_long else '32px'"/>
                                     <t t-set="id_font" t-value="'22px' if is_long else '28px'"/>
@@ -110,13 +110,13 @@
                                 <table style="width: 100%; height: 100%; margin: 0; padding: 0; display: table; table-layout: auto; background: white;" class="table-borderless">
                                     <tr class="content-row">
                                         <!-- Código de Barras (Izquierda) -->
-                                        <td style="display: table-cell; width: 30%; vertical-align: top; text-align: center; padding-top: 10mm; border: none;">
+                                        <td style="display: table-cell; width: 30%; vertical-align: top; text-align: center; padding-top: 30mm; border: none;">
                                             <div t-field="reception.sample_code_barcode" 
-                                                t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 350, 'height': 80}"/>
+                                                t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 450, 'height': 80}"/>
                                         </td>
 
                                         <!-- Información (Derecha) -->
-                                        <td style="display: table-cell; width: 70%; vertical-align: top; text-align: center; padding-top: 10mm; border: none;">
+                                        <td style="display: table-cell; width: 70%; vertical-align: top; text-align: center; padding-top: 30mm; border: none;">
                                             <t t-set="is_long" t-value="len(reception.sample_identifier or '') > 15"/>
                                             <t t-set="code_font" t-value="'26px' if is_long else '32px'"/>
                                             <t t-set="id_font" t-value="'22px' if is_long else '28px'"/>
