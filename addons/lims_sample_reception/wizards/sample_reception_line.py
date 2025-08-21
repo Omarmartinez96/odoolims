@@ -46,6 +46,25 @@ class SampleReceptionLine(models.TransientModel):
             if line.sample_id and line.sample_id.cliente_id:
                 client_code = line.sample_id.cliente_id.client_code or 'XXX'
                 
+                # PRIMERO: Verificar si ya existe una recepción para esta muestra
+                existing_reception = self.env['lims.sample.reception'].search([
+                    ('sample_id', '=', line.sample_id.id)
+                ], limit=1)
+                
+                # Si existe recepción Y estamos en modo edición, usar el código existente
+                if (existing_reception and 
+                    existing_reception.sample_code and 
+                    existing_reception.sample_code != '/' and
+                    line.wizard_id and 
+                    line.wizard_id.edit_mode):
+                    
+                    line.suggested_code = existing_reception.sample_code
+                    # En modo edición, pre-cargar el código existente
+                    if not line.sample_code:
+                        line.sample_code = existing_reception.sample_code
+                    return
+                
+                # SEGUNDO: Si no hay código existente o estamos creando, calcular el siguiente
                 # Buscar el máximo número existente en la base de datos
                 existing = self.env['lims.sample.reception'].search([
                     ('sample_code', 'like', f'{client_code}/%'),
