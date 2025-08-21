@@ -113,7 +113,7 @@
                                 <!-- Estructura vertical: código arriba, texto abajo -->
                                 <table style="width: 100%; height: 100%; margin: 0; padding: 0; display: table; table-layout: auto; background: white;" class="table-borderless">
                                     <!-- Fila del código de barras (arriba) -->
-                                    <tr style="display: table-row; height: 40%;">
+                                    <tr style="display: table-row; height: 50%;">
                                         <td style="display: table-cell; width: 100%; vertical-align: middle; text-align: center; border: none; padding-bottom: 4mm;">
                                             <div t-field="reception.sample_code_barcode" 
                                                 t-options="{'widget': 'barcode', 'symbology': 'Code128', 'width': 600, 'height': 150}"/>
@@ -121,7 +121,7 @@
                                     </tr>
                                     
                                     <!-- Fila del texto (abajo) -->
-                                    <tr style="display: table-row; height: 60%;">
+                                    <tr style="display: table-row; height: 50%;">
                                         <td style="display: table-cell; width: 100%; vertical-align: middle; text-align: center; border: none;">
                                             <t t-set="is_long" t-value="len(reception.sample_identifier or '') > 15"/>
                                             <t t-set="code_font" t-value="'26px' if is_long else '32px'"/>
