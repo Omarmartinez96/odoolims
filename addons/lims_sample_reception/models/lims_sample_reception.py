@@ -94,12 +94,6 @@ class LimsSampleReception(models.Model):
         string='Parámetros de la Muestra',
         readonly=False
     )
-    
-    # Campo QR computado
-    barcode_image = fields.Binary(
-        string='Código de Barras',
-        compute='_compute_barcode_image'
-    )
 
     # ==================== CAMPOS DEPRECADOS ====================
     # NOTA: Estos campos están deprecados y solo se mantienen por 
@@ -249,43 +243,6 @@ class LimsSampleReception(models.Model):
                     pass
         
         return result
-    
-    @api.depends('sample_code')
-    def _compute_barcode_image(self):
-        """Generar imagen de código de barras"""
-        for record in self:
-            if record.sample_code and record.sample_code != '/':
-                try:
-                    # Método 1: Usar reportlab que ya está en Odoo
-                    from reportlab.graphics.barcode import code128
-                    from reportlab.lib.units import mm
-                    from reportlab.graphics import renderPM
-                    from reportlab.graphics.shapes import Drawing
-                    import io
-                    import base64
-                    
-                    # Crear código de barras Code128
-                    barcode = code128.Code128(record.sample_code, barHeight=8*mm, barWidth=0.3*mm)
-                    
-                    # Crear dibujo
-                    drawing = Drawing(50*mm, 10*mm)
-                    barcode.drawOn(drawing, 0, 0)
-                    
-                    # Convertir a imagen
-                    buffer = io.BytesIO()
-                    renderPM.drawToFile(drawing, buffer, fmt='PNG', dpi=150)
-                    
-                    record.barcode_image = base64.b64encode(buffer.getvalue())
-                    
-                except Exception as e:
-                    # Si falla, intentar método alternativo
-                    try:
-                        # Método 2: Solo texto como fallback
-                        record.barcode_image = False
-                    except:
-                        record.barcode_image = False
-            else:
-                record.barcode_image = False
 
     # ==================== MÉTODOS DEPRECADOS ====================
     # NOTA: Estos métodos están deprecados y solo se mantienen por compatibilidad

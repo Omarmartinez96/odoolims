@@ -74,25 +74,6 @@
                     background: transparent !important;
                     outline: none !important;
                 }
-                
-                .barcode-image {
-                    width: 15mm !important;
-                    height: 8mm !important;
-                    display: block;
-                    margin: 0 auto;
-                    border: none;
-                }
-
-                .no-barcode {
-                    width: 15mm;
-                    height: 8mm;
-                    border: 1px solid #ccc;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 5px;
-                    margin: 0 auto;
-                }
             </style>
 
             <div class="page">
@@ -102,11 +83,8 @@
                             <tr class="content-row">
                                 <!-- QR Code (Izquierda) -->
                                 <td class="barcode-section">
-                                    <img t-if="reception.barcode_image" 
-                                        t-att-src="'data:image/png;base64,' + reception.barcode_image.decode('utf-8')" 
-                                        class="barcode-image"
-                                        alt="Barcode"/>
-                                    <div t-else="" class="no-barcode">Sin código</div>
+                                    <div t-field="reception.sample_code" 
+                                        t-options="{'widget': 'barcode', 'symbology': 'code128', 'width': 300, 'height': 80, 'img_style': 'width:100%;height:100%;'}"/>
                                 </td>
                                 
                                 <!-- Información (Derecha) -->
@@ -199,25 +177,6 @@
                     background: transparent !important;
                     outline: none !important;
                 }
-                
-                .barcode-image {
-                    width: 15mm !important;
-                    height: 8mm !important;
-                    display: block;
-                    margin: 0 auto;
-                    border: none;
-                }
-
-                .no-barcode {
-                    width: 15mm;
-                    height: 8mm;
-                    border: 1px solid #ccc;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    font-size: 5px;
-                    margin: 0 auto;
-                }
             </style>
 
             <div class="page">
@@ -230,11 +189,8 @@
                                     <tr class="content-row">
                                         <!-- Barcode (Izquierda) -->
                                         <td class="barcode-section">
-                                            <img t-if="reception.barcode_image" 
-                                                t-att-src="'data:image/png;base64,' + reception.barcode_image.decode('utf-8')" 
-                                                class="barcode-image"
-                                                alt="Barcode"/>
-                                            <div t-else="" class="no-barcode">Sin código</div>
+                                            <div t-field="reception.sample_code" 
+                                                t-options="{'widget': 'barcode', 'symbology': 'code128', 'width': 300, 'height': 80, 'img_style': 'width:100%;height:100%;'}"/>
                                         </td>
                                         
                                         <!-- Información (Derecha) -->
