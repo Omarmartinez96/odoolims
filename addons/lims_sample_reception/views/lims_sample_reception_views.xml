@@ -27,7 +27,7 @@
                 <form string="Recepción de Muestra">
                     <header>
                         <field name="reception_state" widget="statusbar" 
-                               statusbar_visible="no_recibida,rechazada,recibida"/>               
+                               statusbar_visible="sin_procesar,no_recibida,rechazada,recibida"/>             
                     </header>
                     
                     <sheet>

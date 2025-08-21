@@ -34,6 +34,7 @@ class SampleReceptionWizard(models.TransientModel):
     
     # Estado de recepción
     reception_state = fields.Selection([
+        ('sin_procesar', 'Sin Procesar'),
         ('no_recibida', 'No Recibida'),
         ('recibida', 'Recibida'),
         ('rechazada', 'Rechazada'),
@@ -117,13 +118,27 @@ class SampleReceptionWizard(models.TransientModel):
             elif record.reception_state == 'no_recibida':
                 record.confirmation_text = '''
                     <div style="background-color: #fff3cd; padding: 15px; border-left: 4px solid #856404; margin: 15px 0; color: #856404;">
-                        <p><strong>⏳ Al marcar como NO RECIBIDA, las muestras:</strong></p>
+                        <p><strong>⚠️ Al marcar como NO RECIBIDA, las muestras:</strong></p>
                         <ul style="margin: 10px 0; color: #856404;">
-                            <li>• Volverán a su <strong>estado original</strong></li>
-                            <li>• Estarán <strong>pendientes de procesamiento</strong></li>
-                            <li>• Podrán ser procesadas <strong>nuevamente</strong></li>
+                            <li>• Se <strong>facturan normalmente</strong> al cliente</li>
+                            <li>• <strong>NO tienen código asignado</strong></li>
+                            <li>• <strong>NO se procesarán</strong> para análisis</li>
+                            <li>• Quedan <strong>registradas en el sistema</strong></li>
                         </ul>
-                        <p style="color: #856404;">💡 Use esta opción para corregir recepciones accidentales</p>
+                        <p style="color: #856404;">📋 Use para puntos cerrados, sin agua, etc.</p>
+                    </div>
+                '''
+            elif record.reception_state == 'sin_procesar':
+                record.confirmation_text = '''
+                    <div style="background-color: #e2e3e5; padding: 15px; border-left: 4px solid #6c757d; margin: 15px 0; color: #383d41;">
+                        <p><strong>⚪ Al marcar como SIN PROCESAR, las muestras:</strong></p>
+                        <ul style="margin: 10px 0; color: #383d41;">
+                            <li>• Regresan a su <strong>estado inicial</strong></li>
+                            <li>• <strong>NO tienen código asignado</strong></li>
+                            <li>• Están <strong>pendientes de procesamiento</strong></li>
+                            <li>• Pueden ser procesadas <strong>posteriormente</strong></li>
+                        </ul>
+                        <p style="color: #383d41;">💡 Este es el estado predeterminado de las muestras</p>
                     </div>
                 '''
             else:

@@ -24,6 +24,7 @@
                     .status-recibida { color: #28a745; font-weight: bold; }
                     .status-rechazada { color: #dc3545; font-weight: bold; }
                     .status-no-recibida { color: #ffc107; font-weight: bold; }
+                    .status-sin-procesar { color: #6c757d; font-weight: bold; }
                 </style>
             </t>
 
@@ -121,20 +122,21 @@
                         <div style="margin-top: 20px; background-color: rgb(218,227,243); height: 12px; padding: 3px 2px; text-align: center; vertical-align: middle; margin-bottom: 20px;"></div>
 
                         <!-- Resumen de recepción -->
-                        <t t-set="total_samples" t-value="len(doc.sample_ids)"/>
                         <t t-set="recibidas" t-value="0"/>
                         <t t-set="rechazadas" t-value="0"/>
                         <t t-set="no_recibidas" t-value="0"/>
-                        
+                        <t t-set="sin_procesar" t-value="0"/>
+
                         <t t-foreach="doc.sample_ids" t-as="sample">
                             <t t-set="reception" t-value="request.env['lims.sample.reception'].search([('sample_id', '=', sample.id)], limit=1)"/>
                             <t t-if="reception">
                                 <t t-if="reception.reception_state == 'recibida'" t-set="recibidas" t-value="recibidas + 1"/>
                                 <t t-if="reception.reception_state == 'rechazada'" t-set="rechazadas" t-value="rechazadas + 1"/>
                                 <t t-if="reception.reception_state == 'no_recibida'" t-set="no_recibidas" t-value="no_recibidas + 1"/>
+                                <t t-if="reception.reception_state == 'sin_procesar'" t-set="sin_procesar" t-value="sin_procesar + 1"/>
                             </t>
                             <t t-else="">
-                                <t t-set="no_recibidas" t-value="no_recibidas + 1"/>
+                                <t t-set="sin_procesar" t-value="sin_procesar + 1"/>
                             </t>
                         </t>
 
@@ -200,8 +202,11 @@
                                                     <t t-elif="reception.reception_state == 'rechazada'">
                                                         <span class="status-rechazada">❌ RECHAZADA</span>
                                                     </t>
-                                                    <t t-else="">
+                                                    <t t-elif="reception.reception_state == 'no_recibida'">
                                                         <span class="status-no-recibida">⏳ NO RECIBIDA</span>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <span class="status-sin-procesar">⚪ SIN PROCESAR</span>
                                                     </t>
                                                 </div>
                                                 <div style="font-size: 12px; color: #666;">
@@ -215,7 +220,7 @@
                                                 </div>
                                             </t>
                                             <t t-else="">
-                                                <span class="status-no-recibida">⏳ NO PROCESADA</span>
+                                                <span class="status-sin-procesar">⚪ SIN PROCESAR</span>
                                             </t>
                                         </td>
                                     </tr>

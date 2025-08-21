@@ -36,6 +36,7 @@
                     .status-recibida { color: #28a745; font-weight: bold; }
                     .status-rechazada { color: #dc3545; font-weight: bold; }
                     .status-no-recibida { color: #ffc107; font-weight: bold; }
+                    .status-sin-procesar { color: #6c757d; font-weight: bold; }
                 </style>
             </t>
 
@@ -197,12 +198,15 @@
                                                 <t t-elif="reception.reception_state == 'rechazada'">
                                                     <span class="status-rechazada">Rechazada</span>
                                                 </t>
-                                                <t t-else="">
+                                                <t t-elif="reception.reception_state == 'no_recibida'">
                                                     <span class="status-no-recibida">No Recibida</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="status-sin-procesar">Sin Procesar</span>
                                                 </t>
                                             </t>
                                             <t t-else="">
-                                                <span class="status-no-recibida">No Procesada</span>
+                                                <span class="status-sin-procesar">Sin Procesar</span>
                                             </t>
                                         </td>
                                         

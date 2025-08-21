@@ -60,10 +60,11 @@ class LimsSampleReception(models.Model):
     
     # ESTADOS DE RECEPCIÓN (MANTENER RECHAZADA)
     reception_state = fields.Selection([
+        ('sin_procesar', 'Sin Procesar'),
         ('no_recibida', 'No Recibida'),
         ('rechazada', 'Rechazada'),
         ('recibida', 'Recibida')
-    ], string='Estado de Recepción', default='no_recibida')
+    ], string='Estado de Recepción', default='sin_procesar')
     
     # CAMPOS NUEVOS SIMPLIFICADOS
     received_by_initials = fields.Char(
@@ -155,7 +156,7 @@ class LimsSampleReception(models.Model):
     def create(self, vals_list):
         """Generar código de muestra automáticamente o continuar secuencia"""
         for vals in vals_list:
-            if not vals.get('sample_code') or vals.get('sample_code') == '/':
+            if (not vals.get('sample_code') or vals.get('sample_code') == '/') and vals.get('reception_state') == 'recibida':
                 sample = self.env['lims.sample'].browse(vals.get('sample_id'))
                 if sample and sample.cliente_id:
                     client_code = sample.cliente_id.client_code or 'XXX'
@@ -241,6 +242,35 @@ class LimsSampleReception(models.Model):
 
     def write(self, vals):
         """Override write para crear análisis automáticamente cuando se marca como recibida"""
+        
+        # NUEVO: Generar código solo cuando se marca como recibida por primera vez
+        if vals.get('reception_state') == 'recibida':
+            for record in self:
+                if not record.sample_code or record.sample_code == '/':
+                    # Generar código (misma lógica que en create)
+                    sample = record.sample_id
+                    if sample and sample.cliente_id:
+                        client_code = sample.cliente_id.client_code or 'XXX'
+                        
+                        existing = self.search([
+                            ('sample_code', 'like', f'{client_code}/%'),
+                            ('sample_code', '!=', '/')
+                        ])
+                        
+                        def extract_number(code):
+                            try:
+                                parts = code.split('/')
+                                if len(parts) == 2:
+                                    return int(parts[1])
+                                return 0
+                            except (ValueError, IndexError):
+                                return 0
+                        
+                        all_numbers = [extract_number(rec.sample_code) for rec in existing]
+                        max_num = max(all_numbers) if all_numbers else 0
+                        next_num = str(max_num + 1).zfill(4)
+                        vals['sample_code'] = f'{client_code}/{next_num}'
+        
         result = super().write(vals)
         
         # Si se cambió el estado a 'recibida', crear análisis automáticamente
@@ -453,13 +483,14 @@ class LimsSample(models.Model):
             
             if reception:
                 states = {
+                    'sin_procesar': 'Sin Procesar',
                     'no_recibida': 'No Recibida',
                     'rechazada': 'Rechazada', 
                     'recibida': 'Recibida'
                 }
                 record.sample_reception_state = states.get(reception.reception_state, 'Sin estado')
             else:
-                record.sample_reception_state = 'No recibida'
+                record.sample_reception_state = 'Sin Procesar'
 
     def has_sample_code(self):
         """Método simple para verificar si tiene código de muestra"""
