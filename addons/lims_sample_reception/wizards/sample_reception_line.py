@@ -84,12 +84,12 @@ class SampleReceptionLine(models.TransientModel):
                 # TERCERO: Contar cuántas líneas del MISMO CLIENTE están ANTES de esta línea en el wizard
                 client_lines_before = 0
                 if line.wizard_id and line.wizard_id.sample_lines:
-                    # Obtener todas las líneas ordenadas por ID (orden de creación)
-                    all_lines = line.wizard_id.sample_lines.sorted('id')
+                    # Usar lista de Python para mantener orden natural
+                    all_lines = list(line.wizard_id.sample_lines)
                     
                     for other_line in all_lines:
                         # Si llegamos a la línea actual, parar
-                        if other_line.id == line.id:
+                        if other_line == line:
                             break
                         
                         # Si es del mismo cliente, contar
