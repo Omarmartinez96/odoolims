@@ -21,7 +21,7 @@
 
                 .label-container {
                     width: 100% !important;
-                    height: 85mm !important;
+                    height: 100% !important;
                     margin: 0;
                     padding: 0;
                     display: table;
@@ -41,13 +41,13 @@
                         <table class="label-container table-borderless">
                             <tr class="content-row">
                                 <!-- Código de Barras (Izquierda) -->
-                                <td style="display: table-cell; width: 45%; height: 85mm; vertical-align: middle; text-align: center; padding-right: 1mm; border: none;">
+                                <td style="display: table-cell; width: 45%; vertical-align: middle; text-align: center; padding-right: 1mm; border: none;">
                                     <div t-field="reception.sample_code" 
                                          t-options="{'widget': 'barcode', 'symbology': 'auto', 'width': 400, 'height': 80}"/>
                                 </td>
                                 
                                 <!-- Información (Derecha) -->
-                                <td style="display: table-cell; width: 55%; height: 85mm; vertical-align: middle; text-align: center; border: none;">
+                                <td style="display: table-cell; width: 55%; vertical-align: middle; text-align: center; border: none;">
                                     <div style="font-weight: bold; font-size: 18px; color: #000; font-family: Arial, sans-serif; line-height: 1.1; margin-bottom: 2mm; text-align: center;">
                                         <span t-esc="reception.sample_code or 'Sin código'"/>
                                     </div>
