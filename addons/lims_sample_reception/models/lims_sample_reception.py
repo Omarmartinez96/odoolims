@@ -185,7 +185,38 @@ class LimsSampleReception(models.Model):
                     next_num = str(max_num + 1).zfill(4)
                     vals['sample_code'] = f'{client_code}/{next_num}'
         
-        return super().create(vals_list)
+        # Crear los registros
+        result = super().create(vals_list)
+        
+        # NUEVO: Crear análisis automáticamente para recepciones marcadas como recibidas
+        for record in result:
+            if record.reception_state == 'recibida':
+                try:
+                    existing_analysis = self.env['lims.analysis.v2'].search([
+                        ('sample_reception_id', '=', record.id)
+                    ])
+                    
+                    if not existing_analysis:
+                        # Crear análisis automáticamente
+                        analysis = self.env['lims.analysis.v2'].create({
+                            'sample_reception_id': record.id,
+                        })
+                        
+                        # Mostrar notificación de éxito
+                        self.env['bus.bus']._sendone(
+                            self.env.user.partner_id, 
+                            'simple_notification', 
+                            {
+                                'title': 'Análisis Creado',
+                                'message': f'Se creó automáticamente el análisis para la muestra {record.sample_code}',
+                                'type': 'success'
+                            }
+                        )
+                except Exception:
+                    # Si el modelo de análisis no existe, continuar sin error
+                    pass
+        
+        return result
     
     @api.constrains('sample_code')
     def _check_unique_sample_code(self):
