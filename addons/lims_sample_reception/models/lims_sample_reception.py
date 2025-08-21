@@ -321,13 +321,10 @@ class LimsSampleReception(models.Model):
 
     @api.depends('sample_code')
     def _compute_sample_code_barcode(self):
-        """Generar código compatible con escáner"""
+        """Usar código completo sin modificaciones"""
         for record in self:
-            if record.sample_code:
-                # Convertir a formato compatible: PFI-068/0001 -> PFI-068.0001
-                record.sample_code_barcode = record.sample_code.replace('/', '.')
-            else:
-                record.sample_code_barcode = ''
+            # Usar el código COMPLETO tal como está: PFI-068/0001
+            record.sample_code_barcode = record.sample_code or ''
 
     # ==================== MÉTODOS DEPRECADOS ====================
     # NOTA: Estos métodos están deprecados y solo se mantienen por compatibilidad
