@@ -46,6 +46,11 @@ class LimsSampleReception(models.Model):
         help='Se genera automáticamente: ABC-000/XXXX'
     )
     
+    sample_code_barcode = fields.Char(
+        string='Código para Código de Barras',
+        compute='_compute_sample_code_barcode'
+    )
+
     # FECHA Y HORA DE RECEPCIÓN
     reception_date = fields.Date(
         string='Fecha de Recepción',
@@ -305,6 +310,25 @@ class LimsSampleReception(models.Model):
         
         return result
 
+    def action_print_label(self):
+        """Imprimir etiqueta individual de muestra"""
+        self.ensure_one()
+        
+        if not self.sample_code or self.sample_code == '/':
+            raise UserError(_('La muestra debe tener un código asignado para imprimir la etiqueta.'))
+        
+        return self.env.ref('lims_sample_reception.action_report_sample_label').report_action(self)
+
+    @api.depends('sample_code')
+    def _compute_sample_code_barcode(self):
+        """Generar código reducido para código de barras"""
+        for record in self:
+            if record.sample_code and '-' in record.sample_code:
+                # Extraer solo la parte después del guión: PFI-068/0001 -> 068/0001
+                record.sample_code_barcode = record.sample_code.split('-')[1]
+            else:
+                record.sample_code_barcode = record.sample_code or ''
+
     # ==================== MÉTODOS DEPRECADOS ====================
     # NOTA: Estos métodos están deprecados y solo se mantienen por compatibilidad
     
@@ -361,15 +385,6 @@ class LimsSampleReception(models.Model):
             self.category = template.category
             self.microorganism = template.microorganism
             self.unit = template.unit
-
-    def action_print_label(self):
-        """Imprimir etiqueta individual de muestra"""
-        self.ensure_one()
-        
-        if not self.sample_code or self.sample_code == '/':
-            raise UserError(_('La muestra debe tener un código asignado para imprimir la etiqueta.'))
-        
-        return self.env.ref('lims_sample_reception.action_report_sample_label').report_action(self)
 
 # CLASE 2: Herencia de LimsSample
 class LimsSample(models.Model):
