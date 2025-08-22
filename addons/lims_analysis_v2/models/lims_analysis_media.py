@@ -77,7 +77,6 @@ class LimsAnalysisMediaV2(models.Model):
     # ===============================================
     requires_incubation = fields.Boolean(
         string='Requiere Incubación',
-        default=False,
         help='Marcar si este medio requiere incubación'
     )
     
