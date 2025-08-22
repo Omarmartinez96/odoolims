@@ -346,16 +346,6 @@
                     <filter string="Esta Semana" 
                             name="this_week"
                             domain="[('analysis_start_date', '&gt;=', (context_today() - datetime.timedelta(days=7)))]"/>
-                    
-                    <separator/>
-
-                    <filter string="📂 Expandir Todos los Grupos" 
-                            name="expand_all" 
-                            context="{'group_by': 'custody_chain_id', 'expand_groups': True, 'group_by_no_leaf': True}"/>
-                            
-                    <filter string="📁 Colapsar Todos los Grupos" 
-                            name="collapse_all" 
-                            context="{'group_by': 'custody_chain_id', 'expand_groups': False, 'group_by_no_leaf': True}"/>
 
                     <!-- Agrupación -->
                     <group expand="0" string="Agrupar Por">

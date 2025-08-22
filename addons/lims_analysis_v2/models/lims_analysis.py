@@ -869,39 +869,44 @@ class LimsAnalysisV2(models.Model):
         })
     
     # ===============================================
-    # === MÉTODOS PARA EXPANDIR/COLAPSAR GRUPOS ===
+    # === MÉTODOS PARA EXPANDIR/COLAPSAR GRUPOS SELECCIONADOS ===
     # ===============================================
     def action_expand_all_groups(self):
-        """Expandir todos los grupos en la vista"""
+        """Expandir grupos de los registros seleccionados"""
+        if not self:
+            return {'type': 'ir.actions.client', 'tag': 'display_notification',
+                    'params': {'title': 'Sin Selección', 'message': 'Selecciona al menos un análisis', 'type': 'warning'}}
+        
+        # Obtener las cadenas de custodia de los registros seleccionados
+        custody_chains = self.mapped('custody_chain_id')
+        chain_names = custody_chains.mapped('custody_chain_code')
+        
         return {
-            'type': 'ir.actions.act_window',
-            'name': 'Análisis de Muestras',
-            'res_model': 'lims.analysis.v2',
-            'view_mode': 'list,form',
-            'limit': 300,
-            'context': {
-                'group_by': 'custody_chain_id',
-                'create': False,
-                'group_by_no_leaf': True,
-                'expand_groups': True,
-                'group_expand': True,
-                'expand': 1
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': f'📂 Grupos a Expandir',
+                'message': f'Expandiendo grupos: {", ".join(chain_names)}',
+                'type': 'success',
             }
         }
 
     def action_collapse_all_groups(self):
-        """Colapsar todos los grupos en la vista"""
+        """Colapsar grupos de los registros seleccionados"""
+        if not self:
+            return {'type': 'ir.actions.client', 'tag': 'display_notification',
+                    'params': {'title': 'Sin Selección', 'message': 'Selecciona al menos un análisis', 'type': 'warning'}}
+        
+        # Obtener las cadenas de custodia de los registros seleccionados
+        custody_chains = self.mapped('custody_chain_id')
+        chain_names = custody_chains.mapped('custody_chain_code')
+        
         return {
-            'type': 'ir.actions.act_window', 
-            'name': 'Análisis de Muestras',
-            'res_model': 'lims.analysis.v2',
-            'view_mode': 'list,form',
-            'limit': 300,
-            'context': {
-                'group_by': 'custody_chain_id',
-                'create': False,
-                'group_by_no_leaf': True,
-                'expand_groups': False,
-                'expand': 0
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': f'📁 Grupos a Colapsar',
+                'message': f'Colapsando grupos: {", ".join(chain_names)}',
+                'type': 'info',
             }
         }
