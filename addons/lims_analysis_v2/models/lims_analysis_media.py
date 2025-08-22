@@ -286,8 +286,9 @@ class LimsAnalysisMediaV2(models.Model):
 
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time', 'incubation_end_date_real')
     def _compute_time_remaining(self):
-        """Calcular tiempo restante o duración real de incubación"""
-        from datetime import datetime, timedelta
+        """Calcular tiempo restante con zona horaria correcta"""
+        from datetime import datetime
+        import pytz
         
         for record in self:
             if not record.requires_incubation:
@@ -295,6 +296,9 @@ class LimsAnalysisMediaV2(models.Model):
                 continue
                 
             try:
+                # Obtener zona horaria del usuario
+                user_tz = pytz.timezone(self.env.user.tz or 'UTC')
+                
                 # Si ya finalizó (tiene fecha real)
                 if record.incubation_end_date_real:
                     if record.incubation_start_date and record.incubation_start_time:
@@ -331,51 +335,54 @@ class LimsAnalysisMediaV2(models.Model):
                 if (record.incubation_start_date and record.incubation_start_time and 
                     record.incubation_end_date and record.incubation_end_time):
                     
-                    # Combinar fecha y hora de inicio
+                    # Combinar fecha y hora de inicio EN LA ZONA HORARIA DEL USUARIO
                     start_time_parts = record.incubation_start_time.split(':')
-                    start_datetime = datetime.combine(
+                    start_naive = datetime.combine(
                         record.incubation_start_date,
                         datetime.min.time().replace(
                             hour=int(start_time_parts[0]), 
                             minute=int(start_time_parts[1])
                         )
                     )
+                    start_datetime = user_tz.localize(start_naive)
                     
-                    # Combinar fecha y hora de fin
+                    # Combinar fecha y hora de fin EN LA ZONA HORARIA DEL USUARIO
                     end_time_parts = record.incubation_end_time.split(':')
-                    end_datetime = datetime.combine(
+                    end_naive = datetime.combine(
                         record.incubation_end_date,
                         datetime.min.time().replace(
                             hour=int(end_time_parts[0]), 
                             minute=int(end_time_parts[1])
                         )
                     )
+                    end_datetime = user_tz.localize(end_naive)
                     
-                    # Hora actual
-                    now = datetime.now()
+                    # Hora actual EN LA ZONA HORARIA DEL USUARIO
+                    now_utc = pytz.UTC.localize(datetime.utcnow())
+                    now_local = now_utc.astimezone(user_tz)
                     
                     # Determinar estado
-                    if now < start_datetime:
+                    if now_local < start_datetime:
                         # No ha empezado
-                        time_to_start = start_datetime - now
+                        time_to_start = start_datetime - now_local
                         hours = int(time_to_start.total_seconds() / 3600)
                         minutes = int((time_to_start.total_seconds() % 3600) / 60)
                         record.time_remaining = f"⏳ Inicia en: {hours}h {minutes}min"
                     
-                    elif start_datetime <= now <= end_datetime:
+                    elif start_datetime <= now_local <= end_datetime:
                         # En proceso
-                        time_left = end_datetime - now
+                        time_left = end_datetime - now_local
                         hours = int(time_left.total_seconds() / 3600)
                         minutes = int((time_left.total_seconds() % 3600) / 60)
                         
                         if hours > 0:
-                            record.time_remaining = f"🔥 Restante: {hours}h {minutes}min"
+                            record.time_remaining = f" Restante: {hours}h {minutes}min"
                         else:
-                            record.time_remaining = f"🔥 Restante: {minutes}min"
+                            record.time_remaining = f" Restante: {minutes}min"
                     
                     else:
                         # Ya venció
-                        time_over = now - end_datetime
+                        time_over = now_local - end_datetime
                         hours = int(time_over.total_seconds() / 3600)
                         minutes = int((time_over.total_seconds() % 3600) / 60)
                         record.time_remaining = f"⚠️ Vencido: +{hours}h {minutes}min"
@@ -405,38 +412,18 @@ class LimsAnalysisMediaV2(models.Model):
         if self.culture_media_batch_id and self.media_source == 'internal':
             self.culture_media_name = self.culture_media_batch_id.culture_media_id.name
 
-    # @api.onchange('requires_incubation')
-    # def _onchange_requires_incubation(self):
-    #     """Limpiar campos de incubación cuando no se requiere"""
-    #     if not self.requires_incubation:
-    #         self.incubation_equipment = False
-    #         self.incubation_start_date = False
-    #         self.incubation_start_time = False
-    #         self.incubation_end_date = False
-    #         self.incubation_end_time = False
-    #         self.incubation_end_date_real = False
-    #         self.incubation_end_time_real = False
+    @api.onchange('requires_incubation')
+    def _onchange_requires_incubation(self):
+        """Limpiar campos de incubación cuando no se requiere"""
+        if not self.requires_incubation:
+            self.incubation_equipment = False
+            self.incubation_start_date = False
+            self.incubation_start_time = False
+            self.incubation_end_date = False
+            self.incubation_end_time = False
+            self.incubation_end_date_real = False
+            self.incubation_end_time_real = False
 
-    @api.model_create_multi
-    def create(self, vals_list):
-        """Debug de creación"""
-        import logging
-        _logger = logging.getLogger(__name__)
-        
-        for vals in vals_list:
-            _logger.info(f"🔍 CREATING MEDIA - requires_incubation: {vals.get('requires_incubation')}")
-        
-        return super().create(vals_list)
-
-    def write(self, vals):
-        """Debug de escritura"""
-        import logging
-        _logger = logging.getLogger(__name__)
-        
-        if 'requires_incubation' in vals:
-            _logger.info(f"🔍 WRITING requires_incubation: {vals['requires_incubation']} - ID: {self.id}")
-        
-        return super().write(vals)
 
     @api.onchange('process_type')
     def _onchange_process_type(self):
