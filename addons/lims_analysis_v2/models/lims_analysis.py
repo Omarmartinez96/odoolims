@@ -868,3 +868,40 @@ class LimsAnalysisV2(models.Model):
             'report_type': 'general_no_ilac'
         })
     
+    # ===============================================
+    # === MÉTODOS PARA EXPANDIR/COLAPSAR GRUPOS ===
+    # ===============================================
+    def action_expand_all_groups(self):
+        """Expandir todos los grupos en la vista"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Análisis de Muestras',
+            'res_model': 'lims.analysis.v2',
+            'view_mode': 'list,form',
+            'limit': 300,
+            'context': {
+                'group_by': 'custody_chain_id',
+                'create': False,
+                'group_by_no_leaf': True,
+                'expand_groups': True,
+                'group_expand': True,
+                'expand': 1
+            }
+        }
+
+    def action_collapse_all_groups(self):
+        """Colapsar todos los grupos en la vista"""
+        return {
+            'type': 'ir.actions.act_window', 
+            'name': 'Análisis de Muestras',
+            'res_model': 'lims.analysis.v2',
+            'view_mode': 'list,form',
+            'limit': 300,
+            'context': {
+                'group_by': 'custody_chain_id',
+                'create': False,
+                'group_by_no_leaf': True,
+                'expand_groups': False,
+                'expand': 0
+            }
+        }

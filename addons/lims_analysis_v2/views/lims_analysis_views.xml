@@ -13,6 +13,17 @@
                       decoration-info="signature_state == 'signed' and report_sent_to_client == False"
                       decoration-warning="has_ready_parameters == True and signature_state != 'signed' and signature_state != 'cancelled' and report_sent_to_client == False">
                     
+                    <header>
+                        <button name="action_expand_all_groups" 
+                                type="object" 
+                                string="📂 Expandir Todos" 
+                                class="btn-primary"/>
+                        <button name="action_collapse_all_groups" 
+                                type="object" 
+                                string="📁 Colapsar Todos" 
+                                class="btn-secondary"/>
+                    </header>
+
                     <!-- Campos invisibles para agrupación -->
                     <field name="report_sent_to_client" string="📧" widget="boolean_toggle" width="30px"/>
                     <field name="custody_chain_id" invisible="1"/>
@@ -337,7 +348,7 @@
                             domain="[('analysis_start_date', '&gt;=', (context_today() - datetime.timedelta(days=7)))]"/>
                     
                     <!-- Agrupación -->
-                    <group expand="1" string="Agrupar Por">
+                    <group expand="0" string="Agrupar Por">
                         <filter string="Cadena de Custodia" 
                                 name="group_chain"
                                 context="{'group_by': 'custody_chain_id'}"/>
