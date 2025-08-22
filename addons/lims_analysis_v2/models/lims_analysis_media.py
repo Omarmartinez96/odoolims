@@ -258,101 +258,134 @@ class LimsAnalysisMediaV2(models.Model):
                 
             record.display_name = name
 
-    @api.depends('incubation_start_date', 'incubation_end_date', 'incubation_end_date_real', 'requires_incubation')
-    def _compute_incubation_status(self):
-        """Calcular estado de incubación"""
-        today = fields.Date.context_today(self)
+    # @api.depends('incubation_start_date', 'incubation_end_date', 'incubation_end_date_real', 'requires_incubation')
+    # def _compute_incubation_status(self):
+    #     """Calcular estado de incubación"""
+    #     today = fields.Date.context_today(self)
         
-        for record in self:
-            if not record.requires_incubation:
-                record.incubation_status = 'not_started'
-                record.is_overdue = False
-            elif record.incubation_end_date_real:
-                record.incubation_status = 'completed'
-                record.is_overdue = False
-            elif record.incubation_start_date and record.incubation_end_date:
-                if record.incubation_start_date <= today <= record.incubation_end_date:
-                    record.incubation_status = 'active'
-                    record.is_overdue = False
-                elif today > record.incubation_end_date:
-                    record.incubation_status = 'overdue'
-                    record.is_overdue = True
-                else:
-                    record.incubation_status = 'not_started'
-                    record.is_overdue = False
-            else:
-                record.incubation_status = 'not_started'
-                record.is_overdue = False
+    #     for record in self:
+    #         if not record.requires_incubation:
+    #             record.incubation_status = 'not_started'
+    #             record.is_overdue = False
+    #         elif record.incubation_end_date_real:
+    #             record.incubation_status = 'completed'
+    #             record.is_overdue = False
+    #         elif record.incubation_start_date and record.incubation_end_date:
+    #             if record.incubation_start_date <= today <= record.incubation_end_date:
+    #                 record.incubation_status = 'active'
+    #                 record.is_overdue = False
+    #             elif today > record.incubation_end_date:
+    #                 record.incubation_status = 'overdue'
+    #                 record.is_overdue = True
+    #             else:
+    #                 record.incubation_status = 'not_started'
+    #                 record.is_overdue = False
+    #         else:
+    #             record.incubation_status = 'not_started'
+    #             record.is_overdue = False
 
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time', 'incubation_end_date_real')
     def _compute_time_remaining(self):
         """Calcular tiempo restante o duración real de incubación"""
-        now = fields.Datetime.now()
-        today = fields.Date.context_today(self)
+        from datetime import datetime, timedelta
         
         for record in self:
             if not record.requires_incubation:
                 record.time_remaining = ""
                 continue
                 
-            # Si ya finalizó (tiene fecha real), mostrar duración total real
-            if record.incubation_end_date_real:
-                try:
-                    start_str = f"{record.incubation_start_date} {record.incubation_start_time or '00:00'}"
-                    end_str = f"{record.incubation_end_date_real} {record.incubation_end_time_real or '23:59'}"
-                    
-                    start_datetime = fields.Datetime.from_string(start_str.replace(' ', 'T'))
-                    end_datetime = fields.Datetime.from_string(end_str.replace(' ', 'T'))
-                    
-                    duration = end_datetime - start_datetime
-                    hours = int(duration.total_seconds() / 3600)
-                    minutes = int((duration.total_seconds() % 3600) / 60)
-                    
-                    record.time_remaining = f"✅ Finalizado: {hours}h {minutes}min"
-                    
-                except (ValueError, TypeError):
-                    record.time_remaining = "✅ Finalizado"
-                continue
-            
-            # Si tiene fechas programadas, calcular tiempo restante o duración
-            if (record.incubation_start_date and record.incubation_start_time and 
-                record.incubation_end_date and record.incubation_end_time):
+            try:
+                # Si ya finalizó (tiene fecha real)
+                if record.incubation_end_date_real:
+                    if record.incubation_start_date and record.incubation_start_time:
+                        # Combinar fecha y hora de inicio
+                        start_time_parts = record.incubation_start_time.split(':')
+                        start_datetime = datetime.combine(
+                            record.incubation_start_date,
+                            datetime.min.time().replace(
+                                hour=int(start_time_parts[0]), 
+                                minute=int(start_time_parts[1])
+                            )
+                        )
+                        
+                        # Combinar fecha y hora de fin real
+                        end_time_parts = (record.incubation_end_time_real or '23:59').split(':')
+                        end_datetime = datetime.combine(
+                            record.incubation_end_date_real,
+                            datetime.min.time().replace(
+                                hour=int(end_time_parts[0]), 
+                                minute=int(end_time_parts[1])
+                            )
+                        )
+                        
+                        duration = end_datetime - start_datetime
+                        hours = int(duration.total_seconds() / 3600)
+                        minutes = int((duration.total_seconds() % 3600) / 60)
+                        
+                        record.time_remaining = f"✅ Finalizado: {hours}h {minutes}min"
+                    else:
+                        record.time_remaining = "✅ Finalizado"
+                    continue
                 
-                try:
-                    start_str = f"{record.incubation_start_date} {record.incubation_start_time}"
-                    end_str = f"{record.incubation_end_date} {record.incubation_end_time}"
+                # Si tiene fechas programadas
+                if (record.incubation_start_date and record.incubation_start_time and 
+                    record.incubation_end_date and record.incubation_end_time):
                     
-                    start_datetime = fields.Datetime.from_string(start_str.replace(' ', 'T'))
-                    end_datetime = fields.Datetime.from_string(end_str.replace(' ', 'T'))
+                    # Combinar fecha y hora de inicio
+                    start_time_parts = record.incubation_start_time.split(':')
+                    start_datetime = datetime.combine(
+                        record.incubation_start_date,
+                        datetime.min.time().replace(
+                            hour=int(start_time_parts[0]), 
+                            minute=int(start_time_parts[1])
+                        )
+                    )
                     
-                    # Si no ha empezado
+                    # Combinar fecha y hora de fin
+                    end_time_parts = record.incubation_end_time.split(':')
+                    end_datetime = datetime.combine(
+                        record.incubation_end_date,
+                        datetime.min.time().replace(
+                            hour=int(end_time_parts[0]), 
+                            minute=int(end_time_parts[1])
+                        )
+                    )
+                    
+                    # Hora actual
+                    now = datetime.now()
+                    
+                    # Determinar estado
                     if now < start_datetime:
+                        # No ha empezado
                         time_to_start = start_datetime - now
                         hours = int(time_to_start.total_seconds() / 3600)
                         minutes = int((time_to_start.total_seconds() % 3600) / 60)
                         record.time_remaining = f"⏳ Inicia en: {hours}h {minutes}min"
                     
-                    # Si está en proceso
                     elif start_datetime <= now <= end_datetime:
+                        # En proceso
                         time_left = end_datetime - now
                         hours = int(time_left.total_seconds() / 3600)
                         minutes = int((time_left.total_seconds() % 3600) / 60)
+                        
                         if hours > 0:
                             record.time_remaining = f"🔥 Restante: {hours}h {minutes}min"
                         else:
                             record.time_remaining = f"🔥 Restante: {minutes}min"
                     
-                    # Si ya venció
-                    elif now > end_datetime:
+                    else:
+                        # Ya venció
                         time_over = now - end_datetime
                         hours = int(time_over.total_seconds() / 3600)
                         minutes = int((time_over.total_seconds() % 3600) / 60)
                         record.time_remaining = f"⚠️ Vencido: +{hours}h {minutes}min"
+                        
+                else:
+                    record.time_remaining = "⚪ Sin programar"
                     
-                except (ValueError, TypeError):
-                    record.time_remaining = "❌ Error en fechas"
-            else:
-                record.time_remaining = "⚪ Sin programar"
+            except (ValueError, IndexError, TypeError) as e:
+                record.time_remaining = f"❌ Error: {str(e)[:20]}"
+
 
     # ===============================================
     # === MÉTODOS ONCHANGE ===
@@ -372,17 +405,38 @@ class LimsAnalysisMediaV2(models.Model):
         if self.culture_media_batch_id and self.media_source == 'internal':
             self.culture_media_name = self.culture_media_batch_id.culture_media_id.name
 
-    @api.onchange('requires_incubation')
-    def _onchange_requires_incubation(self):
-        """Limpiar campos de incubación cuando no se requiere"""
-        if not self.requires_incubation:
-            self.incubation_equipment = False
-            self.incubation_start_date = False
-            self.incubation_start_time = False
-            self.incubation_end_date = False
-            self.incubation_end_time = False
-            self.incubation_end_date_real = False
-            self.incubation_end_time_real = False
+    # @api.onchange('requires_incubation')
+    # def _onchange_requires_incubation(self):
+    #     """Limpiar campos de incubación cuando no se requiere"""
+    #     if not self.requires_incubation:
+    #         self.incubation_equipment = False
+    #         self.incubation_start_date = False
+    #         self.incubation_start_time = False
+    #         self.incubation_end_date = False
+    #         self.incubation_end_time = False
+    #         self.incubation_end_date_real = False
+    #         self.incubation_end_time_real = False
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        """Debug de creación"""
+        import logging
+        _logger = logging.getLogger(__name__)
+        
+        for vals in vals_list:
+            _logger.info(f"🔍 CREATING MEDIA - requires_incubation: {vals.get('requires_incubation')}")
+        
+        return super().create(vals_list)
+
+    def write(self, vals):
+        """Debug de escritura"""
+        import logging
+        _logger = logging.getLogger(__name__)
+        
+        if 'requires_incubation' in vals:
+            _logger.info(f"🔍 WRITING requires_incubation: {vals['requires_incubation']} - ID: {self.id}")
+        
+        return super().write(vals)
 
     @api.onchange('process_type')
     def _onchange_process_type(self):
