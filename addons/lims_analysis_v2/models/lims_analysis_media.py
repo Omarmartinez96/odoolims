@@ -285,37 +285,75 @@ class LimsAnalysisMediaV2(models.Model):
                 record.incubation_status = 'not_started'
                 record.is_overdue = False
 
-    @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time')
+    @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time', 'incubation_end_date_real')
     def _compute_time_remaining(self):
-        """Mostrar duración total de incubación programada"""
+        """Calcular tiempo restante o duración real de incubación"""
+        now = fields.Datetime.now()
+        today = fields.Date.context_today(self)
+        
         for record in self:
+            if not record.requires_incubation:
+                record.time_remaining = ""
+                continue
+                
+            # Si ya finalizó (tiene fecha real), mostrar duración total real
+            if record.incubation_end_date_real:
+                try:
+                    start_str = f"{record.incubation_start_date} {record.incubation_start_time or '00:00'}"
+                    end_str = f"{record.incubation_end_date_real} {record.incubation_end_time_real or '23:59'}"
+                    
+                    start_datetime = fields.Datetime.from_string(start_str.replace(' ', 'T'))
+                    end_datetime = fields.Datetime.from_string(end_str.replace(' ', 'T'))
+                    
+                    duration = end_datetime - start_datetime
+                    hours = int(duration.total_seconds() / 3600)
+                    minutes = int((duration.total_seconds() % 3600) / 60)
+                    
+                    record.time_remaining = f"✅ Finalizado: {hours}h {minutes}min"
+                    
+                except (ValueError, TypeError):
+                    record.time_remaining = "✅ Finalizado"
+                continue
+            
+            # Si tiene fechas programadas, calcular tiempo restante o duración
             if (record.incubation_start_date and record.incubation_start_time and 
                 record.incubation_end_date and record.incubation_end_time):
                 
                 try:
-                    # Fecha/hora de inicio
                     start_str = f"{record.incubation_start_date} {record.incubation_start_time}"
-                    start_datetime = datetime.strptime(start_str, '%Y-%m-%d %H:%M')
-                    
-                    # Fecha/hora de fin
                     end_str = f"{record.incubation_end_date} {record.incubation_end_time}"
-                    end_datetime = datetime.strptime(end_str, '%Y-%m-%d %H:%M')
                     
-                    # Calcular duración total
-                    duration = end_datetime - start_datetime
-                    total_minutes = int(duration.total_seconds() / 60)
+                    start_datetime = fields.Datetime.from_string(start_str.replace(' ', 'T'))
+                    end_datetime = fields.Datetime.from_string(end_str.replace(' ', 'T'))
                     
-                    if total_minutes > 0:
-                        hours = total_minutes // 60
-                        minutes = total_minutes % 60
-                        record.time_remaining = f"{hours}h {minutes}min"
-                    else:
-                        record.time_remaining = "Error: Fin antes de inicio"
+                    # Si no ha empezado
+                    if now < start_datetime:
+                        time_to_start = start_datetime - now
+                        hours = int(time_to_start.total_seconds() / 3600)
+                        minutes = int((time_to_start.total_seconds() % 3600) / 60)
+                        record.time_remaining = f"⏳ Inicia en: {hours}h {minutes}min"
+                    
+                    # Si está en proceso
+                    elif start_datetime <= now <= end_datetime:
+                        time_left = end_datetime - now
+                        hours = int(time_left.total_seconds() / 3600)
+                        minutes = int((time_left.total_seconds() % 3600) / 60)
+                        if hours > 0:
+                            record.time_remaining = f"🔥 Restante: {hours}h {minutes}min"
+                        else:
+                            record.time_remaining = f"🔥 Restante: {minutes}min"
+                    
+                    # Si ya venció
+                    elif now > end_datetime:
+                        time_over = now - end_datetime
+                        hours = int(time_over.total_seconds() / 3600)
+                        minutes = int((time_over.total_seconds() % 3600) / 60)
+                        record.time_remaining = f"⚠️ Vencido: +{hours}h {minutes}min"
                     
                 except (ValueError, TypeError):
-                    record.time_remaining = "Error en formato"
+                    record.time_remaining = "❌ Error en fechas"
             else:
-                record.time_remaining = ""
+                record.time_remaining = "⚪ Sin programar"
 
     # ===============================================
     # === MÉTODOS ONCHANGE ===
@@ -344,6 +382,8 @@ class LimsAnalysisMediaV2(models.Model):
             self.incubation_start_time = False
             self.incubation_end_date = False
             self.incubation_end_time = False
+            self.incubation_end_date_real = False
+            self.incubation_end_time_real = False
 
     @api.onchange('process_type')
     def _onchange_process_type(self):

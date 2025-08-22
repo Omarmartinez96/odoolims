@@ -12,19 +12,6 @@
                       decoration-success="report_sent_to_client == True"
                       decoration-info="signature_state == 'signed' and report_sent_to_client == False"
                       decoration-warning="has_ready_parameters == True and signature_state != 'signed' and signature_state != 'cancelled' and report_sent_to_client == False">
-                    
-                    <header>
-                        <button name="action_expand_all_groups" 
-                                type="object" 
-                                string="📂 Expandir Todos" 
-                                class="btn-primary"
-                                context="{}"/>
-                        <button name="action_collapse_all_groups" 
-                                type="object" 
-                                string="📁 Colapsar Todos" 
-                                class="btn-secondary"
-                                context="{}"/>
-                    </header>
 
                     <!-- Campos invisibles para agrupación -->
                     <field name="report_sent_to_client" string="📧" widget="boolean_toggle" width="30px"/>
