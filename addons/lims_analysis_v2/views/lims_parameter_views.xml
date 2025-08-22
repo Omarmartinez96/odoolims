@@ -126,7 +126,7 @@
                                                     <field name="media_usage" 
                                                         string="Uso del Medio"
                                                         required="1"/>
-                                                    <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                    <field name="requires_incubation" string="¿Requiere Incubación?" force_save="1"/>
                                                 </group>
                                             </group>
                                             
@@ -229,7 +229,7 @@
                                                     <field name="media_usage" 
                                                         string="Uso del Medio"
                                                         required="1"/>
-                                                    <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                    <field name="requires_incubation" string="¿Requiere Incubación?" force_save="1"/>
                                                 </group>
                                             </group>
                                             
@@ -330,7 +330,7 @@
                                                     <field name="media_usage" 
                                                         string="Uso del Medio"
                                                         required="1"/>
-                                                    <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                    <field name="requires_incubation" string="¿Requiere Incubación?" force_save="1"/>
                                                 </group>
                                             </group>
                                             
@@ -432,7 +432,7 @@
                                                     <field name="media_usage" 
                                                         string="Uso del Medio"
                                                         required="1"/>
-                                                    <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                    <field name="requires_incubation" string="¿Requiere Incubación?" force_save="1"/>
                                                 </group>
                                             </group>
                                             
@@ -613,7 +613,7 @@
                                                     <field name="media_usage" 
                                                         string="Uso del Medio"
                                                         required="1"/>
-                                                    <field name="requires_incubation" string="¿Requiere Incubación?"/>
+                                                    <field name="requires_incubation" string="¿Requiere Incubación?" force_save="1"/>
                                                 </group>
                                             </group>
                                             
