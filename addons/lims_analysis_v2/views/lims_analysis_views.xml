@@ -11,9 +11,10 @@
                       decoration-danger="signature_state == 'cancelled'"
                       decoration-success="report_sent_to_client == True"
                       decoration-info="signature_state == 'signed' and report_sent_to_client == False"
-                      decoration-warning="has_ready_parameters == True and signature_state != 'signed' and signature_state != 'cancelled'">
+                      decoration-warning="has_ready_parameters == True and signature_state != 'signed' and signature_state != 'cancelled' and report_sent_to_client == False">
                     
                     <!-- Campos invisibles para agrupación -->
+                    <field name="report_sent_to_client" string="📧" widget="boolean_toggle" width="30px"/>
                     <field name="custody_chain_id" invisible="1"/>
 
                     <field name="sequence" widget="handle"/>
@@ -51,7 +52,6 @@
                     
                     <!-- Resumen de reportes -->
                     <field name="report_status_summary" string="Estado Parámetros"/>
-                    <field name="report_sent_to_client" string="📧" widget="boolean_toggle" width="30px"/>
                 </list>
             </field>
         </record>
@@ -340,7 +340,7 @@
                     <group expand="0" string="Agrupar Por">
                         <filter string="Cadena de Custodia" 
                                 name="group_chain"
-                                context="{'group_by': 'custody_chain_id'}"/>
+                                context="{'group_by': 'custody_chain_id', 'group_expand': True}"/>
                         <filter string="Cliente" 
                                 name="group_customer"
                                 context="{'group_by': 'customer_id'}"/>
@@ -372,6 +372,7 @@
                 'group_by': 'custody_chain_id', 
                 'create': False,
                 'group_by_no_leaf': True
+                'group_expand': True
             }</field>           
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
