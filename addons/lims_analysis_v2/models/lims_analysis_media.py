@@ -258,31 +258,31 @@ class LimsAnalysisMediaV2(models.Model):
                 
             record.display_name = name
 
-    # @api.depends('incubation_start_date', 'incubation_end_date', 'incubation_end_date_real', 'requires_incubation')
-    # def _compute_incubation_status(self):
-    #     """Calcular estado de incubación"""
-    #     today = fields.Date.context_today(self)
+    @api.depends('incubation_start_date', 'incubation_end_date', 'incubation_end_date_real', 'requires_incubation')
+    def _compute_incubation_status(self):
+        """Calcular estado de incubación"""
+        today = fields.Date.context_today(self)
         
-    #     for record in self:
-    #         if not record.requires_incubation:
-    #             record.incubation_status = 'not_started'
-    #             record.is_overdue = False
-    #         elif record.incubation_end_date_real:
-    #             record.incubation_status = 'completed'
-    #             record.is_overdue = False
-    #         elif record.incubation_start_date and record.incubation_end_date:
-    #             if record.incubation_start_date <= today <= record.incubation_end_date:
-    #                 record.incubation_status = 'active'
-    #                 record.is_overdue = False
-    #             elif today > record.incubation_end_date:
-    #                 record.incubation_status = 'overdue'
-    #                 record.is_overdue = True
-    #             else:
-    #                 record.incubation_status = 'not_started'
-    #                 record.is_overdue = False
-    #         else:
-    #             record.incubation_status = 'not_started'
-    #             record.is_overdue = False
+        for record in self:
+            if not record.requires_incubation:
+                record.incubation_status = 'not_started'
+                record.is_overdue = False
+            elif record.incubation_end_date_real:
+                record.incubation_status = 'completed'
+                record.is_overdue = False
+            elif record.incubation_start_date and record.incubation_end_date:
+                if record.incubation_start_date <= today <= record.incubation_end_date:
+                    record.incubation_status = 'active'
+                    record.is_overdue = False
+                elif today > record.incubation_end_date:
+                    record.incubation_status = 'overdue'
+                    record.is_overdue = True
+                else:
+                    record.incubation_status = 'not_started'
+                    record.is_overdue = False
+            else:
+                record.incubation_status = 'not_started'
+                record.is_overdue = False
 
     @api.depends('incubation_start_date', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time', 'incubation_end_date_real')
     def _compute_time_remaining(self):
