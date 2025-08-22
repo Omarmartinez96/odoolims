@@ -340,7 +340,7 @@
                     <group expand="0" string="Agrupar Por">
                         <filter string="Cadena de Custodia" 
                                 name="group_chain"
-                                context="{'group_by': 'custody_chain_id', 'expand_groups': True}"/>
+                                context="{'group_by': 'custody_chain_id'}"/>
                         <filter string="Cliente" 
                                 name="group_customer"
                                 context="{'group_by': 'customer_id'}"/>
@@ -357,7 +357,7 @@
         </record>
 
         <!-- ========== ACCIONES ========== -->
-        <record id="action_lims_analysis_v2" model="ir.actions.act_window">
+        <record id="action_lims_analysis_v2" js_class="expand_all_groups" model="ir.actions.act_window">
             <field name="name">Análisis de Muestras</field>
             <field name="res_model">lims.analysis.v2</field>
             <field name="view_mode">list,form</field>
