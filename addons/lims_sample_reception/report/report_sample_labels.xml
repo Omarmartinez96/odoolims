@@ -116,7 +116,7 @@
                                     <tr style="display: table-row; height: 50%;">
                                         <td style="display: table-cell; width: 100%; vertical-align: middle; text-align: center; border: none; padding-bottom: 4mm;">
                                             <div t-field="reception.sample_code_barcode" 
-                                                t-options="{'widget': 'barcode', 'symbology': 'Code128', 'width': 600, 'height': 150}"/>
+                                                t-options="{'widget': 'barcode', 'symbology': 'Code128', 'width': 1000, 'height': 200}"/>
                                         </td>
                                     </tr>
                                     
