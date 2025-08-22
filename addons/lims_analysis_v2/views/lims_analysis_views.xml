@@ -17,11 +17,13 @@
                         <button name="action_expand_all_groups" 
                                 type="object" 
                                 string="📂 Expandir Todos" 
-                                class="btn-primary"/>
+                                class="btn-primary"
+                                context="{}"/>
                         <button name="action_collapse_all_groups" 
                                 type="object" 
                                 string="📁 Colapsar Todos" 
-                                class="btn-secondary"/>
+                                class="btn-secondary"
+                                context="{}"/>
                     </header>
 
                     <!-- Campos invisibles para agrupación -->
