@@ -8,10 +8,10 @@
             <field name="model">lims.analysis.v2</field>
             <field name="arch" type="xml">
                 <list string="Análisis de Muestras v2" create="false" default_group_by="custody_chain_id" expand="1" limit="300" groups_limit="300"
-                      decoration-success="signature_state == 'signed'" 
-                      decoration-warning="signature_state == 'cancelled'"
-                      decoration-info="has_ready_parameters == True and report_sent_to_client == False"
-                      decoration-success="report_sent_to_client == True">
+                      decoration-danger="signature_state == 'cancelled'"
+                      decoration-success="report_sent_to_client == True"
+                      decoration-info="signature_state == 'signed' and report_sent_to_client == False"
+                      decoration-warning="has_ready_parameters == True and signature_state != 'signed' and signature_state != 'cancelled'">
                     
                     <!-- Campos invisibles para agrupación -->
                     <field name="custody_chain_id" invisible="1"/>
