@@ -371,8 +371,8 @@
             <field name="context">{
                 'group_by': 'custody_chain_id', 
                 'create': False,
-                'group_by_no_leaf': True
-                'group_expand': True
+                'group_by_no_leaf': True,
+                'expand': 1
             }</field>           
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
