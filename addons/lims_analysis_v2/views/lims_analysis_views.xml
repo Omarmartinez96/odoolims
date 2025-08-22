@@ -10,7 +10,8 @@
                 <list string="Análisis de Muestras v2" create="false" default_group_by="custody_chain_id" expand="1" limit="300" groups_limit="300"
                       decoration-success="signature_state == 'signed'" 
                       decoration-warning="signature_state == 'cancelled'"
-                      decoration-info="has_ready_parameters == True">
+                      decoration-info="has_ready_parameters == True and report_sent_to_client == False"
+                      decoration-success="report_sent_to_client == True">
                     
                     <!-- Campos invisibles para agrupación -->
                     <field name="custody_chain_id" invisible="1"/>
@@ -50,6 +51,7 @@
                     
                     <!-- Resumen de reportes -->
                     <field name="report_status_summary" string="Estado Parámetros"/>
+                    <field name="report_sent_to_client" string="📧" widget="boolean_toggle" width="30px"/>
                 </list>
             </field>
         </record>
@@ -168,6 +170,12 @@
                                     <strong>Estado Actual:</strong> <field name="report_status_summary"/>
                                 </div>
                             </div>
+                        </group>
+
+                        <!-- Estado de envío de informe -->
+                        <group string="📧 Estado de Envío" colspan="4" invisible="signature_state != 'signed'">
+                            <field name="report_sent_to_client" string="✅ Informe Enviado al Cliente" widget="boolean_toggle"/>
+                            <small class="text-muted">Control temporal: marcar cuando el informe haya sido enviado</small>
                         </group>
 
                         <!-- Información de firma -->

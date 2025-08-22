@@ -199,6 +199,12 @@ class LimsAnalysisV2(models.Model):
         compute='_compute_can_cancel_signature'
     )
 
+    report_sent_to_client = fields.Boolean(
+        string='Informe Enviado al Cliente',
+        default=False,
+        help='Marcar temporalmente cuando el informe haya sido enviado al cliente'
+    )
+
     # ===============================================
     # === SISTEMA DE REVISIONES ===
     # ===============================================
