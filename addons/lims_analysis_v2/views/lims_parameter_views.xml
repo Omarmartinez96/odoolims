@@ -86,7 +86,7 @@
                                            context="{'default_process_type': 'pre_enrichment', 'default_media_usage': 'enriquecimiento'}">
 
                                         <list string="Medios de Pre-enriquecimiento" create="true" delete="true" edit="true">
-                                            <field name="requires_incubation" invisible="1"/>
+                                            <field name="requires_incubation" column_invisible="True"/>
                                             <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                             <field name="culture_media_batch_id" 
                                                 string="Lote Interno"
@@ -191,7 +191,7 @@
                                            context="{'default_process_type': 'selective_enrichment', 'default_media_usage': 'desarrollo_selectivo'}">
 
                                         <list string="Medios Selectivos Utilizados" create="true" delete="true" edit="true">
-                                            <field name="requires_incubation" invisible="1"/>
+                                            <field name="requires_incubation" column_invisible="True"/>
                                             <field name="media_source" string="Origen" width="25%"/>
                                             <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                             <field name="culture_media_batch_id" 
@@ -293,7 +293,7 @@
                                            context="{'default_process_type': 'quantitative', 'default_media_usage': 'diluyente'}">
 
                                         <list string="Medios para Análisis Cuantitativo" create="true" delete="true" edit="true">
-                                            <field name="requires_incubation" invisible="1"/>
+                                            <field name="requires_incubation" column_invisible="True"/>
                                             <field name="culture_media_name" string="Nombre del Medio" width="25%"/>
                                             <field name="culture_media_batch_id" 
                                                 string="Lote Interno"
@@ -395,7 +395,7 @@
                                            context="{'default_process_type': 'qualitative', 'default_media_usage': 'desarrollo_selectivo'}">
 
                                         <list string="Medios para Cualitativos" create="true" delete="true" edit="true">
-                                            <field name="requires_incubation" invisible="1"/>
+                                            <field name="requires_incubation" column_invisible="True"/>
                                             <field name="media_source" string="Origen" width="20%"/>
                                             <field name="culture_media_name" string="Nombre del Medio" width="20%"/>
                                             <field name="culture_media_batch_id" 
@@ -577,7 +577,7 @@
                                            context="{'default_process_type': 'confirmation', 'default_media_usage': 'pruebas_bioquimicas'}">
                                         
                                         <list string="Medios para Confirmación" create="true" delete="true" edit="true">
-                                            <field name="requires_incubation" invisible="1"/>
+                                            <field name="requires_incubation" column_invisible="True"/>
                                             <field name="media_source" string="Origen" width="20%"/>
                                             <field name="culture_media_name" string="Nombre del Medio" width="20%"/>
                                             <field name="culture_media_batch_id" 
