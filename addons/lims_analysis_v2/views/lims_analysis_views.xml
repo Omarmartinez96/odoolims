@@ -15,7 +15,8 @@
 
                     <!-- Campos invisibles para agrupación -->
                     <field name="report_sent_to_client" string="📧" widget="boolean_toggle" width="30px"/>
-                    <field name="custody_chain_id" invisible="1"/>
+                    <field name="custody_chain_id" column_invisible="True"/>
+                    <field name="reception_date" string="F. Recepción"/>
 
                     <field name="sequence" widget="handle"/>
 
@@ -33,7 +34,6 @@
                     
                     <!-- Fechas -->
                     <field name="analysis_start_date" string="Inicio"/>
-                    <field name="reception_date" string="Recepción"/>
                     
                     <!-- Estados y contadores -->
                     <field name="ready_parameters_count" string="Listos"/>
