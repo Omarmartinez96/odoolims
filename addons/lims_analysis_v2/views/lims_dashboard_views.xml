@@ -13,7 +13,6 @@
                     <field name="total_samples_count"/>
                     <field name="samples_all_ready_count"/>
                     <field name="samples_in_process_count"/>
-                    <field name="samples_completed_count"/>
                     <field name="samples_reported_count"/>
                     <field name="samples_signed_count"/>
                     <field name="samples_pending_count"/>
