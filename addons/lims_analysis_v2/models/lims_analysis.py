@@ -293,7 +293,22 @@ class LimsAnalysisV2(models.Model):
     @api.depends('sample_reception_id')
     def _compute_dashboard_metrics(self):
         """Calcular métricas del dashboard"""
+        # Usar solo el primer registro o crear métricas vacías
         for record in self:
+            # Si no hay registros, mostrar ceros
+            if not self.search([('id', '!=', 0)], limit=1):
+                record.total_samples_count = 0
+                record.samples_all_ready_count = 0
+                record.samples_in_process_count = 0
+                record.samples_completed_count = 0
+                record.samples_reported_count = 0
+                record.samples_signed_count = 0
+                record.samples_pending_count = 0
+                record.samples_this_week_count = 0
+                record.samples_today_count = 0
+                record.samples_with_revisions_count = 0
+                continue
+                
             # Total de muestras
             record.total_samples_count = self.search_count([])
             
@@ -308,14 +323,13 @@ class LimsAnalysisV2(models.Model):
                 ('all_parameters_ready', '=', False)
             ])
             
-            # Muestras con parámetros completados
-            all_samples = self.search([])
-            completed_count = 0
-            for sample in all_samples:
-                if any(p.analysis_status_checkbox == 'finalizado' 
-                      for p in sample.parameter_analysis_ids):
-                    completed_count += 1
-            record.samples_completed_count = completed_count
+            # Muestras con parámetros completados - optimizado
+            completed_ids = []
+            for sample in self.search([]):
+                params = sample.parameter_analysis_ids
+                if params and any(p.analysis_status_checkbox == 'finalizado' for p in params):
+                    completed_ids.append(sample.id)
+            record.samples_completed_count = len(completed_ids)
             
             # Muestras reportadas
             record.samples_reported_count = self.search_count([
@@ -349,6 +363,8 @@ class LimsAnalysisV2(models.Model):
             record.samples_with_revisions_count = self.search_count([
                 ('revision_count', '>', 0)
             ])
+            
+            break  # Solo calcular para el primer registro
 
     # ===============================================
     # === MÉTODOS DE NAVEGACIÓN DEL DASHBOARD ===
