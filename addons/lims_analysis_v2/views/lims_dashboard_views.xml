@@ -120,7 +120,7 @@
                                         <h4 style="text-align: center; margin-bottom: 20px; color: #333; font-weight: 400; font-size: 1.2em;">
                                             📈 Estadísticas Rápidas
                                         </h4>
-                                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; max-width: 600px; margin: 0 auto;">
+                                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; max-width: 450px; margin: 0 auto;">
                                             
                                             <div style="text-align: center;">
                                                 <div style="color: #666; margin-bottom: 8px; font-size: 0.85em;">Esta Semana</div>
@@ -140,13 +140,6 @@
                                                 <div style="color: #666; margin-bottom: 8px; font-size: 0.85em;">Sin Procesar</div>
                                                 <div style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); color: white; padding: 10px; border-radius: 8px; font-size: 1.5em; font-weight: bold;">
                                                     <field name="samples_pending_count"/>
-                                                </div>
-                                            </div>
-                                            
-                                            <div style="text-align: center;">
-                                                <div style="color: #666; margin-bottom: 8px; font-size: 0.85em;">Con Revisiones</div>
-                                                <div style="background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); color: white; padding: 10px; border-radius: 8px; font-size: 1.5em; font-weight: bold;">
-                                                    <field name="samples_with_revisions_count"/>
                                                 </div>
                                             </div>
                                             
