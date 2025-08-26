@@ -37,6 +37,7 @@
         # Vistas principales
         'views/lims_analysis_views.xml', 
         'views/lims_parameter_views.xml',
+        'views/lims_dashboard_views.xml',
         
         # Reportes dinámicos
         'report/report_actions.xml',
