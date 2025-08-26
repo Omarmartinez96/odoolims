@@ -247,6 +247,190 @@ class LimsAnalysisV2(models.Model):
     )
 
     # ===============================================
+    # === CAMPOS PARA DASHBOARD ===
+    # ===============================================
+    total_samples_count = fields.Integer(
+        string='Total de Muestras',
+        compute='_compute_dashboard_metrics'
+    )
+    samples_all_ready_count = fields.Integer(
+        string='Muestras con Todos los Parámetros Listos',
+        compute='_compute_dashboard_metrics'
+    )
+    samples_in_process_count = fields.Integer(
+        string='Muestras en Proceso',
+        compute='_compute_dashboard_metrics'
+    )
+    samples_completed_count = fields.Integer(
+        string='Muestras con Parámetros Completados',
+        compute='_compute_dashboard_metrics'
+    )
+    samples_reported_count = fields.Integer(
+        string='Muestras Reportadas',
+        compute='_compute_dashboard_metrics'
+    )
+    samples_signed_count = fields.Integer(
+        string='Muestras Firmadas',
+        compute='_compute_dashboard_metrics'
+    )
+    samples_pending_count = fields.Integer(
+        string='Muestras Sin Procesar',
+        compute='_compute_dashboard_metrics'
+    )
+    samples_this_week_count = fields.Integer(
+        string='Muestras Esta Semana',
+        compute='_compute_dashboard_metrics'
+    )
+    samples_today_count = fields.Integer(
+        string='Muestras Hoy',
+        compute='_compute_dashboard_metrics'
+    )
+    samples_with_revisions_count = fields.Integer(
+        string='Muestras con Revisiones',
+        compute='_compute_dashboard_metrics'
+    )
+
+    @api.depends('sample_reception_id')
+    def _compute_dashboard_metrics(self):
+        """Calcular métricas del dashboard"""
+        for record in self:
+            # Total de muestras
+            record.total_samples_count = self.search_count([])
+            
+            # Muestras con todos los parámetros listos
+            record.samples_all_ready_count = self.search_count([
+                ('all_parameters_ready', '=', True)
+            ])
+            
+            # Muestras en proceso
+            record.samples_in_process_count = self.search_count([
+                ('has_ready_parameters', '=', True),
+                ('all_parameters_ready', '=', False)
+            ])
+            
+            # Muestras con parámetros completados
+            all_samples = self.search([])
+            completed_count = 0
+            for sample in all_samples:
+                if any(p.analysis_status_checkbox == 'finalizado' 
+                      for p in sample.parameter_analysis_ids):
+                    completed_count += 1
+            record.samples_completed_count = completed_count
+            
+            # Muestras reportadas
+            record.samples_reported_count = self.search_count([
+                ('report_sent_to_client', '=', True)
+            ])
+            
+            # Muestras firmadas
+            record.samples_signed_count = self.search_count([
+                ('signature_state', '=', 'signed')
+            ])
+            
+            # Muestras sin procesar
+            record.samples_pending_count = self.search_count([
+                ('has_ready_parameters', '=', False)
+            ])
+            
+            # Muestras de esta semana
+            from datetime import timedelta
+            today = fields.Date.context_today(self)
+            week_start = today - timedelta(days=today.weekday())
+            record.samples_this_week_count = self.search_count([
+                ('reception_date', '>=', week_start)
+            ])
+            
+            # Muestras de hoy
+            record.samples_today_count = self.search_count([
+                ('reception_date', '=', today)
+            ])
+            
+            # Muestras con revisiones
+            record.samples_with_revisions_count = self.search_count([
+                ('revision_count', '>', 0)
+            ])
+
+    # ===============================================
+    # === MÉTODOS DE NAVEGACIÓN DEL DASHBOARD ===
+    # ===============================================
+    def action_view_all_samples(self):
+        """Ver todas las muestras"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Todas las Muestras',
+            'res_model': 'lims.analysis.v2',
+            'view_mode': 'list,form',
+            'domain': [],
+            'context': {'group_by': 'custody_chain_id'}
+        }
+    
+    def action_view_samples_all_ready(self):
+        """Ver muestras con todos los parámetros listos"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Muestras con Todos los Parámetros Listos',
+            'res_model': 'lims.analysis.v2',
+            'view_mode': 'list,form',
+            'domain': [('all_parameters_ready', '=', True)],
+            'context': {'group_by': 'custody_chain_id'}
+        }
+    
+    def action_view_samples_in_process(self):
+        """Ver muestras en proceso"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Muestras en Proceso',
+            'res_model': 'lims.analysis.v2',
+            'view_mode': 'list,form',
+            'domain': [
+                ('has_ready_parameters', '=', True),
+                ('all_parameters_ready', '=', False)
+            ],
+            'context': {'group_by': 'custody_chain_id'}
+        }
+    
+    def action_view_samples_completed(self):
+        """Ver muestras con parámetros completados"""
+        # Obtener IDs de muestras completadas
+        all_samples = self.search([])
+        completed_ids = []
+        for sample in all_samples:
+            if any(p.analysis_status_checkbox == 'finalizado' 
+                  for p in sample.parameter_analysis_ids):
+                completed_ids.append(sample.id)
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Muestras con Parámetros Completados',
+            'res_model': 'lims.analysis.v2',
+            'view_mode': 'list,form',
+            'domain': [('id', 'in', completed_ids)],
+            'context': {'group_by': 'custody_chain_id'}
+        }
+    
+    def action_view_samples_reported(self):
+        """Ver muestras reportadas"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Muestras Reportadas al Cliente',
+            'res_model': 'lims.analysis.v2',
+            'view_mode': 'list,form',
+            'domain': [('report_sent_to_client', '=', True)],
+            'context': {'group_by': 'custody_chain_id'}
+        }
+    
+    def action_view_samples_signed(self):
+        """Ver muestras firmadas"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Muestras Firmadas',
+            'res_model': 'lims.analysis.v2',
+            'view_mode': 'list,form',
+            'domain': [('signature_state', '=', 'signed')],
+            'context': {'group_by': 'custody_chain_id'}
+        }
+
+    # ===============================================
     # === MÉTODOS COMPUTADOS ===
     # ===============================================
 
