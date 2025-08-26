@@ -2,12 +2,12 @@
 <odoo>
     <data>
         
-        <!-- Vista Dashboard usando Kanban -->
+        <!-- Vista Dashboard usando Kanban simple -->
         <record id="view_lims_dashboard_kanban" model="ir.ui.view">
             <field name="name">lims.analysis.dashboard.kanban</field>
             <field name="model">lims.analysis.v2</field>
             <field name="arch" type="xml">
-                <kanban class="o_kanban_dashboard" create="false" js_class="dashboard_kanban" sample="0">
+                <kanban class="o_kanban_dashboard" create="false" sample="0">
                     <field name="id"/>
                     <field name="sample_reception_id"/>
                     <field name="total_samples_count"/>
@@ -23,110 +23,114 @@
                     
                     <templates>
                         <t t-name="kanban-box">
-                            <div class="container-fluid mt-4">
-                                <h2 class="text-center mb-4">📊 Dashboard de Análisis LIMS</h2>
+                            <div class="oe_kanban_global_click container-fluid">
+                                <div class="row">
+                                    <div class="col-12 text-center mb-3">
+                                        <h2>📊 Dashboard de Análisis LIMS</h2>
+                                    </div>
+                                </div>
                                 
-                                <!-- Primera fila de métricas -->
+                                <!-- Métricas principales -->
                                 <div class="row">
                                     
                                     <!-- Total de Muestras -->
-                                    <div class="col-lg-4 col-md-6 mb-4">
-                                        <div class="card text-center h-100">
-                                            <div class="card-body bg-primary text-white">
-                                                <h1 class="card-title"><t t-esc="record.total_samples_count.value"/></h1>
-                                                <p class="card-text">📊 Total de Muestras</p>
-                                                <a type="object" name="action_view_all_samples" class="btn btn-light btn-sm">Ver Todas</a>
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                                        <div class="text-center p-3 rounded" style="background-color: #007bff; color: white;">
+                                            <div style="font-size: 2em; font-weight: bold;">
+                                                <field name="total_samples_count"/>
                                             </div>
+                                            <div>📊 Total de Muestras</div>
+                                            <button name="action_view_all_samples" type="object" class="btn btn-light btn-sm mt-2">Ver Todas</button>
                                         </div>
                                     </div>
                                     
                                     <!-- Muestras Listas -->
-                                    <div class="col-lg-4 col-md-6 mb-4">
-                                        <div class="card text-center h-100">
-                                            <div class="card-body bg-success text-white">
-                                                <h1 class="card-title"><t t-esc="record.samples_all_ready_count.value"/></h1>
-                                                <p class="card-text">✅ Todos Parámetros Listos</p>
-                                                <a type="object" name="action_view_samples_all_ready" class="btn btn-light btn-sm">Ver Listas</a>
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                                        <div class="text-center p-3 rounded" style="background-color: #28a745; color: white;">
+                                            <div style="font-size: 2em; font-weight: bold;">
+                                                <field name="samples_all_ready_count"/>
                                             </div>
+                                            <div>✅ Todos los Parámetros Listos</div>
+                                            <button name="action_view_samples_all_ready" type="object" class="btn btn-light btn-sm mt-2">Ver Listas</button>
                                         </div>
                                     </div>
                                     
                                     <!-- En Proceso -->
-                                    <div class="col-lg-4 col-md-6 mb-4">
-                                        <div class="card text-center h-100">
-                                            <div class="card-body bg-warning text-dark">
-                                                <h1 class="card-title"><t t-esc="record.samples_in_process_count.value"/></h1>
-                                                <p class="card-text">⏳ En Proceso</p>
-                                                <a type="object" name="action_view_samples_in_process" class="btn btn-dark btn-sm">Ver En Proceso</a>
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                                        <div class="text-center p-3 rounded" style="background-color: #ffc107; color: #212529;">
+                                            <div style="font-size: 2em; font-weight: bold;">
+                                                <field name="samples_in_process_count"/>
                                             </div>
+                                            <div>⏳ En Proceso</div>
+                                            <button name="action_view_samples_in_process" type="object" class="btn btn-dark btn-sm mt-2">Ver En Proceso</button>
                                         </div>
                                     </div>
                                     
                                     <!-- Completadas -->
-                                    <div class="col-lg-4 col-md-6 mb-4">
-                                        <div class="card text-center h-100">
-                                            <div class="card-body bg-info text-white">
-                                                <h1 class="card-title"><t t-esc="record.samples_completed_count.value"/></h1>
-                                                <p class="card-text">🎯 Parámetros Terminados</p>
-                                                <a type="object" name="action_view_samples_completed" class="btn btn-light btn-sm">Ver Completadas</a>
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                                        <div class="text-center p-3 rounded" style="background-color: #17a2b8; color: white;">
+                                            <div style="font-size: 2em; font-weight: bold;">
+                                                <field name="samples_completed_count"/>
                                             </div>
+                                            <div>🎯 Parámetros Terminados</div>
+                                            <button name="action_view_samples_completed" type="object" class="btn btn-light btn-sm mt-2">Ver Completadas</button>
                                         </div>
                                     </div>
                                     
                                     <!-- Reportadas -->
-                                    <div class="col-lg-4 col-md-6 mb-4">
-                                        <div class="card text-center h-100">
-                                            <div class="card-body bg-secondary text-white">
-                                                <h1 class="card-title"><t t-esc="record.samples_reported_count.value"/></h1>
-                                                <p class="card-text">📧 Reportadas</p>
-                                                <a type="object" name="action_view_samples_reported" class="btn btn-light btn-sm">Ver Reportadas</a>
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                                        <div class="text-center p-3 rounded" style="background-color: #6c757d; color: white;">
+                                            <div style="font-size: 2em; font-weight: bold;">
+                                                <field name="samples_reported_count"/>
                                             </div>
+                                            <div>📧 Reportadas</div>
+                                            <button name="action_view_samples_reported" type="object" class="btn btn-light btn-sm mt-2">Ver Reportadas</button>
                                         </div>
                                     </div>
                                     
                                     <!-- Firmadas -->
-                                    <div class="col-lg-4 col-md-6 mb-4">
-                                        <div class="card text-center h-100">
-                                            <div class="card-body bg-dark text-white">
-                                                <h1 class="card-title"><t t-esc="record.samples_signed_count.value"/></h1>
-                                                <p class="card-text">✍️ Firmadas</p>
-                                                <a type="object" name="action_view_samples_signed" class="btn btn-light btn-sm">Ver Firmadas</a>
+                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
+                                        <div class="text-center p-3 rounded" style="background-color: #343a40; color: white;">
+                                            <div style="font-size: 2em; font-weight: bold;">
+                                                <field name="samples_signed_count"/>
                                             </div>
+                                            <div>✍️ Firmadas</div>
+                                            <button name="action_view_samples_signed" type="object" class="btn btn-light btn-sm mt-2">Ver Firmadas</button>
                                         </div>
                                     </div>
                                     
                                 </div>
                                 
                                 <!-- Estadísticas adicionales -->
-                                <div class="card mt-4">
-                                    <div class="card-header bg-light">
-                                        <h5 class="mb-0">📈 Estadísticas Rápidas</h5>
-                                    </div>
-                                    <div class="card-body">
-                                        <div class="row text-center">
-                                            <div class="col-md-3">
-                                                <strong>Esta Semana</strong><br/>
-                                                <span class="badge badge-primary" style="font-size: 1.5em;">
-                                                    <t t-esc="record.samples_this_week_count.value"/>
-                                                </span>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <strong>Hoy</strong><br/>
-                                                <span class="badge badge-success" style="font-size: 1.5em;">
-                                                    <t t-esc="record.samples_today_count.value"/>
-                                                </span>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <strong>Sin Procesar</strong><br/>
-                                                <span class="badge badge-danger" style="font-size: 1.5em;">
-                                                    <t t-esc="record.samples_pending_count.value"/>
-                                                </span>
-                                            </div>
-                                            <div class="col-md-3">
-                                                <strong>Con Revisiones</strong><br/>
-                                                <span class="badge badge-warning" style="font-size: 1.5em;">
-                                                    <t t-esc="record.samples_with_revisions_count.value"/>
-                                                </span>
+                                <div class="row mt-3">
+                                    <div class="col-12">
+                                        <div class="p-3 rounded" style="background-color: #f8f9fa;">
+                                            <h5 class="text-center mb-3">📈 Estadísticas Rápidas</h5>
+                                            <div class="row text-center">
+                                                <div class="col-md-3 col-sm-6">
+                                                    <strong>Esta Semana</strong><br/>
+                                                    <span style="font-size: 1.5em; color: #007bff;">
+                                                        <field name="samples_this_week_count"/>
+                                                    </span>
+                                                </div>
+                                                <div class="col-md-3 col-sm-6">
+                                                    <strong>Hoy</strong><br/>
+                                                    <span style="font-size: 1.5em; color: #28a745;">
+                                                        <field name="samples_today_count"/>
+                                                    </span>
+                                                </div>
+                                                <div class="col-md-3 col-sm-6">
+                                                    <strong>Sin Procesar</strong><br/>
+                                                    <span style="font-size: 1.5em; color: #dc3545;">
+                                                        <field name="samples_pending_count"/>
+                                                    </span>
+                                                </div>
+                                                <div class="col-md-3 col-sm-6">
+                                                    <strong>Con Revisiones</strong><br/>
+                                                    <span style="font-size: 1.5em; color: #ffc107;">
+                                                        <field name="samples_with_revisions_count"/>
+                                                    </span>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
@@ -146,7 +150,7 @@
             <field name="view_mode">kanban</field>
             <field name="view_id" ref="view_lims_dashboard_kanban"/>
             <field name="limit">1</field>
-            <field name="context">{'create': False, 'search_default_limit': 1}</field>
+            <field name="context">{'create': False}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     No hay datos para mostrar en el Dashboard
