@@ -2,95 +2,140 @@
 <odoo>
     <data>
         
-        <!-- Vista especial de Dashboard usando Tree sin crear registros -->
-        <record id="view_lims_dashboard_tree" model="ir.ui.view">
-            <field name="name">lims.analysis.dashboard.tree</field>
+        <!-- Vista Dashboard usando Kanban -->
+        <record id="view_lims_dashboard_kanban" model="ir.ui.view">
+            <field name="name">lims.analysis.dashboard.kanban</field>
             <field name="model">lims.analysis.v2</field>
             <field name="arch" type="xml">
-                <tree string="Dashboard LIMS" create="false" edit="false" delete="false" limit="1" decoration-bf="1==1">
-                    <!-- Campo oculto para evitar errores -->
-                    <field name="sample_reception_id" invisible="1"/>
+                <kanban class="o_kanban_dashboard" create="false" js_class="dashboard_kanban" sample="0">
+                    <field name="id"/>
+                    <field name="sample_reception_id"/>
+                    <field name="total_samples_count"/>
+                    <field name="samples_all_ready_count"/>
+                    <field name="samples_in_process_count"/>
+                    <field name="samples_completed_count"/>
+                    <field name="samples_reported_count"/>
+                    <field name="samples_signed_count"/>
+                    <field name="samples_pending_count"/>
+                    <field name="samples_this_week_count"/>
+                    <field name="samples_today_count"/>
+                    <field name="samples_with_revisions_count"/>
                     
-                    <!-- HTML personalizado para el dashboard -->
-                    <field name="id" invisible="1"/>
-                    
-                    <header>
-                        <div style="width: 100%; padding: 20px;">
-                            <h2 style="text-align: center; margin-bottom: 30px;">📊 Dashboard de Análisis de Muestras</h2>
-                            
-                            <!-- Fila de métricas principales -->
-                            <div style="display: flex; flex-wrap: wrap; justify-content: space-around; gap: 20px;">
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="container-fluid mt-4">
+                                <h2 class="text-center mb-4">📊 Dashboard de Análisis LIMS</h2>
                                 
-                                <!-- Total de Muestras -->
-                                <div style="flex: 0 1 30%; min-width: 200px; background: #007bff; color: white; padding: 20px; border-radius: 10px; text-align: center;">
-                                    <h1 style="margin: 10px 0;"><field name="total_samples_count"/></h1>
-                                    <p style="margin: 5px 0;">📊 Total de Muestras</p>
-                                    <button name="action_view_all_samples" type="object" string="Ver Todas" style="background: white; color: #007bff; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer;"/>
+                                <!-- Primera fila de métricas -->
+                                <div class="row">
+                                    
+                                    <!-- Total de Muestras -->
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="card text-center h-100">
+                                            <div class="card-body bg-primary text-white">
+                                                <h1 class="card-title"><t t-esc="record.total_samples_count.value"/></h1>
+                                                <p class="card-text">📊 Total de Muestras</p>
+                                                <a type="object" name="action_view_all_samples" class="btn btn-light btn-sm">Ver Todas</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Muestras Listas -->
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="card text-center h-100">
+                                            <div class="card-body bg-success text-white">
+                                                <h1 class="card-title"><t t-esc="record.samples_all_ready_count.value"/></h1>
+                                                <p class="card-text">✅ Todos Parámetros Listos</p>
+                                                <a type="object" name="action_view_samples_all_ready" class="btn btn-light btn-sm">Ver Listas</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- En Proceso -->
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="card text-center h-100">
+                                            <div class="card-body bg-warning text-dark">
+                                                <h1 class="card-title"><t t-esc="record.samples_in_process_count.value"/></h1>
+                                                <p class="card-text">⏳ En Proceso</p>
+                                                <a type="object" name="action_view_samples_in_process" class="btn btn-dark btn-sm">Ver En Proceso</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Completadas -->
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="card text-center h-100">
+                                            <div class="card-body bg-info text-white">
+                                                <h1 class="card-title"><t t-esc="record.samples_completed_count.value"/></h1>
+                                                <p class="card-text">🎯 Parámetros Terminados</p>
+                                                <a type="object" name="action_view_samples_completed" class="btn btn-light btn-sm">Ver Completadas</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Reportadas -->
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="card text-center h-100">
+                                            <div class="card-body bg-secondary text-white">
+                                                <h1 class="card-title"><t t-esc="record.samples_reported_count.value"/></h1>
+                                                <p class="card-text">📧 Reportadas</p>
+                                                <a type="object" name="action_view_samples_reported" class="btn btn-light btn-sm">Ver Reportadas</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Firmadas -->
+                                    <div class="col-lg-4 col-md-6 mb-4">
+                                        <div class="card text-center h-100">
+                                            <div class="card-body bg-dark text-white">
+                                                <h1 class="card-title"><t t-esc="record.samples_signed_count.value"/></h1>
+                                                <p class="card-text">✍️ Firmadas</p>
+                                                <a type="object" name="action_view_samples_signed" class="btn btn-light btn-sm">Ver Firmadas</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
                                 </div>
                                 
-                                <!-- Muestras Listas -->
-                                <div style="flex: 0 1 30%; min-width: 200px; background: #28a745; color: white; padding: 20px; border-radius: 10px; text-align: center;">
-                                    <h1 style="margin: 10px 0;"><field name="samples_all_ready_count"/></h1>
-                                    <p style="margin: 5px 0;">✅ Todos los Parámetros Listos</p>
-                                    <button name="action_view_samples_all_ready" type="object" string="Ver Listas" style="background: white; color: #28a745; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer;"/>
-                                </div>
-                                
-                                <!-- En Proceso -->
-                                <div style="flex: 0 1 30%; min-width: 200px; background: #ffc107; color: #212529; padding: 20px; border-radius: 10px; text-align: center;">
-                                    <h1 style="margin: 10px 0;"><field name="samples_in_process_count"/></h1>
-                                    <p style="margin: 5px 0;">⏳ En Proceso</p>
-                                    <button name="action_view_samples_in_process" type="object" string="Ver En Proceso" style="background: white; color: #212529; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer;"/>
-                                </div>
-                                
-                                <!-- Completadas -->
-                                <div style="flex: 0 1 30%; min-width: 200px; background: #17a2b8; color: white; padding: 20px; border-radius: 10px; text-align: center;">
-                                    <h1 style="margin: 10px 0;"><field name="samples_completed_count"/></h1>
-                                    <p style="margin: 5px 0;">🎯 Parámetros Terminados</p>
-                                    <button name="action_view_samples_completed" type="object" string="Ver Completadas" style="background: white; color: #17a2b8; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer;"/>
-                                </div>
-                                
-                                <!-- Reportadas -->
-                                <div style="flex: 0 1 30%; min-width: 200px; background: #6c757d; color: white; padding: 20px; border-radius: 10px; text-align: center;">
-                                    <h1 style="margin: 10px 0;"><field name="samples_reported_count"/></h1>
-                                    <p style="margin: 5px 0;">📧 Reportadas</p>
-                                    <button name="action_view_samples_reported" type="object" string="Ver Reportadas" style="background: white; color: #6c757d; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer;"/>
-                                </div>
-                                
-                                <!-- Firmadas -->
-                                <div style="flex: 0 1 30%; min-width: 200px; background: #343a40; color: white; padding: 20px; border-radius: 10px; text-align: center;">
-                                    <h1 style="margin: 10px 0;"><field name="samples_signed_count"/></h1>
-                                    <p style="margin: 5px 0;">✍️ Firmadas</p>
-                                    <button name="action_view_samples_signed" type="object" string="Ver Firmadas" style="background: white; color: #343a40; border: none; padding: 5px 15px; border-radius: 5px; cursor: pointer;"/>
+                                <!-- Estadísticas adicionales -->
+                                <div class="card mt-4">
+                                    <div class="card-header bg-light">
+                                        <h5 class="mb-0">📈 Estadísticas Rápidas</h5>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row text-center">
+                                            <div class="col-md-3">
+                                                <strong>Esta Semana</strong><br/>
+                                                <span class="badge badge-primary" style="font-size: 1.5em;">
+                                                    <t t-esc="record.samples_this_week_count.value"/>
+                                                </span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>Hoy</strong><br/>
+                                                <span class="badge badge-success" style="font-size: 1.5em;">
+                                                    <t t-esc="record.samples_today_count.value"/>
+                                                </span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>Sin Procesar</strong><br/>
+                                                <span class="badge badge-danger" style="font-size: 1.5em;">
+                                                    <t t-esc="record.samples_pending_count.value"/>
+                                                </span>
+                                            </div>
+                                            <div class="col-md-3">
+                                                <strong>Con Revisiones</strong><br/>
+                                                <span class="badge badge-warning" style="font-size: 1.5em;">
+                                                    <t t-esc="record.samples_with_revisions_count.value"/>
+                                                </span>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                                 
                             </div>
-                            
-                            <!-- Estadísticas adicionales -->
-                            <div style="margin-top: 40px; padding: 20px; background: #f8f9fa; border-radius: 10px;">
-                                <h4 style="text-align: center; margin-bottom: 20px;">📈 Estadísticas Rápidas</h4>
-                                <div style="display: flex; justify-content: space-around; text-align: center;">
-                                    <div>
-                                        <strong>Esta Semana</strong><br/>
-                                        <span style="font-size: 24px; color: #007bff;"><field name="samples_this_week_count"/></span>
-                                    </div>
-                                    <div>
-                                        <strong>Hoy</strong><br/>
-                                        <span style="font-size: 24px; color: #28a745;"><field name="samples_today_count"/></span>
-                                    </div>
-                                    <div>
-                                        <strong>Sin Procesar</strong><br/>
-                                        <span style="font-size: 24px; color: #dc3545;"><field name="samples_pending_count"/></span>
-                                    </div>
-                                    <div>
-                                        <strong>Con Revisiones</strong><br/>
-                                        <span style="font-size: 24px; color: #ffc107;"><field name="samples_with_revisions_count"/></span>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                        </div>
-                    </header>
-                </tree>
+                        </t>
+                    </templates>
+                </kanban>
             </field>
         </record>
         
@@ -98,10 +143,10 @@
         <record id="action_lims_dashboard" model="ir.actions.act_window">
             <field name="name">Dashboard LIMS</field>
             <field name="res_model">lims.analysis.v2</field>
-            <field name="view_mode">tree</field>
-            <field name="view_id" ref="view_lims_dashboard_tree"/>
+            <field name="view_mode">kanban</field>
+            <field name="view_id" ref="view_lims_dashboard_kanban"/>
             <field name="limit">1</field>
-            <field name="context">{'create': False}</field>
+            <field name="context">{'create': False, 'search_default_limit': 1}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     No hay datos para mostrar en el Dashboard
