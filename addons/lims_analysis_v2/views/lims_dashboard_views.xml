@@ -117,36 +117,36 @@
                                     </div>
                                     
                                     <!-- Estadísticas Rápidas -->
-                                    <div style="background: white; border-radius: 20px; padding: 40px; box-shadow: 0 5px 20px rgba(0,0,0,0.08);">
-                                        <h3 style="text-align: center; margin-bottom: 40px; color: #333; font-weight: 300; font-size: 2em;">
+                                    <div style="background: white; border-radius: 10px; padding: 20px; box-shadow: 0 3px 10px rgba(0,0,0,0.05);">
+                                        <h4 style="text-align: center; margin-bottom: 20px; color: #333; font-weight: 400; font-size: 1.2em;">
                                             📈 Estadísticas Rápidas
-                                        </h3>
-                                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 250px)); gap: 20px; margin-bottom: 30px; justify-content: center;">
+                                        </h4>
+                                        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; max-width: 600px; margin: 0 auto;">
                                             
                                             <div style="text-align: center;">
-                                                <div style="color: #666; margin-bottom: 15px; font-size: 1.2em;">Esta Semana</div>
-                                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 15px; font-size: 2.5em; font-weight: bold;">
+                                                <div style="color: #666; margin-bottom: 8px; font-size: 0.85em;">Esta Semana</div>
+                                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px; border-radius: 8px; font-size: 1.5em; font-weight: bold;">
                                                     <field name="samples_this_week_count"/>
                                                 </div>
                                             </div>
                                             
                                             <div style="text-align: center;">
-                                                <div style="color: #666; margin-bottom: 15px; font-size: 1.2em;">Recibidas Hoy</div>
-                                                <div style="background: linear-gradient(135deg, #0ba360 0%, #3cba92 100%); color: white; padding: 20px; border-radius: 15px; font-size: 2.5em; font-weight: bold;">
+                                                <div style="color: #666; margin-bottom: 8px; font-size: 0.85em;">Recibidas Hoy</div>
+                                                <div style="background: linear-gradient(135deg, #0ba360 0%, #3cba92 100%); color: white; padding: 10px; border-radius: 8px; font-size: 1.5em; font-weight: bold;">
                                                     <field name="samples_today_count"/>
                                                 </div>
                                             </div>
                                             
                                             <div style="text-align: center;">
-                                                <div style="color: #666; margin-bottom: 15px; font-size: 1.2em;">Sin Procesar</div>
-                                                <div style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); color: white; padding: 20px; border-radius: 15px; font-size: 2.5em; font-weight: bold;">
+                                                <div style="color: #666; margin-bottom: 8px; font-size: 0.85em;">Sin Procesar</div>
+                                                <div style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); color: white; padding: 10px; border-radius: 8px; font-size: 1.5em; font-weight: bold;">
                                                     <field name="samples_pending_count"/>
                                                 </div>
                                             </div>
                                             
                                             <div style="text-align: center;">
-                                                <div style="color: #666; margin-bottom: 15px; font-size: 1.2em;">Con Revisiones</div>
-                                                <div style="background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); color: white; padding: 20px; border-radius: 15px; font-size: 2.5em; font-weight: bold;">
+                                                <div style="color: #666; margin-bottom: 8px; font-size: 0.85em;">Con Revisiones</div>
+                                                <div style="background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); color: white; padding: 10px; border-radius: 8px; font-size: 1.5em; font-weight: bold;">
                                                     <field name="samples_with_revisions_count"/>
                                                 </div>
                                             </div>
