@@ -2,12 +2,12 @@
 <odoo>
     <data>
         
-        <!-- Vista Dashboard usando Kanban simple -->
+        <!-- Vista Dashboard Mejorada con Pantalla Completa -->
         <record id="view_lims_dashboard_kanban" model="ir.ui.view">
             <field name="name">lims.analysis.dashboard.kanban</field>
             <field name="model">lims.analysis.v2</field>
             <field name="arch" type="xml">
-                <kanban class="o_kanban_dashboard" create="false" sample="0">
+                <kanban class="oe_background_grey o_kanban_dashboard" create="false" sample="0">
                     <field name="id"/>
                     <field name="sample_reception_id"/>
                     <field name="total_samples_count"/>
@@ -23,119 +23,151 @@
                     
                     <templates>
                         <t t-name="kanban-box">
-                            <div class="oe_kanban_global_click container-fluid">
-                                <div class="row">
-                                    <div class="col-12 text-center mb-3">
-                                        <h2>📊 Dashboard de Análisis LIMS</h2>
-                                    </div>
+                            <div style="width: 100vw; margin-left: -15px; margin-right: -15px; padding: 0;">
+                                
+                                <!-- Header Principal -->
+                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px 0; margin-bottom: 30px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);">
+                                    <h1 style="text-align: center; color: white; margin: 0; font-size: 2.5em; font-weight: 300;">
+                                        📊 Dashboard de Análisis LIMS
+                                    </h1>
+                                    <p style="text-align: center; color: rgba(255,255,255,0.9); margin: 10px 0 0 0;">
+                                        Resumen en tiempo real del estado de análisis
+                                    </p>
                                 </div>
                                 
-                                <!-- Métricas principales -->
-                                <div class="row">
+                                <!-- Container Principal -->
+                                <div style="padding: 0 40px;">
                                     
-                                    <!-- Total de Muestras -->
-                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                                        <div class="text-center p-3 rounded" style="background-color: #007bff; color: white;">
-                                            <div style="font-size: 2em; font-weight: bold;">
-                                                <field name="total_samples_count"/>
+                                    <!-- Primera Fila - Métricas Principales -->
+                                    <div style="display: flex; flex-wrap: wrap; gap: 25px; margin-bottom: 30px; justify-content: space-evenly;">
+                                        
+                                        <!-- Total de Muestras -->
+                                        <div style="flex: 1; min-width: 280px; max-width: 350px;">
+                                            <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; padding: 30px; text-align: center; color: white; box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3); transition: transform 0.3s;">
+                                                <div style="font-size: 3.5em; font-weight: bold; margin-bottom: 10px;">
+                                                    <field name="total_samples_count"/>
+                                                </div>
+                                                <div style="font-size: 1.2em; margin-bottom: 20px;">📊 Total de Muestras</div>
+                                                <button name="action_view_all_samples" type="object" style="background: white; color: #667eea; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer;">
+                                                    Ver Todas
+                                                </button>
                                             </div>
-                                            <div>📊 Total de Muestras</div>
-                                            <button name="action_view_all_samples" type="object" class="btn btn-light btn-sm mt-2">Ver Todas</button>
+                                        </div>
+                                        
+                                        <!-- Muestras Listas -->
+                                        <div style="flex: 1; min-width: 280px; max-width: 350px;">
+                                            <div style="background: linear-gradient(135deg, #0ba360 0%, #3cba92 100%); border-radius: 15px; padding: 30px; text-align: center; color: white; box-shadow: 0 10px 20px rgba(60, 186, 146, 0.3); transition: transform 0.3s;">
+                                                <div style="font-size: 3.5em; font-weight: bold; margin-bottom: 10px;">
+                                                    <field name="samples_all_ready_count"/>
+                                                </div>
+                                                <div style="font-size: 1.2em; margin-bottom: 20px;">✅ Todos los Parámetros Listos</div>
+                                                <button name="action_view_samples_all_ready" type="object" style="background: white; color: #0ba360; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer;">
+                                                    Ver Listas
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- En Proceso -->
+                                        <div style="flex: 1; min-width: 280px; max-width: 350px;">
+                                            <div style="background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); border-radius: 15px; padding: 30px; text-align: center; color: white; box-shadow: 0 10px 20px rgba(242, 201, 76, 0.3); transition: transform 0.3s;">
+                                                <div style="font-size: 3.5em; font-weight: bold; margin-bottom: 10px;">
+                                                    <field name="samples_in_process_count"/>
+                                                </div>
+                                                <div style="font-size: 1.2em; margin-bottom: 20px;">⏳ En Proceso</div>
+                                                <button name="action_view_samples_in_process" type="object" style="background: white; color: #f2994a; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer;">
+                                                    Ver En Proceso
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                    <!-- Segunda Fila - Métricas Secundarias -->
+                                    <div style="display: flex; flex-wrap: wrap; gap: 25px; margin-bottom: 30px; justify-content: space-evenly;">
+                                        
+                                        <!-- Completadas -->
+                                        <div style="flex: 1; min-width: 280px; max-width: 350px;">
+                                            <div style="background: linear-gradient(135deg, #56ccf2 0%, #2f80ed 100%); border-radius: 15px; padding: 30px; text-align: center; color: white; box-shadow: 0 10px 20px rgba(47, 128, 237, 0.3); transition: transform 0.3s;">
+                                                <div style="font-size: 3.5em; font-weight: bold; margin-bottom: 10px;">
+                                                    <field name="samples_completed_count"/>
+                                                </div>
+                                                <div style="font-size: 1.2em; margin-bottom: 20px;">🎯 Parámetros Terminados</div>
+                                                <button name="action_view_samples_completed" type="object" style="background: white; color: #2f80ed; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer;">
+                                                    Ver Completadas
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Reportadas -->
+                                        <div style="flex: 1; min-width: 280px; max-width: 350px;">
+                                            <div style="background: linear-gradient(135deg, #89d4cf 0%, #6c86b8 100%); border-radius: 15px; padding: 30px; text-align: center; color: white; box-shadow: 0 10px 20px rgba(108, 134, 184, 0.3); transition: transform 0.3s;">
+                                                <div style="font-size: 3.5em; font-weight: bold; margin-bottom: 10px;">
+                                                    <field name="samples_reported_count"/>
+                                                </div>
+                                                <div style="font-size: 1.2em; margin-bottom: 20px;">📧 Reportadas</div>
+                                                <button name="action_view_samples_reported" type="object" style="background: white; color: #6c86b8; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer;">
+                                                    Ver Reportadas
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Firmadas -->
+                                        <div style="flex: 1; min-width: 280px; max-width: 350px;">
+                                            <div style="background: linear-gradient(135deg, #434343 0%, #000000 100%); border-radius: 15px; padding: 30px; text-align: center; color: white; box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3); transition: transform 0.3s;">
+                                                <div style="font-size: 3.5em; font-weight: bold; margin-bottom: 10px;">
+                                                    <field name="samples_signed_count"/>
+                                                </div>
+                                                <div style="font-size: 1.2em; margin-bottom: 20px;">✍️ Firmadas</div>
+                                                <button name="action_view_samples_signed" type="object" style="background: white; color: #434343; border: none; padding: 12px 30px; border-radius: 25px; font-weight: 600; cursor: pointer;">
+                                                    Ver Firmadas
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                    
+                                    <!-- Estadísticas Rápidas - Ancho Completo -->
+                                    <div style="background: white; border-radius: 15px; padding: 30px; margin-top: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.08);">
+                                        <h3 style="text-align: center; margin-bottom: 30px; color: #333; font-weight: 300; font-size: 1.8em;">
+                                            📈 Estadísticas Rápidas
+                                        </h3>
+                                        <div style="display: flex; justify-content: space-around; flex-wrap: wrap; gap: 20px;">
+                                            
+                                            <div style="text-align: center; flex: 1; min-width: 150px;">
+                                                <div style="color: #666; margin-bottom: 10px; font-size: 1.1em;">Esta Semana</div>
+                                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; border-radius: 10px; font-size: 2em; font-weight: bold;">
+                                                    <field name="samples_this_week_count"/>
+                                                </div>
+                                            </div>
+                                            
+                                            <div style="text-align: center; flex: 1; min-width: 150px;">
+                                                <div style="color: #666; margin-bottom: 10px; font-size: 1.1em;">Recibidas Hoy</div>
+                                                <div style="background: linear-gradient(135deg, #0ba360 0%, #3cba92 100%); color: white; padding: 15px; border-radius: 10px; font-size: 2em; font-weight: bold;">
+                                                    <field name="samples_today_count"/>
+                                                </div>
+                                            </div>
+                                            
+                                            <div style="text-align: center; flex: 1; min-width: 150px;">
+                                                <div style="color: #666; margin-bottom: 10px; font-size: 1.1em;">Sin Procesar</div>
+                                                <div style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); color: white; padding: 15px; border-radius: 10px; font-size: 2em; font-weight: bold;">
+                                                    <field name="samples_pending_count"/>
+                                                </div>
+                                            </div>
+                                            
+                                            <div style="text-align: center; flex: 1; min-width: 150px;">
+                                                <div style="color: #666; margin-bottom: 10px; font-size: 1.1em;">Con Revisiones</div>
+                                                <div style="background: linear-gradient(135deg, #f2994a 0%, #f2c94c 100%); color: white; padding: 15px; border-radius: 10px; font-size: 2em; font-weight: bold;">
+                                                    <field name="samples_with_revisions_count"/>
+                                                </div>
+                                            </div>
+                                            
                                         </div>
                                     </div>
                                     
-                                    <!-- Muestras Listas -->
-                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                                        <div class="text-center p-3 rounded" style="background-color: #28a745; color: white;">
-                                            <div style="font-size: 2em; font-weight: bold;">
-                                                <field name="samples_all_ready_count"/>
-                                            </div>
-                                            <div>✅ Todos los Parámetros Listos</div>
-                                            <button name="action_view_samples_all_ready" type="object" class="btn btn-light btn-sm mt-2">Ver Listas</button>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- En Proceso -->
-                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                                        <div class="text-center p-3 rounded" style="background-color: #ffc107; color: #212529;">
-                                            <div style="font-size: 2em; font-weight: bold;">
-                                                <field name="samples_in_process_count"/>
-                                            </div>
-                                            <div>⏳ En Proceso</div>
-                                            <button name="action_view_samples_in_process" type="object" class="btn btn-dark btn-sm mt-2">Ver En Proceso</button>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Completadas -->
-                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                                        <div class="text-center p-3 rounded" style="background-color: #17a2b8; color: white;">
-                                            <div style="font-size: 2em; font-weight: bold;">
-                                                <field name="samples_completed_count"/>
-                                            </div>
-                                            <div>🎯 Parámetros Terminados</div>
-                                            <button name="action_view_samples_completed" type="object" class="btn btn-light btn-sm mt-2">Ver Completadas</button>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Reportadas -->
-                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                                        <div class="text-center p-3 rounded" style="background-color: #6c757d; color: white;">
-                                            <div style="font-size: 2em; font-weight: bold;">
-                                                <field name="samples_reported_count"/>
-                                            </div>
-                                            <div>📧 Reportadas</div>
-                                            <button name="action_view_samples_reported" type="object" class="btn btn-light btn-sm mt-2">Ver Reportadas</button>
-                                        </div>
-                                    </div>
-                                    
-                                    <!-- Firmadas -->
-                                    <div class="col-lg-4 col-md-6 col-sm-12 mb-3">
-                                        <div class="text-center p-3 rounded" style="background-color: #343a40; color: white;">
-                                            <div style="font-size: 2em; font-weight: bold;">
-                                                <field name="samples_signed_count"/>
-                                            </div>
-                                            <div>✍️ Firmadas</div>
-                                            <button name="action_view_samples_signed" type="object" class="btn btn-light btn-sm mt-2">Ver Firmadas</button>
-                                        </div>
-                                    </div>
+                                    <!-- Espaciado inferior -->
+                                    <div style="height: 30px;"></div>
                                     
                                 </div>
-                                
-                                <!-- Estadísticas adicionales -->
-                                <div class="row mt-3">
-                                    <div class="col-12">
-                                        <div class="p-3 rounded" style="background-color: #f8f9fa;">
-                                            <h5 class="text-center mb-3">📈 Estadísticas Rápidas</h5>
-                                            <div class="row text-center">
-                                                <div class="col-md-3 col-sm-6">
-                                                    <strong>Esta Semana</strong><br/>
-                                                    <span style="font-size: 1.5em; color: #007bff;">
-                                                        <field name="samples_this_week_count"/>
-                                                    </span>
-                                                </div>
-                                                <div class="col-md-3 col-sm-6">
-                                                    <strong>Hoy</strong><br/>
-                                                    <span style="font-size: 1.5em; color: #28a745;">
-                                                        <field name="samples_today_count"/>
-                                                    </span>
-                                                </div>
-                                                <div class="col-md-3 col-sm-6">
-                                                    <strong>Sin Procesar</strong><br/>
-                                                    <span style="font-size: 1.5em; color: #dc3545;">
-                                                        <field name="samples_pending_count"/>
-                                                    </span>
-                                                </div>
-                                                <div class="col-md-3 col-sm-6">
-                                                    <strong>Con Revisiones</strong><br/>
-                                                    <span style="font-size: 1.5em; color: #ffc107;">
-                                                        <field name="samples_with_revisions_count"/>
-                                                    </span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
                             </div>
                         </t>
                     </templates>
