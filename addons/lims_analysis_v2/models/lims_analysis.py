@@ -261,10 +261,6 @@ class LimsAnalysisV2(models.Model):
         string='Muestras en Proceso',
         compute='_compute_dashboard_metrics'
     )
-    samples_completed_count = fields.Integer(
-        string='Muestras con Parámetros Completados',
-        compute='_compute_dashboard_metrics'
-    )
     samples_reported_count = fields.Integer(
         string='Muestras Reportadas',
         compute='_compute_dashboard_metrics'
@@ -300,7 +296,6 @@ class LimsAnalysisV2(models.Model):
                 record.total_samples_count = 0
                 record.samples_all_ready_count = 0
                 record.samples_in_process_count = 0
-                record.samples_completed_count = 0
                 record.samples_reported_count = 0
                 record.samples_signed_count = 0
                 record.samples_pending_count = 0
@@ -322,14 +317,6 @@ class LimsAnalysisV2(models.Model):
                 ('has_ready_parameters', '=', True),
                 ('all_parameters_ready', '=', False)
             ])
-            
-            # Muestras con parámetros completados - optimizado
-            completed_ids = []
-            for sample in self.search([]):
-                params = sample.parameter_analysis_ids
-                if params and any(p.analysis_status_checkbox == 'finalizado' for p in params):
-                    completed_ids.append(sample.id)
-            record.samples_completed_count = len(completed_ids)
             
             # Muestras reportadas
             record.samples_reported_count = self.search_count([
@@ -365,6 +352,17 @@ class LimsAnalysisV2(models.Model):
             ])
             
             break  # Solo calcular para el primer registro
+
+    def action_view_samples_pending(self):
+        """Ver muestras sin procesar"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Muestras Sin Procesar',
+            'res_model': 'lims.analysis.v2',
+            'view_mode': 'list,form',
+            'domain': [('has_ready_parameters', '=', False)],
+            'context': {'group_by': 'custody_chain_id'}
+        }
 
     # ===============================================
     # === MÉTODOS DE NAVEGACIÓN DEL DASHBOARD ===
