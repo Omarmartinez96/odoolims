@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vista Lista Principal -->
+        <record id="view_lims_culture_media_list" model="ir.ui.view">
+            <field name="name">lims.culture.media.list</field>
+            <field name="model">lims.culture.media</field>
+            <field name="arch" type="xml">
+                <list string="Catálogo de Medios de Cultivo" 
+                      editable="top"
+                      default_order="sequence">
+                    <field name="sequence" string="#" readonly="1"/>
+                    <field name="name" string="Nombre del Medio"/>
+                    <field name="internal_id" string="Código Interno"/>
+                    <field name="batch_prefix" string="Prefijo Lotes"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Formulario Profesional -->
+        <record id="view_lims_culture_media_form" model="ir.ui.view">
+            <field name="name">lims.culture.media.form</field>
+            <field name="model">lims.culture.media</field>
+            <field name="arch" type="xml">
+                <form string="Configuración de Medio de Cultivo">
+                    
+                    <!-- Header con acciones -->
+                    <header>
+                        <button name="action_recompute_batch_prefixes" 
+                                type="object" 
+                                string="🔄 Recalcular Prefijos Automáticos" 
+                                class="btn-info"
+                                help="Actualizar prefijos de lotes para todos los medios"/>
+                        
+                        <button name="action_assign_sequences" 
+                                type="object" 
+                                string="📋 Reorganizar Secuencias" 
+                                class="btn-secondary"
+                                help="Recalcular secuencias de todos los medios"/>
+                    </header>
+                    
+                    <sheet>
+                        
+                        <!-- Título Principal -->
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" 
+                                       placeholder="Nombre del medio de cultivo" 
+                                       required="1"/>
+                            </h1>
+                            <h2>
+                                Código: <field name="internal_id" 
+                                              placeholder="Código del laboratorio (ej: 24-TSA)"
+                                              style="border: none; background: none;"/>
+                            </h2>
+                        </div>
+
+                        <!-- Información Principal -->
+                        <group>
+                            <group string="🏷️ Identificación">
+                                <field name="sequence" 
+                                       readonly="1" 
+                                       string="Secuencia Interna"/>
+                                
+                                <field name="batch_prefix" 
+                                       string="🧪 Prefijo para Lotes"
+                                       placeholder="Ej: TSA, MAC, BHI"
+                                       help="Este código aparecerá en los lotes preparados"/>
+                                
+                                <field name="active"/>
+                            </group>
+                            
+                            <group string="💡 Vista Previa de Códigos">
+                                <div style="padding: 15px; background: #e8f5e8; border-radius: 8px; border-left: 4px solid #4CAF50;">
+                                    <p style="margin: 0; font-weight: bold;">Ejemplo de códigos de lote:</p>
+                                    <p style="margin: 5px 0 0 0; font-family: monospace; color: #2e7d32;">
+                                        TSA-260825-1, TSA-260825-2, TSA-270825-1...
+                                    </p>
+                                    <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">
+                                        Formato: [Prefijo]-[DDMMAA]-[Consecutivo]
+                                    </p>
+                                </div>
+                            </group>
+                        </group>
+
+                        <!-- Descripción -->
+                        <separator string="📝 Descripción Técnica"/>
+                        <group>
+                            <field name="description" 
+                                   nolabel="1" 
+                                   placeholder="Descripción detallada: composición, uso, condiciones de almacenamiento, observaciones técnicas..."
+                                   rows="4"/>
+                        </group>
+
+                        <!-- Controles de Calidad -->
+                        <notebook>
+                            <page string="🧪 Controles de Calidad">
+                                
+                                <div style="background: #e3f2fd; padding: 15px; margin-bottom: 20px; border-radius: 8px;">
+                                    <h4 style="margin: 0 0 10px 0; color: #1976d2;">
+                                        🔬 Configuración de Controles Automáticos
+                                    </h4>
+                                    <p style="margin: 0; color: #424242;">
+                                        Los controles configurados aquí se aplicarán automáticamente a todos los lotes preparados de este medio.
+                                    </p>
+                                </div>
+                                
+                                <field name="media_qc_ids" nolabel="1">
+                                    <list string="Controles Configurados" 
+                                          editable="bottom" 
+                                          create="true" 
+                                          delete="true">
+                                        
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="qc_type_id" 
+                                               string="🎯 Tipo de Control"
+                                               options="{'no_create': True}"
+                                               required="1"/>
+                                        <field name="expected_result" 
+                                               string="✅ Resultado Esperado"
+                                               required="1"/>
+                                        <field name="is_mandatory" 
+                                               string="🔒 Obligatorio"/>
+                                        <field name="notes" 
+                                               string="📋 Notas"/>
+                                    </list>
+                                </field>
+                                
+                                <div style="margin-top: 15px; padding: 10px; background: #fff3e0; border-left: 4px solid #ff9800;">
+                                    <p style="margin: 0; color: #e65100; font-size: 12px;">
+                                        <strong>💡 Tip:</strong> Use el campo "Notas" para instrucciones específicas como temperaturas de incubación, tiempos de espera, etc.
+                                    </p>
+                                </div>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acción Principal -->
+        <record id="action_lims_culture_media" model="ir.actions.act_window">
+            <field name="name">🧪 Medios de Cultivo</field>
+            <field name="res_model">lims.culture.media</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    🧪 Configurar el primer medio de cultivo
+                </p>
+                <p>
+                    Gestione el catálogo completo de medios de cultivo con códigos automáticos para lotes preparados y controles de calidad integrados.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

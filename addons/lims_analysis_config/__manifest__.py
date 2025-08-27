@@ -1,6 +1,6 @@
 {
     'name': 'LIMS - Configuración de Análisis',
-    'version': '1.0',
+    'version': '1.2',
     'summary': 'Configuración base para análisis LIMS',
     'description': '''
         Módulo base de configuración que incluye:
@@ -15,17 +15,17 @@
     'depends': [
         'base',
         'mail',
-        'lims_reception',  # Para lims.culture.media
+        'lims_reception',  # Solo para types de QC
     ],
     'data': [
         # Seguridad
         'security/ir.model.access.csv',
         
         # Vistas de configuración
+        'views/lims_culture_media_views.xml',  # NUEVO
         'views/lims_equipment_views.xml',
         'views/lims_culture_media_batch_views.xml',
         'views/lims_culture_media_qc_views.xml',
-        'views/lims_culture_media_professional_views.xml',
     ],
     'installable': True,
     'application': True,  
