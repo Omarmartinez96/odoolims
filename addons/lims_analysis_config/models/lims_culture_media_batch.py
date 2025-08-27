@@ -45,10 +45,10 @@ class LimsCultureMediaBatch(models.Model):
     )
 
     # CAMPO LEGACY (mantener sin tocar)
-    prepared_by = fields.Char(
-        string='Preparado por (Texto)',
-        help='Campo de texto libre (legacy)'
-    )
+    # prepared_by = fields.Char(
+    #     string='Preparado por (Texto)',
+    #     help='Campo de texto libre (legacy)'
+    # )
     
     # Datos técnicos
     volume_prepared = fields.Float(
