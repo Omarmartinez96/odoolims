@@ -110,8 +110,8 @@
             <field name="binding_view_types">list</field>
             <field name="state">code</field>
             <field name="code">
-        # Ejecutar recálculo de prefijos
-        action = records.action_recompute_batch_prefixes()
+# Ejecutar recálculo de prefijos
+action = records.action_recompute_batch_prefixes()
             </field>
         </record>
 
