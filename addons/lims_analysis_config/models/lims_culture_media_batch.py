@@ -21,7 +21,7 @@ class LimsCultureMediaBatch(models.Model):
         required=True
     )
     
-    # Tipo de medio
+    # Tipo de medio (oculto para preparados)
     media_type = fields.Selection([
         ('prepared', 'Preparado en laboratorio'),
         ('dehydrated', 'Deshidratado comercial')
@@ -37,16 +37,17 @@ class LimsCultureMediaBatch(models.Model):
         string='Fecha de Vencimiento'
     )
     
-    analyst_id = fields.Many2one(
+    # ÚNICO CAMPO DE ANALISTA (activo)
+    analyst_responsible_id = fields.Many2one(
         'lims.analyst',
-        string='Preparado por (Analista)',
+        string='Preparado por',
         help='Analista responsable que preparó el medio'
     )
 
-    # DEPRECADO: Campo de texto libre
+    # CAMPO LEGACY (mantener para datos existentes)
     prepared_by = fields.Char(
         string='Preparado por (Texto)',
-        help='DEPRECADO: Use el campo Analista'
+        help='Campo de texto libre (legacy)'
     )
     
     # Datos técnicos
@@ -79,22 +80,18 @@ class LimsCultureMediaBatch(models.Model):
             if vals.get('batch_code', '/') == '/':
                 media = self.env['lims.culture.media'].browse(vals.get('culture_media_id'))
                 if media:
-                    # NUEVA LÓGICA: Usar batch_prefix si existe, sino extraer de internal_id
                     prefix_code = media.batch_prefix
                     if not prefix_code and media.internal_id:
-                        # Extraer la parte después del último guión
                         if '-' in media.internal_id:
                             prefix_code = media.internal_id.split('-')[-1]
                         else:
                             prefix_code = media.internal_id
                     
                     if prefix_code:
-                        # Formato mejorado: TSA-260825-1
                         prep_date = fields.Date.from_string(vals.get('preparation_date')) if vals.get('preparation_date') else fields.Date.context_today(self)
-                        date_part = prep_date.strftime('%d%m%y')  # 260825
+                        date_part = prep_date.strftime('%d%m%y')
                         prefix = f"{prefix_code}-{date_part}"
                         
-                        # Buscar consecutivo del día
                         existing = self.search([('batch_code', 'like', f'{prefix}-%')])
                         numbers = []
                         for code in existing.mapped('batch_code'):
@@ -115,7 +112,7 @@ class LimsCultureMediaBatch(models.Model):
         return self.env['lims.analyst'].open_assignment_wizard(
             source_model='lims.culture.media.batch',
             source_record_id=self.id,
-            source_field='analyst_id',
+            source_field='analyst_responsible_id',  # CONSISTENTE
             action_description=f'Asignar responsable del lote {self.batch_code or "nuevo"}'
         )
 
@@ -126,6 +123,6 @@ class LimsCultureMediaBatch(models.Model):
         return self.env['lims.analyst'].open_assignment_wizard(
             source_model='lims.culture.media.batch',
             source_record_id=self.id,
-            source_field='analyst_id',
+            source_field='analyst_responsible_id',  # CORREGIDO
             action_description=f'Cambiar responsable del lote {self.batch_code}'
         )

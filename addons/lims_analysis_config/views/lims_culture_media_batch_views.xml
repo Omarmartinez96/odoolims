@@ -16,7 +16,7 @@
                     <field name="culture_media_id" string="Medio de Cultivo"/>
                     <field name="preparation_date" string="Fecha Preparación"/>
                     <field name="volume_prepared" string="Volumen (mL)"/>
-                    <field name="analyst_id" string="Preparado por"/>  
+                    <field name="analyst_responsible_id" string="Preparado por"/>  <!-- CORREGIDO -->
                     <field name="expiry_date" string="Vencimiento"/>
                 </list>
             </field>
@@ -46,24 +46,24 @@
                                 <field name="preparation_date" required="1"/>
                                 
                                 <!-- Analista responsable con botones de asignación -->
-                                <field name="analyst_id" readonly="1" invisible="not analyst_id"/>
+                                <field name="analyst_responsible_id" readonly="1" invisible="not analyst_responsible_id"/>
                                 
                                 <button name="action_assign_analyst"
                                         type="object"
                                         string="Seleccionar Responsable"
                                         class="btn-primary"
-                                        invisible="analyst_id"
+                                        invisible="analyst_responsible_id"
                                         help="Seleccionar analista responsable con verificación PIN"/>
                                 
                                 <button name="action_change_analyst"
                                         type="object"
                                         string="Cambiar Responsable"
                                         class="btn-secondary"
-                                        invisible="not analyst_id"
+                                        invisible="not analyst_responsible_id"
                                         help="Cambiar el analista responsable"/>
                                 
-                                <!-- Campo deprecado oculto -->
-                                <field name="prepared_by" invisible="1"/>
+                                <!-- Campo de texto legacy visible temporalmente -->
+                                <field name="prepared_by" invisible="not prepared_by"/>
                                 <field name="media_type" invisible="1"/>
                             </group>
                         </group>
