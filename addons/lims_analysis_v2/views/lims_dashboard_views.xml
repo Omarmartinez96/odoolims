@@ -80,17 +80,17 @@
                                             </button>
                                         </div>
 
-                                        <!-- Sin Procesar (reemplaza Completadas) -->
-                                        <div style="background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%); border-radius: 10px; padding: 15px; text-align: center; color: white; box-shadow: 0 5px 15px rgba(239, 71, 58, 0.2); transition: transform 0.3s; cursor: pointer;">
+                                        <!-- Sin Procesar -->
+                                        <div style="background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); border-radius: 10px; padding: 15px; text-align: center; color: white; box-shadow: 0 5px 15px rgba(220, 53, 69, 0.2); transition: transform 0.3s; cursor: pointer;">
                                             <div style="font-size: 1.8em; font-weight: bold; margin-bottom: 5px;">
                                                 <field name="samples_pending_count"/>
                                             </div>
-                                            <div style="font-size: 0.85em; margin-bottom: 10px;">⚠️ Sin Procesar</div>
-                                            <button name="action_view_samples_pending" type="object" style="background: white; color: #eb3349; border: none; padding: 6px 15px; border-radius: 20px; font-weight: 500; font-size: 0.85em; cursor: pointer;">
-                                                Ver Pendientes
+                                            <div style="font-size: 0.85em; margin-bottom: 10px;">📋 Sin Procesar</div>
+                                            <button name="action_view_samples_pending" type="object" style="background: white; color: #dc3545; border: none; padding: 6px 15px; border-radius: 20px; font-weight: 500; font-size: 0.85em; cursor: pointer;">
+                                                Ver Sin Procesar
                                             </button>
                                         </div>
-
+                                        
                                         <!-- Reportadas -->
                                         <div style="background: linear-gradient(135deg, #89d4cf 0%, #6c86b8 100%); border-radius: 10px; padding: 15px; text-align: center; color: white; box-shadow: 0 5px 15px rgba(108, 134, 184, 0.2); transition: transform 0.3s; cursor: pointer;">
                                             <div style="font-size: 1.8em; font-weight: bold; margin-bottom: 5px;">

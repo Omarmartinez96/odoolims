@@ -312,11 +312,14 @@ class LimsAnalysisV2(models.Model):
                 ('all_parameters_ready', '=', True)
             ])
             
-            # Muestras en proceso
-            record.samples_in_process_count = self.search_count([
-                ('has_ready_parameters', '=', True),
-                ('all_parameters_ready', '=', False)
-            ])
+            # Muestras en proceso - AL MENOS UN parámetro en proceso
+            en_proceso_ids = []
+            for sample in self.search([]):
+                if sample.parameter_analysis_ids:
+                    # Si al menos un parámetro está en proceso
+                    if any(p.analysis_status_checkbox == 'en_proceso' for p in sample.parameter_analysis_ids):
+                        en_proceso_ids.append(sample.id)
+            record.samples_in_process_count = len(en_proceso_ids)
             
             # Muestras reportadas
             record.samples_reported_count = self.search_count([
@@ -328,10 +331,14 @@ class LimsAnalysisV2(models.Model):
                 ('signature_state', '=', 'signed')
             ])
             
-            # Muestras sin procesar
-            record.samples_pending_count = self.search_count([
-                ('has_ready_parameters', '=', False)
-            ])
+            # Muestras sin procesar - TODOS los parámetros sin procesar
+            sin_procesar_ids = []
+            for sample in self.search([]):
+                if sample.parameter_analysis_ids:
+                    # Si TODOS los parámetros están sin procesar
+                    if all(p.analysis_status_checkbox == 'sin_procesar' for p in sample.parameter_analysis_ids):
+                        sin_procesar_ids.append(sample.id)
+            record.samples_pending_count = len(sin_procesar_ids)
             
             # Muestras de esta semana
             from datetime import timedelta
@@ -354,13 +361,20 @@ class LimsAnalysisV2(models.Model):
             break  # Solo calcular para el primer registro
 
     def action_view_samples_pending(self):
-        """Ver muestras sin procesar"""
+        """Ver muestras donde todos los parámetros están sin procesar"""
+        all_samples = self.search([])
+        pending_ids = []
+        for sample in all_samples:
+            if sample.parameter_analysis_ids:
+                if all(p.analysis_status_checkbox == 'sin_procesar' for p in sample.parameter_analysis_ids):
+                    pending_ids.append(sample.id)
+        
         return {
             'type': 'ir.actions.act_window',
             'name': 'Muestras Sin Procesar',
             'res_model': 'lims.analysis.v2',
             'view_mode': 'list,form',
-            'domain': [('has_ready_parameters', '=', False)],
+            'domain': [('id', 'in', pending_ids)],
             'context': {'group_by': 'custody_chain_id'}
         }
 
@@ -390,16 +404,20 @@ class LimsAnalysisV2(models.Model):
         }
     
     def action_view_samples_in_process(self):
-        """Ver muestras en proceso"""
+        """Ver muestras con al menos un parámetro en proceso"""
+        all_samples = self.search([])
+        in_process_ids = []
+        for sample in all_samples:
+            if sample.parameter_analysis_ids:
+                if any(p.analysis_status_checkbox == 'en_proceso' for p in sample.parameter_analysis_ids):
+                    in_process_ids.append(sample.id)
+        
         return {
             'type': 'ir.actions.act_window',
             'name': 'Muestras en Proceso',
             'res_model': 'lims.analysis.v2',
             'view_mode': 'list,form',
-            'domain': [
-                ('has_ready_parameters', '=', True),
-                ('all_parameters_ready', '=', False)
-            ],
+            'domain': [('id', 'in', in_process_ids)],
             'context': {'group_by': 'custody_chain_id'}
         }
     
