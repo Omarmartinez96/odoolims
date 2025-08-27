@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vista Lista del Catálogo -->
+        <record id="view_lims_culture_media_list" model="ir.ui.view">
+            <field name="name">lims.culture.media.list</field>
+            <field name="model">lims.culture.media</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <list string="🧪 Catálogo de Medios de Cultivo" 
+                      editable="top"
+                      default_order="sequence">
+                    <field name="sequence" string="#" readonly="1"/>
+                    <field name="name" string="Nombre del Medio"/>
+                    <field name="internal_id" string="Código Interno"/>
+                    <field name="batch_prefix" string="Prefijo Lotes"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Formulario del Catálogo -->
+        <record id="view_lims_culture_media_form" model="ir.ui.view">
+            <field name="name">lims.culture.media.form</field>
+            <field name="model">lims.culture.media</field>
+            <field name="priority">1</field>
+            <field name="arch" type="xml">
+                <form string="Medio de Cultivo">
+                    
+                    <header>
+                        <button name="action_recompute_batch_prefixes" 
+                                type="object" 
+                                string="🔄 Recalcular Prefijos" 
+                                class="btn-info"
+                                help="Actualizar prefijos de lotes automáticamente"/>
+                    </header>
+                    
+                    <sheet>
+                        
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Nombre del medio" required="1"/>
+                            </h1>
+                            <h2>
+                                Código: <field name="internal_id" placeholder="Ej: 24-TSA"/>
+                            </h2>
+                        </div>
+
+                        <group>
+                            <group string="🏷️ Identificación">
+                                <field name="sequence" readonly="1"/>
+                                <field name="batch_prefix" 
+                                       placeholder="Ej: TSA, MAC, BHI"
+                                       help="Código para lotes preparados"/>
+                                <field name="active"/>
+                            </group>
+                            
+                            <group string="💡 Ejemplo de Lotes">
+                                <div style="padding: 15px; background: #e8f5e8; border-radius: 8px;">
+                                    <p style="margin: 0; font-weight: bold;">Códigos que se generarán:</p>
+                                    <p style="margin: 5px 0 0 0; font-family: monospace; color: #2e7d32;">
+                                        TSA-270825-1, TSA-270825-2...
+                                    </p>
+                                </div>
+                            </group>
+                        </group>
+
+                        <group string="📝 Descripción">
+                            <field name="description" nolabel="1" 
+                                   placeholder="Composición, uso, condiciones..."
+                                   rows="3"/>
+                        </group>
+
+                        <notebook>
+                            <page string="🧪 Controles de Calidad">
+                                <p>Controles que se aplicarán automáticamente a todos los lotes:</p>
+                                
+                                <field name="media_qc_ids" nolabel="1">
+                                    <list editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="qc_type_id" required="1"/>
+                                        <field name="expected_result" required="1"/>
+                                        <field name="is_mandatory"/>
+                                        <field name="notes"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acción del Catálogo -->
+        <record id="action_lims_culture_media" model="ir.actions.act_window">
+            <field name="name">🧪 Medios de Cultivo</field>
+            <field name="res_model">lims.culture.media</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_lims_culture_media_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_lims_culture_media_form')})]"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    🧪 Crear el primer medio de cultivo
+                </p>
+                <p>
+                    Catálogo maestro de medios con códigos automáticos para lotes
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>
