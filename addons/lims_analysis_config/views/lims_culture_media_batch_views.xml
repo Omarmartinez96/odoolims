@@ -35,7 +35,7 @@
                         <!-- Título con código automático -->
                         <div class="oe_title">
                             <h1>
-                                <field name="batch_code" readonly="1" placeholder="Se genera automáticamente"/>
+                                <field name="batch_code" placeholder="Se genera automáticamente"/>
                             </h1>
                             <h2>
                                 <field name="culture_media_id" placeholder="Seleccionar medio de cultivo" required="1"/>
