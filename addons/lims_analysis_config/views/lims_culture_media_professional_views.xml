@@ -1,0 +1,224 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vista Profesional Mejorada para Medios de Cultivo -->
+        <record id="view_lims_culture_media_form_professional" model="ir.ui.view">
+            <field name="name">lims.culture.media.form.professional</field>
+            <field name="model">lims.culture.media</field>
+            <field name="priority">15</field>
+            <field name="arch" type="xml">
+                <form string="Configuración de Medio de Cultivo" class="o_form_readonly">
+                    
+                    <!-- HEADER CON BOTONES DE ACCIÓN -->
+                    <header style="background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); color: white; padding: 10px;">
+                        <button name="action_recompute_batch_prefixes" 
+                                type="object" 
+                                string="🔄 Recalcular Prefijos de Lotes" 
+                                class="btn-info"
+                                help="Actualizar automáticamente los prefijos para lotes de todos los medios"/>
+                        
+                        <button name="action_assign_sequences" 
+                                type="object" 
+                                string="📋 Reorganizar Secuencias" 
+                                class="btn-secondary"
+                                help="Recalcular secuencias numéricas de todos los medios"/>
+                    </header>
+                    
+                    <sheet>
+                        
+                        <!-- TÍTULO PRINCIPAL CON ESTILO -->
+                        <div class="oe_title">
+                            <div style="display: flex; align-items: center; margin-bottom: 20px;">
+                                <div style="background: #4CAF50; color: white; border-radius: 50%; width: 60px; height: 60px; display: flex; align-items: center; justify-content: center; margin-right: 20px; font-size: 24px;">
+                                    🧪
+                                </div>
+                                <div style="flex: 1;">
+                                    <h1 style="margin: 0; color: #2c5aa0; font-size: 28px;">
+                                        <field name="name" 
+                                               placeholder="Nombre completo del medio de cultivo" 
+                                               required="1"
+                                               style="border: none; font-weight: bold;"/>
+                                    </h1>
+                                    <h2 style="margin: 5px 0 0 0; color: #666; font-size: 16px;">
+                                        Código interno: <field name="internal_id" 
+                                                              placeholder="Código del laboratorio (ej: 24-TSA)"
+                                                              style="border: none; background: none;"/>
+                                    </h2>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TARJETAS DE INFORMACIÓN -->
+                        <div style="display: flex; gap: 20px; margin: 20px 0;">
+                            
+                            <!-- TARJETA 1: IDENTIFICACIÓN -->
+                            <div style="flex: 1; background: #f8f9ff; border: 2px solid #e3f2fd; border-radius: 12px; padding: 20px;">
+                                <h3 style="color: #1976d2; margin-top: 0; display: flex; align-items: center;">
+                                    🏷️ Identificación del Laboratorio
+                                </h3>
+                                <group>
+                                    <field name="sequence" 
+                                           readonly="1" 
+                                           string="🔢 Secuencia Interna"
+                                           style="font-weight: bold; color: #4CAF50;"/>
+                                    
+                                    <field name="batch_prefix" 
+                                           string="📋 Prefijo para Lotes"
+                                           placeholder="Ej: TSA, MAC, BHI"
+                                           help="Código que aparecerá en los lotes preparados"
+                                           style="background: #fff3e0; border: 1px solid #ffb74d; border-radius: 6px;"/>
+                                    
+                                    <field name="active" 
+                                           string="✅ Medio Activo"/>
+                                </group>
+                                 
+                                <!-- EJEMPLO VISUAL -->
+                                <div style="margin-top: 15px; padding: 10px; background: #e8f5e8; border-left: 4px solid #4CAF50; font-size: 12px;">
+                                    <strong>💡 Ejemplo de código de lote:</strong><br/>
+                                    <span style="font-family: monospace; color: #2e7d32;">TSA-260825-1, TSA-260825-2, ...</span>
+                                </div>
+                            </div>
+                            
+                            <!-- TARJETA 2: ESTADO Y ESTADÍSTICAS -->
+                            <div style="flex: 1; background: #f3e5f5; border: 2px solid #e1bee7; border-radius: 12px; padding: 20px;">
+                                <h3 style="color: #7b1fa2; margin-top: 0; display: flex; align-items: center;">
+                                    📊 Estado y Uso
+                                </h3>
+                                <div style="text-align: center; padding: 20px;">
+                                    <div style="font-size: 32px; color: #4CAF50; margin-bottom: 10px;">
+                                        📈
+                                    </div>
+                                    <div style="color: #666; font-size: 14px;">
+                                        Las estadísticas de uso se mostrarán aquí una vez que se registren lotes preparados
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- DESCRIPCIÓN CON ESTILO MEJORADO -->
+                        <div style="background: #fafafa; border: 1px solid #e0e0e0; border-radius: 12px; padding: 20px; margin: 20px 0;">
+                            <h3 style="color: #424242; margin-top: 0; display: flex; align-items: center;">
+                                📝 Descripción Técnica del Medio
+                            </h3>
+                            <field name="description" 
+                                   nolabel="1" 
+                                   placeholder="Descripción detallada: composición química, uso específico, condiciones de almacenamiento, observaciones técnicas, etc."
+                                   style="min-height: 80px; background: white; border: 1px solid #ddd; border-radius: 8px; padding: 15px;"
+                                   rows="4"/>
+                        </div>
+
+                        <!-- NOTEBOOK CON PESTAÑAS MEJORADAS -->
+                        <notebook>
+                            <page string="🧪 Controles de Calidad" icon="fa-flask">
+                                
+                                <!-- ENCABEZADO DE LA PESTAÑA -->
+                                <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 15px; margin: -16px -16px 20px -16px; border-radius: 8px 8px 0 0;">
+                                    <h3 style="margin: 0; display: flex; align-items: center;">
+                                        🔬 Configuración de Controles de Calidad
+                                    </h3>
+                                    <p style="margin: 5px 0 0 0; opacity: 0.9; font-size: 14px;">
+                                        Configure los controles que se aplicarán automáticamente a todos los lotes de este medio
+                                    </p>
+                                </div>
+                                
+                                <!-- LISTA DE CONTROLES -->
+                                <field name="media_qc_ids" nolabel="1">
+                                    <list string="Controles Configurados" 
+                                          editable="bottom" 
+                                          create="true" 
+                                          delete="true"
+                                          decoration-success="is_mandatory == True"
+                                          decoration-muted="is_mandatory == False">
+                                        
+                                        <field name="sequence" widget="handle"/>
+                                        
+                                        <field name="qc_type_id" 
+                                               string="🎯 Tipo de Control"
+                                               options="{'no_create': True, 'no_open': True}"
+                                               required="1"/>
+                                        
+                                        <field name="expected_result" 
+                                               string="✅ Resultado Esperado"
+                                               required="1"/>
+                                        
+                                        <field name="is_mandatory" 
+                                               string="🔒 Obligatorio"
+                                               widget="boolean_toggle"/>
+                                        
+                                        <field name="notes" 
+                                               string="📋 Observaciones"
+                                               optional="hide"/>
+                                    </list>
+                                </field>
+                                
+                                <!-- INFORMACIÓN ADICIONAL -->
+                                <div style="margin-top: 20px; padding: 15px; background: #e3f2fd; border-left: 4px solid #2196f3; border-radius: 0 8px 8px 0;">
+                                    <h4 style="margin: 0 0 10px 0; color: #1976d2; display: flex; align-items: center;">
+                                        💡 Información Importante
+                                    </h4>
+                                    <ul style="margin: 0; color: #424242; line-height: 1.6;">
+                                        <li>Los controles <strong style="color: #4CAF50;">obligatorios</strong> aparecen resaltados en verde</li>
+                                        <li>Estos controles se crearán automáticamente para cada lote preparado</li>
+                                        <li>Puede reordenar los controles usando las flechas del lado izquierdo</li>
+                                        <li>Use el campo "Observaciones" para instrucciones específicas del control</li>
+                                    </ul>
+                                </div>
+                            </page>
+                            
+                            <page string="📦 Historial de Lotes" icon="fa-history">
+                                <div style="text-align: center; padding: 60px; background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%); border-radius: 12px; margin: 20px 0;">
+                                    <div style="font-size: 64px; color: #90a4ae; margin-bottom: 20px;">📦</div>
+                                    <h3 style="color: #546e7a; margin: 0 0 10px 0;">Historial de Lotes Preparados</h3>
+                                    <p style="color: #78909c; margin: 0; font-size: 16px;">
+                                        Una vez que registre lotes preparados de este medio,<br/>
+                                        aparecerá aquí el historial completo con fechas y códigos
+                                    </p>
+                                </div>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Lista también mejorada -->
+        <record id="view_lims_culture_media_list_enhanced" model="ir.ui.view">
+            <field name="name">lims.culture.media.list.enhanced</field>
+            <field name="model">lims.culture.media</field>
+            <field name="arch" type="xml">
+                <list string="Catálogo de Medios de Cultivo" 
+                      create="true" 
+                      editable="top"
+                      decoration-success="active == True"
+                      decoration-muted="active == False">
+                    
+                    <field name="sequence" string="🔢 #" width="60px"/>
+                    <field name="name" string="🧪 Nombre del Medio"/>
+                    <field name="internal_id" string="🏷️ Código Interno"/>
+                    <field name="batch_prefix" string="📋 Prefijo Lotes"/>
+                    <field name="active" widget="boolean_toggle"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Acción Profesional para Medios -->
+        <record id="action_lims_culture_media_professional" model="ir.actions.act_window">
+            <field name="name">🧪 Configuración de Medios de Cultivo</field>
+            <field name="res_model">lims.culture.media</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="view_lims_culture_media_list_enhanced"/>
+            <field name="context">{'form_view_ref': 'lims_analysis_config.view_lims_culture_media_form_professional'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    🧪 Configurar el primer medio de cultivo
+                </p>
+                <p>
+                    Configure el catálogo completo de medios con sus controles de calidad y códigos para lotes automáticos
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

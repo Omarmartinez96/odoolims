@@ -28,11 +28,11 @@
                 parent="menu_lims_analysis_config_root" 
                 sequence="10"/>
 
-        <menuitem id="menu_culture_media_with_qc" 
+        <!-- <menuitem id="menu_culture_media_with_qc" 
                 name="Medios de Cultivo" 
                 parent="menu_medios_reactivos" 
                 action="lims_analysis_config.action_culture_media_with_qc"
-                sequence="10"/>
+                sequence="10"/> -->
 
         <menuitem id="menu_plantillas" 
                 name="Plantillas" 

@@ -2,8 +2,7 @@
 <odoo>
     <data>
         
-        <!-- ELIMINAR ESTAS VISTAS COMPLETAMENTE: -->
-        <!-- 
+        <!-- COMENTAR TODO ESTO TEMPORALMENTE:
         <record id="view_lims_culture_media_form_qc" model="ir.ui.view">
             ... TODO EL CONTENIDO ...
         </record>
@@ -17,24 +16,11 @@
         </record>
         -->
 
-        <!-- MANTENER SOLO LAS VISTAS DE CONTROLES DE CALIDAD -->
+        <!-- MANTENER SOLO LAS VISTAS DE QC (modelo lims.culture.media.qc) -->
         <record id="view_culture_media_qc_list" model="ir.ui.view">
             <field name="name">lims.culture.media.qc.list</field>
             <field name="model">lims.culture.media.qc</field>
-            <field name="arch" type="xml">
-                <list string="Controles de Calidad de Medios">
-                    <field name="culture_media_id"/>
-                    <field name="qc_type_id"/>
-                    <field name="expected_result"/>
-                    <field name="is_mandatory"/>
-                </list>
-            </field>
-        </record>
-
-        <record id="action_culture_media_qc" model="ir.actions.act_window">
-            <field name="name">Controles de Calidad de Medios</field>
-            <field name="res_model">lims.culture.media.qc</field>
-            <field name="view_mode">list,form</field>
+            <!-- ... resto del contenido ... -->
         </record>
 
     </data>
