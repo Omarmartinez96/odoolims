@@ -293,6 +293,11 @@ class LimsAnalysisV2(models.Model):
         string='Vencidas/Urgentes',
         compute='_compute_dashboard_metrics'
     )
+    samples_completed_count = fields.Integer(
+        string='Muestras con Parámetros Completados',
+        compute='_compute_dashboard_metrics'
+    )
+
 
     @api.depends('sample_reception_id')
     def _compute_dashboard_metrics(self):
