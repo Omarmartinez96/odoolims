@@ -2,107 +2,22 @@
 <odoo>
     <data>
         
-        <!-- ========== VISTA FORMULARIO EXTENDIDA PARA MEDIOS (SIN HERENCIA) ========== -->
+        <!-- ELIMINAR ESTAS VISTAS COMPLETAMENTE: -->
+        <!-- 
         <record id="view_lims_culture_media_form_qc" model="ir.ui.view">
-            <field name="name">lims.culture.media.form.qc</field>
-            <field name="model">lims.culture.media</field>
-            <field name="priority">20</field>
-            <field name="arch" type="xml">
-                <form string="Medio de Cultivo">
-                    <sheet>
-                        <div class="oe_title">
-                            <h1>
-                                <field name="name" placeholder="Ej: Agar MacConkey" required="1"/>
-                            </h1>
-                        </div>
-
-                        <group>
-                            <field name="internal_id" placeholder="Ej: TSA"/>
-                            <field name="sequence"/>
-                            <field name="batch_prefix" placeholder="Ej: TSA, MAC, BHI"/>
-                            <field name="active"/>
-                        </group>
-
-                        <group string="📝 Descripción">
-                            <field name="description" nolabel="1" 
-                                   placeholder="Descripción del medio, composición, uso, etc."/>
-                        </group>
-
-                        <!-- NUEVA SECCIÓN DE CONTROLES DE CALIDAD -->
-                        <group string="🧪 Controles de Calidad del Medio">
-                            <field name="media_qc_ids" nolabel="1">
-                                <list string="Controles de Calidad" editable="bottom" create="true" delete="true">
-                                    <field name="sequence" invisible="1"/>
-                                    <field name="qc_type_id" 
-                                           string="Tipo de Control"
-                                           options="{'no_create': True, 'no_open': True}"
-                                           required="1"/>
-                                    <field name="expected_result" 
-                                           string="Resultado Esperado"
-                                           required="1"/>
-                                    <field name="is_mandatory" 
-                                           string="Obligatorio"/>
-                                    <field name="notes" 
-                                           string="Notas"
-                                           optional="hide"/>
-                                </list>
-                                
-                                <form string="Control de Calidad">
-                                    <group>
-                                        <group>
-                                            <field name="qc_type_id" 
-                                                   options="{'no_create': True}"
-                                                   required="1"/>
-                                            <field name="expected_result" required="1"/>
-                                        </group>
-                                        <group>
-                                            <field name="is_mandatory"/>
-                                            <field name="sequence" invisible="1"/>
-                                        </group>
-                                    </group>
-                                    <group string="📝 Notas">
-                                        <field name="notes" nolabel="1" 
-                                               placeholder="Notas adicionales sobre este control..."/>
-                                    </group>
-                                </form>
-                            </field>
-                        </group>
-
-                    </sheet>
-                </form>
-            </field>
+            ... TODO EL CONTENIDO ...
         </record>
 
         <record id="view_lims_culture_media_list_with_sequence" model="ir.ui.view">
-            <field name="name">lims.culture.media.list.sequence</field>
-            <field name="model">lims.culture.media</field>
-            <field name="arch" type="xml">
-                <list string="Medios de Cultivo" editable="top">
-                    <field name="sequence" string="#"/>
-                    <field name="internal_id"/>
-                    <field name="name"/>
-                    <field name="active"/>
-                </list>
-            </field>
+            ... TODO EL CONTENIDO ...
         </record>
 
-        <!-- ========== ACCIÓN PARA MEDIOS CON CONTROLES ========== -->
         <record id="action_culture_media_with_qc" model="ir.actions.act_window">
-            <field name="name">Medios de Cultivo</field>
-            <field name="res_model">lims.culture.media</field>
-            <field name="view_mode">list,form</field>
-            <field name="view_id" ref="view_lims_culture_media_list_with_sequence"/>
-            <field name="help" type="html">
-                <p class="o_view_nocontent_smiling_face">
-                    Crear el primer medio de cultivo
-                </p>
-                <p>
-                    Gestione el catálogo de medios de cultivo y sus controles de calidad
-                </p>
-            </field>
+            ... TODO EL CONTENIDO ...
         </record>
+        -->
 
-        <!-- ========== VISTA LISTA DE CONTROLES DE CALIDAD ========== -->
+        <!-- MANTENER SOLO LAS VISTAS DE CONTROLES DE CALIDAD -->
         <record id="view_culture_media_qc_list" model="ir.ui.view">
             <field name="name">lims.culture.media.qc.list</field>
             <field name="model">lims.culture.media.qc</field>
@@ -116,7 +31,6 @@
             </field>
         </record>
 
-        <!-- ========== ACCIÓN PARA CONTROLES DE MEDIOS ========== -->
         <record id="action_culture_media_qc" model="ir.actions.act_window">
             <field name="name">Controles de Calidad de Medios</field>
             <field name="res_model">lims.culture.media.qc</field>
