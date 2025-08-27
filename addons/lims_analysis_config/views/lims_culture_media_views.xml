@@ -27,6 +27,14 @@
             <field name="arch" type="xml">
                 <form string="Medio de Cultivo">
                     
+                    <header>
+                        <button name="action_recompute_batch_prefixes" 
+                                type="object" 
+                                string="🔄 Recalcular Prefijos de Medios" 
+                                class="btn-info"
+                                help="Actualizar prefijos automáticamente para todos los medios"/>
+                    </header>
+
                     <sheet>
                         
                         <div class="oe_title">
