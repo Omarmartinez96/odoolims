@@ -27,19 +27,12 @@
                             </h2>
                         </div>
 
-                        <group>
-                            <group string="📋 Identificación del Laboratorio">
-                                <field name="sequence" readonly="1" string="Secuencia Interna"/>
-                                <field name="batch_prefix" 
-                                       placeholder="Prefijo para lotes preparados"
-                                       help="Este código se usará para generar los lotes (ej: TSA)"/>
-                                <field name="active"/>
-                            </group>
-                            <group string="📊 Estadísticas de Uso">
-                                <!-- Campos computados que puedes agregar después -->
-                                <label string="Lotes Preparados" invisible="1"/>
-                                <span invisible="1">0 lotes registrados</span>
-                            </group>
+                        <group string="📋 Configuración del Medio">
+                            <field name="sequence" readonly="1" string="Secuencia Interna"/>
+                            <field name="batch_prefix" 
+                                placeholder="Prefijo para lotes preparados"
+                                help="Este código se usará para generar los lotes (ej: TSA)"/>
+                            <field name="active"/>
                         </group>
 
                         <separator string="📝 Descripción Técnica"/>
