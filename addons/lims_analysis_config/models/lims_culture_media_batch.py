@@ -37,14 +37,14 @@ class LimsCultureMediaBatch(models.Model):
         string='Fecha de Vencimiento'
     )
     
-    # ÚNICO CAMPO DE ANALISTA (activo)
-    analyst_responsible_id = fields.Many2one(
+    # CAMPO PRINCIPAL DE ANALISTA (igual que en lims_reception)
+    analyst_id = fields.Many2one(
         'lims.analyst',
         string='Preparado por',
         help='Analista responsable que preparó el medio'
     )
 
-    # CAMPO LEGACY (mantener para datos existentes)
+    # CAMPO LEGACY (mantener sin tocar)
     prepared_by = fields.Char(
         string='Preparado por (Texto)',
         help='Campo de texto libre (legacy)'
@@ -106,23 +106,23 @@ class LimsCultureMediaBatch(models.Model):
         return super().create(vals_list)
     
     def action_assign_analyst(self):
-        """Abrir wizard para asignar analista responsable con verificación PIN"""
+        """Abrir wizard para asignar analista responsable"""
         self.ensure_one()
         
         return self.env['lims.analyst'].open_assignment_wizard(
             source_model='lims.culture.media.batch',
             source_record_id=self.id,
-            source_field='analyst_responsible_id',  # CONSISTENTE
+            source_field='analyst_id',  # USAR EL MISMO NOMBRE QUE EN lims_reception
             action_description=f'Asignar responsable del lote {self.batch_code or "nuevo"}'
         )
 
     def action_change_analyst(self):
-        """Cambiar analista responsable con verificación PIN"""
+        """Cambiar analista responsable"""
         self.ensure_one()
         
         return self.env['lims.analyst'].open_assignment_wizard(
             source_model='lims.culture.media.batch',
             source_record_id=self.id,
-            source_field='analyst_responsible_id',  # CORREGIDO
+            source_field='analyst_id',  # USAR EL MISMO NOMBRE
             action_description=f'Cambiar responsable del lote {self.batch_code}'
         )
