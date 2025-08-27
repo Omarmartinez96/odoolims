@@ -50,11 +50,7 @@
                 sequence="40"/>
 
         <!-- ========== MEDIOS Y REACTIVOS ========== -->
-        <menuitem id="menu_culture_media_with_qc" 
-                name="Medios de Cultivo" 
-                parent="menu_medios_reactivos" 
-                action="lims_reception.action_lims_culture_media" 
-                sequence="10"/>
+        <!-- ELIMINAR EL MENÚ DUPLICADO DE AQUÍ -->
 
         <menuitem id="menu_culture_media_batches" 
                 name="Medios Preparados" 
