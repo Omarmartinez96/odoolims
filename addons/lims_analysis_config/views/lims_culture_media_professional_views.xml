@@ -72,7 +72,7 @@
                                     <field name="active" 
                                            string="✅ Medio Activo"/>
                                 </group>
-                                
+                                 
                                 <!-- EJEMPLO VISUAL -->
                                 <div style="margin-top: 15px; padding: 10px; background: #e8f5e8; border-left: 4px solid #4CAF50; font-size: 12px;">
                                     <strong>💡 Ejemplo de código de lote:</strong><br/>
