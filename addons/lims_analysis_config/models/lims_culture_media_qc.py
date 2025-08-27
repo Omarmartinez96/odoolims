@@ -104,3 +104,29 @@ class LimsCultureMedia(models.Model):
         for i, media in enumerate(medias_without_sequence, start=1):
             media.sequence = i
         return True
+    
+    def action_recompute_batch_prefixes(self):
+        """Recalcular prefijos de lote para todos los medios existentes"""
+        all_medias = self.env['lims.culture.media'].search([])
+        updated_count = 0
+        
+        for media in all_medias:
+            if not media.batch_prefix and media.internal_id:
+                # Extraer la parte después del último guión
+                if '-' in media.internal_id:
+                    new_prefix = media.internal_id.split('-')[-1]
+                else:
+                    new_prefix = media.internal_id
+                
+                media.batch_prefix = new_prefix
+                updated_count += 1
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Recomputo Completado',
+                'message': f'Se actualizaron {updated_count} medios de cultivo con prefijos automáticos',
+                'type': 'success',
+            }
+        }
