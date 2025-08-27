@@ -103,23 +103,6 @@
             </field>
         </record>
 
-        <!-- Server Action para Recalcular desde Lotes -->
-        <record id="action_recompute_prefixes_from_batches" model="ir.actions.server">
-            <field name="name">Recalcular Prefijos de Medios</field>
-            <field name="model_id" ref="model_lims_culture_media_batch"/>
-            <field name="binding_model_id" ref="model_lims_culture_media_batch"/>
-            <field name="binding_view_types">list</field>
-            <field name="state">code</field>
-            <field name="code">
-# Obtener medios únicos de los lotes seleccionados
-media_ids = records.mapped('culture_media_id')
-if media_ids:
-    media_ids.action_recompute_batch_prefixes()
-else:
-    env['lims.culture.media'].action_recompute_batch_prefixes()
-            </field>
-        </record>
-
         <!-- ========== MENÚ RAÍZ ========== -->
         <menuitem id="menu_lims_analysis_config_root" 
                 name="Configuración de Variables" 

@@ -102,18 +102,5 @@
             </field>
         </record>
 
-        <!-- Server Action para Recalcular Prefijos -->
-        <record id="action_recompute_batch_prefixes_server" model="ir.actions.server">
-            <field name="name">Recalcular Prefijos de Lotes</field>
-            <field name="model_id" ref="model_lims_culture_media"/>
-            <field name="binding_model_id" ref="model_lims_culture_media"/>
-            <field name="binding_view_types">list</field>
-            <field name="state">code</field>
-            <field name="code">
-# Ejecutar recálculo de prefijos
-action = records.action_recompute_batch_prefixes()
-            </field>
-        </record>
-
     </data>
 </odoo>

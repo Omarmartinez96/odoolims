@@ -12,7 +12,6 @@ class LimsCultureMediaBatch(models.Model):
         string='Código de Lote', 
         default='/', 
         copy=False,
-        readonly=True
     )
     
     # Relación con el catálogo de medios
