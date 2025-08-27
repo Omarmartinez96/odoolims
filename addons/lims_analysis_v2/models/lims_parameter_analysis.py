@@ -17,6 +17,21 @@ class LimsParameterAnalysisV2(models.Model):
         ondelete='cascade'
     )
     
+    reception_date = fields.Date(
+        string='Fecha de Recepción',
+        related='analysis_id.reception_date',
+        readonly=True,
+        store=True
+    )
+
+    sample_reception_id = fields.Many2one(
+        'lims.sample.reception',
+        string='Muestra Recibida',
+        related='analysis_id.sample_reception_id',
+        readonly=True,
+        store=True
+    )
+
     # ===============================================
     # === INFORMACIÓN DEL PARÁMETRO ===
     # ===============================================
@@ -53,6 +68,7 @@ class LimsParameterAnalysisV2(models.Model):
     # ===============================================
     analysis_start_date = fields.Date(
         string='Fecha Inicio de Análisis',
+        default=lambda self: self._get_reception_date_default(),
         help='Fecha en que se inició el análisis de este parámetro'
     )
     analysis_commitment_date = fields.Date(
@@ -60,6 +76,24 @@ class LimsParameterAnalysisV2(models.Model):
         help='Fecha comprometida para la entrega del resultado'
     )
     analysis_date = fields.Date(string='Fecha de Análisis')
+    
+    @api.model
+    def _get_reception_date_default(self):
+        """Obtener fecha de recepción como default"""
+        # Si tenemos analysis_id en contexto
+        if self.env.context.get('default_analysis_id'):
+            analysis = self.env['lims.analysis.v2'].browse(
+                self.env.context['default_analysis_id']
+            )
+            if analysis.reception_date:
+                return analysis.reception_date
+        return fields.Date.context_today(self)
+
+    @api.onchange('analysis_id')
+    def _onchange_analysis_id_reception_date(self):
+        """Actualizar fecha de inicio cuando cambie el análisis"""
+        if self.analysis_id and self.analysis_id.reception_date:
+            self.analysis_start_date = self.analysis_id.reception_date
     
     # Estados del análisis
     analysis_status = fields.Selection([
@@ -612,3 +646,21 @@ class LimsParameterAnalysisV2(models.Model):
         else:
             # Siempre volver a 'draft' si no cumple las condiciones
             self.report_status = 'draft'
+
+    @api.model
+    def _get_reception_date_default(self):
+        """Obtener fecha de recepción como default"""
+        # Si tenemos analysis_id en contexto
+        if self.env.context.get('default_analysis_id'):
+            analysis = self.env['lims.analysis.v2'].browse(
+                self.env.context['default_analysis_id']
+            )
+            if analysis.reception_date:
+                return analysis.reception_date
+        return fields.Date.context_today(self)
+
+    @api.onchange('analysis_id')
+    def _onchange_analysis_id_reception_date(self):
+        """Actualizar fecha de inicio cuando cambie el análisis"""
+        if self.analysis_id and self.analysis_id.reception_date:
+            self.analysis_start_date = self.analysis_id.reception_date

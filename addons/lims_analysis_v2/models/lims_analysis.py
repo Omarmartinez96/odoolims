@@ -100,7 +100,7 @@ class LimsAnalysisV2(models.Model):
     # ===============================================
     analysis_start_date = fields.Date(
         string='Fecha de Inicio',
-        default=fields.Date.context_today
+        default=lambda self: self._get_reception_date_default()
     )
     analysis_end_date = fields.Date(
         string='Fecha de Finalización'
@@ -109,6 +109,24 @@ class LimsAnalysisV2(models.Model):
         string='Fecha Compromiso',
         help='Fecha comprometida para entregar resultados'
     )
+
+    @api.model
+    def _get_reception_date_default(self):
+        """Obtener fecha de recepción como default para inicio de análisis"""
+        # Si estamos creando desde contexto y tenemos sample_reception_id
+        if self.env.context.get('default_sample_reception_id'):
+            sample_reception = self.env['lims.sample.reception'].browse(
+                self.env.context['default_sample_reception_id']
+            )
+            if sample_reception.reception_date:
+                return sample_reception.reception_date
+        return fields.Date.context_today(self)
+
+    @api.onchange('sample_reception_id')
+    def _onchange_sample_reception_id(self):
+        """Actualizar fecha de inicio cuando cambie la muestra"""
+        if self.sample_reception_id and self.sample_reception_id.reception_date:
+            self.analysis_start_date = self.sample_reception_id.reception_date
 
     # ===============================================
     # === RELACIÓN CON PARÁMETROS DE ANÁLISIS ===
