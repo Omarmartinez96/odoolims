@@ -1,6 +1,6 @@
 {
     'name': 'LIMS - Configuración de Análisis',
-    'version': '1.3',  # CAMBIAR VERSIÓN
+    'version': '1.4',  # CAMBIAR VERSIÓN
     'summary': 'Configuración base para análisis LIMS',
     'description': '''
         Módulo base de configuración que incluye:
