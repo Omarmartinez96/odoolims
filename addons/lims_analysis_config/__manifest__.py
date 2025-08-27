@@ -16,6 +16,7 @@
         'base',
         'mail',
         'lims_reception',  # Para lims.culture.media
+        'lims_analyst_config',
     ],
     'data': [
         # Seguridad

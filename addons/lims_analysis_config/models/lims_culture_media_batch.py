@@ -37,11 +37,16 @@ class LimsCultureMediaBatch(models.Model):
         string='Fecha de Vencimiento'
     )
     
-    # Responsable
-    prepared_by = fields.Many2one(
-        'res.users',
-        string='Preparado por',
-        default=lambda self: self.env.user
+    analyst_id = fields.Many2one(
+        'lims.analyst',
+        string='Preparado por (Analista)',
+        help='Analista responsable que preparó el medio'
+    )
+
+    # DEPRECADO: Campo de texto libre
+    prepared_by = fields.Char(
+        string='Preparado por (Texto)',
+        help='DEPRECADO: Use el campo Analista'
     )
     
     # Datos técnicos
@@ -102,3 +107,25 @@ class LimsCultureMediaBatch(models.Model):
                         vals['batch_code'] = f"{prefix}-{next_num}"
         
         return super().create(vals_list)
+    
+    def action_assign_analyst(self):
+        """Abrir wizard para asignar analista responsable con verificación PIN"""
+        self.ensure_one()
+        
+        return self.env['lims.analyst'].open_assignment_wizard(
+            source_model='lims.culture.media.batch',
+            source_record_id=self.id,
+            source_field='analyst_id',
+            action_description=f'Asignar responsable del lote {self.batch_code or "nuevo"}'
+        )
+
+    def action_change_analyst(self):
+        """Cambiar analista responsable con verificación PIN"""
+        self.ensure_one()
+        
+        return self.env['lims.analyst'].open_assignment_wizard(
+            source_model='lims.culture.media.batch',
+            source_record_id=self.id,
+            source_field='analyst_id',
+            action_description=f'Cambiar responsable del lote {self.batch_code}'
+        )
