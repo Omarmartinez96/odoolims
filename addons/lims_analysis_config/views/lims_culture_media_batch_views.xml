@@ -45,7 +45,6 @@
                             <group string="Información de Preparación">
                                 <field name="preparation_date" required="1"/>
                                 
-                                <!-- PATRÓN EXACTO DE lims_reception -->
                                 <field name="analyst_id" readonly="1" invisible="not analyst_id"/>
                                 
                                 <button name="action_assign_analyst"
@@ -62,8 +61,6 @@
                                         invisible="not analyst_id"
                                         help="Cambiar el analista responsable"/>
                                 
-                                <!-- Campo legacy visible si tiene datos -->
-                                <field name="prepared_by" invisible="not prepared_by"/>
                                 <field name="media_type" invisible="1"/>
                             </group>
                         </group>
