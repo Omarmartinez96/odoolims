@@ -297,21 +297,23 @@ class LimsAnalysisV2(models.Model):
     @api.depends('sample_reception_id')
     def _compute_dashboard_metrics(self):
         """Calcular métricas del dashboard"""
-        # Usar solo el primer registro o crear métricas vacías
         for record in self:
             # Si no hay registros, mostrar ceros
             if not self.search([('id', '!=', 0)], limit=1):
                 record.total_samples_count = 0
                 record.samples_all_ready_count = 0
                 record.samples_in_process_count = 0
+                record.samples_completed_count = 0
                 record.samples_reported_count = 0
                 record.samples_signed_count = 0
                 record.samples_pending_count = 0
                 record.samples_this_week_count = 0
                 record.samples_today_count = 0
                 record.samples_with_revisions_count = 0
+                record.samples_ready_not_reported_count = 0
+                record.samples_overdue_count = 0
                 continue
-                
+            
             # Total de muestras
             record.total_samples_count = self.search_count([])
             
@@ -324,10 +326,25 @@ class LimsAnalysisV2(models.Model):
             en_proceso_ids = []
             for sample in self.search([]):
                 if sample.parameter_analysis_ids:
-                    # Si al menos un parámetro está en proceso
                     if any(p.analysis_status_checkbox == 'en_proceso' for p in sample.parameter_analysis_ids):
                         en_proceso_ids.append(sample.id)
             record.samples_in_process_count = len(en_proceso_ids)
+            
+            # Muestras sin procesar - TODOS los parámetros sin procesar
+            sin_procesar_ids = []
+            for sample in self.search([]):
+                if sample.parameter_analysis_ids:
+                    if all(p.analysis_status_checkbox == 'sin_procesar' for p in sample.parameter_analysis_ids):
+                        sin_procesar_ids.append(sample.id)
+            record.samples_pending_count = len(sin_procesar_ids)
+            
+            # Muestras con parámetros completados (mantener si lo necesitas)
+            completed_ids = []
+            for sample in self.search([]):
+                params = sample.parameter_analysis_ids
+                if params and any(p.analysis_status_checkbox == 'finalizado' for p in params):
+                    completed_ids.append(sample.id)
+            record.samples_completed_count = len(completed_ids)
             
             # Muestras reportadas
             record.samples_reported_count = self.search_count([
@@ -339,18 +356,24 @@ class LimsAnalysisV2(models.Model):
                 ('signature_state', '=', 'signed')
             ])
             
-            # Muestras sin procesar - TODOS los parámetros sin procesar
-            sin_procesar_ids = []
-            for sample in self.search([]):
-                if sample.parameter_analysis_ids:
-                    # Si TODOS los parámetros están sin procesar
-                    if all(p.analysis_status_checkbox == 'sin_procesar' for p in sample.parameter_analysis_ids):
-                        sin_procesar_ids.append(sample.id)
-            record.samples_pending_count = len(sin_procesar_ids)
+            # Listos sin reportar
+            record.samples_ready_not_reported_count = self.search_count([
+                ('all_parameters_ready', '=', True),
+                ('report_sent_to_client', '=', False)
+            ])
+            
+            # Obtener fecha de hoy en zona horaria del usuario
+            today = fields.Date.context_today(self)
+            
+            # Vencidas/Urgentes - pasadas de fecha compromiso y no reportadas
+            record.samples_overdue_count = self.search_count([
+                ('analysis_commitment_date', '<', today),
+                ('analysis_commitment_date', '!=', False),  # Excluir sin fecha
+                ('report_sent_to_client', '=', False)
+            ])
             
             # Muestras de esta semana
             from datetime import timedelta
-            today = fields.Date.context_today(self)
             week_start = today - timedelta(days=today.weekday())
             record.samples_this_week_count = self.search_count([
                 ('reception_date', '>=', week_start)
@@ -361,25 +384,12 @@ class LimsAnalysisV2(models.Model):
                 ('reception_date', '=', today)
             ])
             
-            # Muestras con revisiones
+            # Muestras con revisiones (si lo mantienes)
             record.samples_with_revisions_count = self.search_count([
                 ('revision_count', '>', 0)
             ])
             
             break  # Solo calcular para el primer registro
-
-            # Listos sin reportar
-            record.samples_ready_not_reported_count = self.search_count([
-                ('all_parameters_ready', '=', True),
-                ('report_sent_to_client', '=', False)
-            ])
-
-            # Vencidas/Urgentes - pasadas de fecha compromiso y no reportadas
-            today = fields.Date.context_today(self)
-            record.samples_overdue_count = self.search_count([
-                ('analysis_commitment_date', '<', today),
-                ('report_sent_to_client', '=', False)
-            ])
 
     def action_view_samples_pending(self):
         """Ver muestras donde todos los parámetros están sin procesar"""
@@ -499,7 +509,7 @@ class LimsAnalysisV2(models.Model):
 
     def action_view_samples_overdue(self):
         """Ver muestras vencidas"""
-        today = fields.Date.context_today(self)
+        today = fields.Date.context_today(self)  # Usa zona horaria del usuario
         return {
             'type': 'ir.actions.act_window',
             'name': 'Muestras Vencidas/Urgentes',
@@ -507,6 +517,7 @@ class LimsAnalysisV2(models.Model):
             'view_mode': 'list,form',
             'domain': [
                 ('analysis_commitment_date', '<', today),
+                ('analysis_commitment_date', '!=', False),  # Excluir sin fecha
                 ('report_sent_to_client', '=', False)
             ],
             'context': {'group_by': 'custody_chain_id'}
