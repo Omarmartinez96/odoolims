@@ -47,7 +47,6 @@
                             <group string="📅 Información de Preparación">
                                 <field name="preparation_date" required="1"/>
                                 <field name="prepared_by" required="1"/>
-                                <field name="media_type" widget="radio"/>
                             </group>
                             
                             <group string="🧴 Especificaciones Técnicas">
@@ -101,6 +100,23 @@
                 <p>
                     Registre lotes de medios preparados con códigos automáticos y control de calidad integrado.
                 </p>
+            </field>
+        </record>
+
+        <!-- Server Action para Recalcular desde Lotes -->
+        <record id="action_recompute_prefixes_from_batches" model="ir.actions.server">
+            <field name="name">Recalcular Prefijos de Medios</field>
+            <field name="model_id" ref="model_lims_culture_media_batch"/>
+            <field name="binding_model_id" ref="model_lims_culture_media_batch"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+# Obtener medios únicos de los lotes seleccionados
+media_ids = records.mapped('culture_media_id')
+if media_ids:
+    media_ids.action_recompute_batch_prefixes()
+else:
+    env['lims.culture.media'].action_recompute_batch_prefixes()
             </field>
         </record>
 
