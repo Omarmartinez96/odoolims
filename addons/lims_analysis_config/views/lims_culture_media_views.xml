@@ -10,7 +10,7 @@
             <field name="arch" type="xml">
                 <list string="🧪 Catálogo de Medios de Cultivo" 
                       default_order="sequence">
-                    <field name="sequence" string="#" readonly="1"/>
+                    <field name="sequence" string="#" readonly="1" column_invisible="true"/>
                     <field name="name" string="Nombre del Medio"/>
                     <field name="internal_id" string="Código Interno"/>
                     <field name="batch_prefix" string="Prefijo Lotes"/>
