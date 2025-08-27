@@ -45,7 +45,7 @@
                                 <div style="padding: 40px 60px;">
                                     
                                     <!-- Primera Fila - Métricas Principales -->
-                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 30px; margin-bottom: 40px;">
+                                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 180px)); gap: 15px; margin-bottom: 30px; justify-content: center;">
                                         
                                         <!-- Total de Muestras -->
                                         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 10px; padding: 15px; text-align: center; color: white; box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2); transition: transform 0.3s; cursor: pointer;">
@@ -113,6 +113,28 @@
                                             </button>
                                         </div>
                                         
+                                        <!-- Listos Sin Reportar -->
+                                        <div style="background: linear-gradient(135deg, #ff9800 0%, #ff5722 100%); border-radius: 10px; padding: 15px; text-align: center; color: white; box-shadow: 0 5px 15px rgba(255, 152, 0, 0.2); transition: transform 0.3s; cursor: pointer;">
+                                            <div style="font-size: 1.8em; font-weight: bold; margin-bottom: 5px;">
+                                                <field name="samples_ready_not_reported_count"/>
+                                            </div>
+                                            <div style="font-size: 0.85em; margin-bottom: 10px;">📝 Listos Sin Reportar</div>
+                                            <button name="action_view_samples_ready_not_reported" type="object" style="background: white; color: #ff9800; border: none; padding: 6px 15px; border-radius: 20px; font-weight: 500; font-size: 0.85em; cursor: pointer;">
+                                                Ver Pendientes
+                                            </button>
+                                        </div>
+
+                                        <!-- Vencidas/Urgentes -->
+                                        <div style="background: linear-gradient(135deg, #d32f2f 0%, #b71c1c 100%); border-radius: 10px; padding: 15px; text-align: center; color: white; box-shadow: 0 5px 15px rgba(211, 47, 47, 0.2); transition: transform 0.3s; cursor: pointer;">
+                                            <div style="font-size: 1.8em; font-weight: bold; margin-bottom: 5px;">
+                                                <field name="samples_overdue_count"/>
+                                            </div>
+                                            <div style="font-size: 0.85em; margin-bottom: 10px;">⚠️ Vencidas/Urgentes</div>
+                                            <button name="action_view_samples_overdue" type="object" style="background: white; color: #d32f2f; border: none; padding: 6px 15px; border-radius: 20px; font-weight: 500; font-size: 0.85em; cursor: pointer;">
+                                                Ver Urgentes
+                                            </button>
+                                        </div>
+
                                     </div>
                                     
                                     <!-- Estadísticas Rápidas -->

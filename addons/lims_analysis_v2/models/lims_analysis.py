@@ -285,6 +285,14 @@ class LimsAnalysisV2(models.Model):
         string='Muestras con Revisiones',
         compute='_compute_dashboard_metrics'
     )
+    samples_ready_not_reported_count = fields.Integer(
+        string='Listos Sin Reportar',
+        compute='_compute_dashboard_metrics'
+    )
+    samples_overdue_count = fields.Integer(
+        string='Vencidas/Urgentes',
+        compute='_compute_dashboard_metrics'
+    )
 
     @api.depends('sample_reception_id')
     def _compute_dashboard_metrics(self):
@@ -359,6 +367,19 @@ class LimsAnalysisV2(models.Model):
             ])
             
             break  # Solo calcular para el primer registro
+
+            # Listos sin reportar
+            record.samples_ready_not_reported_count = self.search_count([
+                ('all_parameters_ready', '=', True),
+                ('report_sent_to_client', '=', False)
+            ])
+
+            # Vencidas/Urgentes - pasadas de fecha compromiso y no reportadas
+            today = fields.Date.context_today(self)
+            record.samples_overdue_count = self.search_count([
+                ('analysis_commitment_date', '<', today),
+                ('report_sent_to_client', '=', False)
+            ])
 
     def action_view_samples_pending(self):
         """Ver muestras donde todos los parámetros están sin procesar"""
@@ -459,6 +480,35 @@ class LimsAnalysisV2(models.Model):
             'res_model': 'lims.analysis.v2',
             'view_mode': 'list,form',
             'domain': [('signature_state', '=', 'signed')],
+            'context': {'group_by': 'custody_chain_id'}
+        }
+
+    def action_view_samples_ready_not_reported(self):
+        """Ver muestras listas sin reportar"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Muestras Listas Sin Reportar',
+            'res_model': 'lims.analysis.v2',
+            'view_mode': 'list,form',
+            'domain': [
+                ('all_parameters_ready', '=', True),
+                ('report_sent_to_client', '=', False)
+            ],
+            'context': {'group_by': 'custody_chain_id'}
+        }
+
+    def action_view_samples_overdue(self):
+        """Ver muestras vencidas"""
+        today = fields.Date.context_today(self)
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Muestras Vencidas/Urgentes',
+            'res_model': 'lims.analysis.v2',
+            'view_mode': 'list,form',
+            'domain': [
+                ('analysis_commitment_date', '<', today),
+                ('report_sent_to_client', '=', False)
+            ],
             'context': {'group_by': 'custody_chain_id'}
         }
 
