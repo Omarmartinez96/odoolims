@@ -2,17 +2,103 @@
 <odoo>
     <data>
         
+        <!-- ========== VISTAS PROFESIONALES PARA LOTES ========== -->
+        
+        <!-- Vista Lista Mejorada -->
+        <record id="view_culture_media_batch_list" model="ir.ui.view">
+            <field name="name">lims.culture.media.batch.list</field>
+            <field name="model">lims.culture.media.batch</field>
+            <field name="arch" type="xml">
+                <list string="🧪 Lotes de Medios Preparados" 
+                      default_order="preparation_date desc, batch_code desc"
+                      decoration-warning="expiry_date and expiry_date &lt; context_today()">
+                    <field name="batch_code" string="📋 Código de Lote"/>
+                    <field name="culture_media_id" string="🧪 Medio de Cultivo"/>
+                    <field name="preparation_date" string="📅 Fecha Preparación"/>
+                    <field name="volume_prepared" string="🧴 Volumen (mL)"/>
+                    <field name="prepared_by" string="👨‍🔬 Preparado por"/>
+                    <field name="expiry_date" string="⏰ Vencimiento"/>
+                    <field name="media_type" string="🏷️ Tipo"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Formulario Mejorada -->
+        <record id="view_culture_media_batch_form" model="ir.ui.view">
+            <field name="name">lims.culture.media.batch.form</field>
+            <field name="model">lims.culture.media.batch</field>
+            <field name="arch" type="xml">
+                <form string="Lote de Medio Preparado">
+                    <sheet>
+                        
+                        <!-- Título con código automático -->
+                        <div class="oe_title">
+                            <h1>
+                                <field name="batch_code" readonly="1" placeholder="Se genera automáticamente"/>
+                            </h1>
+                            <h2>
+                                <field name="culture_media_id" placeholder="Seleccionar medio de cultivo" required="1"/>
+                            </h2>
+                        </div>
+
+                        <!-- Información Principal -->
+                        <group>
+                            <group string="📅 Información de Preparación">
+                                <field name="preparation_date" required="1"/>
+                                <field name="prepared_by" required="1"/>
+                                <field name="media_type" widget="radio"/>
+                            </group>
+                            
+                            <group string="🧴 Especificaciones Técnicas">
+                                <field name="volume_prepared" placeholder="Ej: 500"/>
+                                <field name="ph_value" placeholder="Ej: 7.2"/>
+                                <field name="expiry_date"/>
+                                <field name="sterilization_method"/>
+                            </group>
+                        </group>
+
+                        <!-- Ejemplo Visual del Código -->
+                        <group string="💡 Información del Código Generado">
+                            <div style="padding: 15px; background: #e8f5e8; border-radius: 8px; border-left: 4px solid #4CAF50;">
+                                <p style="margin: 0; font-weight: bold;">Formato del código:</p>
+                                <p style="margin: 5px 0 0 0; font-family: monospace; color: #2e7d32;">
+                                    [Prefijo]-[DDMMAA]-[Consecutivo]
+                                </p>
+                                <p style="margin: 5px 0 0 0; font-size: 12px; color: #666;">
+                                    Ejemplo: TSA-270825-1, TSA-270825-2, MAC-270825-1
+                                </p>
+                            </div>
+                        </group>
+
+                        <!-- Notas de Preparación -->
+                        <group string="📝 Notas de Preparación">
+                            <field name="preparation_notes" 
+                                   nolabel="1" 
+                                   placeholder="Observaciones durante la preparación: condiciones especiales, modificaciones, etc..."
+                                   rows="3"/>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ========== ACCIÓN MEJORADA ========== -->
+        
         <!-- Acción para lotes de medios -->
         <record id="action_culture_media_batches" model="ir.actions.act_window">
-            <field name="name">Medios Preparados</field>
+            <field name="name">🧪 Medios Preparados</field>
             <field name="res_model">lims.culture.media.batch</field>
             <field name="view_mode">list,form</field>
+            <field name="view_ids" eval="[(5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_culture_media_batch_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_culture_media_batch_form')})]"/>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
-                    Registrar el primer lote de medio preparado
+                    🧪 Registrar el primer lote preparado
                 </p>
                 <p>
-                    Registre los lotes de medios de cultivo preparados o deshidratados
+                    Registre lotes de medios preparados con códigos automáticos y control de calidad integrado.
                 </p>
             </field>
         </record>
@@ -28,11 +114,13 @@
                 parent="menu_lims_analysis_config_root" 
                 sequence="10"/>
 
-        <!-- <menuitem id="menu_culture_media_with_qc" 
+        <!-- MENÚ COMENTADO TEMPORALMENTE HASTA CREAR LAS VISTAS:
+        <menuitem id="menu_culture_media_with_qc" 
                 name="Medios de Cultivo" 
                 parent="menu_medios_reactivos" 
-                action="lims_analysis_config.action_culture_media_with_qc"
-                sequence="10"/> -->
+                action="action_lims_culture_media"
+                sequence="10"/>
+        -->
 
         <menuitem id="menu_plantillas" 
                 name="Plantillas" 
@@ -50,7 +138,6 @@
                 sequence="40"/>
 
         <!-- ========== MEDIOS Y REACTIVOS ========== -->
-        <!-- ELIMINAR EL MENÚ DUPLICADO DE AQUÍ -->
 
         <menuitem id="menu_culture_media_batches" 
                 name="Medios Preparados" 
@@ -96,13 +183,6 @@
                 parent="menu_activos_equipos" 
                 action="action_lims_lab_equipment" 
                 sequence="10"/>
-
-        <!-- Acción temporal -->
-        <record id="action_culture_media_with_qc" model="ir.actions.act_window">
-        <field name="name">Medios de Cultivo</field>
-        <field name="res_model">lims.culture.media</field>
-        <field name="view_mode">list,form</field>
-        </record>
 
     </data>
 </odoo>
