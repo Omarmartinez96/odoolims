@@ -406,18 +406,6 @@
             </field>
         </record>
 
-        <!-- Mantener solo la acción de marcar reportado -->
-        <record id="action_mass_mark_reported_v2" model="ir.actions.server">
-            <field name="name">✅ Marcar como Reportado</field>
-            <field name="model_id" ref="model_lims_analysis_v2"/>
-            <field name="binding_model_id" ref="model_lims_analysis_v2"/>
-            <field name="binding_view_types">list</field>
-            <field name="state">code</field>
-            <field name="code">
-        action = model.action_mass_mark_as_reported(records.ids)
-            </field>
-        </record>
-
         <!-- ========== MENÚS ========== -->
         <menuitem id="menu_lims_analysis_v2_root" 
                   name="Análisis de Muestras" 

@@ -183,7 +183,6 @@ class LimsParameterAnalysisV2(models.Model):
     report_status = fields.Selection([
         ('draft', 'En Proceso'),
         ('ready', 'Listo para Reporte'),
-        ('reported', 'Ya Reportado')
     ], string='Estado para Reporte', 
        default='draft',
        help='Indica si este parámetro está listo para incluir en reportes')
@@ -535,20 +534,6 @@ class LimsParameterAnalysisV2(models.Model):
             self.selective_enrichment_processing_date = False
             self.selective_enrichment_processing_time = False
 
-    @api.onchange('result_value', 'analysis_status')
-    def _onchange_check_report_ready(self):
-        """Detectar automáticamente cuando el parámetro está listo para reporte"""
-        if (self.result_value and 
-            self.result_value.strip() and 
-            self.analysis_status == 'completed'):
-            # Solo cambiar a 'ready' si estaba en 'draft'
-            if self.report_status == 'draft':
-                self.report_status = 'ready'
-        else:
-            # Solo volver a 'draft' si no está reportado
-            if self.report_status != 'reported':
-                self.report_status = 'draft'
-
     @api.onchange('qualitative_unit_selection')
     def _onchange_qualitative_unit_selection(self):
         """Limpiar unidad personalizada si no se selecciona 'custom'"""
@@ -621,10 +606,9 @@ class LimsParameterAnalysisV2(models.Model):
         if (self.result_value and 
             self.result_value.strip() and 
             self.analysis_status_checkbox == 'finalizado'):
-            # Solo cambiar a 'ready' si estaba en 'draft'
+            # Cambiar a 'ready' si estaba en 'draft'
             if self.report_status == 'draft':
                 self.report_status = 'ready'
         else:
-            # Solo volver a 'draft' si no está reportado
-            if self.report_status != 'reported':
-                self.report_status = 'draft'
+            # Siempre volver a 'draft' si no cumple las condiciones
+            self.report_status = 'draft'
