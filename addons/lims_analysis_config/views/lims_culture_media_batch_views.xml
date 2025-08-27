@@ -29,6 +29,13 @@
             <field name="model">lims.culture.media.batch</field>
             <field name="arch" type="xml">
                 <form string="Lote de Medio Preparado">
+                    <header>
+                        <button name="action_recompute_batch_prefixes" 
+                                type="object" 
+                                string="🔄 Recalcular Prefijos de Medios" 
+                                class="btn-info"
+                                help="Actualizar prefijos automáticamente para todos los medios"/>
+                    </header>
                     <sheet>
                         
                         <!-- Título con código automático -->

@@ -2,25 +2,35 @@
 <odoo>
     <data>
         
-        <!-- COMENTAR TODO ESTO TEMPORALMENTE:
-        <record id="view_lims_culture_media_form_qc" model="ir.ui.view">
-            ... TODO EL CONTENIDO ...
-        </record>
-
-        <record id="view_lims_culture_media_list_with_sequence" model="ir.ui.view">
-            ... TODO EL CONTENIDO ...
-        </record>
-
-        <record id="action_culture_media_with_qc" model="ir.actions.act_window">
-            ... TODO EL CONTENIDO ...
-        </record>
-        -->
-
-        <!-- MANTENER SOLO LAS VISTAS DE QC (modelo lims.culture.media.qc) -->
+        <!-- ========== VISTAS SOLO PARA CONTROLES DE CALIDAD ========== -->
+        
+        <!-- Vista Lista de Controles de Calidad -->
         <record id="view_culture_media_qc_list" model="ir.ui.view">
             <field name="name">lims.culture.media.qc.list</field>
             <field name="model">lims.culture.media.qc</field>
-            <!-- ... resto del contenido ... -->
+            <field name="arch" type="xml">
+                <list string="Controles de Calidad de Medios">
+                    <field name="culture_media_id"/>
+                    <field name="qc_type_id"/>
+                    <field name="expected_result"/>
+                    <field name="is_mandatory"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Acción para Controles de Medios -->
+        <record id="action_culture_media_qc" model="ir.actions.act_window">
+            <field name="name">Controles de Calidad de Medios</field>
+            <field name="res_model">lims.culture.media.qc</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Configurar controles de calidad
+                </p>
+                <p>
+                    Vista técnica de todos los controles configurados por medio
+                </p>
+            </field>
         </record>
 
     </data>

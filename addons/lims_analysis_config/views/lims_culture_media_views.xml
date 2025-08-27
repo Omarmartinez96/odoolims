@@ -9,7 +9,6 @@
             <field name="priority">1</field>
             <field name="arch" type="xml">
                 <list string="🧪 Catálogo de Medios de Cultivo" 
-                      editable="top"
                       default_order="sequence">
                     <field name="sequence" string="#" readonly="1"/>
                     <field name="name" string="Nombre del Medio"/>
@@ -27,14 +26,6 @@
             <field name="priority">1</field>
             <field name="arch" type="xml">
                 <form string="Medio de Cultivo">
-                    
-                    <header>
-                        <button name="action_recompute_batch_prefixes" 
-                                type="object" 
-                                string="🔄 Recalcular Prefijos" 
-                                class="btn-info"
-                                help="Actualizar prefijos de lotes automáticamente"/>
-                    </header>
                     
                     <sheet>
                         
