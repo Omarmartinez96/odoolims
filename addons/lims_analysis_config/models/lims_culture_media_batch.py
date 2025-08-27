@@ -74,22 +74,32 @@ class LimsCultureMediaBatch(models.Model):
         for vals in vals_list:
             if vals.get('batch_code', '/') == '/':
                 media = self.env['lims.culture.media'].browse(vals.get('culture_media_id'))
-                if media and media.internal_id:
-                    # Formato: TSA-240725-1
-                    prep_date = fields.Date.from_string(vals.get('preparation_date')) if vals.get('preparation_date') else fields.Date.context_today(self)
-                    date_part = prep_date.strftime('%d%m%y')
-                    prefix = f"{media.internal_id}-{date_part}"
+                if media:
+                    # NUEVA LÓGICA: Usar batch_prefix si existe, sino extraer de internal_id
+                    prefix_code = media.batch_prefix
+                    if not prefix_code and media.internal_id:
+                        # Extraer la parte después del último guión
+                        if '-' in media.internal_id:
+                            prefix_code = media.internal_id.split('-')[-1]
+                        else:
+                            prefix_code = media.internal_id
                     
-                    # Buscar consecutivo
-                    existing = self.search([('batch_code', 'like', f'{prefix}-%')])
-                    numbers = []
-                    for code in existing.mapped('batch_code'):
-                        try:
-                            numbers.append(int(code.split('-')[-1]))
-                        except (ValueError, IndexError):
-                            pass
-                    
-                    next_num = max(numbers, default=0) + 1
-                    vals['batch_code'] = f"{prefix}-{next_num}"
+                    if prefix_code:
+                        # Formato mejorado: TSA-260825-1
+                        prep_date = fields.Date.from_string(vals.get('preparation_date')) if vals.get('preparation_date') else fields.Date.context_today(self)
+                        date_part = prep_date.strftime('%d%m%y')  # 260825
+                        prefix = f"{prefix_code}-{date_part}"
+                        
+                        # Buscar consecutivo del día
+                        existing = self.search([('batch_code', 'like', f'{prefix}-%')])
+                        numbers = []
+                        for code in existing.mapped('batch_code'):
+                            try:
+                                numbers.append(int(code.split('-')[-1]))
+                            except (ValueError, IndexError):
+                                pass
+                        
+                        next_num = max(numbers, default=0) + 1
+                        vals['batch_code'] = f"{prefix}-{next_num}"
         
         return super().create(vals_list)

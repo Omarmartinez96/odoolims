@@ -19,6 +19,7 @@
                         <group>
                             <field name="internal_id" placeholder="Ej: TSA"/>
                             <field name="sequence"/>
+                            <field name="batch_prefix" placeholder="Ej: TSA, MAC, BHI"/>
                             <field name="active"/>
                         </group>
 

@@ -25,6 +25,7 @@
         'views/lims_equipment_views.xml',
         'views/lims_culture_media_batch_views.xml',
         'views/lims_culture_media_qc_views.xml',
+        'views/lims_culture_media_professional_views.xml',
     ],
     'installable': True,
     'application': True,  

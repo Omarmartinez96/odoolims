@@ -59,6 +59,11 @@ class LimsCultureMedia(models.Model):
         help='Número secuencial automático del medio'
     )
 
+    batch_prefix = fields.Char(
+        string='Prefijo para Lotes',
+        help='Código específico para generación de lotes (ej: TSA, MAC, BHI)'
+    )
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -66,7 +71,18 @@ class LimsCultureMedia(models.Model):
                 # Buscar el último número de secuencia
                 last_media = self.search([], order='sequence desc', limit=1)
                 vals['sequence'] = (last_media.sequence + 1) if last_media else 1
+            
+            # Auto-generar prefijo para lotes si no existe
+            if not vals.get('batch_prefix') and vals.get('internal_id'):
+                # Extraer solo la parte después del último guión
+                internal_id = vals['internal_id']
+                if '-' in internal_id:
+                    vals['batch_prefix'] = internal_id.split('-')[-1]  # Toma "TSA" de "24-TSA"
+                else:
+                    vals['batch_prefix'] = internal_id
+                    
         return super().create(vals_list)
+
 
     def name_get(self):
         """

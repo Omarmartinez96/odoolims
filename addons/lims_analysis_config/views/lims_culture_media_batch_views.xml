@@ -28,6 +28,12 @@
                 parent="menu_lims_analysis_config_root" 
                 sequence="10"/>
 
+        <menuitem id="menu_culture_media_with_qc" 
+                name="Medios de Cultivo" 
+                parent="menu_medios_reactivos" 
+                action="action_lims_culture_media_professional" 
+                sequence="10"/>
+
         <menuitem id="menu_plantillas" 
                 name="Plantillas" 
                 parent="menu_lims_analysis_config_root" 

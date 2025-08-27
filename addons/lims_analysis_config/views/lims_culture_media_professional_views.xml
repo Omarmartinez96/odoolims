@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vista Profesional Mejorada para Medios de Cultivo -->
+        <record id="view_lims_culture_media_form_professional" model="ir.ui.view">
+            <field name="name">lims.culture.media.form.professional</field>
+            <field name="model">lims.culture.media</field>
+            <field name="priority">15</field>
+            <field name="arch" type="xml">
+                <form string="Medio de Cultivo - Configuración Profesional">
+                    <header>
+                        <button name="action_assign_sequences" 
+                                type="object" 
+                                string="🔄 Recalcular Secuencias" 
+                                class="btn-secondary"
+                                help="Recalcular secuencias de todos los medios"/>
+                    </header>
+                    
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Nombre completo del medio" required="1"/>
+                            </h1>
+                            <h2>
+                                <field name="internal_id" placeholder="Código interno del laboratorio (ej: 24-TSA)"/>
+                            </h2>
+                        </div>
+
+                        <group>
+                            <group string="📋 Identificación del Laboratorio">
+                                <field name="sequence" readonly="1" string="Secuencia Interna"/>
+                                <field name="batch_prefix" 
+                                       placeholder="Prefijo para lotes preparados"
+                                       help="Este código se usará para generar los lotes (ej: TSA)"/>
+                                <field name="active"/>
+                            </group>
+                            <group string="📊 Estadísticas de Uso">
+                                <!-- Campos computados que puedes agregar después -->
+                                <label string="Lotes Preparados" invisible="1"/>
+                                <span invisible="1">0 lotes registrados</span>
+                            </group>
+                        </group>
+
+                        <separator string="📝 Descripción Técnica"/>
+                        <group>
+                            <field name="description" 
+                                   nolabel="1" 
+                                   placeholder="Descripción detallada: composición, uso, condiciones de almacenamiento, etc."
+                                   rows="4"/>
+                        </group>
+
+                        <notebook>
+                            <page string="🧪 Controles de Calidad" icon="fa-flask">
+                                <field name="media_qc_ids" nolabel="1">
+                                    <list string="Controles de Calidad Configurados" 
+                                          editable="bottom" 
+                                          create="true" 
+                                          delete="true">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="qc_type_id" 
+                                               string="Tipo de Control"
+                                               options="{'no_create': True, 'no_open': True}"
+                                               required="1"/>
+                                        <field name="expected_result" 
+                                               string="Resultado Esperado"
+                                               required="1"/>
+                                        <field name="is_mandatory" 
+                                               string="Obligatorio"/>
+                                        <field name="notes" 
+                                               string="Observaciones"
+                                               optional="hide"/>
+                                    </list>
+                                </field>
+                                
+                                <div style="margin-top: 15px; padding: 10px; background-color: #f8f9fa; border-left: 4px solid #17a2b8;">
+                                    <p style="margin: 0; font-size: 12px; color: #666;">
+                                        💡 <strong>Tip:</strong> Los controles configurados aquí se aplicarán automáticamente 
+                                        a todos los lotes preparados de este medio.
+                                    </p>
+                                </div>
+                            </page>
+                            
+                            <page string="📦 Historial de Lotes" icon="fa-history">
+                                <!-- Campo que se puede agregar después para mostrar lotes -->
+                                <p style="text-align: center; color: #666; font-style: italic; padding: 50px;">
+                                    El historial de lotes preparados aparecerá aquí una vez que se registren preparaciones.
+                                </p>
+                            </page>
+                        </notebook>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acción Profesional para Medios -->
+        <record id="action_lims_culture_media_professional" model="ir.actions.act_window">
+            <field name="name">Configuración de Medios de Cultivo</field>
+            <field name="res_model">lims.culture.media</field>
+            <field name="view_mode">list,form</field>
+            <field name="view_id" ref="view_lims_culture_media_list_with_sequence"/>
+            <field name="context">{'form_view_ref': 'lims_analysis_config.view_lims_culture_media_form_professional'}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Configurar el primer medio de cultivo
+                </p>
+                <p>
+                    Configure el catálogo completo de medios con sus controles de calidad
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>
