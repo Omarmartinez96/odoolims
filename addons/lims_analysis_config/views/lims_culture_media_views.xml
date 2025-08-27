@@ -2,12 +2,12 @@
 <odoo>
     <data>
         
-        <!-- Vista Lista Principal -->
+        <!-- Vista Lista Profesional -->
         <record id="view_lims_culture_media_list" model="ir.ui.view">
             <field name="name">lims.culture.media.list</field>
             <field name="model">lims.culture.media</field>
             <field name="arch" type="xml">
-                <list string="Catálogo de Medios de Cultivo" 
+                <list string="🧪 Catálogo de Medios de Cultivo" 
                       editable="top"
                       default_order="sequence">
                     <field name="sequence" string="#" readonly="1"/>
