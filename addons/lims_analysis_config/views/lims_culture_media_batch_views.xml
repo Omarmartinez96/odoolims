@@ -63,10 +63,17 @@
                                 
                                 <field name="media_type" invisible="1"/>
                             </group>
+                            
+                            <group string="Especificaciones Técnicas">
+                                <field name="volume_prepared" placeholder="Ej: 500"/>
+                                <field name="ph_value" placeholder="Ej: 7.2"/>
+                                <field name="expiry_date"/>
+                                <field name="sterilization_method"/>
+                            </group>
                         </group>
 
                         <!-- Ejemplo Visual del Código -->
-                        <group string="💡 Información del Código Generado">
+                        <group string="Información del Código Generado">
                             <div style="padding: 15px; background: #e8f5e8; border-radius: 8px; border-left: 4px solid #4CAF50;">
                                 <p style="margin: 0; font-weight: bold;">Formato del código:</p>
                                 <p style="margin: 5px 0 0 0; font-family: monospace; color: #2e7d32;">
@@ -79,11 +86,11 @@
                         </group>
 
                         <!-- Notas de Preparación -->
-                        <group string="📝 Notas de Preparación">
+                        <group string="Notas de Preparación">
                             <field name="preparation_notes" 
-                                   nolabel="1" 
-                                   placeholder="Observaciones durante la preparación: condiciones especiales, modificaciones, etc..."
-                                   rows="3"/>
+                                nolabel="1" 
+                                placeholder="Observaciones durante la preparación: condiciones especiales, modificaciones, etc..."
+                                rows="3"/>
                         </group>
 
                     </sheet>
