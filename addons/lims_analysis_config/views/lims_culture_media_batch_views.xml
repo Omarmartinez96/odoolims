@@ -31,7 +31,7 @@
         <menuitem id="menu_culture_media_with_qc" 
                 name="Medios de Cultivo" 
                 parent="menu_medios_reactivos" 
-                action="action_lims_culture_media"
+                action="lims_analysis_config.action_culture_media_with_qc"
                 sequence="10"/>
 
         <menuitem id="menu_plantillas" 
@@ -96,6 +96,13 @@
                 parent="menu_activos_equipos" 
                 action="action_lims_lab_equipment" 
                 sequence="10"/>
+
+        <!-- Acción temporal -->
+        <record id="action_culture_media_with_qc" model="ir.actions.act_window">
+        <field name="name">Medios de Cultivo</field>
+        <field name="res_model">lims.culture.media</field>
+        <field name="view_mode">list,form</field>
+        </record>
 
     </data>
 </odoo>
