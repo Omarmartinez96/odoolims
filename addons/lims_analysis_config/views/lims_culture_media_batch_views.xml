@@ -31,7 +31,7 @@
         <menuitem id="menu_culture_media_with_qc" 
                 name="Medios de Cultivo" 
                 parent="menu_medios_reactivos" 
-                action="action_lims_culture_media_professional" 
+                action="lims_reception.action_lims_culture_media" 
                 sequence="10"/>
 
         <menuitem id="menu_plantillas" 
