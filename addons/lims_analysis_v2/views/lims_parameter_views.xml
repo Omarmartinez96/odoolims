@@ -82,11 +82,12 @@
                                 </group>
                                 
                                 <group string="Medios y Reactivos">
-                                    <div class="oe_button_box" style="margin-bottom: 15px;">
+                                    <!-- AGREGAR en cada pestaña: pre_enrichment, selective_enrichment, quantitative, qualitative, confirmation -->
+                                    <div style="margin-bottom: 15px;">
                                         <button type="object" 
                                                 name="action_load_media_from_template" 
                                                 string="📋 Cargar desde Plantilla" 
-                                                class="btn-secondary"
+                                                class="btn-secondary btn-sm"
                                                 help="Cargar medios predefinidos desde la plantilla del parámetro"/>
                                     </div>
                                     <field name="pre_enrichment_media_ids" nolabel="1" colspan="2"

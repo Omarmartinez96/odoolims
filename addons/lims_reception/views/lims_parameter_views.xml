@@ -74,6 +74,23 @@
                                     </group>
                                 </group>
                                 
+                            <page string="🧪 Medios por Proceso" invisible="category != 'microbiological'">
+                                <div class="alert alert-info" style="margin-bottom: 15px;">
+                                    <strong>ℹ️ Configuración de Medios por Proceso:</strong> 
+                                    Define qué medios se utilizarán en cada etapa del análisis microbiológico.
+                                </div>
+                                
+                                <field name="media_by_process_ids" nolabel="1">
+                                    <list string="Medios por Proceso" editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="process_type"/>
+                                        <field name="culture_media_id" options="{'no_create': True}"/>
+                                        <field name="media_usage"/>
+                                        <field name="notes" placeholder="Instrucciones específicas..."/>
+                                    </list>
+                                </field>
+                            </page>
+
                                 <group>
                                     <field name="sample_preparation"/>
                                     <field name="preservation_conditions"/>
@@ -204,6 +221,23 @@
                                         <field name="culture_media_id" options="{'no_create': True}"/>
                                         <!-- FUNCIÓN: Notas específicas para este parámetro -->
                                         <field name="notes" placeholder="Ej: Incubar 37°C por 24h"/>
+                                    </list>
+                                </field>
+                            </page>
+
+                            <page string="🧪 Medios por Proceso" invisible="category != 'microbiological'">
+                                <div class="alert alert-info" style="margin-bottom: 15px;">
+                                    <strong>ℹ️ Configuración Avanzada:</strong> 
+                                    Define medios específicos para cada etapa del análisis. Esto se copiará automáticamente al crear análisis.
+                                </div>
+                                
+                                <field name="media_by_process_ids" nolabel="1">
+                                    <list string="Medios por Proceso" editable="bottom">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="process_type"/>
+                                        <field name="culture_media_id" options="{'no_create': True}"/>
+                                        <field name="media_usage"/>
+                                        <field name="notes" placeholder="Ej: Incubar 35°C por 24h, usar 1mL de muestra..."/>
                                     </list>
                                 </field>
                             </page>
