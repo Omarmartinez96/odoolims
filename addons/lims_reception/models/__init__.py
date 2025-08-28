@@ -8,3 +8,4 @@ from . import lims_field_result
 from . import lims_quality_control
 from . import lims_parameter_culture_media
 from .. import wizards
+from . import lims_parameter_media_process

@@ -128,7 +128,14 @@ class LimsSampleParameter(models.Model):
         'parameter_id',
         string='Medios de Cultivo'
     )
-    
+
+    # AGREGAR después del campo culture_media_ids
+    media_by_process_ids = fields.One2many(
+        'lims.parameter.media.process',
+        'parameter_id',
+        string='Medios por Proceso'
+    )
+
     # Condiciones específicas adicionales
     ph_conditions = fields.Char(
         string='Condiciones de pH'
