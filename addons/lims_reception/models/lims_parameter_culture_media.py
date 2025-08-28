@@ -66,3 +66,19 @@ class LimsParameterCultureMedia(models.Model):
             self.media_usage = 'desarrollo_selectivo'
         elif self.process_type == 'confirmation':
             self.media_usage = 'pruebas_bioquimicas'
+
+    def update_existing_records(self):
+        """Método temporal para actualizar registros existentes"""
+        existing_records = self.search([
+            '|', 
+            ('process_type', '=', False), 
+            ('media_usage', '=', False)
+        ])
+        
+        for record in existing_records:
+            record.write({
+                'process_type': 'quantitative',
+                'media_usage': 'diluyente'
+            })
+        
+        return f"Actualizados {len(existing_records)} registros"
