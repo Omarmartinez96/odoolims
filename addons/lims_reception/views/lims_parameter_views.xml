@@ -74,6 +74,12 @@
                                     </group>
                                 </group>
                                 
+                                <group>
+                                    <field name="sample_preparation"/>
+                                    <field name="preservation_conditions"/>
+                                </group>
+                            </page>
+
                             <page string="🧪 Medios por Proceso" invisible="category != 'microbiological'">
                                 <div class="alert alert-info" style="margin-bottom: 15px;">
                                     <strong>ℹ️ Configuración de Medios por Proceso:</strong> 
@@ -89,12 +95,6 @@
                                         <field name="notes" placeholder="Instrucciones específicas..."/>
                                     </list>
                                 </field>
-                            </page>
-
-                                <group>
-                                    <field name="sample_preparation"/>
-                                    <field name="preservation_conditions"/>
-                                </group>
                             </page>
                         </notebook>
 
