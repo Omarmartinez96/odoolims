@@ -664,3 +664,48 @@ class LimsParameterAnalysisV2(models.Model):
         """Actualizar fecha de inicio cuando cambie el análisis"""
         if self.analysis_id and self.analysis_id.reception_date:
             self.analysis_start_date = self.analysis_id.reception_date
+
+    def action_load_media_from_template(self):
+        """Cargar medios desde la plantilla del parámetro"""
+        if not self.parameter_id or not self.parameter_id.culture_media_ids:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Sin Medios en Plantilla',
+                    'message': 'El parámetro no tiene medios de cultivo definidos en su plantilla',
+                    'type': 'warning',
+                }
+            }
+        
+        # Copiar medios desde la plantilla por proceso
+        new_media = 0
+        for template_media in self.parameter_id.culture_media_ids:
+            # Verificar si ya existe este medio para este proceso
+            existing = self.media_ids.filtered(
+                lambda x: x.process_type == template_media.process_type and 
+                        x.culture_media_name == template_media.culture_media_id.name
+            )
+            
+            if not existing:
+                self.env['lims.analysis.media.v2'].create({
+                    'parameter_analysis_id': self.id,
+                    'process_type': template_media.process_type,
+                    'media_source': 'internal',  # Por defecto interno
+                    'culture_media_name': template_media.culture_media_id.name,
+                    'media_usage': template_media.media_usage,
+                    'requires_incubation': True,  # Por defecto requiere
+                    'preparation_notes': template_media.notes or '',
+                    'sequence': template_media.sequence,
+                })
+                new_media += 1
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': 'Medios Cargados',
+                'message': f'Se agregaron {new_media} medios desde la plantilla',
+                'type': 'success',
+            }
+        }
