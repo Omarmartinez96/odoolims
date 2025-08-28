@@ -38,7 +38,7 @@ class LimsParameterCultureMedia(models.Model):
         ('quantitative', 'Análisis Cuantitativo'),
         ('qualitative', 'Análisis Cualitativo'),  
         ('confirmation', 'Confirmación')
-    ], string='Tipo de Proceso', required=True, default='quantitative')
+    ], string='Tipo de Proceso', required=False, default='quantitative')
 
     media_usage = fields.Selection([
         ('diluyente', 'Diluyente'),
@@ -51,7 +51,7 @@ class LimsParameterCultureMedia(models.Model):
         ('transporte', 'Transporte'),
         ('mantenimiento', 'Mantenimiento'),
         ('otro', 'Otro')
-    ], string='Uso del Medio', required=True, default='diluyente')
+    ], string='Uso del Medio', required=False, default='diluyente')
 
     @api.onchange('process_type')
     def _onchange_process_type_default_usage(self):
