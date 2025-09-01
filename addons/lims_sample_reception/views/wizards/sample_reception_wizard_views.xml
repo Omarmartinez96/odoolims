@@ -46,22 +46,23 @@
                     <!-- TEXTO DE CONFIRMACIÓN -->
                     <field name="confirmation_text" nolabel="1" readonly="1"/>
 
-                    <!-- Información de Procesamiento -->
-                    <group string="Información de Procesamiento">
+                    <!-- Verificación de Responsable -->
+                    <group string="🔐 Verificación de Responsable">
+                        <div class="alert alert-info" role="alert">
+                            <strong>Verificación requerida:</strong> 
+                            Seleccione su nombre e ingrese su PIN para confirmar el procesamiento.
+                        </div>
                         <group>
-                            <field name="reception_date"/>
-                            <field name="reception_time" placeholder="14:30"/>
+                            <field name="analyst_id" 
+                                placeholder="Seleccione su nombre de la lista"
+                                options="{'no_create': True, 'no_open': True}"
+                                required="1"/>
+                            <field name="pin_input" 
+                                password="True" 
+                                placeholder="Ingrese su PIN de 4-6 dígitos"
+                                required="1"/>
                         </group>
                     </group>
-
-                    <!-- BOTÓN AQUÍ - Después del horario -->
-                    <div style="text-align: center; margin: 15px 0;">
-                        <button name="action_assign_analyst_from_wizard" 
-                                type="object" 
-                                string="🔐 Asignar Responsable" 
-                                class="btn-warning"
-                                help="Seleccionar responsable con verificación PIN"/>
-                    </div>
 
                     <!-- Observaciones generales -->
                     <group string="Observaciones" invisible="reception_state == 'rechazada'">
