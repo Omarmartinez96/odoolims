@@ -619,47 +619,6 @@ class LimsParameterAnalysisV2(models.Model):
     # ===============================================
     # === MÉTODOS DE ACCIÓN ===
     # ===============================================
-    def action_copy_qc_from_template(self):
-        """Copiar controles de calidad desde la plantilla del parámetro"""
-        if not self.parameter_id or not self.parameter_id.quality_control_ids:
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': 'Sin Controles en Plantilla',
-                    'message': 'El parámetro no tiene controles de calidad definidos en su plantilla',
-                    'type': 'warning',
-                }
-            }
-        
-        # Copiar controles desde la plantilla
-        new_controls = 0
-        for qc in self.parameter_id.quality_control_ids:
-            # Verificar si ya existe
-            existing = self.executed_qc_ids.filtered(
-                lambda x: x.qc_type_id.id == qc.control_type_id.id
-            )
-            
-            if not existing:
-                self.env['lims.executed.quality.control.v2'].create({
-                    'parameter_analysis_id': self.id,
-                    'qc_type_id': qc.control_type_id.id,
-                    'expected_result': qc.expected_result,
-                    'control_status': 'pending',
-                    'sequence': qc.sequence,
-                    'notes': qc.notes or '',
-                })
-                new_controls += 1
-        
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Controles Copiados',
-                'message': f'Se agregaron {new_controls} controles de calidad desde la plantilla',
-                'type': 'success',
-            }
-        }
     
     @api.onchange('analysis_status_checkbox')
     def _onchange_analysis_status_checkbox(self):

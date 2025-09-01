@@ -3,3 +3,4 @@ from . import lims_culture_media  # NUEVO
 from . import lims_culture_media_batch
 from . import lims_culture_media_qc
 from . import lims_media_set
+from . import lims_qc_template  

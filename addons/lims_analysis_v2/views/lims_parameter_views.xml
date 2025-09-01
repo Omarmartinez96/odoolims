@@ -545,22 +545,18 @@
                                     }
                                 </style>
                                 
-                                <!-- Botón para copiar desde plantilla -->
-                                <field name="qc_template_id" 
-                                    placeholder="Seleccionar plantilla de controles..." 
-                                    options="{'no_create': True, 'no_edit': True}"
-                                    help="Selecciona una plantilla para cargar automáticamente los controles"/>
-
-                                <!-- Separador visual -->
-                                <div class="alert alert-info" style="margin: 10px 0;">
-                                    <strong>O bien:</strong> Usar el botón tradicional para copiar desde plantilla de parámetro
+                                <div class="alert alert-info" style="margin-bottom: 15px;">
+                                    <strong>📋 Controles de Calidad:</strong> 
+                                    Selecciona una plantilla para cargar automáticamente los controles necesarios.
                                 </div>
 
-                                <!-- El botón existente se mantiene -->
-                                <button type="object" 
-                                        name="action_copy_qc_from_template" 
-                                        string="📋 Copiar desde Plantilla de Parámetro" 
-                                        class="btn-secondary"/>
+                                <!-- Campo de selección de plantilla -->
+                                <div style="margin-bottom: 15px;">
+                                    <field name="qc_template_id" 
+                                        placeholder="Seleccionar plantilla de controles..." 
+                                        options="{'no_create': True, 'no_edit': True}"
+                                        help="Selecciona una plantilla para cargar automáticamente los controles"/>
+                                </div>
                                 
                                 <div style="width: 100%; overflow-x: auto;">
                                     <field name="executed_qc_ids" nolabel="1">

@@ -228,16 +228,39 @@
                                 </field>
                             </page>
 
-                            <page string="🎯 Controles de Calidad Específicos">
-                                <field name="quality_control_ids">
-                                    <list editable="bottom">
-                                        <field name="sequence" widget="handle"/>
-                                        <field name="control_type_id" options="{'no_create': True}"/>
-                                        <field name="expected_result"/>
-                                        <field name="notes"/>
-                                    </list>
-                                </field>
-                            </page>   
+                            <page string="📋 Controles de Calidad (Informativo)">
+                                <div class="alert alert-warning" style="margin-bottom: 20px;">
+                                    <h4>⚠️ Funcionalidad Deprecada</h4>
+                                    <p>Los controles de calidad específicos por parámetro han sido reemplazados por un sistema más eficiente.</p>
+                                    <p><strong>Nueva funcionalidad:</strong> Use las <strong>Plantillas de Controles QC</strong> independientes disponibles en:</p>
+                                    <p><code>Configuración de Variables → Plantillas → Plantillas de Controles QC</code></p>
+                                    <hr/>
+                                    <p><small><strong>Ventajas del nuevo sistema:</strong></small></p>
+                                    <ul style="margin-bottom: 0;">
+                                        <li>Plantillas reutilizables entre múltiples parámetros</li>
+                                        <li>Gestión centralizada de controles</li>
+                                        <li>Selección rápida durante el análisis</li>
+                                    </ul>
+                                </div>
+                                
+                                <!-- Vista de solo lectura de controles existentes -->
+                                <group string="📊 Controles Configurados (Solo Lectura)" invisible="not quality_control_ids">
+                                    <field name="quality_control_ids" nolabel="1" readonly="1">
+                                        <list string="Controles Existentes" create="false" delete="false" edit="false">
+                                            <field name="sequence"/>
+                                            <field name="control_type_id"/>
+                                            <field name="expected_result"/>
+                                            <field name="notes"/>
+                                        </list>
+                                    </field>
+                                </group>
+                                
+                                <div class="alert alert-info" invisible="quality_control_ids">
+                                    <p><strong>📋 Sin controles configurados</strong></p>
+                                    <p>Este parámetro no tiene controles de calidad específicos configurados.</p>
+                                    <p>Use las nuevas Plantillas de Controles QC en su lugar.</p>
+                                </div>
+                            </page>
 
                             <page string="📝 Observaciones">
                                 <group>
