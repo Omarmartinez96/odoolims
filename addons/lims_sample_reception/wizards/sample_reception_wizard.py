@@ -91,19 +91,6 @@ class SampleReceptionWizard(models.TransientModel):
         string='Recepción a Editar'
     )
 
-    # Analista responsable con verificación PIN
-    analyst_id = fields.Many2one(
-        'lims.analyst',
-        string='Responsable de la Recepción',
-        domain=[('active', '=', True), ('pin_hash', '!=', False)],
-        help='Analista que procesa la recepción (solo con PIN configurado)'
-    )
-
-    pin_input = fields.Char(
-        string='PIN de Verificación',
-        help='Ingrese su PIN para confirmar el procesamiento'
-    )
-
     @api.depends('reception_state')
     def _compute_confirmation_text(self):
         for record in self:
@@ -228,9 +215,6 @@ class SampleReceptionWizard(models.TransientModel):
         """Confirmar procesamiento de muestras"""
         self.ensure_one()
         
-        # Validar analista y PIN PRIMERO
-        self._validate_analyst_pin()
-        
         # Validar motivo de rechazo
         if self.reception_state == 'rechazada' and not self.rejection_reason:
             raise UserError(_('Debe especificar el motivo de rechazo.'))
@@ -262,7 +246,6 @@ class SampleReceptionWizard(models.TransientModel):
                 'reception_state': self.reception_state,
                 'reception_date': self.reception_date,
                 'reception_time': self.reception_time,
-                'analyst_id': self.analyst_id.id, 
             }
             
             # Agregar observaciones según el estado
@@ -336,3 +319,50 @@ class SampleReceptionWizard(models.TransientModel):
             raise UserError(_('PIN incorrecto. Verifique e intente nuevamente.'))
         
         return True
+    
+    def action_assign_analyst_from_wizard(self):
+        """Abrir wizard de asignación de analista desde el wizard de recepción"""
+        self.ensure_one()
+        
+        # Si es modo individual, usar la muestra individual
+        if self.reception_mode == 'individual' and self.sample_id:
+            # Buscar o crear recepción para esta muestra
+            reception = self.env['lims.sample.reception'].search([
+                ('sample_id', '=', self.sample_id.id)
+            ], limit=1)
+            
+            if not reception:
+                # Crear recepción temporal si no existe
+                reception = self.env['lims.sample.reception'].create({
+                    'sample_id': self.sample_id.id,
+                    'reception_state': 'sin_procesar'
+                })
+            
+            action_description = f"Asignar responsable - Muestra {self.sample_id.sample_identifier}"
+            record_id = reception.id
+            
+        elif self.reception_mode == 'mass' and self.sample_lines:
+            # Para modo masivo, usar la primera muestra como referencia
+            first_line = self.sample_lines[0]
+            reception = self.env['lims.sample.reception'].search([
+                ('sample_id', '=', first_line.sample_id.id)
+            ], limit=1)
+            
+            if not reception:
+                reception = self.env['lims.sample.reception'].create({
+                    'sample_id': first_line.sample_id.id,
+                    'reception_state': 'sin_procesar'
+                })
+            
+            action_description = f"Asignar responsable - Recepción masiva ({len(self.sample_lines)} muestras)"
+            record_id = reception.id
+            
+        else:
+            raise UserError(_('No hay muestras seleccionadas para asignar responsable.'))
+        
+        return self.env['lims.analyst'].open_assignment_wizard(
+            source_model='lims.sample.reception',
+            source_record_id=record_id,
+            source_field='analyst_id',
+            action_description=action_description
+        )

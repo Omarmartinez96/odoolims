@@ -64,13 +64,11 @@
                             <field name="analyst_id" 
                                 placeholder="Seleccione su nombre de la lista"
                                 options="{'no_create': True, 'no_open': True}"
-                                required="1"
-                                readonly="edit_mode"/>
+                                required="1"/>
                             <field name="pin_input" 
                                 password="True" 
                                 placeholder="Ingrese su PIN de 4-6 dígitos"
-                                required="1"
-                                invisible="edit_mode"/>
+                                required="1"/>
                         </group>
                     </group>
 
@@ -90,6 +88,13 @@
                     </group>
 
                     <footer>
+                        <!-- Botón para asignar/cambiar responsable -->
+                        <button name="action_assign_analyst_from_wizard" 
+                                type="object" 
+                                string="🔐 Asignar Responsable" 
+                                class="btn-warning"
+                                help="Seleccionar responsable con verificación PIN"/>
+                        
                         <button name="action_confirm_reception" 
                                 type="object" 
                                 string="Finalizar" 

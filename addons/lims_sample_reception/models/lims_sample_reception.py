@@ -836,3 +836,16 @@ class LimsCustodyChain(models.Model):
             ))
         
         return self.env.ref('lims_sample_reception.action_report_sample_labels_mass').report_action(self)
+    
+    def action_assign_change_analyst(self):
+        """Abrir wizard universal para asignar/cambiar analista responsable"""
+        self.ensure_one()
+        
+        action_description = "Cambiar responsable de recepción" if self.analyst_id else "Asignar responsable de recepción"
+        
+        return self.env['lims.analyst'].open_assignment_wizard(
+            source_model='lims.sample.reception',
+            source_record_id=self.id,
+            source_field='analyst_id',
+            action_description=f'{action_description} - Muestra {self.sample_code}'
+        )
