@@ -19,59 +19,38 @@
             </field>
         </record>
 
-        <!-- Vista de Búsqueda para Recepciones -->
+        <!-- Search View para Muestras (MEJORADO) -->
         <record id="view_sample_reception_search" model="ir.ui.view">
-            <field name="name">lims.sample.reception.search</field>
-            <field name="model">lims.sample.reception</field>
+            <field name="name">sample.reception.search</field>
+            <field name="model">lims.sample</field>
             <field name="arch" type="xml">
-                <search string="Buscar Recepciones">
-                    <!-- Campos de búsqueda principales -->
-                    <field name="sample_code" string="Código de Muestra"/>
-                    <field name="sample_identifier" string="Identificación Original"/>
+                <search string="Buscar Muestras">
+                    <field name="sample_identifier" string="Identificación"/>
+                    <field name="sample_description" string="Descripción"/>
+                    <field name="sample_code" string="Código Muestra"/>
+                    <field name="custody_chain_id" string="Cadena Custodia"/>
                     <field name="cliente_id" string="Cliente"/>
-                    <field name="custody_chain_id" string="Cadena de Custodia"/>
-                    <field name="reception_date" string="Fecha Recepción"/>
-                    <field name="reception_time" string="Hora Recepción"/>
-                    <field name="received_by" string="Recibido por"/>
-                    <field name="received_by_initials" string="Iniciales"/>
-                    <field name="analyst_id" string="Responsable"/>
+                    <field name="sample_type_id" string="Tipo Muestra"/>
                     
-                    <!-- Búsqueda por cliente -->
+                    <!-- Búsqueda por código de cliente -->
                     <field name="cliente_id" string="Código Cliente" 
                         filter_domain="[('cliente_id.client_code', 'ilike', self)]"/>
                     
-                    <!-- Filtros predefinidos por estado -->
+                    <!-- Filtros por cadena de custodia -->
                     <separator/>
-                    <filter name="filter_recibidas" string="Recibidas" 
-                            domain="[('reception_state', '=', 'recibida')]"/>
-                    <filter name="filter_rechazadas" string="Rechazadas" 
-                            domain="[('reception_state', '=', 'rechazada')]"/>
-                    <filter name="filter_no_recibidas" string="No Recibidas" 
-                            domain="[('reception_state', '=', 'no_recibida')]"/>
-                    <filter name="filter_sin_procesar" string="Sin Procesar" 
-                            domain="[('reception_state', '=', 'sin_procesar')]"/>
-                    
-                    <!-- Filtros por fecha (SIMPLIFICADOS) -->
-                    <separator/>
-                    <filter name="filter_ultimos_7_dias" string="Últimos 7 días" 
-                            domain="[('reception_date', '&gt;=', (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-                    <filter name="filter_ultimos_30_dias" string="Últimos 30 días" 
-                            domain="[('reception_date', '&gt;=', (datetime.datetime.now() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                    <filter name="filter_finalizadas" string="CC Finalizadas" 
+                            domain="[('custody_chain_id.chain_of_custody_state', '=', 'done')]"/>
+                    <filter name="filter_proceso" string="CC En Proceso" 
+                            domain="[('custody_chain_id.chain_of_custody_state', '=', 'in_progress')]"/>
                     
                     <!-- Agrupaciones -->
                     <group expand="0" string="Agrupar Por">
+                        <filter name="group_by_custody_chain" string="Cadena de Custodia" 
+                                context="{'group_by': 'custody_chain_id'}"/>
                         <filter name="group_by_cliente" string="Cliente" 
                                 context="{'group_by': 'cliente_id'}"/>
-                        <filter name="group_by_estado" string="Estado Recepción" 
-                                context="{'group_by': 'reception_state'}"/>
-                        <filter name="group_by_fecha" string="Fecha Recepción" 
-                                context="{'group_by': 'reception_date'}"/>
-                        <filter name="group_by_cadena" string="Cadena de Custodia" 
-                                context="{'group_by': 'custody_chain_id'}"/>
-                        <filter name="group_by_responsable" string="Responsable" 
-                                context="{'group_by': 'analyst_id'}"/>
-                        <filter name="group_by_recibido_por" string="Usuario" 
-                                context="{'group_by': 'received_by'}"/>
+                        <filter name="group_by_tipo" string="Tipo Muestra" 
+                                context="{'group_by': 'sample_type_id'}"/>
                     </group>
                 </search>
             </field>

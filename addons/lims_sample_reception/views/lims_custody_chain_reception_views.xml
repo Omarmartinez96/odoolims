@@ -31,21 +31,15 @@
                             domain="[('chain_of_custody_state', '=', 'done')]"/>
                     <filter name="filter_en_proceso" string="En Proceso" 
                             domain="[('chain_of_custody_state', '=', 'in_progress')]"/>
+                    <filter name="filter_borrador" string="Borrador" 
+                            domain="[('chain_of_custody_state', '=', 'draft')]"/>
                     
                     <!-- Filtros de fecha (SIMPLIFICADOS) -->
+                    <separator/>
                     <filter name="filter_ultimos_7_dias" string="Últimos 7 días" 
                             domain="[('date_chainofcustody', '&gt;=', (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
                     <filter name="filter_ultimos_30_dias" string="Últimos 30 días" 
                             domain="[('date_chainofcustody', '&gt;=', (datetime.datetime.now() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
-                    
-                    <!-- Filtros de estado de recepción -->
-                    <separator/>
-                    <filter name="filter_recepcion_completa" string="Recepción Completa" 
-                            domain="[('reception_status_display', '=', 'Completo')]"/>
-                    <filter name="filter_recepcion_proceso" string="En Proceso Recepción" 
-                            domain="[('reception_status_display', '=', 'En Proceso')]"/>
-                    <filter name="filter_sin_procesar" string="Sin Procesar" 
-                            domain="[('reception_status_display', '=', 'Sin Procesar')]"/>
                     
                     <!-- Agrupaciones -->
                     <group expand="0" string="Agrupar Por">
@@ -55,8 +49,6 @@
                                 context="{'group_by': 'date_chainofcustody'}"/>
                         <filter name="group_by_estado" string="Estado CC" 
                                 context="{'group_by': 'chain_of_custody_state'}"/>
-                        <filter name="group_by_recepcion" string="Estado Recepción" 
-                                context="{'group_by': 'reception_status_display'}"/>
                         <filter name="group_by_sucursal" string="Sucursal" 
                                 context="{'group_by': 'sucursal_id'}"/>
                     </group>
