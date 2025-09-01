@@ -9,7 +9,7 @@
             <field name="arch" type="xml">
                 <form string="Procesamiento de Muestras">
                     
-                    <!-- Título principal SIMPLE -->
+                    <!-- Título principal -->
                     <div class="alert alert-info" role="alert" style="margin-bottom: 20px;">
                         <h4><i class="fa fa-check-circle"/> Procesamiento de Muestras</h4>
                         <p>Revise y ajuste los códigos de muestra, luego seleccione el estado final.</p>
@@ -24,7 +24,7 @@
                         <field name="reception_id" invisible="1"/>
                     </group>
 
-                    <!-- Tabla de muestras con códigos editables -->
+                    <!-- Tabla de muestras -->
                     <group string="Muestras a Procesar">
                         <field name="sample_lines" nolabel="1">
                             <list string="Muestras" editable="bottom">
@@ -37,16 +37,16 @@
                         </field>
                     </group>
 
-                    <!-- SELECCIÓN DE ESTADO CON DROPDOWN -->
+                    <!-- SELECCIÓN DE ESTADO -->
                     <group string="Estado Final de las Muestras">
                         <field name="reception_state" required="1" 
                                help="Seleccione el estado final que tendrán las muestras"/>
                     </group>
 
-                    <!-- TEXTO DE CONFIRMACIÓN DINÁMICO -->
+                    <!-- TEXTO DE CONFIRMACIÓN -->
                     <field name="confirmation_text" nolabel="1" readonly="1"/>
 
-                    <!-- Datos de recepción -->
+                    <!-- Información de Procesamiento -->
                     <group string="Información de Procesamiento">
                         <group>
                             <field name="reception_date"/>
@@ -54,41 +54,21 @@
                         </group>
                     </group>
 
-                    <!-- Sección de Analista con PIN -->
-                    <group string="🔐 Verificación de Responsable">
-                        <div class="alert alert-info" role="alert">
-                            <strong>Verificación requerida:</strong> 
-                            Seleccione su nombre e ingrese su PIN para confirmar el procesamiento.
-                        </div>
-                        <group>
-                            <field name="analyst_id" 
-                                placeholder="Seleccione su nombre de la lista"
-                                options="{'no_create': True, 'no_open': True}"
-                                required="1"/>
-                            <field name="pin_input" 
-                                password="True" 
-                                placeholder="Ingrese su PIN de 4-6 dígitos"
-                                required="1"/>
-                        </group>
-                    </group>
-
                     <!-- Observaciones generales -->
-                    <group string="Observaciones" 
-                           invisible="reception_state == 'rechazada'">
+                    <group string="Observaciones" invisible="reception_state == 'rechazada'">
                         <field name="reception_notes" nolabel="1" 
                                placeholder="Observaciones generales sobre el procesamiento..."/>
                     </group>
 
                     <!-- Motivo de rechazo -->
-                    <group string="Motivo de Rechazo" 
-                           invisible="reception_state != 'rechazada'">
+                    <group string="Motivo de Rechazo" invisible="reception_state != 'rechazada'">
                         <field name="rejection_reason" nolabel="1" 
                                placeholder="Especifique detalladamente por qué se rechaza la muestra..."
                                required="reception_state == 'rechazada'"/>
                     </group>
 
                     <footer>
-                        <!-- Botón para asignar/cambiar responsable -->
+                        <!-- Botón para asignar responsable -->
                         <button name="action_assign_analyst_from_wizard" 
                                 type="object" 
                                 string="🔐 Asignar Responsable" 
