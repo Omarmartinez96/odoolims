@@ -335,31 +335,31 @@ class LimsParameterAnalysisV2(models.Model):
     pre_enrichment_set_id = fields.Many2one(
         'lims.media.set',
         string='Set de Pre-enriquecimiento',
-        domain=[]
+        domain=[('active', '=', True)]
     )
 
     selective_enrichment_set_id = fields.Many2one(
         'lims.media.set',
         string='Set de Enriquecimiento Selectivo',
-        domain=[]
+        domain=[('active', '=', True)]
     )
 
     quantitative_set_id = fields.Many2one(
         'lims.media.set',
         string='Set Cuantitativo',
-        domain=[]
+        domain=[('active', '=', True)]
     )
 
     qualitative_set_id = fields.Many2one(
         'lims.media.set',
         string='Set Cualitativo',
-        domain=[]
+        domain=[('active', '=', True)]
     )
 
     confirmation_set_id = fields.Many2one(
         'lims.media.set',
         string='Set de Confirmación',
-        domain=[]
+        domain=[('active', '=', True)]
     )
 
     # ===============================================
