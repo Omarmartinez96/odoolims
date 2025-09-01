@@ -534,11 +534,6 @@
                             <!-- ========== TAB DE CONTROL DE CALIDAD ========== -->
                             <page string="🔬 Control de Calidad">
                                 
-                                <div class="alert alert-info" style="margin-bottom: 15px;">
-                                    <strong>📋 Controles de Calidad:</strong> 
-                                    Estos controles garantizan la calidad y confiabilidad de los resultados.
-                                </div>
-                                
                                 <style>
                                     .o_list_view .o_list_table {
                                         min-width: 1200px !important;

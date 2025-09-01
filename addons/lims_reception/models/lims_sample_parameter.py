@@ -299,29 +299,10 @@ class LimsSampleParameter(models.Model):
     
     @api.model_create_multi
     def create(self, vals_list):
-        """Override create para añadir controles de calidad por defecto"""
+        """Crear parámetro sin controles automáticos - usar plantillas QC"""
         records = super().create(vals_list)
-        for record in records:
-            if not record.is_template and not record.quality_control_ids:
-                # Añadir control de esterilidad por defecto si es microbiológico
-                if record.category == 'microbiological':
-                    self._create_default_quality_controls(record)
+        # Sin creación automática de controles - usar plantillas QC independientes
         return records
-    
-    def _create_default_quality_controls(self, parameter):
-        """Crear controles de calidad por defecto"""
-        # Buscar tipo de control de esterilidad
-        sterility_type = self.env['lims.quality.control.type'].search([
-            ('category', '=', 'sterility')
-        ], limit=1)
-        
-        if sterility_type:
-            self.env['lims.quality.control'].create({
-                'parameter_id': parameter.id,
-                'control_type_id': sterility_type.id,
-                'expected_result': 'Estéril',
-                'sequence': 10
-            })
 
     def copy(self, default=None):
         """Personalizar duplicado de parámetros CON controles de calidad"""
