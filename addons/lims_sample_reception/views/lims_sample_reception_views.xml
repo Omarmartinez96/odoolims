@@ -51,18 +51,12 @@
                     <filter name="filter_sin_procesar" string="Sin Procesar" 
                             domain="[('reception_state', '=', 'sin_procesar')]"/>
                     
-                    <!-- Filtros por fecha -->
+                    <!-- Filtros por fecha (SIMPLIFICADOS) -->
                     <separator/>
-                    <filter name="filter_hoy" string="Hoy" 
-                            domain="[('reception_date', '=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter name="filter_ayer" string="Ayer" 
-                            domain="[('reception_date', '=', (context_today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))]"/>
-                    <filter name="filter_esta_semana" string="Esta Semana" 
-                            domain="[('reception_date', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')),
-                                    ('reception_date', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
-                    <filter name="filter_este_mes" string="Este Mes" 
-                            domain="[('reception_date', '&gt;=', context_today().replace(day=1).strftime('%Y-%m-%d')),
-                                    ('reception_date', '&lt;=', (context_today().replace(day=28) + datetime.timedelta(days=4)).replace(day=1) - datetime.timedelta(days=1)).strftime('%Y-%m-%d')]"/>
+                    <filter name="filter_ultimos_7_dias" string="Últimos 7 días" 
+                            domain="[('reception_date', '&gt;=', (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                    <filter name="filter_ultimos_30_dias" string="Últimos 30 días" 
+                            domain="[('reception_date', '&gt;=', (datetime.datetime.now() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
                     
                     <!-- Agrupaciones -->
                     <group expand="0" string="Agrupar Por">

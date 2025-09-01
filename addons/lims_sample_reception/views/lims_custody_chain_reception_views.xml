@@ -31,11 +31,12 @@
                             domain="[('chain_of_custody_state', '=', 'done')]"/>
                     <filter name="filter_en_proceso" string="En Proceso" 
                             domain="[('chain_of_custody_state', '=', 'in_progress')]"/>
-                    <filter name="filter_hoy" string="Hoy" 
-                            domain="[('date_chainofcustody', '=', context_today().strftime('%Y-%m-%d'))]"/>
-                    <filter name="filter_esta_semana" string="Esta Semana" 
-                            domain="[('date_chainofcustody', '&gt;=', (context_today() - datetime.timedelta(days=context_today().weekday())).strftime('%Y-%m-%d')),
-                                    ('date_chainofcustody', '&lt;=', (context_today() + datetime.timedelta(days=6-context_today().weekday())).strftime('%Y-%m-%d'))]"/>
+                    
+                    <!-- Filtros de fecha (SIMPLIFICADOS) -->
+                    <filter name="filter_ultimos_7_dias" string="Últimos 7 días" 
+                            domain="[('date_chainofcustody', '&gt;=', (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
+                    <filter name="filter_ultimos_30_dias" string="Últimos 30 días" 
+                            domain="[('date_chainofcustody', '&gt;=', (datetime.datetime.now() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
                     
                     <!-- Filtros de estado de recepción -->
                     <separator/>
