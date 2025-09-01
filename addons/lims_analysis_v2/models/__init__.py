@@ -5,3 +5,4 @@ from . import lims_dilution_data
 from . import lims_quality_control
 from . import lims_confirmation_result
 from . import lims_equipment_involved
+from . import lims_qc_template

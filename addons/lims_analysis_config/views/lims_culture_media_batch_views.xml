@@ -197,6 +197,12 @@
                 action="lims_reception.action_quality_control_types" 
                 sequence="30"/>
 
+        <!-- <menuitem id="menu_qc_templates" 
+                name="Plantillas de Controles QC" 
+                parent="menu_plantillas" 
+                action="action_lims_qc_templates" 
+                sequence="30"/> -->
+
         <!-- ========== ACTIVOS Y EQUIPOS ========== -->
         <menuitem id="menu_lims_lab_equipment" 
                 name="Equipos de Laboratorio" 

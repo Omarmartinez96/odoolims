@@ -363,6 +363,15 @@ class LimsParameterAnalysisV2(models.Model):
     )
 
     # ===============================================
+    # === PLANTILLA DE CONTROLES DE CALIDAD ===
+    # ===============================================
+    qc_template_id = fields.Many2one(
+        'lims.qc.template',
+        string='Plantilla de Controles',
+        domain=[('active', '=', True)]
+    )
+
+    # ===============================================
     # === OBSERVACIONES ===
     # ===============================================
     analyst_notes = fields.Text(
@@ -839,3 +848,25 @@ class LimsParameterAnalysisV2(models.Model):
             setattr(self, field_name, media_lines)
             # Incrementar contador de uso
             media_set.sudo().write({'times_used': media_set.times_used + 1})
+
+    @api.onchange('qc_template_id')
+    def _onchange_qc_template_id(self):
+        if self.qc_template_id:
+            # Limpiar controles actuales
+            self.executed_qc_ids = [(5, 0, 0)]
+            
+            # Cargar controles desde plantilla
+            qc_lines = []
+            for line in self.qc_template_id.control_line_ids:
+                qc_lines.append((0, 0, {
+                    'qc_type_id': line.qc_type_id.id,
+                    'expected_result': line.expected_result,
+                    'control_status': 'pending',
+                    'sequence': line.sequence,
+                    'notes': line.notes or '',
+                }))
+            
+            if qc_lines:
+                self.executed_qc_ids = qc_lines
+                # Incrementar contador
+                self.qc_template_id.sudo().write({'times_used': self.qc_template_id.times_used + 1})
