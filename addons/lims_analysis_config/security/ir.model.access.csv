@@ -5,3 +5,5 @@ access_lims_lab_equipment,lims.lab.equipment,model_lims_lab_equipment,base.group
 access_lims_culture_media,lims.culture.media,model_lims_culture_media,base.group_user,1,1,1,1
 access_lims_media_set,lims.media.set,model_lims_media_set,base.group_user,1,1,1,1
 access_lims_media_set_line,lims.media.set.line,model_lims_media_set_line,base.group_user,1,1,1,1
+access_lims_qc_template,lims.qc.template,model_lims_qc_template,base.group_user,1,1,1,1
+access_lims_qc_template_line,lims.qc.template.line,model_lims_qc_template_line,base.group_user,1,1,1,1
