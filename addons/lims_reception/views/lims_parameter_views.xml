@@ -90,7 +90,7 @@
                                     <list string="Medios por Proceso" editable="bottom">
                                         <field name="sequence" widget="handle"/>
                                         <field name="process_type"/>
-                                        <field name="culture_media_id" options="{'no_create': True}"/>
+                                        <field name="culture_media_name" placeholder="Nombre del medio"/>
                                         <field name="media_usage"/>
                                         <field name="notes" placeholder="Instrucciones específicas..."/>
                                     </list>
@@ -235,7 +235,7 @@
                                     <list string="Medios por Proceso" editable="bottom">
                                         <field name="sequence" widget="handle"/>
                                         <field name="process_type"/>
-                                        <field name="culture_media_id" options="{'no_create': True}"/>
+                                        <field name="culture_media_name" placeholder="Nombre del medio"/>
                                         <field name="media_usage"/>
                                         <field name="notes" placeholder="Ej: Incubar 35°C por 24h, usar 1mL de muestra..."/>
                                     </list>
