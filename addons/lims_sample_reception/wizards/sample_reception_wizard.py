@@ -57,7 +57,6 @@ class SampleReceptionWizard(models.TransientModel):
 
     received_by_initials = fields.Char(
         string='DEPRECADO: Iniciales de quien procesó',
-        required=True,
         size=5,
         help='DEPRECADO: Iniciales de quien procesó la recepción'
     )
