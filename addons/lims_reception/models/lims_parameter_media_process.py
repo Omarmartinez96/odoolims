@@ -48,16 +48,16 @@ class LimsParameterMediaProcess(models.Model):
         string='Notas'
     )
     
-    @api.onchange('process_type')
-    def _onchange_process_type_default_usage(self):
-        """Establecer uso por defecto según el tipo de proceso"""
-        if self.process_type == 'pre_enrichment':
-            self.media_usage = 'enriquecimiento'
-        elif self.process_type == 'selective_enrichment':
-            self.media_usage = 'desarrollo_selectivo'
-        elif self.process_type == 'quantitative':
-            self.media_usage = 'diluyente'
-        elif self.process_type == 'qualitative':
-            self.media_usage = 'desarrollo_selectivo'
-        elif self.process_type == 'confirmation':
-            self.media_usage = 'pruebas_bioquimicas'
+    # @api.onchange('process_type')
+    # def _onchange_process_type_default_usage(self):
+    #     """Establecer uso por defecto según el tipo de proceso"""
+    #     if self.process_type == 'pre_enrichment':
+    #         self.media_usage = 'enriquecimiento'
+    #     elif self.process_type == 'selective_enrichment':
+    #         self.media_usage = 'desarrollo_selectivo'
+    #     elif self.process_type == 'quantitative':
+    #         self.media_usage = 'diluyente'
+    #     elif self.process_type == 'qualitative':
+    #         self.media_usage = 'desarrollo_selectivo'
+    #     elif self.process_type == 'confirmation':
+    #         self.media_usage = 'pruebas_bioquimicas'
