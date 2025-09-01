@@ -159,6 +159,12 @@
                 action="action_culture_media_batches" 
                 sequence="20"/>
 
+        <menuitem id="menu_media_sets" 
+                name="Sets de Medios" 
+                parent="menu_medios_reactivos" 
+                action="action_lims_media_sets" 
+                sequence="30"/>
+
         <!-- ========== PLANTILLAS ========== -->
         <menuitem id="menu_parameter_templates" 
                 name="Plantillas de Parámetros" 

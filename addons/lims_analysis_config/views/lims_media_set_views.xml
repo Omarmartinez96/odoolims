@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <data>
+        
+        <!-- Vista Lista de Sets -->
+        <record id="view_lims_media_set_list" model="ir.ui.view">
+            <field name="name">lims.media.set.list</field>
+            <field name="model">lims.media.set</field>
+            <field name="arch" type="xml">
+                <list string="Sets de Medios" default_order="process_type, name">
+                    <field name="name"/>
+                    <field name="process_type"/>
+                    <field name="times_used"/>
+                    <field name="active"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Formulario de Sets -->
+        <record id="view_lims_media_set_form" model="ir.ui.view">
+            <field name="name">lims.media.set.form</field>
+            <field name="model">lims.media.set</field>
+            <field name="arch" type="xml">
+                <form string="Set de Medios">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="name" placeholder="Ej: Salmonella USP - Pre enriquecimiento"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group>
+                                <field name="process_type"/>
+                                <field name="active"/>
+                                <field name="times_used" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <group string="Descripción">
+                            <field name="description" nolabel="1" 
+                                   placeholder="Descripción del set y cuándo utilizarlo..."/>
+                        </group>
+
+                        <group string="Medios del Set">
+                            <field name="media_line_ids" nolabel="1">
+                                <list editable="bottom">
+                                    <field name="sequence" widget="handle"/>
+                                    <field name="culture_media_id" options="{'no_create': True}"/>
+                                    <field name="media_usage"/>
+                                    <field name="notes" placeholder="Instrucciones específicas..."/>
+                                </list>
+                            </field>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acción -->
+        <record id="action_lims_media_sets" model="ir.actions.act_window">
+            <field name="name">Sets de Medios</field>
+            <field name="res_model">lims.media.set</field>
+            <field name="view_mode">list,form</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crear el primer set de medios
+                </p>
+                <p>
+                    Define conjuntos de medios reutilizables para diferentes procesos analíticos.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

@@ -665,92 +665,92 @@ class LimsParameterAnalysisV2(models.Model):
         if self.analysis_id and self.analysis_id.reception_date:
             self.analysis_start_date = self.analysis_id.reception_date
 
-    def action_load_media_from_template(self):
-        """Cargar medios desde la plantilla del parámetro"""
-        if not self.parameter_id or not self.parameter_id.culture_media_ids:
+    def action_load_media_from_set(self, process_type):
+        """Cargar medios desde un set específico"""
+        # Buscar sets disponibles para este proceso
+        available_sets = self.env['lims.media.set'].search([
+            ('process_type', '=', process_type),
+            ('active', '=', True)
+        ])
+        
+        if not available_sets:
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
                 'params': {
-                    'title': 'Sin Medios en Plantilla',
-                    'message': 'El parámetro no tiene medios de cultivo definidos en su plantilla',
+                    'title': 'Sin Sets Disponibles',
+                    'message': f'No hay sets de medios configurados para {process_type}',
                     'type': 'warning',
                 }
             }
         
-        # Copiar medios desde la plantilla por proceso
-        new_media = 0
-        for template_media in self.parameter_id.culture_media_ids:
-            # Verificar si ya existe este medio para este proceso
-            existing = self.media_ids.filtered(
-                lambda x: x.process_type == template_media.process_type and 
-                        x.culture_media_name == template_media.culture_media_id.name
-            )
-            
-            if not existing:
-                self.env['lims.analysis.media.v2'].create({
-                    'parameter_analysis_id': self.id,
-                    'process_type': template_media.process_type,
-                    'media_source': 'internal',  # Por defecto interno
-                    'culture_media_name': template_media.culture_media_id.name,
-                    'media_usage': template_media.media_usage,
-                    'requires_incubation': True,  # Por defecto requiere
-                    'preparation_notes': template_media.notes or '',
-                    'sequence': template_media.sequence,
-                })
-                new_media += 1
+        # Si solo hay un set, cargarlo directamente
+        if len(available_sets) == 1:
+            return self._load_media_set(available_sets[0])
         
+        # Si hay múltiples sets, mostrar wizard de selección
         return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': 'Medios Cargados',
-                'message': f'Se agregaron {new_media} medios desde la plantilla',
-                'type': 'success',
+            'type': 'ir.actions.act_window',
+            'name': 'Seleccionar Set de Medios',
+            'res_model': 'lims.media.set.selector.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_parameter_analysis_id': self.id,
+                'default_process_type': process_type,
+                'default_available_set_ids': available_sets.ids
             }
         }
-    
-    def action_load_media_from_template(self):
-        """Cargar medios desde la plantilla del parámetro"""
-        if not self.parameter_id or not self.parameter_id.media_by_process_ids:
-            return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': 'Sin Medios en Plantilla',
-                    'message': 'El parámetro no tiene medios por proceso definidos en su plantilla',
-                    'type': 'warning',
-                }
-            }
-        
-        # Copiar medios desde la plantilla por proceso
+
+    def _load_media_set(self, media_set):
+        """Cargar medios desde un set específico"""
         new_media = 0
-        for template_media in self.parameter_id.media_by_process_ids:
+        
+        for set_line in media_set.media_line_ids:
             # Verificar si ya existe este medio para este proceso
             existing = self.media_ids.filtered(
-                lambda x: x.process_type == template_media.process_type and 
-                        x.culture_media_name == template_media.culture_media_id.name
+                lambda x: x.process_type == media_set.process_type and 
+                        x.culture_media_name == set_line.culture_media_id.name
             )
             
             if not existing:
                 self.env['lims.analysis.media.v2'].create({
                     'parameter_analysis_id': self.id,
-                    'process_type': template_media.process_type,
+                    'process_type': media_set.process_type,
                     'media_source': 'internal',
-                    'culture_media_name': template_media.culture_media_id.name,
-                    'media_usage': template_media.media_usage,
+                    'culture_media_name': set_line.culture_media_id.name,
+                    'media_usage': set_line.media_usage,
                     'requires_incubation': True,
-                    'preparation_notes': template_media.notes or '',
-                    'sequence': template_media.sequence,
+                    'preparation_notes': set_line.notes or '',
+                    'sequence': set_line.sequence,
                 })
                 new_media += 1
+        
+        # Incrementar contador de uso
+        media_set.times_used += 1
         
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
-                'title': 'Medios Cargados',
-                'message': f'Se agregaron {new_media} medios desde la plantilla',
+                'title': 'Set Cargado',
+                'message': f'Se cargaron {new_media} medios desde "{media_set.name}"',
                 'type': 'success',
             }
         }
+
+    # Métodos específicos para cada proceso
+    def action_load_pre_enrichment_set(self):
+        return self.action_load_media_from_set('pre_enrichment')
+
+    def action_load_selective_enrichment_set(self):
+        return self.action_load_media_from_set('selective_enrichment')
+
+    def action_load_quantitative_set(self):
+        return self.action_load_media_from_set('quantitative')
+
+    def action_load_qualitative_set(self):
+        return self.action_load_media_from_set('qualitative')
+
+    def action_load_confirmation_set(self):
+        return self.action_load_media_from_set('confirmation')

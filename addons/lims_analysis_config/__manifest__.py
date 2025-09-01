@@ -23,10 +23,11 @@
         'security/ir.model.access.csv',
         
         # Vistas de configuración
-        'views/lims_culture_media_views.xml',  # AGREGAR ESTA LÍNEA
+        'views/lims_culture_media_views.xml',  
         'views/lims_equipment_views.xml',
         'views/lims_culture_media_batch_views.xml',
         'views/lims_culture_media_qc_views.xml',
+        'views/lims_media_set_views.xml',
     ],
     'installable': True,
     'application': True,  
