@@ -82,14 +82,11 @@
                                 </group>
                                 
                                 <group string="Medios y Reactivos">
-                                    <!-- AGREGAR en cada pestaña: pre_enrichment, selective_enrichment, quantitative, qualitative, confirmation -->
-                                    <div style="margin-bottom: 15px;">
-                                        <button type="object" 
-                                                name="action_load_pre_enrichment_set" 
-                                                string="🧪 Cargar Set de Medios" 
-                                                class="btn-secondary btn-sm"
-                                                help="Cargar set de medios predefinido para pre-enriquecimiento"/>
-                                    </div>
+
+                                    <field name="selective_enrichment_set_id" 
+                                        placeholder="Seleccionar set de medios selectivos..." 
+                                        options="{'no_create': True, 'no_edit': True}"
+                                        help="Selecciona un set para cargar automáticamente los medios"/>
                                     <field name="pre_enrichment_media_ids" nolabel="1" colspan="2"
                                            context="{'default_process_type': 'pre_enrichment', 'default_media_usage': 'enriquecimiento'}">
 
@@ -195,6 +192,12 @@
                                 </group>
                                 
                                 <group string="Medios Selectivos y Reactivos">
+
+                                    <field name="selective_enrichment_set_id" 
+                                        placeholder="Seleccionar set de medios selectivos..." 
+                                        options="{'no_create': True, 'no_edit': True}"
+                                        help="Selecciona un set para cargar automáticamente los medios"/>
+
                                     <field name="selective_enrichment_media_ids" nolabel="1" colspan="2"
                                            context="{'default_process_type': 'selective_enrichment', 'default_media_usage': 'desarrollo_selectivo'}">
 
@@ -297,6 +300,11 @@
                                 </group>
 
                                 <group string="🧪 Medios Utilizados en el Análisis">
+
+                                    <field name="quantitative_set_id" 
+                                        placeholder="Seleccionar set cuantitativo..." 
+                                        options="{'no_create': True, 'no_edit': True}"
+                                        help="Selecciona un set para cargar automáticamente los medios"/>
                                     <field name="quantitative_media_ids" nolabel="1" colspan="2"
                                            context="{'default_process_type': 'quantitative', 'default_media_usage': 'diluyente'}">
 
@@ -399,6 +407,11 @@
                                 </group>
 
                                 <group string="🧪 Medios para Análisis Cualitativos">
+
+                                    <field name="qualitative_set_id" 
+                                        placeholder="Seleccionar set cualitativo..." 
+                                        options="{'no_create': True, 'no_edit': True}"
+                                        help="Selecciona un set para cargar automáticamente los medios"/>
                                     <field name="qualitative_media_ids" nolabel="1" colspan="2"
                                            context="{'default_process_type': 'qualitative', 'default_media_usage': 'desarrollo_selectivo'}">
 
@@ -581,6 +594,11 @@
                                 </group>
                                 
                                 <group string="Medios de Confirmación">
+                                    <field name="confirmation_set_id" 
+                                        placeholder="Seleccionar set de confirmación..." 
+                                        options="{'no_create': True, 'no_edit': True}"
+                                        help="Selecciona un set para cargar automáticamente los medios"/>
+
                                     <field name="confirmation_media_ids" nolabel="1" colspan="2"
                                            context="{'default_process_type': 'confirmation', 'default_media_usage': 'pruebas_bioquimicas'}">
                                         

@@ -330,6 +330,39 @@ class LimsParameterAnalysisV2(models.Model):
     qualitative_processing_time = fields.Char(string='Hora de Procesamiento Cualitativo', help='Formato HH:MM')
     
     # ===============================================
+    # === CAMPOS DE SETS DE MEDIOS ===
+    # ===============================================
+    pre_enrichment_set_id = fields.Many2one(
+        'lims.media.set',
+        string='Set de Pre-enriquecimiento',
+        domain=[('process_type', '=', 'pre_enrichment'), ('active', '=', True)]
+    )
+
+    selective_enrichment_set_id = fields.Many2one(
+        'lims.media.set',
+        string='Set de Enriquecimiento Selectivo',
+        domain=[('process_type', '=', 'selective_enrichment'), ('active', '=', True)]
+    )
+
+    quantitative_set_id = fields.Many2one(
+        'lims.media.set',
+        string='Set Cuantitativo',
+        domain=[('process_type', '=', 'quantitative'), ('active', '=', True)]
+    )
+
+    qualitative_set_id = fields.Many2one(
+        'lims.media.set',
+        string='Set Cualitativo',
+        domain=[('process_type', '=', 'qualitative'), ('active', '=', True)]
+    )
+
+    confirmation_set_id = fields.Many2one(
+        'lims.media.set',
+        string='Set de Confirmación',
+        domain=[('process_type', '=', 'confirmation'), ('active', '=', True)]
+    )
+
+    # ===============================================
     # === OBSERVACIONES ===
     # ===============================================
     analyst_notes = fields.Text(
@@ -754,3 +787,55 @@ class LimsParameterAnalysisV2(models.Model):
 
     def action_load_confirmation_set(self):
         return self.action_load_media_from_set('confirmation')
+    
+    # ===============================================
+    # === ONCHANGE PARA SETS DE MEDIOS ===
+    # ===============================================
+    @api.onchange('pre_enrichment_set_id')
+    def _onchange_pre_enrichment_set_id(self):
+        if self.pre_enrichment_set_id:
+            self._load_media_from_set('pre_enrichment', self.pre_enrichment_set_id, 'pre_enrichment_media_ids')
+
+    @api.onchange('selective_enrichment_set_id')
+    def _onchange_selective_enrichment_set_id(self):
+        if self.selective_enrichment_set_id:
+            self._load_media_from_set('selective_enrichment', self.selective_enrichment_set_id, 'selective_enrichment_media_ids')
+
+    @api.onchange('quantitative_set_id')
+    def _onchange_quantitative_set_id(self):
+        if self.quantitative_set_id:
+            self._load_media_from_set('quantitative', self.quantitative_set_id, 'quantitative_media_ids')
+
+    @api.onchange('qualitative_set_id')
+    def _onchange_qualitative_set_id(self):
+        if self.qualitative_set_id:
+            self._load_media_from_set('qualitative', self.qualitative_set_id, 'qualitative_media_ids')
+
+    @api.onchange('confirmation_set_id')
+    def _onchange_confirmation_set_id(self):
+        if self.confirmation_set_id:
+            self._load_media_from_set('confirmation', self.confirmation_set_id, 'confirmation_media_ids')
+
+    def _load_media_from_set(self, process_type, media_set, field_name):
+        """Método auxiliar para cargar medios desde un set"""
+        # Limpiar medios actuales
+        current_media = getattr(self, field_name)
+        current_media.unlink()
+        
+        # Crear nuevos medios desde el set
+        media_lines = []
+        for set_line in media_set.media_line_ids:
+            media_lines.append((0, 0, {
+                'process_type': process_type,
+                'media_source': 'internal',
+                'culture_media_name': set_line.culture_media_id.name,
+                'media_usage': set_line.media_usage,
+                'preparation_notes': set_line.notes or '',
+                'sequence': set_line.sequence,
+                'requires_incubation': True,  # Por defecto activado
+            }))
+        
+        if media_lines:
+            setattr(self, field_name, media_lines)
+            # Incrementar contador de uso
+            media_set.sudo().write({'times_used': media_set.times_used + 1})
