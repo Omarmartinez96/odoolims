@@ -54,6 +54,21 @@
                         </group>
                     </group>
 
+                    <!-- BOTÓN AQUÍ - Después del horario -->
+                    <div style="text-align: center; margin: 15px 0;">
+                        <button name="action_assign_analyst_from_wizard" 
+                                type="object" 
+                                string="🔐 Asignar Responsable" 
+                                class="btn-warning"
+                                help="Seleccionar responsable con verificación PIN"/>
+                    </div>
+
+                    <!-- Observaciones generales -->
+                    <group string="Observaciones" invisible="reception_state == 'rechazada'">
+                        <field name="reception_notes" nolabel="1" 
+                            placeholder="Observaciones generales sobre el procesamiento..."/>
+                    </group>
+
                     <!-- Observaciones generales -->
                     <group string="Observaciones" invisible="reception_state == 'rechazada'">
                         <field name="reception_notes" nolabel="1" 
@@ -69,12 +84,6 @@
 
                     <footer>
                         <!-- Botón para asignar responsable -->
-                        <button name="action_assign_analyst_from_wizard" 
-                                type="object" 
-                                string="🔐 Asignar Responsable" 
-                                class="btn-warning"
-                                help="Seleccionar responsable con verificación PIN"/>
-                        
                         <button name="action_confirm_reception" 
                                 type="object" 
                                 string="Finalizar" 

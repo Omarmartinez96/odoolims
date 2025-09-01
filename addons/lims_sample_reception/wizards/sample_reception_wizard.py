@@ -53,16 +53,13 @@ class SampleReceptionWizard(models.TransientModel):
         required=True
     )
 
-#### DEPRECADO: Iniciales de quien procesó ####
-
+    #### DEPRECADO: Iniciales de quien procesó ####
     received_by_initials = fields.Char(
         string='DEPRECADO: Iniciales de quien procesó',
         size=5,
         help='DEPRECADO: Iniciales de quien procesó la recepción'
     )
-    
-#### DEPRECADO: Iniciales de quien procesó ####
-
+    #### DEPRECADO: Iniciales de quien procesó ####
 
     reception_notes = fields.Text(
         string='Observaciones de la Muestra'
@@ -167,7 +164,6 @@ class SampleReceptionWizard(models.TransientModel):
                         'reception_date': reception.reception_date,
                         'reception_time': reception.reception_time,
                         'reception_notes': reception.reception_notes,
-                        'analyst_id': reception.analyst_id.id if reception.analyst_id else False,
                     })
                     
                     # Si está rechazada, cargar motivo de rechazo
@@ -299,26 +295,13 @@ class SampleReceptionWizard(models.TransientModel):
             self.env.user.partner_id, 
             'simple_notification', 
             {
-                'title': f'Procesamiento Completado por {self.analyst_id.full_name}',
+                'title': 'Procesamiento Completado',
                 'message': message,
                 'type': notification_type
             }
         )
         
         return {'type': 'ir.actions.act_window_close'}
-    
-    def _validate_analyst_pin(self):
-        """Validar analista y PIN"""
-        if not self.analyst_id:
-            raise UserError(_('Debe seleccionar el analista responsable.'))
-        
-        if not self.pin_input:
-            raise UserError(_('Debe ingresar su PIN de verificación.'))
-        
-        if not self.analyst_id.validate_pin(self.pin_input):
-            raise UserError(_('PIN incorrecto. Verifique e intente nuevamente.'))
-        
-        return True
     
     def action_assign_analyst_from_wizard(self):
         """Abrir wizard de asignación de analista desde el wizard de recepción"""
