@@ -290,9 +290,11 @@
                 <table style="width: 100%; border-collapse: collapse;">
                   <tr>
                     <td style="width: 50%; vertical-align: top; padding: 10px;">
-                      <div style="text-align: center;">
-                        <img t-att-src="image_data_uri(doc.customer_signature)" 
-                             style="max-width: 200px; max-height: 100px; padding: 5px;"/>
+                      <div style="text-align: center; background: none;">
+                        <div style="display: inline-block; background: transparent; border: none; padding: 0; margin: 0;">
+                          <img t-att-src="image_data_uri(doc.customer_signature)" 
+                              style="max-width: 200px; max-height: 100px; border: none; background: transparent; box-shadow: none; outline: none; display: block;"/>
+                        </div>
                         <div style="margin-top: 10px; border-top: 1px solid #333; padding-top: 5px;">
                           <strong>Firma del Cliente</strong>
                         </div>
