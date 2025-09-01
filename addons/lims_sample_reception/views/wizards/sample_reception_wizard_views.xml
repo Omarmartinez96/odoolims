@@ -46,6 +46,14 @@
                     <!-- TEXTO DE CONFIRMACIÓN -->
                     <field name="confirmation_text" nolabel="1" readonly="1"/>
 
+                    <!-- Información de Procesamiento -->
+                    <group string="Información de Procesamiento">
+                        <group>
+                            <field name="reception_date"/>
+                            <field name="reception_time" placeholder="14:30"/>
+                        </group>
+                    </group>
+
                     <!-- Verificación de Responsable -->
                     <group string="🔐 Verificación de Responsable">
                         <div class="alert alert-info" role="alert">
@@ -64,13 +72,7 @@
                         </group>
                     </group>
 
-                    <!-- Observaciones generales -->
-                    <group string="Observaciones" invisible="reception_state == 'rechazada'">
-                        <field name="reception_notes" nolabel="1" 
-                            placeholder="Observaciones generales sobre el procesamiento..."/>
-                    </group>
-
-                    <!-- Observaciones generales -->
+                    <!-- Observaciones generales (UNA SOLA VEZ) -->
                     <group string="Observaciones" invisible="reception_state == 'rechazada'">
                         <field name="reception_notes" nolabel="1" 
                                placeholder="Observaciones generales sobre el procesamiento..."/>
@@ -84,7 +86,6 @@
                     </group>
 
                     <footer>
-                        <!-- Botón para asignar responsable -->
                         <button name="action_confirm_reception" 
                                 type="object" 
                                 string="Finalizar" 
