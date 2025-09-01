@@ -8,49 +8,21 @@
             <field name="model">lims.custody_chain</field>
             <field name="arch" type="xml">
                 <search string="Buscar Cadenas de Custodia">
-                    <!-- Campos de búsqueda expandidos -->
+                    <!-- Búsquedas básicas -->
                     <field name="custody_chain_code" string="Código de Cadena"/>
                     <field name="cliente_id" string="Cliente"/>
-                    <field name="client_code" string="Código Cliente"/>
                     <field name="date_chainofcustody" string="Fecha"/>
-                    <field name="sucursal_id" string="Sucursal"/>
-                    <field name="departamento_id" string="Departamento"/>
-                    <field name="chain_of_custody_state" string="Estado CC"/>
                     
-                    <!-- Búsqueda por campos de muestras relacionadas -->
-                    <field name="sample_ids" string="Identificación Muestra" 
-                        filter_domain="[('sample_ids.sample_identifier', 'ilike', self)]"/>
-                    <field name="sample_ids" string="Código Muestra" 
-                        filter_domain="[('sample_ids.sample_code', 'ilike', self)]"/>
-                    <field name="sample_ids" string="Descripción Muestra" 
-                        filter_domain="[('sample_ids.sample_description', 'ilike', self)]"/>
+                    <!-- Búsqueda por código de cliente -->
+                    <field name="cliente_id" string="Código Cliente" 
+                        filter_domain="[('cliente_id.client_code', 'ilike', self)]"/>
                     
-                    <!-- Filtros predefinidos -->
-                    <separator/>
-                    <filter name="filter_finalizadas" string="Finalizadas" 
-                            domain="[('chain_of_custody_state', '=', 'done')]"/>
-                    <filter name="filter_en_proceso" string="En Proceso" 
-                            domain="[('chain_of_custody_state', '=', 'in_progress')]"/>
-                    <filter name="filter_borrador" string="Borrador" 
-                            domain="[('chain_of_custody_state', '=', 'draft')]"/>
-                    
-                    <!-- Filtros de fecha (SIMPLIFICADOS) -->
-                    <separator/>
-                    <filter name="filter_ultimos_7_dias" string="Últimos 7 días" 
-                            domain="[('date_chainofcustody', '&gt;=', (datetime.datetime.now() - datetime.timedelta(days=7)).strftime('%Y-%m-%d'))]"/>
-                    <filter name="filter_ultimos_30_dias" string="Últimos 30 días" 
-                            domain="[('date_chainofcustody', '&gt;=', (datetime.datetime.now() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
-                    
-                    <!-- Agrupaciones -->
+                    <!-- Agrupaciones básicas -->
                     <group expand="0" string="Agrupar Por">
                         <filter name="group_by_cliente" string="Cliente" 
                                 context="{'group_by': 'cliente_id'}"/>
                         <filter name="group_by_fecha" string="Fecha" 
                                 context="{'group_by': 'date_chainofcustody'}"/>
-                        <filter name="group_by_estado" string="Estado CC" 
-                                context="{'group_by': 'chain_of_custody_state'}"/>
-                        <filter name="group_by_sucursal" string="Sucursal" 
-                                context="{'group_by': 'sucursal_id'}"/>
                     </group>
                 </search>
 
@@ -90,33 +62,21 @@
             <field name="model">lims.sample</field>
             <field name="arch" type="xml">
                 <search string="Buscar Muestras">
-                    <!-- Solo campos básicos y seguros -->
+                    <!-- Búsquedas básicas -->
                     <field name="sample_identifier" string="Identificación"/>
-                    <field name="sample_description" string="Descripción"/>
                     <field name="custody_chain_id" string="Cadena Custodia"/>
                     <field name="cliente_id" string="Cliente"/>
-                    <field name="sample_type_id" string="Tipo Muestra"/>
-                    <field name="container_type_id" string="Tipo Recipiente"/>
                     
                     <!-- Búsqueda por código de cliente -->
                     <field name="cliente_id" string="Código Cliente" 
                         filter_domain="[('cliente_id.client_code', 'ilike', self)]"/>
                     
-                    <!-- Filtros por cadena de custodia (SEGUROS) -->
-                    <separator/>
-                    <filter name="filter_cc_finalizadas" string="CC Finalizadas" 
-                            domain="[('custody_chain_id.chain_of_custody_state', '=', 'done')]"/>
-                    <filter name="filter_cc_proceso" string="CC En Proceso" 
-                            domain="[('custody_chain_id.chain_of_custody_state', '=', 'in_progress')]"/>
-                    
-                    <!-- Agrupaciones (SEGURAS) -->
+                    <!-- Agrupaciones básicas -->
                     <group expand="0" string="Agrupar Por">
                         <filter name="group_by_custody_chain" string="Cadena de Custodia" 
                                 context="{'group_by': 'custody_chain_id'}"/>
                         <filter name="group_by_cliente" string="Cliente" 
                                 context="{'group_by': 'cliente_id'}"/>
-                        <filter name="group_by_tipo" string="Tipo Muestra" 
-                                context="{'group_by': 'sample_type_id'}"/>
                     </group>
                 </search>
             </field>

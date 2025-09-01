@@ -25,41 +25,24 @@
             <field name="model">lims.sample.reception</field>
             <field name="arch" type="xml">
                 <search string="Buscar Recepciones">
-                    <!-- Campos de búsqueda principales -->
+                    <!-- Búsquedas básicas -->
                     <field name="sample_code" string="Código de Muestra"/>
                     <field name="sample_identifier" string="Identificación Original"/>
                     <field name="cliente_id" string="Cliente"/>
                     <field name="custody_chain_id" string="Cadena de Custodia"/>
                     <field name="reception_date" string="Fecha Recepción"/>
-                    <field name="reception_time" string="Hora Recepción"/>
-                    <field name="received_by" string="Recibido por"/>
                     <field name="analyst_id" string="Responsable"/>
                     
-                    <!-- Búsqueda por cliente -->
+                    <!-- Búsqueda por código de cliente -->
                     <field name="cliente_id" string="Código Cliente" 
                         filter_domain="[('cliente_id.client_code', 'ilike', self)]"/>
                     
-                    <!-- Filtros predefinidos por estado -->
-                    <separator/>
-                    <filter name="filter_recibidas" string="Recibidas" 
-                            domain="[('reception_state', '=', 'recibida')]"/>
-                    <filter name="filter_rechazadas" string="Rechazadas" 
-                            domain="[('reception_state', '=', 'rechazada')]"/>
-                    <filter name="filter_no_recibidas" string="No Recibidas" 
-                            domain="[('reception_state', '=', 'no_recibida')]"/>
-                    <filter name="filter_sin_procesar" string="Sin Procesar" 
-                            domain="[('reception_state', '=', 'sin_procesar')]"/>
-                    
-                    <!-- Agrupaciones -->
+                    <!-- Agrupaciones básicas -->
                     <group expand="0" string="Agrupar Por">
                         <filter name="group_by_cliente" string="Cliente" 
                                 context="{'group_by': 'cliente_id'}"/>
-                        <filter name="group_by_estado" string="Estado Recepción" 
-                                context="{'group_by': 'reception_state'}"/>
                         <filter name="group_by_fecha" string="Fecha Recepción" 
                                 context="{'group_by': 'reception_date'}"/>
-                        <filter name="group_by_cadena" string="Cadena de Custodia" 
-                                context="{'group_by': 'custody_chain_id'}"/>
                         <filter name="group_by_responsable" string="Responsable" 
                                 context="{'group_by': 'analyst_id'}"/>
                     </group>
