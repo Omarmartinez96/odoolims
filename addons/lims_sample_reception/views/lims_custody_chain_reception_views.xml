@@ -8,14 +8,12 @@
             <field name="model">lims.custody_chain</field>
             <field name="arch" type="xml">
                 <search string="Buscar Cadenas de Custodia">
-                    <!-- Búsquedas básicas -->
+                    <!-- Búsquedas mejoradas -->
                     <field name="custody_chain_code" string="Código de Cadena"/>
-                    <field name="cliente_id" string="Cliente"/>
+                    <field name="cliente_id" string="Cliente" 
+                        filter_domain="['|', ('cliente_id.name', 'ilike', self), ('cliente_id.client_code', 'ilike', self)]"/>
+                    <field name="client_code" string="Código Cliente"/>
                     <field name="date_chainofcustody" string="Fecha"/>
-                    
-                    <!-- Búsqueda por código de cliente -->
-                    <field name="cliente_id" string="Código Cliente" 
-                        filter_domain="[('cliente_id.client_code', 'ilike', self)]"/>
                     
                     <!-- Agrupaciones básicas -->
                     <group expand="0" string="Agrupar Por">
@@ -62,14 +60,11 @@
             <field name="model">lims.sample</field>
             <field name="arch" type="xml">
                 <search string="Buscar Muestras">
-                    <!-- Búsquedas básicas -->
+                    <!-- Búsquedas mejoradas -->
                     <field name="sample_identifier" string="Identificación"/>
                     <field name="custody_chain_id" string="Cadena Custodia"/>
-                    <field name="cliente_id" string="Cliente"/>
-                    
-                    <!-- Búsqueda por código de cliente -->
-                    <field name="cliente_id" string="Código Cliente" 
-                        filter_domain="[('cliente_id.client_code', 'ilike', self)]"/>
+                    <field name="cliente_id" string="Cliente" 
+                        filter_domain="['|', ('cliente_id.name', 'ilike', self), ('cliente_id.client_code', 'ilike', self)]"/>
                     
                     <!-- Agrupaciones básicas -->
                     <group expand="0" string="Agrupar Por">
@@ -324,9 +319,7 @@ else:
             <field name="view_id" ref="view_samples_reception_list"/>
             <field name="search_view_id" ref="view_sample_reception_search"/>
             <field name="domain">[('custody_chain_id.chain_of_custody_state', 'in', ['in_progress', 'done'])]</field>
-            <field name="context">{
-                'search_default_group_by_custody_chain': 1,
-            }</field>
+            <field name="context">{}</field>
             <field name="help" type="html">
                 <p class="o_view_nocontent_smiling_face">
                     No hay muestras para recepción

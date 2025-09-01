@@ -25,17 +25,14 @@
             <field name="model">lims.sample.reception</field>
             <field name="arch" type="xml">
                 <search string="Buscar Recepciones">
-                    <!-- Búsquedas básicas -->
+                    <!-- Búsquedas mejoradas -->
                     <field name="sample_code" string="Código de Muestra"/>
                     <field name="sample_identifier" string="Identificación Original"/>
-                    <field name="cliente_id" string="Cliente"/>
+                    <field name="cliente_id" string="Cliente" 
+                        filter_domain="['|', ('cliente_id.name', 'ilike', self), ('cliente_id.client_code', 'ilike', self)]"/>
                     <field name="custody_chain_id" string="Cadena de Custodia"/>
                     <field name="reception_date" string="Fecha Recepción"/>
                     <field name="analyst_id" string="Responsable"/>
-                    
-                    <!-- Búsqueda por código de cliente -->
-                    <field name="cliente_id" string="Código Cliente" 
-                        filter_domain="[('cliente_id.client_code', 'ilike', self)]"/>
                     
                     <!-- Agrupaciones básicas -->
                     <group expand="0" string="Agrupar Por">
