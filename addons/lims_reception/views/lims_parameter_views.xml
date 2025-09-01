@@ -211,20 +211,6 @@
                                 </group>
                             </page>
 
-                            <page string="🧪 Medios de Cultivo">
-                                <field name="culture_media_ids">
-                                    <list editable="bottom">
-                                        <!-- FUNCIÓN: Handle para reordenar -->
-                                        <field name="sequence" widget="handle"/>
-                                        <!-- FUNCIÓN: Lista desplegable del catálogo -->
-                                        <!-- options="{'no_create': True}": No permite crear medios desde aquí -->
-                                        <field name="culture_media_id" options="{'no_create': True}"/>
-                                        <!-- FUNCIÓN: Notas específicas para este parámetro -->
-                                        <field name="notes" placeholder="Ej: Incubar 37°C por 24h"/>
-                                    </list>
-                                </field>
-                            </page>
-
                             <page string="🧪 Medios por Proceso" invisible="category != 'microbiological'">
                                 <div class="alert alert-info" style="margin-bottom: 15px;">
                                     <strong>ℹ️ Configuración Avanzada:</strong> 

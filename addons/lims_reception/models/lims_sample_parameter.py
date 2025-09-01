@@ -123,13 +123,8 @@ class LimsSampleParameter(models.Model):
         string='Tiempo de Incubación',
         help='Ej: 24h, 48-72h'
     )
-    culture_media_ids = fields.One2many(
-        'lims.parameter.culture.media',
-        'parameter_id',
-        string='Medios de Cultivo'
-    )
 
-    # AGREGAR después del campo culture_media_ids
+    # Campo nuevo para Protocolos de Medios
     media_by_process_ids = fields.One2many(
         'lims.parameter.media.process',
         'parameter_id',
@@ -226,7 +221,6 @@ class LimsSampleParameter(models.Model):
             'method_reference': template.method_reference,
             'incubation_temperature': template.incubation_temperature,
             'incubation_time': template.incubation_time,
-            'culture_media_ids': template.culture_media_ids,
             'ph_conditions': template.ph_conditions,
             'preservation_conditions': template.preservation_conditions,
             'sample_preparation': template.sample_preparation,
@@ -263,22 +257,11 @@ class LimsSampleParameter(models.Model):
             self.method_reference = template.method_reference
             self.incubation_temperature = template.incubation_temperature
             self.incubation_time = template.incubation_time
-            self.culture_media_ids = template.culture_media_ids
             self.ph_conditions = template.ph_conditions
             self.preservation_conditions = template.preservation_conditions
             self.sample_preparation = template.sample_preparation
             self.detection_limit = template.detection_limit
             self.quantification_limit = template.quantification_limit
-            
-            if template.culture_media_ids:
-                culture_media_lines = []
-                for cm in template.culture_media_ids:
-                    culture_media_lines.append((0, 0, {
-                        'culture_media_id': cm.culture_media_id.id,
-                        'notes': cm.notes,
-                        'sequence': cm.sequence,
-                    }))
-                self.culture_media_ids = culture_media_lines
 
             # Incrementar contador
             template.times_used += 1
@@ -341,18 +324,12 @@ class LimsSampleParameter(models.Model):
             })
 
     def copy(self, default=None):
-        """Personalizar duplicado de parámetros CON medios de cultivo y controles"""
+        """Personalizar duplicado de parámetros CON controles de calidad"""
         if default is None:
             default = {}
         
         # Crear el nuevo parámetro
         new_parameter = super().copy(default)
-        
-        # Copiar manualmente los medios de cultivo
-        for culture_media in self.culture_media_ids:
-            culture_media.copy({
-                'parameter_id': new_parameter.id,
-            })
         
         # Copiar manualmente los controles de calidad
         for quality_control in self.quality_control_ids:
