@@ -25,23 +25,27 @@
             <field name="model">lims.sample.reception</field>
             <field name="arch" type="xml">
                 <search string="Buscar Recepciones">
-                    <!-- Búsquedas mejoradas -->
-                    <field name="sample_code" string="Código de Muestra"/>
-                    <field name="sample_identifier" string="Identificación Original"/>
-                    <field name="cliente_id" string="Cliente" 
-                        filter_domain="['|', ('cliente_id.name', 'ilike', self), ('cliente_id.client_code', 'ilike', self)]"/>
-                    <field name="custody_chain_id" string="Cadena de Custodia"/>
-                    <field name="reception_date" string="Fecha Recepción"/>
+                    <!-- BÚSQUEDA GLOBAL - busca en todo -->
+                    <field name="sample_code" string="Buscar..." 
+                        filter_domain="[
+                            '|', '|', '|', '|',
+                            ('sample_code', 'ilike', self),
+                            ('sample_identifier', 'ilike', self),
+                            ('cliente_id.name', 'ilike', self),
+                            ('cliente_id.client_code', 'ilike', self),
+                            ('custody_chain_id.custody_chain_code', 'ilike', self)
+                        ]"/>
+                    
+                    <!-- Campos específicos opcionales -->
+                    <field name="reception_date" string="Fecha"/>
                     <field name="analyst_id" string="Responsable"/>
                     
-                    <!-- Agrupaciones básicas -->
+                    <!-- Agrupaciones -->
                     <group expand="0" string="Agrupar Por">
                         <filter name="group_by_cliente" string="Cliente" 
                                 context="{'group_by': 'cliente_id'}"/>
-                        <filter name="group_by_fecha" string="Fecha Recepción" 
+                        <filter name="group_by_fecha" string="Fecha" 
                                 context="{'group_by': 'reception_date'}"/>
-                        <filter name="group_by_responsable" string="Responsable" 
-                                context="{'group_by': 'analyst_id'}"/>
                     </group>
                 </search>
             </field>
