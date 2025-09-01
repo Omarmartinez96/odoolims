@@ -84,41 +84,37 @@
             </field>
         </record>
 
-        <!-- Search View para Muestras (MEJORADO) -->
+        <!-- Search View para Muestras (BÁSICO FUNCIONAL) -->
         <record id="view_sample_reception_search" model="ir.ui.view">
             <field name="name">sample.reception.search</field>
             <field name="model">lims.sample</field>
             <field name="arch" type="xml">
                 <search string="Buscar Muestras">
+                    <!-- Solo campos básicos y seguros -->
                     <field name="sample_identifier" string="Identificación"/>
                     <field name="sample_description" string="Descripción"/>
-                    <field name="sample_code" string="Código Muestra"/>
                     <field name="custody_chain_id" string="Cadena Custodia"/>
                     <field name="cliente_id" string="Cliente"/>
                     <field name="sample_type_id" string="Tipo Muestra"/>
-                    <field name="sample_reception_state" string="Estado Recepción"/>
+                    <field name="container_type_id" string="Tipo Recipiente"/>
                     
                     <!-- Búsqueda por código de cliente -->
                     <field name="cliente_id" string="Código Cliente" 
                         filter_domain="[('cliente_id.client_code', 'ilike', self)]"/>
                     
-                    <!-- Filtros por estado de recepción -->
+                    <!-- Filtros por cadena de custodia (SEGUROS) -->
                     <separator/>
-                    <filter name="filter_pendientes" string="Pendientes" 
-                            domain="[('sample_code', '=', 'Pendiente')]"/>
-                    <filter name="filter_recibidas" string="Recibidas" 
-                            domain="[('sample_reception_state', '=', 'Recibida')]"/>
-                    <filter name="filter_rechazadas" string="Rechazadas" 
-                            domain="[('sample_reception_state', '=', 'Rechazada')]"/>
+                    <filter name="filter_cc_finalizadas" string="CC Finalizadas" 
+                            domain="[('custody_chain_id.chain_of_custody_state', '=', 'done')]"/>
+                    <filter name="filter_cc_proceso" string="CC En Proceso" 
+                            domain="[('custody_chain_id.chain_of_custody_state', '=', 'in_progress')]"/>
                     
-                    <!-- Agrupaciones -->
+                    <!-- Agrupaciones (SEGURAS) -->
                     <group expand="0" string="Agrupar Por">
                         <filter name="group_by_custody_chain" string="Cadena de Custodia" 
                                 context="{'group_by': 'custody_chain_id'}"/>
                         <filter name="group_by_cliente" string="Cliente" 
                                 context="{'group_by': 'cliente_id'}"/>
-                        <filter name="group_by_estado" string="Estado Recepción" 
-                                context="{'group_by': 'sample_reception_state'}"/>
                         <filter name="group_by_tipo" string="Tipo Muestra" 
                                 context="{'group_by': 'sample_type_id'}"/>
                     </group>
