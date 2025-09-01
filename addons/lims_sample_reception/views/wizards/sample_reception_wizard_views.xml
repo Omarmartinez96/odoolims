@@ -52,8 +52,23 @@
                             <field name="reception_date"/>
                             <field name="reception_time" placeholder="14:30"/>
                         </group>
+                    </group>
+
+                    <!-- Sección de Analista con PIN -->
+                    <group string="🔐 Verificación de Responsable">
+                        <div class="alert alert-info" role="alert">
+                            <strong>Verificación requerida:</strong> 
+                            Seleccione su nombre e ingrese su PIN para confirmar el procesamiento.
+                        </div>
                         <group>
-                            <field name="received_by_initials" placeholder="ABC"/>
+                            <field name="analyst_id" 
+                                placeholder="Seleccione su nombre de la lista"
+                                options="{'no_create': True, 'no_open': True}"
+                                required="1"/>
+                            <field name="pin_input" 
+                                password="True" 
+                                placeholder="Ingrese su PIN de 4-6 dígitos"
+                                required="1"/>
                         </group>
                     </group>
 

@@ -87,6 +87,19 @@ class SampleReceptionWizard(models.TransientModel):
         string='Recepción a Editar'
     )
 
+    # Analista responsable con verificación PIN
+    analyst_id = fields.Many2one(
+        'lims.analyst',
+        string='Responsable de la Recepción',
+        domain=[('active', '=', True), ('pin_hash', '!=', False)],
+        help='Analista que procesa la recepción (solo con PIN configurado)'
+    )
+
+    pin_input = fields.Char(
+        string='PIN de Verificación',
+        help='Ingrese su PIN para confirmar el procesamiento'
+    )
+
     @api.depends('reception_state')
     def _compute_confirmation_text(self):
         for record in self:
@@ -211,6 +224,9 @@ class SampleReceptionWizard(models.TransientModel):
         """Confirmar procesamiento de muestras"""
         self.ensure_one()
         
+        # Validar analista y PIN PRIMERO
+        self._validate_analyst_pin()
+        
         # Validar motivo de rechazo
         if self.reception_state == 'rechazada' and not self.rejection_reason:
             raise UserError(_('Debe especificar el motivo de rechazo.'))
@@ -296,10 +312,23 @@ class SampleReceptionWizard(models.TransientModel):
             self.env.user.partner_id, 
             'simple_notification', 
             {
-                'title': 'Procesamiento Completado',
+                'title': f'Procesamiento Completado por {self.analyst_id.full_name}',
                 'message': message,
                 'type': notification_type
             }
         )
         
         return {'type': 'ir.actions.act_window_close'}
+    
+    def _validate_analyst_pin(self):
+        """Validar analista y PIN"""
+        if not self.analyst_id:
+            raise UserError(_('Debe seleccionar el analista responsable.'))
+        
+        if not self.pin_input:
+            raise UserError(_('Debe ingresar su PIN de verificación.'))
+        
+        if not self.analyst_id.validate_pin(self.pin_input):
+            raise UserError(_('PIN incorrecto. Verifique e intente nuevamente.'))
+        
+        return True
