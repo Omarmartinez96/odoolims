@@ -71,13 +71,24 @@ class LimsSampleReception(models.Model):
         ('recibida', 'Recibida')
     ], string='Estado de Recepción', default='sin_procesar')
     
+ ########### DEPRECADO - Mantener por compatibilidad ###########
+
     # CAMPOS NUEVOS SIMPLIFICADOS
     received_by_initials = fields.Char(
-        string='Iniciales de quien recibió',
+        string='DEPRECADO - Iniciales de quien recibe',
         size=5,
-        help='Iniciales de la persona que recibió la muestra'
+        help='DEPRECADO - Iniciales del técnico que recibe la muestra'
     )
-    
+
+ ########### DEPRECADO - Mantener por compatibilidad ###########
+
+    # Analista responsable de la recepción
+    analyst_id = fields.Many2one(
+        'lims.analyst',
+        string='Responsable de Recepción',
+        help='Analista que procesó la recepción de la muestra'
+    )
+
     # Observaciones (ACTIVAS)
     reception_notes = fields.Text(
         string='Observaciones de Recepción'
@@ -326,9 +337,18 @@ class LimsSampleReception(models.Model):
             # Usar el código COMPLETO tal como está: PFI-068/0001
             record.sample_code_barcode = record.sample_code or ''
 
+    @api.depends('analyst_id')
+    def _compute_received_by_initials(self):
+        """Obtener iniciales automáticamente del analista responsable"""
+        for record in self:
+            if record.analyst_id and record.analyst_id.initials:
+                record.received_by_initials = record.analyst_id.initials
+            else:
+                record.received_by_initials = ''
+
     # ==================== MÉTODOS DEPRECADOS ====================
     # NOTA: Estos métodos están deprecados y solo se mantienen por compatibilidad
-    
+
     @api.depends('check_conditions', 'check_temperature', 
                 'check_container', 'check_volume', 'check_preservation')
     def _compute_can_change_state_deprecated(self):

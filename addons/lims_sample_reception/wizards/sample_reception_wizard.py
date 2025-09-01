@@ -52,14 +52,19 @@ class SampleReceptionWizard(models.TransientModel):
         default=lambda self: datetime.now().strftime('%H:%M'),
         required=True
     )
-    
+
+#### DEPRECADO: Iniciales de quien procesó ####
+
     received_by_initials = fields.Char(
-        string='Iniciales de quien procesó',
+        string='DEPRECADO: Iniciales de quien procesó',
         required=True,
         size=5,
-        help='Máximo 5 caracteres'
+        help='DEPRECADO: Iniciales de quien procesó la recepción'
     )
     
+#### DEPRECADO: Iniciales de quien procesó ####
+
+
     reception_notes = fields.Text(
         string='Observaciones de la Muestra'
     )
@@ -175,8 +180,8 @@ class SampleReceptionWizard(models.TransientModel):
                         'reception_state': reception.reception_state,
                         'reception_date': reception.reception_date,
                         'reception_time': reception.reception_time,
-                        'received_by_initials': reception.received_by_initials,
                         'reception_notes': reception.reception_notes,
+                        'analyst_id': reception.analyst_id.id if reception.analyst_id else False,
                     })
                     
                     # Si está rechazada, cargar motivo de rechazo
@@ -258,7 +263,7 @@ class SampleReceptionWizard(models.TransientModel):
                 'reception_state': self.reception_state,
                 'reception_date': self.reception_date,
                 'reception_time': self.reception_time,
-                'received_by_initials': self.received_by_initials,
+                'analyst_id': self.analyst_id.id, 
             }
             
             # Agregar observaciones según el estado
