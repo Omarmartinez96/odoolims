@@ -16,6 +16,7 @@
         <field name="lims_branch_id"/>
         <field name="lims_department_id"/>
         <field name="lims_contact_ids" widget="many2many_tags"/>
+        <field name="currency_id" options="{'no_create': True, 'no_edit': True}"/>
       </xpath>
 
       <!-- Agregar columnas en la definición del one2many -->

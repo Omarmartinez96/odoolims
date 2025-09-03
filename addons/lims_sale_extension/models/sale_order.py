@@ -58,3 +58,11 @@ class SaleOrder(models.Model):
                 vals['name'] = f'{next_num}/{year}'
 
         return super(SaleOrder, self).create(vals_list)
+    
+    @api.onchange('partner_id')
+    def _onchange_partner_id_currency(self):
+        if self.partner_id and self.partner_id.country_id:
+            if self.partner_id.country_id.code == 'US':
+                usd = self.env['res.currency'].search([('name', '=', 'USD')], limit=1)
+                if usd:
+                    self.currency_id = usd
