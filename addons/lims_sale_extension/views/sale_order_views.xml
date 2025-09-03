@@ -21,7 +21,7 @@
 
       <!-- Agregar columnas en la definición del one2many -->
       <xpath expr="//field[@name='lims_contact_ids']" position="after">
-          <field name="currency_id" options="{'no_create': True}" attrs="{'readonly': [('state', 'not in', ['draft', 'sent'])]}"/>
+          <field name="currency_id" options="{'no_create': True}"/>
       </xpath>
 
     </field>
