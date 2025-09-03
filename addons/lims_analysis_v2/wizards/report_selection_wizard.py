@@ -65,20 +65,26 @@ class LimsReportSelectionWizardV2(models.TransientModel):
         return defaults
     
     def action_generate_report(self):
-        """Generar el reporte seleccionado"""
-        if not self.analysis_ids:
-            raise UserError('No hay análisis seleccionados.')
-        
-        # Caso especial para reporte simplificado
-        if self.report_category == 'simplified_results':
-            return self.env['lims.analysis.v2'].action_mass_print_simplified_results(self.analysis_ids.ids)
-        
-        # Para otros tipos de reportes, usar el método existente
-        return self.env['lims.analysis.v2'].generate_custom_report(
-            self.analysis_ids.ids, 
-            {
-                'report_type': self.report_category,
-                'language': self.report_language,
-                'status': self.report_status
-            }
-        )
+            """Generar el reporte seleccionado"""
+            if not self.analysis_ids:
+                raise UserError('No hay análisis seleccionados.')
+            
+            # Caso especial para reporte simplificado
+            if self.report_category == 'simplified_results':
+                return {
+                    'type': 'ir.actions.report',
+                    'report_name': 'lims_analysis_v2.report_simplified_results_template',
+                    'report_type': 'qweb-pdf',
+                    'data': {'ids': self.analysis_ids.ids},
+                    'context': self.env.context
+                }
+            
+            # Para otros tipos de reportes, usar el método existente
+            return self.env['lims.analysis.v2'].generate_custom_report(
+                self.analysis_ids.ids, 
+                {
+                    'report_type': self.report_category,
+                    'language': self.report_language,
+                    'status': self.report_status
+                }
+            )

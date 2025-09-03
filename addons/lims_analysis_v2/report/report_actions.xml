@@ -90,5 +90,16 @@
             <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_test_report"/>
         </record>
 
+        <!-- ========== REPORTE SIMPLIFICADO ========== -->
+        <record id="action_report_simplified_results" model="ir.actions.report">
+            <field name="name">Reporte Simplificado de Resultados</field>
+            <field name="model">lims.analysis.v2</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">lims_analysis_v2.report_simplified_results_template</field>
+            <field name="report_file">lims_analysis_v2.report_simplified_results_template</field>
+            <field name="print_report_name">'Reporte Simplificado - ' + time.strftime('%Y-%m-%d') + '.pdf'</field>
+            <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_simplified_report"/>
+        </record>
+
     </data>
 </odoo>
