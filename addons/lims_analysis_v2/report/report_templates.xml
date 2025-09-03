@@ -561,23 +561,6 @@
                     <div class="title">
                         REPORTE SIMPLIFICADO DE RESULTADOS
                     </div>
-                    <div class="date-section">
-                        <t t-set="today" t-value="datetime.datetime.now()"/>
-                        Fecha de Generación: <span t-esc="today.strftime('%d/%m/%Y %H:%M')"/>
-                    </div>
-                </div>
-
-                <!-- 🔍 DEBUG TEMPORAL - ELIMINAR DESPUÉS -->
-                <div style="background: yellow; padding: 10px; margin: 10px 0;">
-                    <p><strong>DEBUG INFO:</strong></p>
-                    <p>Total docs: <span t-esc="len(docs)"/></p>
-                    <t t-if="docs">
-                        <p>Primer análisis ID: <span t-esc="docs[0].id"/></p>
-                        <p>Primer análisis name: <span t-esc="docs[0].display_name"/></p>
-                    </t>
-                    <t t-else="">
-                        <p style="color: red;">NO HAY DOCS - Este es el problema</p>
-                    </t>
                 </div>
 
                 <!-- TABLA PRINCIPAL -->
@@ -771,7 +754,6 @@
                 <!-- FOOTER CON INFORMACIÓN ADICIONAL -->
                 <div style="margin-top: 20px; font-size: 8px; text-align: center; border-top: 1px solid #ccc; padding-top: 10px;">
                     <p><strong>Nota:</strong> Este es un reporte simplificado. Para información detallada consulte los informes individuales de cada muestra.</p>
-                    <p>Generado el <span t-esc="datetime.datetime.now().strftime('%d/%m/%Y a las %H:%M')"/> por <span t-esc="env.user.name"/></p>
                 </div>
             </div>
         </t>
