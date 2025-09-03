@@ -1179,8 +1179,25 @@ class LimsAnalysisV2(models.Model):
         if not analyses:
             raise UserError('Debe seleccionar al menos un análisis para generar el reporte.')
         
-        # Generar el reporte para todos los análisis seleccionados
-        return self.env.ref('lims_analysis_v2.action_report_simplified_results').report_action(analyses)
+        # Buscar el reporte de manera más robusta
+        try:
+            report = self.env.ref('lims_analysis_v2.action_report_simplified_results', raise_if_not_found=False)
+            if report:
+                return report.report_action(analyses)
+            else:
+                # Fallback: buscar por nombre
+                report = self.env['ir.actions.report'].search([
+                    ('name', '=', 'Reporte Simplificado de Resultados'),
+                    ('model', '=', 'lims.analysis.v2')
+                ], limit=1)
+                
+                if report:
+                    return report.report_action(analyses)
+                else:
+                    raise UserError('No se pudo encontrar el reporte simplificado. Verifique que esté correctamente instalado.')
+                    
+        except Exception as e:
+            raise UserError(f'Error al generar el reporte: {str(e)}')
 
     # ===============================================
     # === MÉTODOS PARA EXPANDIR/COLAPSAR TODOS LOS GRUPOS ===

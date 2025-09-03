@@ -415,7 +415,7 @@
             <field name="state">code</field>
             <field name="code">
 if records:
-    action = env.ref('lims_analysis_v2.action_report_simplified_results').report_action(records)
+    action = records.action_mass_print_simplified_results(records.ids)
 else:
     action = {
         'type': 'ir.actions.client',
