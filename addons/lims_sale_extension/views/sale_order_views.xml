@@ -18,10 +18,9 @@
         <field name="lims_contact_ids" widget="many2many_tags"/>
       </xpath>
 
-      <!-- Hacer editable el campo moneda original -->
-      <xpath expr="//field[@name='currency_id']" position="attributes">
-        <attribute name="readonly">0</attribute>
-        <attribute name="options">{'no_create': True}</attribute>
+      <!-- Campo moneda editable -->
+      <xpath expr="//field[@name='lims_contact_ids']" position="after">
+        <field name="currency_id" options="{'no_create': True}" readonly="0"/>
       </xpath>
 
       <!-- Agregar columnas en la definición del one2many -->
