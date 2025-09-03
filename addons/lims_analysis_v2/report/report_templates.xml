@@ -492,7 +492,7 @@
     <!-- Ejemplo: <template id="report_general_no_ilac_template"> -->
     <!-- ========================================================= -->
 
-    <!-- ========== REPORTE SIMPLIFICADO REESTRUCTURADO ========== -->
+    <!-- ========== REPORTE SIMPLIFICADO CON CADENA DE CUSTODIA ========== -->
     <template id="report_simplified_results_template">
         <t t-call="web.html_container">
             <meta charset="UTF-8"/>
@@ -546,7 +546,7 @@
                     margin: 5px 0;
                 }
                 .parameters-cell {
-                    max-width: 140px;
+                    max-width: 120px;
                     word-wrap: break-word;
                     overflow-wrap: break-word;
                 }
@@ -578,32 +578,33 @@
                     </div>
                 </div>
 
-                <!-- TABLA PRINCIPAL REESTRUCTURADA -->
+                <!-- TABLA PRINCIPAL CON CADENA DE CUSTODIA -->
                 <table class="simplified-table">
                     <thead>
                         <tr>
                             <!-- INFORMACIÓN DEL CLIENTE Y MUESTRA -->
-                            <th style="width: 10%;">Cliente</th>
-                            <th style="width: 8%;">Código de Muestra</th>
-                            <th style="width: 10%;">Identificación</th>
-                            <th style="width: 8%;">Tipo de Muestra</th>
-                            <th style="width: 6%;">Cantidad</th>
-                            <th style="width: 8%;">Recipiente</th>
+                            <th style="width: 9%;">Cliente</th>
+                            <th style="width: 7%;">Cadena de Custodia</th>
+                            <th style="width: 7%;">Código de Muestra</th>
+                            <th style="width: 8%;">Identificación</th>
+                            <th style="width: 6%;">Tipo de Muestra</th>
+                            <th style="width: 5%;">Cantidad</th>
+                            <th style="width: 6%;">Recipiente</th>
                             
                             <!-- INFORMACIÓN DE MUESTREO -->
-                            <th style="width: 8%;">Fecha/Hora Muestreo</th>
-                            <th style="width: 6%;">Temp. Muestreo</th>
-                            <th style="width: 6%;">Muestreador</th>
+                            <th style="width: 7%;">Fecha/Hora Muestreo</th>
+                            <th style="width: 5%;">Temp. Muestreo</th>
+                            <th style="width: 5%;">Muestreador</th>
                             
                             <!-- INFORMACIÓN DE RECOLECCIÓN -->
-                            <th style="width: 8%;">Fecha/Hora Recolección</th>
-                            <th style="width: 6%;">Temp. Recolección</th>
-                            <th style="width: 6%;">Recolector</th>
+                            <th style="width: 7%;">Fecha/Hora Recolección</th>
+                            <th style="width: 5%;">Temp. Recolección</th>
+                            <th style="width: 5%;">Recolector</th>
                             
-                            <!-- INFORMACIÓN DE RECEPCIÓN (SIN ANALISTA) -->
-                            <th style="width: 8%;">Fecha Recepción</th>
+                            <!-- INFORMACIÓN DE RECEPCIÓN -->
+                            <th style="width: 6%;">Fecha Recepción</th>
                             
-                            <!-- ✅ RESULTADOS CON ANALISTAS POR PARÁMETRO -->
+                            <!-- RESULTADOS CON ANALISTAS POR PARÁMETRO -->
                             <th style="width: 12%;">Parámetros, Resultados y Analistas</th>
                         </tr>
                     </thead>
@@ -620,6 +621,14 @@
                                         <span t-esc="analysis.customer_id.name"/>
                                     </t>
                                     <t t-else="">Sin cliente</t>
+                                </td>
+                                
+                                <!-- ✅ CADENA DE CUSTODIA -->
+                                <td>
+                                    <t t-if="analysis.custody_chain_code">
+                                        <span t-esc="analysis.custody_chain_code"/>
+                                    </t>
+                                    <t t-else="">Sin cadena</t>
                                 </td>
                                 
                                 <td>
@@ -707,7 +716,7 @@
                                     <t t-else="">-</t>
                                 </td>
                                 
-                                <!-- ✅ RECEPCIÓN SIN ANALISTA -->
+                                <!-- RECEPCIÓN -->
                                 <td>
                                     <t t-if="reception and reception.reception_date">
                                         <span t-esc="reception.reception_date.strftime('%d/%m/%Y')"/>
@@ -715,7 +724,7 @@
                                     <t t-else="">-</t>
                                 </td>
                                 
-                                <!-- ✅ PARÁMETROS CON ANALISTAS INDIVIDUALES -->
+                                <!-- PARÁMETROS CON ANALISTAS INDIVIDUALES -->
                                 <td class="parameters-cell">
                                     <t t-if="analysis.parameter_analysis_ids">
                                         <t t-set="params_with_results" t-value="analysis.parameter_analysis_ids.filtered(lambda p: p.result_value and p.result_value.strip())"/>
@@ -734,7 +743,7 @@
                                                         <span t-esc="param.unit"/>
                                                     </t>
                                                     
-                                                    <!-- ✅ ANALISTA RESPONSABLE DE ESTE PARÁMETRO -->
+                                                    <!-- ANALISTA RESPONSABLE DE ESTE PARÁMETRO -->
                                                     <t t-if="param.analyst_names">
                                                         <br/>
                                                         <span class="analyst-info">
