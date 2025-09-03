@@ -406,6 +406,29 @@
             </field>
         </record>
 
+        <!-- ========== ACCIÓN PARA REPORTE SIMPLIFICADO ========== -->
+        <record id="action_simplified_results_report" model="ir.actions.server">
+            <field name="name">📋 Reporte Simplificado de Resultados</field>
+            <field name="model_id" ref="model_lims_analysis_v2"/>
+            <field name="binding_model_id" ref="model_lims_analysis_v2"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+        if records:
+            action = env.ref('lims_analysis_v2.action_report_simplified_results').report_action(records)
+        else:
+            action = {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Sin Selección',
+                    'message': 'Debe seleccionar al menos una muestra para generar el reporte.',
+                    'type': 'warning',
+                }
+            }
+            </field>
+        </record>
+
         <!-- ========== MENÚS ========== -->
         <menuitem id="menu_lims_analysis_v2_root" 
                   name="Análisis de Muestras" 

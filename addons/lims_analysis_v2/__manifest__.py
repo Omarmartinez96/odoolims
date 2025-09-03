@@ -26,6 +26,7 @@
         'lims_reception',
         'lims_sample_reception',
         'lims_analysis_config',
+        'lims_paperformat',
     ],
     'data': [
         # Seguridad

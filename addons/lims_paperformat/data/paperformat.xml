@@ -48,5 +48,20 @@
         <field name="disable_shrinking" eval="True"/>
     </record>
 
+    <record id="paperformat_lims_simplified_report" model="report.paperformat">
+        <field name="name">Reporte Simplificado LIMS (Horizontal)</field>
+        <field name="default" eval="False"/>
+        <field name="format">Letter</field>
+        <field name="orientation">Landscape</field>
+        <field name="margin_top">15</field>
+        <field name="margin_bottom">15</field>
+        <field name="margin_left">10</field>
+        <field name="margin_right">10</field>
+        <field name="header_line" eval="False"/>
+        <field name="header_spacing">20</field>  
+        <field name="dpi">90</field>
+        <field name="disable_shrinking" eval="True"/>
+    </record>
+
   </data>
 </odoo>

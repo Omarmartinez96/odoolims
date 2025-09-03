@@ -132,10 +132,18 @@
                             <field name="report_category" widget="radio" required="1"/>
                         </group>
                         
-                        <group string="🌐 Opciones de Formato" col="2">
+                        <group string="🌐 Opciones de Formato" col="2" invisible="report_category == 'simplified_results'">
                             <field name="report_language" widget="radio" required="1"/>
                             <field name="report_status" widget="radio" required="1"/>
                         </group>
+                        
+                        <!-- Información específica para reporte simplificado -->
+                        <div class="alert alert-info" invisible="report_category != 'simplified_results'" style="margin: 15px 0;">
+                            <strong>📋 Reporte Simplificado:</strong><br/>
+                            • Se generará una tabla horizontal con toda la información de muestreo, recepción y resultados<br/>
+                            • Incluye información de múltiples muestras en formato tabular<br/>
+                            • Ideal para revisión rápida de resultados de múltiples análisis
+                        </div>
                         
                         <!-- Información de los análisis seleccionados -->
                         <group string="📋 Análisis Seleccionados" invisible="analysis_count == 0">

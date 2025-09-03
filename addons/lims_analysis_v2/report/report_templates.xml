@@ -492,4 +492,261 @@
     <!-- Ejemplo: <template id="report_general_no_ilac_template"> -->
     <!-- ========================================================= -->
 
+    <!-- ========== REPORTE SIMPLIFICADO DE RESULTADOS ========== -->
+    <template id="report_simplified_results_template">
+        <t t-call="web.html_container">
+            <meta charset="UTF-8"/>
+            <t t-call-assets="web.report_assets_common" t-js="false"/>
+            <t t-set="company" t-value="env.company"/>
+            
+            <!-- ESTILOS ESPECÍFICOS PARA REPORTE SIMPLIFICADO -->
+            <style>
+                body, .o_report_layout, table, td, th, span, div, p {
+                    font-family: Arial, sans-serif !important;
+                    font-size: 9px !important;  
+                    line-height: 1.2;
+                }
+                .simplified-table {
+                    width: 100%;
+                    border-collapse: collapse;
+                    margin: 10px 0;
+                    font-size: 8px !important;
+                }
+                .simplified-table th {
+                    background-color: #e9ecef;
+                    border: 1px solid #666;
+                    padding: 4px 2px;
+                    text-align: center;
+                    font-weight: bold;
+                    font-size: 8px !important;
+                    word-wrap: break-word;
+                }
+                .simplified-table td {
+                    border: 1px solid #ccc;
+                    padding: 3px 2px;
+                    vertical-align: top;
+                    font-size: 8px !important;
+                    word-wrap: break-word;
+                }
+                .header-section {
+                    margin-bottom: 20px;
+                    text-align: center;
+                }
+                .company-logo {
+                    max-height: 60px;
+                    max-width: 150px;
+                }
+                .title {
+                    font-size: 16px !important;
+                    font-weight: bold;
+                    margin: 10px 0;
+                }
+                .date-section {
+                    font-size: 10px !important;
+                    margin: 5px 0;
+                }
+                .parameters-cell {
+                    max-width: 120px;
+                    word-wrap: break-word;
+                    overflow-wrap: break-word;
+                }
+            </style>
+
+            <div class="page">
+                <!-- HEADER -->
+                <div class="header-section">
+                    <t t-if="company.logo">
+                        <img t-att-src="image_data_uri(company.logo)" class="company-logo"/>
+                    </t>
+                    <div class="title">
+                        REPORTE SIMPLIFICADO DE RESULTADOS
+                    </div>
+                    <div class="date-section">
+                        <t t-set="today" t-value="datetime.datetime.now()"/>
+                        Fecha de Generación: <span t-esc="today.strftime('%d/%m/%Y %H:%M')"/>
+                    </div>
+                </div>
+
+                <!-- TABLA PRINCIPAL -->
+                <table class="simplified-table">
+                    <thead>
+                        <tr>
+                            <!-- INFORMACIÓN DEL CLIENTE Y MUESTRA -->
+                            <th style="width: 8%;">Cliente</th>
+                            <th style="width: 6%;">Código de Muestra</th>
+                            <th style="width: 8%;">Identificación</th>
+                            <th style="width: 6%;">Tipo de Muestra</th>
+                            <th style="width: 5%;">Cantidad</th>
+                            <th style="width: 6%;">Recipiente</th>
+                            
+                            <!-- INFORMACIÓN DE MUESTREO -->
+                            <th style="width: 7%;">Fecha/Hora Muestreo</th>
+                            <th style="width: 5%;">Temp. Muestreo</th>
+                            <th style="width: 5%;">Muestreador</th>
+                            <th style="width: 6%;">Obs. Muestreo</th>
+                            
+                            <!-- INFORMACIÓN DE RECOLECCIÓN -->
+                            <th style="width: 7%;">Fecha/Hora Recolección</th>
+                            <th style="width: 5%;">Temp. Recolección</th>
+                            <th style="width: 5%;">Recolector</th>
+                            <th style="width: 6%;">Obs. Recolección</th>
+                            
+                            <!-- INFORMACIÓN DE RECEPCIÓN -->
+                            <th style="width: 6%;">Fecha Recepción</th>
+                            <th style="width: 5%;">Recibido por</th>
+                            
+                            <!-- RESULTADOS -->
+                            <th style="width: 10%;">Parámetros y Resultados</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="docs" t-as="analysis">
+                            <tr>
+                                <!-- CLIENTE Y MUESTRA -->
+                                <td>
+                                    <t t-if="analysis.customer_id">
+                                        <span t-esc="analysis.customer_id.name"/>
+                                    </t>
+                                    <t t-else="">Sin cliente</t>
+                                </td>
+                                
+                                <td>
+                                    <span t-esc="analysis.sample_code or 'Pendiente'"/>
+                                </td>
+                                
+                                <td>
+                                    <span t-esc="analysis.sample_identifier or 'Sin identificación'"/>
+                                </td>
+                                
+                                <td>
+                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sample_type_id">
+                                        <span t-esc="analysis.sample_reception_id.sample_id.sample_type_id.name"/>
+                                    </t>
+                                    <t t-else="">No especificado</t>
+                                </td>
+                                
+                                <td>
+                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
+                                        <span t-esc="analysis.sample_reception_id.sample_id.sample_quantity or 'No especificada'"/>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
+                                
+                                <td>
+                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.container_type_id">
+                                        <span t-esc="analysis.sample_reception_id.sample_id.container_type_id.name"/>
+                                    </t>
+                                    <t t-else="">No especificado</t>
+                                </td>
+                                
+                                <!-- MUESTREO -->
+                                <td>
+                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
+                                        <t t-set="sample" t-value="analysis.sample_reception_id.sample_id"/>
+                                        <t t-if="sample.sampling_date">
+                                            <span t-esc="sample.sampling_date.strftime('%d/%m/%Y')"/><br/>
+                                            <span t-esc="sample.sampling_time or 'No especificada'"/>
+                                        </t>
+                                        <t t-else="">No especificada</t>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
+                                
+                                <td>
+                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
+                                        <span t-esc="analysis.sample_reception_id.sample_id.sampling_temperature or '-'"/>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
+                                
+                                <td>
+                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
+                                        <span t-esc="analysis.sample_reception_id.sample_id.sampling_technician or '-'"/>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
+                                
+                                <td>
+                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
+                                        <span t-esc="analysis.sample_reception_id.sample_id.sampling_observations or '-'"/>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
+                                
+                                <!-- RECOLECCIÓN -->
+                                <td>
+                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
+                                        <t t-set="sample" t-value="analysis.sample_reception_id.sample_id"/>
+                                        <t t-if="sample.collection_date">
+                                            <span t-esc="sample.collection_date.strftime('%d/%m/%Y')"/><br/>
+                                            <span t-esc="sample.collection_time or 'No especificada'"/>
+                                        </t>
+                                        <t t-else="">No especificada</t>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
+                                
+                                <td>
+                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
+                                        <span t-esc="analysis.sample_reception_id.sample_id.collection_temperature or '-'"/>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
+                                
+                                <td>
+                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
+                                        <span t-esc="analysis.sample_reception_id.sample_id.collected_by or '-'"/>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
+                                
+                                <td>
+                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
+                                        <span t-esc="analysis.sample_reception_id.sample_id.collection_observations or '-'"/>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
+                                
+                                <!-- RECEPCIÓN -->
+                                <td>
+                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.reception_date">
+                                        <span t-esc="analysis.sample_reception_id.reception_date.strftime('%d/%m/%Y')"/>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
+                                
+                                <td>
+                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.analyst_id">
+                                        <span t-esc="analysis.sample_reception_id.analyst_id.name"/>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
+                                
+                                <!-- PARÁMETROS Y RESULTADOS -->
+                                <td class="parameters-cell">
+                                    <t t-if="analysis.parameter_analysis_ids">
+                                        <t t-foreach="analysis.parameter_analysis_ids" t-as="param">
+                                            <t t-if="param.result_value">
+                                                <strong><span t-esc="param.name or param.microorganism or 'Sin nombre'"/>:</strong><br/>
+                                                <span t-esc="param.result_value"/><br/><br/>
+                                            </t>
+                                        </t>
+                                    </t>
+                                    <t t-else="">Sin parámetros</t>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+
+                <!-- FOOTER CON INFORMACIÓN ADICIONAL -->
+                <div style="margin-top: 20px; font-size: 8px; text-align: center; border-top: 1px solid #ccc; padding-top: 10px;">
+                    <p><strong>Nota:</strong> Este es un reporte simplificado. Para información detallada consulte los informes individuales de cada muestra.</p>
+                    <p>Generado el <span t-esc="datetime.datetime.now().strftime('%d/%m/%Y a las %H:%M')"/> por <span t-esc="env.user.name"/></p>
+                </div>
+            </div>
+        </t>
+    </template>
+
+
 </odoo>

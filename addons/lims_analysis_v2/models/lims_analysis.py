@@ -91,7 +91,7 @@ class LimsAnalysisV2(models.Model):
         ('draft', 'Borrador'),
         ('in_progress', 'En Proceso'),
         ('completed', 'Completado'),
-        ('validated', 'Validado'),
+        ('validated', 'Validado'),  
         ('cancelled', 'Cancelado')
     ], string='Estado', default='draft', tracking=True)
 
@@ -1168,6 +1168,20 @@ class LimsAnalysisV2(models.Model):
             'report_type': 'general_no_ilac'
         })
     
+    # ===============================================
+    # === MÉTODO PARA REPORTE SIMPLIFICADO ===
+    # ===============================================
+    @api.model
+    def action_mass_print_simplified_results(self, analysis_ids):
+        """Generar reporte simplificado de múltiples análisis"""
+        analyses = self.browse(analysis_ids)
+        
+        if not analyses:
+            raise UserError('Debe seleccionar al menos un análisis para generar el reporte.')
+        
+        # Generar el reporte para todos los análisis seleccionados
+        return self.env.ref('lims_analysis_v2.action_report_simplified_results').report_action(analyses)
+
     # ===============================================
     # === MÉTODOS PARA EXPANDIR/COLAPSAR TODOS LOS GRUPOS ===
     # ===============================================
