@@ -567,6 +567,19 @@
                     </div>
                 </div>
 
+                <!-- 🔍 DEBUG TEMPORAL - ELIMINAR DESPUÉS -->
+                <div style="background: yellow; padding: 10px; margin: 10px 0;">
+                    <p><strong>DEBUG INFO:</strong></p>
+                    <p>Total docs: <span t-esc="len(docs)"/></p>
+                    <t t-if="docs">
+                        <p>Primer análisis ID: <span t-esc="docs[0].id"/></p>
+                        <p>Primer análisis name: <span t-esc="docs[0].display_name"/></p>
+                    </t>
+                    <t t-else="">
+                        <p style="color: red;">NO HAY DOCS - Este es el problema</p>
+                    </t>
+                </div>
+
                 <!-- TABLA PRINCIPAL -->
                 <table class="simplified-table">
                     <thead>

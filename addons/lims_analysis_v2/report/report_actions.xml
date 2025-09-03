@@ -90,7 +90,7 @@
             <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_test_report"/>
         </record>
 
-        <!-- ========== REPORTE SIMPLIFICADO ========== -->
+        <!-- ========== REPORTE SIMPLIFICADO VERIFICADO ========== -->
         <record id="action_report_simplified_results" model="ir.actions.report">
             <field name="name">Reporte Simplificado de Resultados</field>
             <field name="model">lims.analysis.v2</field>

@@ -406,7 +406,7 @@
             </field>
         </record>
 
-        <!-- ========== ACCIÓN PARA REPORTE SIMPLIFICADO MEJORADA ========== -->
+        <!-- ========== ACCIÓN PARA REPORTE SIMPLIFICADO CORREGIDA ========== -->
         <record id="action_simplified_results_report" model="ir.actions.server">
             <field name="name">📋 Reporte Simplificado de Resultados</field>
             <field name="model_id" ref="model_lims_analysis_v2"/>
@@ -415,22 +415,9 @@
             <field name="state">code</field>
             <field name="code">
 if records:
-    # Prefetch de datos críticos
-    records_with_data = records.sudo().with_context(prefetch_fields=[
-        'customer_id', 'sample_reception_id', 'sample_code', 
-        'sample_identifier', 'parameter_analysis_ids'
-    ])
-    
-    # Forzar carga de relaciones
-    for rec in records_with_data:
-        try:
-            _ = rec.customer_id.name if rec.customer_id else None
-            if rec.sample_reception_id and rec.sample_reception_id.sample_id:
-                _ = rec.sample_reception_id.sample_id.sample_type_id.name if rec.sample_reception_id.sample_id.sample_type_id else None
-        except:
-            pass
-    
-    action = env['lims.analysis.v2'].action_mass_print_simplified_results(records_with_data.ids)
+    # Usar directamente la referencia del reporte
+    report_ref = env.ref('lims_analysis_v2.action_report_simplified_results')
+    action = report_ref.report_action(records)
 else:
     action = {
         'type': 'ir.actions.client',

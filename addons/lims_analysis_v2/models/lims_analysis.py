@@ -1171,41 +1171,28 @@ class LimsAnalysisV2(models.Model):
     # ===============================================
     # === MÉTODO PARA REPORTE SIMPLIFICADO ===
     # ===============================================
-    @api.model
-    def action_mass_print_simplified_results(self, analysis_ids):
-        """Generar reporte simplificado de múltiples análisis"""
-        analyses = self.browse(analysis_ids)
+    def action_print_simplified_results_direct(self):
+        """Método directo para generar reporte - ALTERNATIVA"""
+        if not self:
+            raise UserError('No hay análisis seleccionados.')
         
-        if not analyses:
-            raise UserError('Debe seleccionar al menos un análisis para generar el reporte.')
+        # Log para debug
+        import logging
+        _logger = logging.getLogger(__name__)
+        _logger.info(f"Generando reporte para {len(self)} análisis: {self.ids}")
         
-        # 🆕 PREFETCH de datos relacionados para evitar lazy loading
-        analyses_with_data = analyses.with_context(
-            prefetch_fields=[
-                'customer_id', 'sample_reception_id', 'sample_code', 
-                'sample_identifier', 'parameter_analysis_ids'
-            ]
-        )
-        
-        # Forzar la carga de relaciones críticas
-        for analysis in analyses_with_data:
-            # Acceder a los campos para forzar su carga
-            _ = analysis.customer_id.name
-            if analysis.sample_reception_id:
-                _ = analysis.sample_reception_id.sample_id
-                if analysis.sample_reception_id.sample_id:
-                    _ = analysis.sample_reception_id.sample_id.sample_type_id
-                    _ = analysis.sample_reception_id.sample_id.container_type_id
+        # Forzar la carga de datos relacionados
+        self.read(['customer_id', 'sample_code', 'sample_identifier', 'parameter_analysis_ids'])
         
         return {
             'type': 'ir.actions.report',
             'report_name': 'lims_analysis_v2.report_simplified_results_template',
             'report_type': 'qweb-pdf',
-            'data': {'ids': analyses_with_data.ids},
-            'context': {
-                'active_model': 'lims.analysis.v2',
-                'active_ids': analyses_with_data.ids,
-            }
+            'data': {
+                'ids': self.ids,
+                'model': 'lims.analysis.v2',
+            },
+            'context': dict(self.env.context, active_ids=self.ids, active_model='lims.analysis.v2')
         }
 
     # ===============================================
