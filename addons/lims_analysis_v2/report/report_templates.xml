@@ -492,7 +492,7 @@
     <!-- Ejemplo: <template id="report_general_no_ilac_template"> -->
     <!-- ========================================================= -->
 
-    <!-- ========== REPORTE SIMPLIFICADO DE RESULTADOS MEJORADO ========== -->
+    <!-- ========== REPORTE SIMPLIFICADO REESTRUCTURADO ========== -->
     <template id="report_simplified_results_template">
         <t t-call="web.html_container">
             <meta charset="UTF-8"/>
@@ -546,9 +546,20 @@
                     margin: 5px 0;
                 }
                 .parameters-cell {
-                    max-width: 120px;
+                    max-width: 140px;
                     word-wrap: break-word;
                     overflow-wrap: break-word;
+                }
+                .param-item {
+                    margin-bottom: 8px;
+                    padding: 3px;
+                    background-color: #f8f9fa;
+                    border-left: 3px solid #007bff;
+                }
+                .analyst-info {
+                    color: #666;
+                    font-style: italic;
+                    font-size: 7px !important;
                 }
             </style>
 
@@ -561,43 +572,44 @@
                     <div class="title">
                         REPORTE SIMPLIFICADO DE RESULTADOS
                     </div>
+                    <div class="date-section">
+                        <t t-set="today" t-value="datetime.datetime.now()"/>
+                        Fecha de Generación: <span t-esc="today.strftime('%d/%m/%Y %H:%M')"/>
+                    </div>
                 </div>
 
-                <!-- TABLA PRINCIPAL -->
+                <!-- TABLA PRINCIPAL REESTRUCTURADA -->
                 <table class="simplified-table">
                     <thead>
                         <tr>
                             <!-- INFORMACIÓN DEL CLIENTE Y MUESTRA -->
-                            <th style="width: 8%;">Cliente</th>
-                            <th style="width: 6%;">Código de Muestra</th>
-                            <th style="width: 8%;">Identificación</th>
-                            <th style="width: 6%;">Tipo de Muestra</th>
-                            <th style="width: 5%;">Cantidad</th>
-                            <th style="width: 6%;">Recipiente</th>
+                            <th style="width: 10%;">Cliente</th>
+                            <th style="width: 8%;">Código de Muestra</th>
+                            <th style="width: 10%;">Identificación</th>
+                            <th style="width: 8%;">Tipo de Muestra</th>
+                            <th style="width: 6%;">Cantidad</th>
+                            <th style="width: 8%;">Recipiente</th>
                             
                             <!-- INFORMACIÓN DE MUESTREO -->
-                            <th style="width: 7%;">Fecha/Hora Muestreo</th>
-                            <th style="width: 5%;">Temp. Muestreo</th>
-                            <th style="width: 5%;">Muestreador</th>
-                            <th style="width: 6%;">Obs. Muestreo</th>
+                            <th style="width: 8%;">Fecha/Hora Muestreo</th>
+                            <th style="width: 6%;">Temp. Muestreo</th>
+                            <th style="width: 6%;">Muestreador</th>
                             
                             <!-- INFORMACIÓN DE RECOLECCIÓN -->
-                            <th style="width: 7%;">Fecha/Hora Recolección</th>
-                            <th style="width: 5%;">Temp. Recolección</th>
-                            <th style="width: 5%;">Recolector</th>
-                            <th style="width: 6%;">Obs. Recolección</th>
+                            <th style="width: 8%;">Fecha/Hora Recolección</th>
+                            <th style="width: 6%;">Temp. Recolección</th>
+                            <th style="width: 6%;">Recolector</th>
                             
-                            <!-- INFORMACIÓN DE RECEPCIÓN -->
-                            <th style="width: 6%;">Fecha Recepción</th>
-                            <th style="width: 5%;">Recibido por</th>
+                            <!-- INFORMACIÓN DE RECEPCIÓN (SIN ANALISTA) -->
+                            <th style="width: 8%;">Fecha Recepción</th>
                             
-                            <!-- RESULTADOS -->
-                            <th style="width: 10%;">Parámetros y Resultados</th>
+                            <!-- ✅ RESULTADOS CON ANALISTAS POR PARÁMETRO -->
+                            <th style="width: 12%;">Parámetros, Resultados y Analistas</th>
                         </tr>
                     </thead>
                     <tbody>
                         <t t-foreach="docs" t-as="analysis">
-                            <!-- 🆕 VARIABLES AUXILIARES PARA EVITAR REPETICIÓN -->
+                            <!-- VARIABLES AUXILIARES -->
                             <t t-set="reception" t-value="analysis.sample_reception_id"/>
                             <t t-set="sample" t-value="reception.sample_id if reception else False"/>
                             
@@ -670,13 +682,6 @@
                                     <t t-else="">-</t>
                                 </td>
                                 
-                                <td>
-                                    <t t-if="sample and sample.sampling_observations and sample.sampling_observations != 'N/A'">
-                                        <span t-esc="sample.sampling_observations"/>
-                                    </t>
-                                    <t t-else="">-</t>
-                                </td>
-                                
                                 <!-- RECOLECCIÓN -->
                                 <td>
                                     <t t-if="sample and sample.collection_date">
@@ -702,14 +707,7 @@
                                     <t t-else="">-</t>
                                 </td>
                                 
-                                <td>
-                                    <t t-if="sample and sample.collection_observations">
-                                        <span t-esc="sample.collection_observations"/>
-                                    </t>
-                                    <t t-else="">-</t>
-                                </td>
-                                
-                                <!-- RECEPCIÓN -->
+                                <!-- ✅ RECEPCIÓN SIN ANALISTA -->
                                 <td>
                                     <t t-if="reception and reception.reception_date">
                                         <span t-esc="reception.reception_date.strftime('%d/%m/%Y')"/>
@@ -717,34 +715,52 @@
                                     <t t-else="">-</t>
                                 </td>
                                 
-                                <td>
-                                    <t t-if="reception and reception.analyst_id">
-                                        <span t-esc="reception.analyst_id.name"/>
-                                    </t>
-                                    <t t-else="">-</t>
-                                </td>
-                                
-                                <!-- PARÁMETROS Y RESULTADOS MEJORADO -->
+                                <!-- ✅ PARÁMETROS CON ANALISTAS INDIVIDUALES -->
                                 <td class="parameters-cell">
                                     <t t-if="analysis.parameter_analysis_ids">
                                         <t t-set="params_with_results" t-value="analysis.parameter_analysis_ids.filtered(lambda p: p.result_value and p.result_value.strip())"/>
                                         <t t-if="params_with_results">
                                             <t t-foreach="params_with_results" t-as="param">
-                                                <strong>
-                                                    <span t-esc="param.microorganism or param.name or 'Sin nombre'"/>:
-                                                </strong><br/>
-                                                <span t-esc="param.result_value"/>
-                                                <t t-if="param.unit">
-                                                    <span t-esc="param.unit"/>
-                                                </t>
-                                                <br/><br/>
+                                                <div class="param-item">
+                                                    <!-- NOMBRE DEL PARÁMETRO -->
+                                                    <strong>
+                                                        <span t-esc="param.microorganism or param.name or 'Sin nombre'"/>
+                                                    </strong>
+                                                    <br/>
+                                                    
+                                                    <!-- RESULTADO -->
+                                                    <span t-esc="param.result_value"/>
+                                                    <t t-if="param.unit">
+                                                        <span t-esc="param.unit"/>
+                                                    </t>
+                                                    
+                                                    <!-- ✅ ANALISTA RESPONSABLE DE ESTE PARÁMETRO -->
+                                                    <t t-if="param.analyst_names">
+                                                        <br/>
+                                                        <span class="analyst-info">
+                                                            👤 <span t-esc="param.analyst_names"/>
+                                                        </span>
+                                                    </t>
+                                                    <t t-else="">
+                                                        <br/>
+                                                        <span class="analyst-info">
+                                                            👤 Sin asignar
+                                                        </span>
+                                                    </t>
+                                                </div>
                                             </t>
                                         </t>
                                         <t t-else="">
-                                            Parámetros sin resultados
+                                            <div style="color: #999;">
+                                                Parámetros sin resultados
+                                            </div>
                                         </t>
                                     </t>
-                                    <t t-else="">Sin parámetros</t>
+                                    <t t-else="">
+                                        <div style="color: #999;">
+                                            Sin parámetros
+                                        </div>
+                                    </t>
                                 </td>
                             </tr>
                         </t>
@@ -754,6 +770,7 @@
                 <!-- FOOTER CON INFORMACIÓN ADICIONAL -->
                 <div style="margin-top: 20px; font-size: 8px; text-align: center; border-top: 1px solid #ccc; padding-top: 10px;">
                     <p><strong>Nota:</strong> Este es un reporte simplificado. Para información detallada consulte los informes individuales de cada muestra.</p>
+                    <p>Generado el <span t-esc="datetime.datetime.now().strftime('%d/%m/%Y a las %H:%M')"/> por <span t-esc="env.user.name"/></p>
                 </div>
             </div>
         </t>
