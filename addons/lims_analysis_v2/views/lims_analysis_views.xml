@@ -414,18 +414,18 @@
             <field name="binding_view_types">list</field>
             <field name="state">code</field>
             <field name="code">
-        if records:
-            action = env.ref('lims_analysis_v2.action_report_simplified_results').report_action(records)
-        else:
-            action = {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': 'Sin Selección',
-                    'message': 'Debe seleccionar al menos una muestra para generar el reporte.',
-                    'type': 'warning',
-                }
-            }
+if records:
+    action = env.ref('lims_analysis_v2.action_report_simplified_results').report_action(records)
+else:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Sin Selección',
+            'message': 'Debe seleccionar al menos una muestra para generar el reporte.',
+            'type': 'warning',
+        }
+    }
             </field>
         </record>
 
