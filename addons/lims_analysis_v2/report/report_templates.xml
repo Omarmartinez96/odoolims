@@ -492,7 +492,7 @@
     <!-- Ejemplo: <template id="report_general_no_ilac_template"> -->
     <!-- ========================================================= -->
 
-    <!-- ========== REPORTE SIMPLIFICADO DE RESULTADOS ========== -->
+    <!-- ========== REPORTE SIMPLIFICADO DE RESULTADOS MEJORADO ========== -->
     <template id="report_simplified_results_template">
         <t t-call="web.html_container">
             <meta charset="UTF-8"/>
@@ -601,6 +601,10 @@
                     </thead>
                     <tbody>
                         <t t-foreach="docs" t-as="analysis">
+                            <!-- 🆕 VARIABLES AUXILIARES PARA EVITAR REPETICIÓN -->
+                            <t t-set="reception" t-value="analysis.sample_reception_id"/>
+                            <t t-set="sample" t-value="reception.sample_id if reception else False"/>
+                            
                             <tr>
                                 <!-- CLIENTE Y MUESTRA -->
                                 <td>
@@ -611,125 +615,137 @@
                                 </td>
                                 
                                 <td>
-                                    <span t-esc="analysis.sample_code or 'Pendiente'"/>
+                                    <t t-if="analysis.sample_code and analysis.sample_code != '/'">
+                                        <span t-esc="analysis.sample_code"/>
+                                    </t>
+                                    <t t-else="">Pendiente</t>
                                 </td>
                                 
                                 <td>
-                                    <span t-esc="analysis.sample_identifier or 'Sin identificación'"/>
+                                    <t t-if="analysis.sample_identifier">
+                                        <span t-esc="analysis.sample_identifier"/>
+                                    </t>
+                                    <t t-else="">Sin identificación</t>
                                 </td>
                                 
                                 <td>
-                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sample_type_id">
-                                        <span t-esc="analysis.sample_reception_id.sample_id.sample_type_id.name"/>
+                                    <t t-if="sample and sample.sample_type_id">
+                                        <span t-esc="sample.sample_type_id.name"/>
                                     </t>
                                     <t t-else="">No especificado</t>
                                 </td>
                                 
                                 <td>
-                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
-                                        <span t-esc="analysis.sample_reception_id.sample_id.sample_quantity or 'No especificada'"/>
+                                    <t t-if="sample and sample.sample_quantity">
+                                        <span t-esc="sample.sample_quantity"/>
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
                                 
                                 <td>
-                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.container_type_id">
-                                        <span t-esc="analysis.sample_reception_id.sample_id.container_type_id.name"/>
+                                    <t t-if="sample and sample.container_type_id">
+                                        <span t-esc="sample.container_type_id.name"/>
                                     </t>
                                     <t t-else="">No especificado</t>
                                 </td>
                                 
                                 <!-- MUESTREO -->
                                 <td>
-                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
-                                        <t t-set="sample" t-value="analysis.sample_reception_id.sample_id"/>
-                                        <t t-if="sample.sampling_date">
-                                            <span t-esc="sample.sampling_date.strftime('%d/%m/%Y')"/><br/>
-                                            <span t-esc="sample.sampling_time or 'No especificada'"/>
+                                    <t t-if="sample and sample.sampling_date">
+                                        <span t-esc="sample.sampling_date.strftime('%d/%m/%Y')"/>
+                                        <t t-if="sample.sampling_time">
+                                            <br/><span t-esc="sample.sampling_time"/>
                                         </t>
-                                        <t t-else="">No especificada</t>
+                                    </t>
+                                    <t t-else="">No especificada</t>
+                                </td>
+                                
+                                <td>
+                                    <t t-if="sample and sample.sampling_temperature">
+                                        <span t-esc="sample.sampling_temperature"/>
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
                                 
                                 <td>
-                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
-                                        <span t-esc="analysis.sample_reception_id.sample_id.sampling_temperature or '-'"/>
+                                    <t t-if="sample and sample.sampling_technician">
+                                        <span t-esc="sample.sampling_technician"/>
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
                                 
                                 <td>
-                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
-                                        <span t-esc="analysis.sample_reception_id.sample_id.sampling_technician or '-'"/>
-                                    </t>
-                                    <t t-else="">-</t>
-                                </td>
-                                
-                                <td>
-                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
-                                        <span t-esc="analysis.sample_reception_id.sample_id.sampling_observations or '-'"/>
+                                    <t t-if="sample and sample.sampling_observations and sample.sampling_observations != 'N/A'">
+                                        <span t-esc="sample.sampling_observations"/>
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
                                 
                                 <!-- RECOLECCIÓN -->
                                 <td>
-                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
-                                        <t t-set="sample" t-value="analysis.sample_reception_id.sample_id"/>
-                                        <t t-if="sample.collection_date">
-                                            <span t-esc="sample.collection_date.strftime('%d/%m/%Y')"/><br/>
-                                            <span t-esc="sample.collection_time or 'No especificada'"/>
+                                    <t t-if="sample and sample.collection_date">
+                                        <span t-esc="sample.collection_date.strftime('%d/%m/%Y')"/>
+                                        <t t-if="sample.collection_time">
+                                            <br/><span t-esc="sample.collection_time"/>
                                         </t>
-                                        <t t-else="">No especificada</t>
+                                    </t>
+                                    <t t-else="">No especificada</t>
+                                </td>
+                                
+                                <td>
+                                    <t t-if="sample and sample.collection_temperature">
+                                        <span t-esc="sample.collection_temperature"/>
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
                                 
                                 <td>
-                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
-                                        <span t-esc="analysis.sample_reception_id.sample_id.collection_temperature or '-'"/>
+                                    <t t-if="sample and sample.collected_by">
+                                        <span t-esc="sample.collected_by"/>
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
                                 
                                 <td>
-                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
-                                        <span t-esc="analysis.sample_reception_id.sample_id.collected_by or '-'"/>
-                                    </t>
-                                    <t t-else="">-</t>
-                                </td>
-                                
-                                <td>
-                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
-                                        <span t-esc="analysis.sample_reception_id.sample_id.collection_observations or '-'"/>
+                                    <t t-if="sample and sample.collection_observations">
+                                        <span t-esc="sample.collection_observations"/>
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
                                 
                                 <!-- RECEPCIÓN -->
                                 <td>
-                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.reception_date">
-                                        <span t-esc="analysis.sample_reception_id.reception_date.strftime('%d/%m/%Y')"/>
+                                    <t t-if="reception and reception.reception_date">
+                                        <span t-esc="reception.reception_date.strftime('%d/%m/%Y')"/>
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
                                 
                                 <td>
-                                    <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.analyst_id">
-                                        <span t-esc="analysis.sample_reception_id.analyst_id.name"/>
+                                    <t t-if="reception and reception.analyst_id">
+                                        <span t-esc="reception.analyst_id.name"/>
                                     </t>
                                     <t t-else="">-</t>
                                 </td>
                                 
-                                <!-- PARÁMETROS Y RESULTADOS -->
+                                <!-- PARÁMETROS Y RESULTADOS MEJORADO -->
                                 <td class="parameters-cell">
                                     <t t-if="analysis.parameter_analysis_ids">
-                                        <t t-foreach="analysis.parameter_analysis_ids" t-as="param">
-                                            <t t-if="param.result_value">
-                                                <strong><span t-esc="param.name or param.microorganism or 'Sin nombre'"/>:</strong><br/>
-                                                <span t-esc="param.result_value"/><br/><br/>
+                                        <t t-set="params_with_results" t-value="analysis.parameter_analysis_ids.filtered(lambda p: p.result_value and p.result_value.strip())"/>
+                                        <t t-if="params_with_results">
+                                            <t t-foreach="params_with_results" t-as="param">
+                                                <strong>
+                                                    <span t-esc="param.microorganism or param.name or 'Sin nombre'"/>:
+                                                </strong><br/>
+                                                <span t-esc="param.result_value"/>
+                                                <t t-if="param.unit">
+                                                    <span t-esc="param.unit"/>
+                                                </t>
+                                                <br/><br/>
                                             </t>
+                                        </t>
+                                        <t t-else="">
+                                            Parámetros sin resultados
                                         </t>
                                     </t>
                                     <t t-else="">Sin parámetros</t>

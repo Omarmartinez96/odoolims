@@ -1179,25 +1179,34 @@ class LimsAnalysisV2(models.Model):
         if not analyses:
             raise UserError('Debe seleccionar al menos un análisis para generar el reporte.')
         
-        # Buscar el reporte de manera más robusta
-        try:
-            report = self.env.ref('lims_analysis_v2.action_report_simplified_results', raise_if_not_found=False)
-            if report:
-                return report.report_action(analyses)
-            else:
-                # Fallback: buscar por nombre
-                report = self.env['ir.actions.report'].search([
-                    ('name', '=', 'Reporte Simplificado de Resultados'),
-                    ('model', '=', 'lims.analysis.v2')
-                ], limit=1)
-                
-                if report:
-                    return report.report_action(analyses)
-                else:
-                    raise UserError('No se pudo encontrar el reporte simplificado. Verifique que esté correctamente instalado.')
-                    
-        except Exception as e:
-            raise UserError(f'Error al generar el reporte: {str(e)}')
+        # 🆕 PREFETCH de datos relacionados para evitar lazy loading
+        analyses_with_data = analyses.with_context(
+            prefetch_fields=[
+                'customer_id', 'sample_reception_id', 'sample_code', 
+                'sample_identifier', 'parameter_analysis_ids'
+            ]
+        )
+        
+        # Forzar la carga de relaciones críticas
+        for analysis in analyses_with_data:
+            # Acceder a los campos para forzar su carga
+            _ = analysis.customer_id.name
+            if analysis.sample_reception_id:
+                _ = analysis.sample_reception_id.sample_id
+                if analysis.sample_reception_id.sample_id:
+                    _ = analysis.sample_reception_id.sample_id.sample_type_id
+                    _ = analysis.sample_reception_id.sample_id.container_type_id
+        
+        return {
+            'type': 'ir.actions.report',
+            'report_name': 'lims_analysis_v2.report_simplified_results_template',
+            'report_type': 'qweb-pdf',
+            'data': {'ids': analyses_with_data.ids},
+            'context': {
+                'active_model': 'lims.analysis.v2',
+                'active_ids': analyses_with_data.ids,
+            }
+        }
 
     # ===============================================
     # === MÉTODOS PARA EXPANDIR/COLAPSAR TODOS LOS GRUPOS ===
