@@ -77,26 +77,24 @@ class SaleOrder(models.Model):
         # Obtener moneda de la compañía (MXN)
         company_currency = self.company_id.currency_id
         
-        # Eliminar nota existente de forma segura
-        lines_to_keep = []
+        # Marcar notas de tipo de cambio para eliminación (sin unlink)
         for line in self.order_line:
-            # Mantener todas las líneas excepto las notas de tipo de cambio
-            if not (line.display_type == 'line_note' and 'Tipo de cambio aplicado' in (line.name or '')):
-                lines_to_keep.append(line)
+            if line.display_type == 'line_note' and 'Tipo de cambio aplicado' in (line.name or ''):
+                line._origin = None  # Marcar para eliminación
         
         if self.currency_id != company_currency:
             # Convertir a moneda extranjera (USD)
-            for line in lines_to_keep:
-                if line.display_type != 'line_note' and line.product_id:
+            for line in self.order_line:
+                if line.display_type != 'line_note' and line.product_id and hasattr(line, 'price_unit'):
                     # Siempre convertir desde el precio base del producto (en MXN)
                     line.price_unit = company_currency._convert(
-                        line.product_id.list_price,  # Precio base en MXN
-                        self.currency_id,  # Nueva moneda (USD)
+                        line.product_id.list_price,
+                        self.currency_id,
                         self.company_id,
                         self.date_order or fields.Date.today()
                     )
             
-            # Obtener tasa para mostrar en la nota
+            # Obtener tasa para la nota
             rate = company_currency._get_conversion_rate(
                 company_currency, 
                 self.currency_id, 
@@ -104,8 +102,7 @@ class SaleOrder(models.Model):
                 self.date_order or fields.Date.today()
             )
             
-            # Agregar nueva línea con nota
-            # Calcular tasa inversa
+            # Agregar nota como nueva línea
             inverse_rate = 1 / rate if rate > 0 else 0
             tz = pytz.timezone('America/Tijuana')
             now_tj = datetime.now(tz)
@@ -115,16 +112,14 @@ class SaleOrder(models.Model):
                         f"(tasa: {rate:.4f}) al {fecha_str} (Horario de Tijuana). "
                         f"Fuente: Sistema interno basado en Banco de México.")
             
-            lines_to_keep.append((0, 0, {
+            # Agregar nueva línea de nota
+            self.order_line = [(0, 0, {
                 'display_type': 'line_note',
                 'name': note_text,
                 'sequence': 999,
-            }))
+            })]
         else:
             # Regresar a MXN - restaurar precios originales
-            for line in lines_to_keep:
-                if line.display_type != 'line_note' and line.product_id:
-                    line.price_unit = line.product_id.list_price  # Precio original en MXN
-        
-        # Actualizar las líneas de forma segura
-        self.order_line = [(5, 0, 0)] + [(4, line.id, 0) if hasattr(line, 'id') and line.id else line for line in lines_to_keep]
+            for line in self.order_line:
+                if line.display_type != 'line_note' and line.product_id and hasattr(line, 'price_unit'):
+                    line.price_unit = line.product_id.list_price
