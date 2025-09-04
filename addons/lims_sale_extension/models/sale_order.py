@@ -1,4 +1,5 @@
 from datetime import datetime
+import pytz
 from odoo import models, fields, api
 
 class SaleOrder(models.Model):
@@ -61,8 +62,67 @@ class SaleOrder(models.Model):
     
     @api.onchange('partner_id')
     def _onchange_partner_id_currency(self):
+        super()._onchange_partner_id()  # Llamar al original primero
         if self.partner_id and self.partner_id.country_id:
             if self.partner_id.country_id.code == 'US':
                 usd = self.env['res.currency'].search([('name', '=', 'USD')], limit=1)
                 if usd:
                     self.currency_id = usd
+
+    @api.onchange('currency_id')
+    def _onchange_currency_id_convert_prices(self):
+        if not self.currency_id or not self.order_line:
+            return
+        
+        # Obtener moneda de la compañía (MXN)
+        company_currency = self.company_id.currency_id
+        
+        # Solo procesar si cambió de MXN a USD o viceversa
+        if self.currency_id != company_currency:
+            # Obtener tasa de cambio actual
+            rate = self.currency_id._get_conversion_rate(
+                company_currency, 
+                self.currency_id, 
+                self.company_id, 
+                self.date_order or fields.Date.today()
+            )
+            
+            # Convertir precios de líneas existentes
+            for line in self.order_line:
+                if line.display_type != 'line_note' and line.product_id:
+                    # Convertir precio unitario
+                    line.price_unit = company_currency._convert(
+                        line.product_id.list_price,
+                        self.currency_id,
+                        self.company_id,
+                        self.date_order or fields.Date.today()
+                    )
+            
+            # Agregar nota informativa sobre tipo de cambio
+            self._add_exchange_rate_note(rate)
+
+    def _add_exchange_rate_note(self, rate):
+        # Buscar si ya existe una nota de tipo de cambio
+        existing_note = self.order_line.filtered(
+            lambda l: l.display_type == 'line_note' and 'Tipo de cambio aplicado' in (l.name or '')
+        )
+        
+        # Si existe, eliminarla para evitar duplicados
+        if existing_note:
+            existing_note.unlink()
+        
+        # Crear nueva nota
+        # Obtener fecha/hora de Tijuana
+        tz = pytz.timezone('America/Tijuana')
+        now_tj = datetime.now(tz)
+        fecha_str = now_tj.strftime('%d/%m/%Y a las %H:%M hrs')
+        
+        note_text = (f"Tipo de cambio aplicado: {rate:.4f} {self.currency_id.name}/MXN "
+                    f"al {fecha_str} (Horario de Tijuana). "
+                    f"Fuente: Sistema interno basado en Banco de México.")
+        
+        self.order_line = [(0, 0, {
+            'display_type': 'line_note',
+            'name': note_text,
+            'sequence': 999,  # Al final
+        })]
