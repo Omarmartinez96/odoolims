@@ -291,6 +291,7 @@
                   <td style="text-align:right; padding:6px; border-top:1px solid #ddd;">
                     <span t-field="doc.amount_untaxed"
                           t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    <span style="font-weight: bold;"> <t t-esc="doc.currency_id.name"/></span>
                   </td>
                 </tr>
                 <!-- IVA -->
@@ -302,6 +303,7 @@
                   <td style="text-align:right; padding:6px; border-top:1px solid #ddd;">
                     <span t-field="doc.amount_tax"
                           t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    <span style="font-weight: bold;"> <t t-esc="doc.currency_id.name"/></span>
                   </td>
                 </tr>
                 <!-- Total -->
@@ -312,6 +314,7 @@
                   <td style="text-align:right; padding:6px; font-size:12px; border-top:2px solid #000;">
                     <span t-field="doc.amount_total"
                           t-field-options="{'widget':'monetary','display_currency':doc.currency_id}"/>
+                    <span style="font-weight: bold; color: #080242ff;"> <t t-esc="doc.currency_id.name"/></span>
                   </td>
                 </tr>
               </table>
@@ -319,7 +322,7 @@
 
             <!-- Total en letra centrado -->
             <div style="clear:both; margin-top:30px; padding-top:8px; font-size:12px; text-align:center;">
-              <em><span t-esc="doc.currency_id.amount_to_text(doc.amount_total).upper()"/></em>
+              <em><span t-esc="doc.currency_id.amount_to_text(doc.amount_total).upper()"/> (<t t-esc="doc.currency_id.name"/>)</em>
             </div>
 
             <!-- Términos de pago izquierda -->
