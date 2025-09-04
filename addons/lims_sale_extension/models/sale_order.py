@@ -77,17 +77,18 @@ class SaleOrder(models.Model):
         # Obtener moneda de la compañía (MXN)
         company_currency = self.company_id.currency_id
         
-        # Paso 1: Eliminar notas de tipo de cambio existentes
-        notes_to_remove = []
+        # SIEMPRE eliminar notas de tipo de cambio existentes primero
+        lines_to_remove = []
         for line in self.order_line:
             if line.display_type == 'line_note' and 'Tipo de cambio aplicado' in (line.name or ''):
-                notes_to_remove.append(line)
+                lines_to_remove.append(line)
         
-        # Remover las notas encontradas
-        for note in notes_to_remove:
-            self.order_line = [(2, note.id)] if hasattr(note, 'id') and note.id else []
+        # Eliminar las notas encontradas
+        for note in lines_to_remove:
+            if hasattr(note, 'id') and note.id:
+                self.order_line = [(2, note.id)]
         
-        # Paso 2: Solo modificar precios de líneas de productos existentes
+        # Modificar precios de líneas de productos existentes
         for line in self.order_line:
             if line.display_type != 'line_note' and line.product_id:
                 if self.currency_id != company_currency:
@@ -102,7 +103,7 @@ class SaleOrder(models.Model):
                     # Regresar precio original en MXN
                     line.price_unit = line.product_id.list_price
         
-        # Paso 3: Agregar nota solo si estamos en USD
+        # SOLO agregar nota si estamos en moneda extranjera (USD)
         if self.currency_id != company_currency:
             rate = company_currency._get_conversion_rate(
                 company_currency, 
@@ -120,9 +121,12 @@ class SaleOrder(models.Model):
                         f"(tasa: {rate:.4f}) al {fecha_str} (Horario de Tijuana). "
                         f"Fuente: Sistema interno basado en Banco de México.")
             
-            # Solo agregar la nota nueva
+            # Agregar la nota nueva
             self.order_line = [(0, 0, {
                 'display_type': 'line_note',
                 'name': note_text,
                 'sequence': 999,
             })]
+        
+        # Si estamos en MXN, las notas ya fueron eliminadas arriba
+        # No agregamos ninguna nota nueva
