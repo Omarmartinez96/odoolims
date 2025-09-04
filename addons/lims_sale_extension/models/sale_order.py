@@ -124,8 +124,10 @@ class SaleOrder(models.Model):
         now_tj = datetime.now(tz)
         fecha_str = now_tj.strftime('%d/%m/%Y a las %H:%M hrs')
         
-        note_text = (f"Tipo de cambio aplicado: {rate:.4f} {self.currency_id.name}/MXN "
-                    f"al {fecha_str} (Horario de Tijuana). "
+        # Calcular tasa inversa para mayor claridad
+        inverse_rate = 1 / rate if rate > 0 else 0
+        note_text = (f"Tipo de cambio aplicado: 1 USD = ${inverse_rate:.2f} MXN "
+                    f"(tasa: {rate:.4f}) al {fecha_str} (Horario de Tijuana). "
                     f"Fuente: Sistema interno basado en Banco de México.")
         
         self.order_line = [(0, 0, {
