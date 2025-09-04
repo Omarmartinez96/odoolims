@@ -91,82 +91,42 @@ class PaymentComplementWizard(models.TransientModel):
                 raise ValidationError(_("El monto del pago no puede exceder el saldo de la factura"))
 
     def action_generate_complement(self):
-        """Genera pago y complemento en una sola acción"""
+        """Genera pago usando el wizard nativo de Odoo"""
         self.ensure_one()
         
         try:
-            # Paso 1: Crear pago usando API nativa
-            payment_vals = {
-                'payment_type': 'inbound',
-                'partner_type': 'customer',
-                'partner_id': self.invoice_id.partner_id.id,
-                'amount': self.amount,
-                'currency_id': self.currency_id.id,
-                'date': self.payment_date,
-                'journal_id': self.journal_id.id,
-                'payment_method_line_id': self.payment_method_line_id.id,
+            # Usar el wizard nativo de register payment
+            ctx = {
+                'active_model': 'account.move',
+                'active_ids': [self.invoice_id.id],
+                'active_id': self.invoice_id.id,
             }
             
-            payment = self.env['account.payment'].create(payment_vals)
+            # Crear el wizard de registro de pago nativo
+            payment_register = self.env['account.payment.register'].with_context(ctx).create({
+                'amount': self.amount,
+                'payment_date': self.payment_date,
+                'journal_id': self.journal_id.id,
+                'payment_method_line_id': self.payment_method_line_id.id,
+            })
             
-            # Paso 2: Procesar pago usando método nativo
-            payment.action_post()
+            # Ejecutar el registro de pago (esto hace toda la reconciliación automática)
+            result = payment_register.action_create_payments()
             
-            # Paso 3: Conciliar con factura
-            self._reconcile_payment_with_invoice(payment)
-            
-            # Paso 4: Comentar temporalmente la generación CFDI
-            # self._generate_cfdi_complement(payment)
+            # Opcional: Obtener el pago creado para futuras operaciones
+            # payment_id = result.get('res_id') if result else None
             
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
                 'params': {
                     'title': _('¡Éxito!'),
-                    'message': _('Pago registrado exitosamente para la factura %s') % self.invoice_id.name,
+                    'message': _('Pago registrado y reconciliado exitosamente para la factura %s') % self.invoice_id.name,
                     'type': 'success',
                     'sticky': False,
                 }
             }
             
         except Exception as e:
-            _logger.error("Error generando pago: %s", str(e))
+            _logger.error("Error generando pago con wizard nativo: %s", str(e))
             raise UserError(_('Error generando pago: %s') % str(e))
-
-    def _reconcile_payment_with_invoice(self, payment):
-        """Conciliar pago con factura usando métodos nativos de Odoo"""
-        try:
-            # Método 1: Usar reconciled_invoice_ids (más directo)
-            payment.reconciled_invoice_ids = [(4, self.invoice_id.id)]
-        except:
-            try:
-                # Método 2: Reconciliación manual después de que existan las líneas
-                payment.flush()  # Asegurar que las líneas se han creado
-                
-                # Obtener líneas por cobrar de la factura
-                invoice_lines = self.invoice_id.line_ids.filtered(
-                    lambda line: line.account_id.account_type == 'asset_receivable' and not line.reconciled
-                )
-                
-                # Obtener líneas del pago
-                payment_lines = payment.move_id.line_ids.filtered(
-                    lambda line: line.account_id.account_type == 'asset_receivable' and not line.reconciled
-                )
-                
-                # Conciliar usando método nativo
-                if invoice_lines and payment_lines:
-                    lines_to_reconcile = invoice_lines + payment_lines
-                    lines_to_reconcile.reconcile()
-                    
-            except Exception as e:
-                _logger.warning("No se pudo reconciliar automáticamente: %s", str(e))
-                # No fallar, solo registrar warning
-
-    def _generate_cfdi_complement(self, payment):
-        """Generar complemento CFDI usando localización mexicana"""
-        # Esto usa los métodos nativos de l10n_mx_edi
-        if hasattr(payment, '_l10n_mx_edi_cfdi_payment_complement'):
-            payment._l10n_mx_edi_cfdi_payment_complement()
-        else:
-            # Método alternativo para generación CFDI
-            payment.l10n_mx_edi_update_sat_status()
