@@ -6,46 +6,60 @@ _logger = logging.getLogger(__name__)
 
 class PaymentComplementWizard(models.TransientModel):
     _name = 'payment.complement.wizard'
-    _description = 'Payment Complement Wizard'
+    _description = 'Asistente de Complementos de Pago'
 
     invoice_id = fields.Many2one(
         'account.move',
-        string='Invoice',
+        string='Factura',
         required=True,
-        domain=[('move_type', '=', 'out_invoice'), ('payment_state', '!=', 'paid')]
+        domain=[
+            ('move_type', '=', 'out_invoice'),
+            ('state', '=', 'posted'),
+            ('payment_state', 'in', ['not_paid', 'partial'])
+        ]
     )
     amount = fields.Float(
-        string='Payment Amount',
+        string='Monto del Pago',
         required=True,
         digits='Product Price'
     )
     payment_date = fields.Date(
-        string='Payment Date',
+        string='Fecha de Pago',
         required=True,
         default=fields.Date.context_today
     )
     journal_id = fields.Many2one(
         'account.journal',
-        string='Payment Journal',
+        string='Diario de Pago',
         required=True,
         domain=[('type', 'in', ('bank', 'cash'))]
     )
     payment_method_line_id = fields.Many2one(
         'account.payment.method.line',
-        string='Payment Method',
+        string='Método de Pago',
         required=True
     )
     currency_id = fields.Many2one(
         'res.currency',
-        string='Currency',
+        string='Moneda',
         related='invoice_id.currency_id',
         readonly=True
     )
     amount_residual = fields.Monetary(
-        string='Amount Due',
+        string='Saldo Pendiente',
         related='invoice_id.amount_residual',
         readonly=True
     )
+
+    @api.model
+    def default_get(self, fields_list):
+        res = super().default_get(fields_list)
+        # Si viene del contexto de una factura específica
+        if self.env.context.get('active_model') == 'account.move':
+            invoice_id = self.env.context.get('active_id')
+            if invoice_id:
+                res['invoice_id'] = invoice_id
+        return res
 
     @api.onchange('journal_id')
     def _onchange_journal_id(self):
@@ -61,16 +75,16 @@ class PaymentComplementWizard(models.TransientModel):
     def _check_amount(self):
         for rec in self:
             if rec.amount <= 0:
-                raise ValidationError(_("Payment amount must be positive"))
+                raise ValidationError(_("El monto del pago debe ser positivo"))
             if rec.amount > rec.amount_residual:
-                raise ValidationError(_("Payment amount cannot exceed the invoice balance"))
-            
+                raise ValidationError(_("El monto del pago no puede exceder el saldo de la factura"))
+
     def action_generate_complement(self):
-        """Generate payment and complement in one action"""
+        """Genera pago y complemento en una sola acción"""
         self.ensure_one()
         
         try:
-            # Step 1: Create payment using native API
+            # Paso 1: Crear pago usando API nativa
             payment_vals = {
                 'payment_type': 'inbound',
                 'partner_type': 'customer',
@@ -80,57 +94,57 @@ class PaymentComplementWizard(models.TransientModel):
                 'date': self.payment_date,
                 'journal_id': self.journal_id.id,
                 'payment_method_line_id': self.payment_method_line_id.id,
-                'ref': _('Payment for %s') % self.invoice_id.name,
+                'ref': _('Pago para %s') % self.invoice_id.name,
             }
             
             payment = self.env['account.payment'].create(payment_vals)
             
-            # Step 2: Post payment using native method
+            # Paso 2: Procesar pago usando método nativo
             payment.action_post()
             
-            # Step 3: Reconcile with invoice using native reconciliation
+            # Paso 3: Conciliar con factura usando reconciliación nativa
             self._reconcile_payment_with_invoice(payment)
             
-            # Step 4: Generate CFDI complement using Mexican localization
+            # Paso 4: Generar complemento CFDI usando localización mexicana
             self._generate_cfdi_complement(payment)
             
-            # Step 5: Show success message and close wizard
+            # Paso 5: Mostrar mensaje de éxito y cerrar asistente
             return {
                 'type': 'ir.actions.client',
                 'tag': 'display_notification',
                 'params': {
-                    'title': _('Success!'),
-                    'message': _('Payment complement generated successfully for invoice %s') % self.invoice_id.name,
+                    'title': _('¡Éxito!'),
+                    'message': _('Complemento de pago generado exitosamente para la factura %s') % self.invoice_id.name,
                     'type': 'success',
                     'sticky': False,
                 }
             }
             
         except Exception as e:
-            _logger.error("Error generating payment complement: %s", str(e))
-            raise UserError(_('Error generating payment complement: %s') % str(e))
+            _logger.error("Error generando complemento de pago: %s", str(e))
+            raise UserError(_('Error generando complemento de pago: %s') % str(e))
 
     def _reconcile_payment_with_invoice(self, payment):
-        """Reconcile payment with invoice using native Odoo methods"""
-        # Get invoice receivable lines
+        """Conciliar pago con factura usando métodos nativos de Odoo"""
+        # Obtener líneas por cobrar de la factura
         invoice_lines = self.invoice_id.line_ids.filtered(
             lambda line: line.account_id.account_type == 'asset_receivable'
         )
         
-        # Get payment lines  
+        # Obtener líneas del pago
         payment_lines = payment.line_ids.filtered(
             lambda line: line.account_id.account_type == 'asset_receivable'
         )
         
-        # Reconcile using native method
+        # Conciliar usando método nativo
         lines_to_reconcile = invoice_lines + payment_lines
         lines_to_reconcile.reconcile()
 
     def _generate_cfdi_complement(self, payment):
-        """Generate CFDI complement using Mexican localization"""
-        # This uses the native l10n_mx_edi methods
+        """Generar complemento CFDI usando localización mexicana"""
+        # Esto usa los métodos nativos de l10n_mx_edi
         if hasattr(payment, '_l10n_mx_edi_cfdi_payment_complement'):
             payment._l10n_mx_edi_cfdi_payment_complement()
         else:
-            # Alternative method for CFDI generation
+            # Método alternativo para generación CFDI
             payment.l10n_mx_edi_update_sat_status()

@@ -1,15 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Payment Complement Wizard Form View -->
+    <!-- Vista Formulario del Asistente de Complementos de Pago -->
     <record id="view_payment_complement_wizard_form" model="ir.ui.view">
         <field name="name">payment.complement.wizard.form</field>
         <field name="model">payment.complement.wizard</field>
         <field name="arch" type="xml">
-            <form string="Generate Payment Complement">
+            <form string="Generar Complemento de Pago">
                 <sheet>
                     <div class="oe_title">
                         <h1>
-                            <field name="invoice_id" readonly="1" options="{'no_create': True}"/>
+                            <field name="invoice_id" 
+                                   readonly="1" 
+                                   options="{'no_create': True, 'no_open': True}"
+                                   placeholder="Seleccionar Factura..."/>
                         </h1>
                     </div>
                     <group>
@@ -29,10 +32,10 @@
                 </sheet>
                 <footer>
                     <button name="action_generate_complement" 
-                            string="Generate Complement" 
+                            string="Generar Complemento" 
                             type="object" 
                             class="btn-primary"/>
-                    <button string="Cancel" 
+                    <button string="Cancelar" 
                             class="btn-secondary" 
                             special="cancel"/>
                 </footer>
@@ -40,9 +43,9 @@
         </field>
     </record>
 
-    <!-- Action Window -->
+    <!-- Acción de Ventana -->
     <record id="action_payment_complement_wizard" model="ir.actions.act_window">
-        <field name="name">Generate Payment Complement</field>
+        <field name="name">Generar Complemento de Pago</field>
         <field name="res_model">payment.complement.wizard</field>
         <field name="view_mode">form</field>
         <field name="target">new</field>
@@ -50,9 +53,9 @@
         <field name="binding_view_types">form</field>
     </record>
 
-    <!-- Menu Item -->
+    <!-- Elemento de Menú -->
     <menuitem id="menu_payment_complement_wizard"
-              name="Payment Complements"
+              name="Complementos de Pago"
               parent="account.menu_finance_receivables"
               action="action_payment_complement_wizard"
               sequence="15"/>

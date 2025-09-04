@@ -1,5 +1,5 @@
 {
-    'name': 'Payment Complement Wizard',
+    'name': 'Wizard de Complemento de Pago',
     'version': '18.0.1.0.0',
     'category': 'LIMS',
     'summary': 'Simplified Payment Complement Generation for Mexican Localization',
