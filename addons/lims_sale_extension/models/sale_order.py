@@ -77,29 +77,36 @@ class SaleOrder(models.Model):
         # Obtener moneda de la compañía (MXN)
         company_currency = self.company_id.currency_id
         
-        # Solo procesar si cambió de MXN a USD o viceversa
+        # Solo procesar si es diferente a la moneda de la compañía
         if self.currency_id != company_currency:
-            # Obtener tasa de cambio actual
-            rate = self.currency_id._get_conversion_rate(
+            # Convertir precios de líneas existentes
+            for line in self.order_line:
+                if line.display_type != 'line_note' and line.price_unit > 0:
+                    # Convertir el precio actual de la línea desde MXN a la nueva moneda
+                    line.price_unit = company_currency._convert(
+                        line.price_unit,  # Precio actual en MXN
+                        self.currency_id,  # Nueva moneda (USD)
+                        self.company_id,
+                        self.date_order or fields.Date.today()
+                    )
+            
+            # Obtener tasa para mostrar en la nota
+            rate = company_currency._get_conversion_rate(
                 company_currency, 
                 self.currency_id, 
                 self.company_id, 
                 self.date_order or fields.Date.today()
             )
             
-            # Convertir precios de líneas existentes
-            for line in self.order_line:
-                if line.display_type != 'line_note' and line.product_id:
-                    # Convertir precio unitario
-                    line.price_unit = company_currency._convert(
-                        line.product_id.list_price,
-                        self.currency_id,
-                        self.company_id,
-                        self.date_order or fields.Date.today()
-                    )
-            
             # Agregar nota informativa sobre tipo de cambio
             self._add_exchange_rate_note(rate)
+        else:
+            # Si regresó a MXN, eliminar nota de tipo de cambio
+            existing_note = self.order_line.filtered(
+                lambda l: l.display_type == 'line_note' and 'Tipo de cambio aplicado' in (l.name or '')
+            )
+            if existing_note:
+                existing_note.unlink()
 
     def _add_exchange_rate_note(self, rate):
         # Buscar si ya existe una nota de tipo de cambio
