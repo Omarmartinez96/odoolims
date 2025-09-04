@@ -33,7 +33,6 @@
         'views/basic_models_views.xml',
         'data/quality_control_types_data.xml',
         'views/lims_quality_control_views.xml',
-        # 'views/lims_culture_media_views.xml',
         # Wizards
         'views/wizards/custody_chain_duplicate_wizard_views.xml',
     ],

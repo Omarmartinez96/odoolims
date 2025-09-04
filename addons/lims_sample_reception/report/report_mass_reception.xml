@@ -259,12 +259,73 @@
                     <!-- Separador inferior -->
                     <div style="margin-top: 20px; background-color: rgb(218,227,243); height: 12px; padding: 3px 2px; text-align: center; vertical-align: middle; margin-bottom: 15px;"></div>
 
-                    <!-- Resumen final -->
+                    <!-- Conteo de estados por tipo -->
+                    <t t-set="total_samples" t-value="0"/>
+                    <t t-set="samples_recibidas" t-value="0"/>
+                    <t t-set="samples_no_recibidas" t-value="0"/>
+                    <t t-set="samples_rechazadas" t-value="0"/>
+                    <t t-set="samples_sin_procesar" t-value="0"/>
+
+                    <t t-foreach="docs" t-as="doc">
+                        <t t-foreach="doc.sample_ids" t-as="sample">
+                            <t t-set="total_samples" t-value="total_samples + 1"/>
+                            <t t-set="reception" t-value="env['lims.sample.reception'].search([('sample_id', '=', sample.id)], limit=1)"/>
+                            <t t-if="reception">
+                                <t t-if="reception.reception_state == 'recibida'" t-set="samples_recibidas" t-value="samples_recibidas + 1"/>
+                                <t t-elif="reception.reception_state == 'no_recibida'" t-set="samples_no_recibidas" t-value="samples_no_recibidas + 1"/>
+                                <t t-elif="reception.reception_state == 'rechazada'" t-set="samples_rechazadas" t-value="samples_rechazadas + 1"/>
+                                <t t-else="" t-set="samples_sin_procesar" t-value="samples_sin_procesar + 1"/>
+                            </t>
+                            <t t-else="">
+                                <t t-set="samples_sin_procesar" t-value="samples_sin_procesar + 1"/>
+                            </t>
+                        </t>
+                    </t>
+
+                    <!-- Resumen final detallado -->
                     <div style="text-align: center; margin-top: 15px;">
-                        <t t-set="total_samples" t-value="sum([len(doc.sample_ids) for doc in docs])"/>
-                        <p style="font-size: 16px; font-weight: bold;">
-                            Total de muestras recibidas: <span t-esc="total_samples"/>
-                        </p>
+                        <table style="margin: 0 auto; border-collapse: collapse; font-size: 16px;">
+                            <tr>
+                                <td style="padding: 8px 20px; border: 1px solid #ddd; background-color: #f8f9fa; font-weight: bold;">
+                                    Total de Muestras:
+                                </td>
+                                <td style="padding: 8px 20px; border: 1px solid #ddd; font-weight: bold; color: #333;">
+                                    <span t-esc="total_samples"/>
+                                </td>
+                            </tr>
+                            <tr t-if="samples_recibidas > 0">
+                                <td style="padding: 8px 20px; border: 1px solid #ddd; background-color: #d4edda;">
+                                    Muestras Recibidas:
+                                </td>
+                                <td style="padding: 8px 20px; border: 1px solid #ddd; color: #28a745; font-weight: bold;">
+                                    <span t-esc="samples_recibidas"/>
+                                </td>
+                            </tr>
+                            <tr t-if="samples_no_recibidas > 0">
+                                <td style="padding: 8px 20px; border: 1px solid #ddd; background-color: #fff3cd;">
+                                    Muestras No Recibidas:
+                                </td>
+                                <td style="padding: 8px 20px; border: 1px solid #ddd; color: #856404; font-weight: bold;">
+                                    <span t-esc="samples_no_recibidas"/>
+                                </td>
+                            </tr>
+                            <tr t-if="samples_rechazadas > 0">
+                                <td style="padding: 8px 20px; border: 1px solid #ddd; background-color: #f8d7da;">
+                                    Muestras Rechazadas:
+                                </td>
+                                <td style="padding: 8px 20px; border: 1px solid #ddd; color: #dc3545; font-weight: bold;">
+                                    <span t-esc="samples_rechazadas"/>
+                                </td>
+                            </tr>
+                            <tr t-if="samples_sin_procesar > 0">
+                                <td style="padding: 8px 20px; border: 1px solid #ddd; background-color: #e2e3e5;">
+                                    Muestras Sin Procesar:
+                                </td>
+                                <td style="padding: 8px 20px; border: 1px solid #ddd; color: #6c757d; font-weight: bold;">
+                                    <span t-esc="samples_sin_procesar"/>
+                                </td>
+                            </tr>
+                        </table>
                     </div>
 
                 </div>
