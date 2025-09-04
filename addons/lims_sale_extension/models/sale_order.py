@@ -77,25 +77,61 @@ class SaleOrder(models.Model):
         # Obtener moneda de la compañía (MXN)
         company_currency = self.company_id.currency_id
         
-        # Filtrar líneas para eliminar notas de tipo de cambio existentes
-        filtered_lines = []
-        for line in self.order_line:
-            if not (line.display_type == 'line_note' and 'Tipo de cambio aplicado' in (line.name or '')):
-                filtered_lines.append(line)
+        # Preparar comandos para las líneas
+        line_commands = []
         
+        # Procesar líneas existentes
+        for line in self.order_line:
+            if line.display_type == 'line_note' and 'Tipo de cambio aplicado' in (line.name or ''):
+                # Eliminar notas de tipo de cambio existentes
+                if line.id:
+                    line_commands.append((2, line.id))  # Eliminar si tiene ID
+            else:
+                # Mantener líneas de productos y otras notas
+                if line.id:
+                    # Línea existente - calcular nuevo precio
+                    if line.display_type != 'line_note' and line.product_id:
+                        if self.currency_id != company_currency:
+                            # Convertir a USD
+                            new_price = company_currency._convert(
+                                line.product_id.list_price,
+                                self.currency_id,
+                                self.company_id,
+                                self.date_order or fields.Date.today()
+                            )
+                        else:
+                            # Regresar a MXN
+                            new_price = line.product_id.list_price
+                        
+                        line_commands.append((1, line.id, {'price_unit': new_price}))
+                    else:
+                        # Mantener línea sin cambios
+                        line_commands.append((4, line.id))
+                else:
+                    # Línea nueva sin ID - recrear
+                    line_data = {
+                        'product_id': line.product_id.id if line.product_id else False,
+                        'name': line.name,
+                        'product_uom_qty': line.product_uom_qty,
+                        'display_type': line.display_type,
+                        'sequence': line.sequence,
+                    }
+                    
+                    if line.display_type != 'line_note' and line.product_id:
+                        if self.currency_id != company_currency:
+                            line_data['price_unit'] = company_currency._convert(
+                                line.product_id.list_price,
+                                self.currency_id,
+                                self.company_id,
+                                self.date_order or fields.Date.today()
+                            )
+                        else:
+                            line_data['price_unit'] = line.product_id.list_price
+                    
+                    line_commands.append((0, 0, line_data))
+        
+        # Agregar nota de tipo de cambio si es necesario
         if self.currency_id != company_currency:
-            # Convertir a moneda extranjera (USD)
-            for line in filtered_lines:
-                if line.display_type != 'line_note' and line.product_id:
-                    # Convertir desde precio base del producto (en MXN)
-                    line.price_unit = company_currency._convert(
-                        line.product_id.list_price,
-                        self.currency_id,
-                        self.company_id,
-                        self.date_order or fields.Date.today()
-                    )
-            
-            # Crear nota de tipo de cambio
             rate = company_currency._get_conversion_rate(
                 company_currency, 
                 self.currency_id, 
@@ -112,17 +148,11 @@ class SaleOrder(models.Model):
                         f"(tasa: {rate:.4f}) al {fecha_str} (Horario de Tijuana). "
                         f"Fuente: Sistema interno basado en Banco de México.")
             
-            # Agregar línea de nota
-            filtered_lines.append((0, 0, {
+            line_commands.append((0, 0, {
                 'display_type': 'line_note',
                 'name': note_text,
                 'sequence': 999,
             }))
-        else:
-            # Regresar a MXN - restaurar precios originales
-            for line in filtered_lines:
-                if line.display_type != 'line_note' and line.product_id:
-                    line.price_unit = line.product_id.list_price
         
-        # Actualizar las líneas manteniendo solo las filtradas
-        self.order_line = filtered_lines
+        # Aplicar los comandos
+        self.order_line = line_commands
