@@ -282,47 +282,24 @@
                         </t>
                     </t>
 
-                    <!-- Resumen final detallado -->
+                    <!-- Resumen final compacto -->
                     <div style="text-align: center; margin-top: 15px;">
-                        <table style="margin: 0 auto; border-collapse: collapse; font-size: 16px;">
+                        <table style="margin: 0 auto; border-collapse: collapse; font-size: 12px;">
                             <tr>
-                                <td style="padding: 8px 20px; border: 1px solid #ddd; background-color: #f8f9fa; font-weight: bold;">
-                                    Total de Muestras:
+                                <td style="padding: 4px 12px; border: 1px solid #ddd; background-color: #f8f9fa; font-weight: bold;">
+                                    Total: <span t-esc="total_samples"/>
                                 </td>
-                                <td style="padding: 8px 20px; border: 1px solid #ddd; font-weight: bold; color: #333;">
-                                    <span t-esc="total_samples"/>
+                                <td t-if="samples_recibidas > 0" style="padding: 4px 12px; border: 1px solid #ddd; background-color: #d4edda; color: #28a745; font-weight: bold;">
+                                    Recibidas: <span t-esc="samples_recibidas"/>
                                 </td>
-                            </tr>
-                            <tr t-if="samples_recibidas > 0">
-                                <td style="padding: 8px 20px; border: 1px solid #ddd; background-color: #d4edda;">
-                                    Muestras Recibidas:
+                                <td t-if="samples_no_recibidas > 0" style="padding: 4px 12px; border: 1px solid #ddd; background-color: #fff3cd; color: #856404; font-weight: bold;">
+                                    No Recibidas: <span t-esc="samples_no_recibidas"/>
                                 </td>
-                                <td style="padding: 8px 20px; border: 1px solid #ddd; color: #28a745; font-weight: bold;">
-                                    <span t-esc="samples_recibidas"/>
+                                <td t-if="samples_rechazadas > 0" style="padding: 4px 12px; border: 1px solid #ddd; background-color: #f8d7da; color: #dc3545; font-weight: bold;">
+                                    Rechazadas: <span t-esc="samples_rechazadas"/>
                                 </td>
-                            </tr>
-                            <tr t-if="samples_no_recibidas > 0">
-                                <td style="padding: 8px 20px; border: 1px solid #ddd; background-color: #fff3cd;">
-                                    Muestras No Recibidas:
-                                </td>
-                                <td style="padding: 8px 20px; border: 1px solid #ddd; color: #856404; font-weight: bold;">
-                                    <span t-esc="samples_no_recibidas"/>
-                                </td>
-                            </tr>
-                            <tr t-if="samples_rechazadas > 0">
-                                <td style="padding: 8px 20px; border: 1px solid #ddd; background-color: #f8d7da;">
-                                    Muestras Rechazadas:
-                                </td>
-                                <td style="padding: 8px 20px; border: 1px solid #ddd; color: #dc3545; font-weight: bold;">
-                                    <span t-esc="samples_rechazadas"/>
-                                </td>
-                            </tr>
-                            <tr t-if="samples_sin_procesar > 0">
-                                <td style="padding: 8px 20px; border: 1px solid #ddd; background-color: #e2e3e5;">
-                                    Muestras Sin Procesar:
-                                </td>
-                                <td style="padding: 8px 20px; border: 1px solid #ddd; color: #6c757d; font-weight: bold;">
-                                    <span t-esc="samples_sin_procesar"/>
+                                <td t-if="samples_sin_procesar > 0" style="padding: 4px 12px; border: 1px solid #ddd; background-color: #e2e3e5; color: #6c757d; font-weight: bold;">
+                                    Sin Procesar: <span t-esc="samples_sin_procesar"/>
                                 </td>
                             </tr>
                         </table>
