@@ -94,7 +94,7 @@ class PaymentComplementWizard(models.TransientModel):
                 'date': self.payment_date,
                 'journal_id': self.journal_id.id,
                 'payment_method_line_id': self.payment_method_line_id.id,
-                'ref': _('Pago para %s') % self.invoice_id.name,
+                'reference': _('Pago para %s') % self.invoice_id.name,  # Cambiar 'ref' por 'reference'
             }
             
             payment = self.env['account.payment'].create(payment_vals)
