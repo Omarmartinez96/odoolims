@@ -77,14 +77,20 @@ class SaleOrder(models.Model):
         # Obtener moneda de la compañía (MXN)
         company_currency = self.company_id.currency_id
         
-        # Solo procesar si es diferente a la moneda de la compañía
+        # Eliminar nota existente de forma segura
+        lines_to_keep = []
+        for line in self.order_line:
+            # Mantener todas las líneas excepto las notas de tipo de cambio
+            if not (line.display_type == 'line_note' and 'Tipo de cambio aplicado' in (line.name or '')):
+                lines_to_keep.append(line)
+        
         if self.currency_id != company_currency:
-            # Convertir precios de líneas existentes
-            for line in self.order_line:
-                if line.display_type != 'line_note' and line.price_unit > 0:
-                    # Convertir el precio actual de la línea desde MXN a la nueva moneda
+            # Convertir a moneda extranjera (USD)
+            for line in lines_to_keep:
+                if line.display_type != 'line_note' and line.product_id:
+                    # Siempre convertir desde el precio base del producto (en MXN)
                     line.price_unit = company_currency._convert(
-                        line.price_unit,  # Precio actual en MXN
+                        line.product_id.list_price,  # Precio base en MXN
                         self.currency_id,  # Nueva moneda (USD)
                         self.company_id,
                         self.date_order or fields.Date.today()
@@ -98,40 +104,27 @@ class SaleOrder(models.Model):
                 self.date_order or fields.Date.today()
             )
             
-            # Agregar nota informativa sobre tipo de cambio
-            self._add_exchange_rate_note(rate)
+            # Agregar nueva línea con nota
+            # Calcular tasa inversa
+            inverse_rate = 1 / rate if rate > 0 else 0
+            tz = pytz.timezone('America/Tijuana')
+            now_tj = datetime.now(tz)
+            fecha_str = now_tj.strftime('%d/%m/%Y a las %H:%M hrs')
+            
+            note_text = (f"Tipo de cambio aplicado: 1 USD = ${inverse_rate:.2f} MXN "
+                        f"(tasa: {rate:.4f}) al {fecha_str} (Horario de Tijuana). "
+                        f"Fuente: Sistema interno basado en Banco de México.")
+            
+            lines_to_keep.append((0, 0, {
+                'display_type': 'line_note',
+                'name': note_text,
+                'sequence': 999,
+            }))
         else:
-            # Si regresó a MXN, eliminar nota de tipo de cambio
-            existing_note = self.order_line.filtered(
-                lambda l: l.display_type == 'line_note' and 'Tipo de cambio aplicado' in (l.name or '')
-            )
-            if existing_note:
-                existing_note.unlink()
-
-    def _add_exchange_rate_note(self, rate):
-        # Buscar si ya existe una nota de tipo de cambio
-        existing_note = self.order_line.filtered(
-            lambda l: l.display_type == 'line_note' and 'Tipo de cambio aplicado' in (l.name or '')
-        )
+            # Regresar a MXN - restaurar precios originales
+            for line in lines_to_keep:
+                if line.display_type != 'line_note' and line.product_id:
+                    line.price_unit = line.product_id.list_price  # Precio original en MXN
         
-        # Si existe, eliminarla para evitar duplicados
-        if existing_note:
-            existing_note.unlink()
-        
-        # Crear nueva nota
-        # Obtener fecha/hora de Tijuana
-        tz = pytz.timezone('America/Tijuana')
-        now_tj = datetime.now(tz)
-        fecha_str = now_tj.strftime('%d/%m/%Y a las %H:%M hrs')
-        
-        # Calcular tasa inversa para mayor claridad
-        inverse_rate = 1 / rate if rate > 0 else 0
-        note_text = (f"Tipo de cambio aplicado: 1 USD = ${inverse_rate:.2f} MXN "
-                    f"(tasa: {rate:.4f}) al {fecha_str} (Horario de Tijuana). "
-                    f"Fuente: Sistema interno basado en Banco de México.")
-        
-        self.order_line = [(0, 0, {
-            'display_type': 'line_note',
-            'name': note_text,
-            'sequence': 999,  # Al final
-        })]
+        # Actualizar las líneas de forma segura
+        self.order_line = [(5, 0, 0)] + [(4, line.id, 0) if hasattr(line, 'id') and line.id else line for line in lines_to_keep]
