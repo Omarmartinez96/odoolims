@@ -6,18 +6,18 @@ class AccountMove(models.Model):
 
     name = fields.Char(string='Número', required=True, copy=False, readonly=False, index=True, default='/')
 
-    @api.model
-    def _get_sequence_prefix_suffix(self):
-        """Deshabilitar secuencia automática para facturas"""
-        if self.move_type == 'out_invoice':
-            return '', ''
-        return super()._get_sequence_prefix_suffix()
+    # @api.model
+    # def _get_sequence_prefix_suffix(self):
+    #     """Deshabilitar secuencia automática para facturas"""
+    #     if self.move_type == 'out_invoice':
+    #         return '', ''
+    #     return super()._get_sequence_prefix_suffix()
 
-    def _set_next_sequence(self):
-        """Evitar que Odoo asigne secuencia automática"""
-        if self.move_type == 'out_invoice':
-            return
-        return super()._set_next_sequence()
+    # def _set_next_sequence(self):
+    #     """Evitar que Odoo asigne secuencia automática"""
+    #     if self.move_type == 'out_invoice':
+    #         return
+    #     return super()._set_next_sequence()
 
     @api.model_create_multi
     def create(self, vals_list):
