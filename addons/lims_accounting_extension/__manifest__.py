@@ -8,7 +8,9 @@
         'l10n_mx_edi',
     ],
     'data': [
+        'security/ir.model.access.csv',  # AGREGAR
         'views/account_move_views.xml',
+        'wizard/payment_wizard_views.xml',  # AGREGAR
     ],
     'installable': True,
     'application': True,
