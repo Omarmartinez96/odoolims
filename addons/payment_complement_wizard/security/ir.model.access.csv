@@ -1,4 +1,0 @@
-id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
-access_payment_complement_wizard_user,payment.complement.wizard.user,model_payment_complement_wizard,account.group_account_user,1,1,1,1
-access_payment_complement_wizard_manager,payment.complement.wizard.manager,model_payment_complement_wizard,account.group_account_manager,1,1,1,1
-access_payment_complement_wizard_invoice,payment.complement.wizard.invoice,model_payment_complement_wizard,account.group_account_invoice,1,1,1,1
