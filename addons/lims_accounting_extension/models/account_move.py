@@ -39,7 +39,7 @@ class AccountMove(models.Model):
 
                 max_num = max([extract_number(rec.name) for rec in existing], default=0)
                 next_num = max_num + 1
-                vals['name'] = f'INV-{next_num}'
+                vals['name'] = f'INV-{str(next_num).zfill(3)}'
 
         return super(AccountMove, self).create(vals_list)
 
@@ -48,4 +48,3 @@ class AccountMove(models.Model):
         result = super().write(vals)
         return result
 
-    # ELIMINAR COMPLETAMENTE el método _get_last_sequence_domain
