@@ -48,9 +48,4 @@ class AccountMove(models.Model):
         result = super().write(vals)
         return result
 
-    @api.model
-    def _get_last_sequence_domain(self, relaxed=False):
-        """Personalizar búsqueda de última secuencia para evitar conflictos"""
-        if self.move_type == 'out_invoice':
-            return "", {}  # String vacío y diccionario vacío
-        return super()._get_last_sequence_domain(relaxed)
+    # ELIMINAR COMPLETAMENTE el método _get_last_sequence_domain
