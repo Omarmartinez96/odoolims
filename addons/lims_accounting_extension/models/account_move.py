@@ -6,11 +6,6 @@ class AccountMove(models.Model):
 
     name = fields.Char(string='Número', required=True, copy=False, readonly=False, index=True, default='/')
 
-    report_language = fields.Selection([
-        ('es', 'Español'),
-        ('en', 'English'),
-    ], string='Idioma del Reporte', default='es')
-
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -39,10 +34,3 @@ class AccountMove(models.Model):
         """Cuando se modifica manualmente el número, actualizar referencia"""
         result = super().write(vals)
         return result
-
-    def action_invoice_print(self):
-        """Override para usar el idioma seleccionado"""
-        self.ensure_one()
-        return self.env.ref('account.account_invoices').with_context(
-            lang=self.report_language
-        ).report_action(self)

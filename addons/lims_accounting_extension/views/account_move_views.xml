@@ -11,10 +11,6 @@
         <attribute name="readonly">0</attribute>
       </xpath>
 
-      <xpath expr="//field[@name='name']" position="after">
-        <field name="report_language"/>
-      </xpath>
-
     </field>
   </record>
 </odoo>
