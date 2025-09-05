@@ -11,6 +11,14 @@
         <attribute name="readonly">0</attribute>
       </xpath>
 
+      <xpath expr="//button[@name='action_register_payment']" position="after">
+        <button name="action_open_payment_wizard" 
+                type="object" 
+                string="Complemento PPD" 
+                class="btn-primary"
+                invisible="move_type != 'out_invoice' or l10n_mx_edi_payment_method_id != 'PPD' or state != 'posted' or payment_state == 'paid'"/>
+      </xpath>
+
     </field>
   </record>
 </odoo>

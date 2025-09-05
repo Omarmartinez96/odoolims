@@ -41,11 +41,5 @@
         <field name="view_mode">form</field>
         <field name="target">new</field>
     </record>
-
-    <!-- Menú de acceso -->
-    <menuitem id="menu_payment_wizard"
-              name="Complementos PPD"
-              parent="account.menu_finance_receivables"
-              action="action_payment_wizard"
-              sequence="20"/>
+    
 </odoo>

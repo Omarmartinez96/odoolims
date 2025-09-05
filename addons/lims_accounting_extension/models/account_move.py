@@ -34,3 +34,19 @@ class AccountMove(models.Model):
         """Cuando se modifica manualmente el número, actualizar referencia"""
         result = super().write(vals)
         return result
+    
+    def action_open_payment_wizard(self):
+        """Abrir wizard de complemento PPD con factura preseleccionada"""
+        self.ensure_one()
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Generar Complemento PPD',
+            'res_model': 'payment.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_invoice_id': self.id,
+                'default_amount': self.amount_residual,
+            }
+        }
