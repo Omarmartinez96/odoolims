@@ -6,18 +6,10 @@ class AccountMove(models.Model):
 
     name = fields.Char(string='Número', required=True, copy=False, readonly=False, index=True, default='/')
 
-    # @api.model
-    # def _get_sequence_prefix_suffix(self):
-    #     """Deshabilitar secuencia automática para facturas"""
-    #     if self.move_type == 'out_invoice':
-    #         return '', ''
-    #     return super()._get_sequence_prefix_suffix()
-
-    # def _set_next_sequence(self):
-    #     """Evitar que Odoo asigne secuencia automática"""
-    #     if self.move_type == 'out_invoice':
-    #         return
-    #     return super()._set_next_sequence()
+    report_language = fields.Selection([
+        ('es', 'Español'),
+        ('en', 'English'),
+    ], string='Idioma del Reporte', default='es')
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -48,3 +40,9 @@ class AccountMove(models.Model):
         result = super().write(vals)
         return result
 
+    def action_invoice_print(self):
+        """Override para usar el idioma seleccionado"""
+        self.ensure_one()
+        return self.env.ref('account.account_invoices').with_context(
+            lang=self.report_language
+        ).report_action(self)
