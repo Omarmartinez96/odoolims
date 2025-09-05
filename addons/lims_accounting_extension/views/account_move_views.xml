@@ -17,7 +17,7 @@
                 type="object" 
                 string="Complemento PPD" 
                 class="btn-primary"
-                invisible="move_type != 'out_invoice' or state != 'posted' or not l10n_mx_edi_payment_method_id or l10n_mx_edi_payment_method_id.code != 'PPD'"/>
+                invisible="move_type != 'out_invoice' or state != 'posted'"/>
       </xpath>
 
     </field>
