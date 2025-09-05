@@ -52,5 +52,5 @@ class AccountMove(models.Model):
     def _get_last_sequence_domain(self, relaxed=False):
         """Personalizar búsqueda de última secuencia para evitar conflictos"""
         if self.move_type == 'out_invoice':
-            return "", []  # Tupla con string vacío y lista vacía
+            return "", {}  # String vacío y diccionario vacío
         return super()._get_last_sequence_domain(relaxed)
