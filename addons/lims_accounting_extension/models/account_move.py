@@ -13,22 +13,23 @@ class AccountMove(models.Model):
             if (vals.get('move_type') == 'out_invoice' and 
                 vals.get('name', '/') == '/'):
                 
-                # Buscar todas las facturas existentes con formato INV-XXX
+                # Buscar facturas con formato INV-XXX únicamente
                 existing = self.search([
                     ('move_type', '=', 'out_invoice'),
                     ('name', 'like', 'INV-%'),
                     ('name', '!=', '/')
                 ])
 
-                # Obtener el mayor consecutivo existente
+                # Extraer números del formato: INV-XXX
                 def extract_number(name):
                     try:
                         return int(name.replace('INV-', ''))
                     except Exception:
                         return 0
 
-                max_num = max([extract_number(rec.name) for rec in existing], default=0)
-                next_num = str(max_num + 1).zfill(3)
+                # Obtener el mayor número existente, mínimo 569 (para que próximo sea 570)
+                max_num = max([extract_number(rec.name) for rec in existing], default=569)
+                next_num = max_num + 1
                 vals['name'] = f'INV-{next_num}'
 
         return super(AccountMove, self).create(vals_list)
