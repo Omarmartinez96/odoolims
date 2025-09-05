@@ -10,13 +10,13 @@ class AccountMove(models.Model):
     def _get_sequence_prefix_suffix(self):
         """Deshabilitar secuencia automática para facturas"""
         if self.move_type == 'out_invoice':
-            return '', ''  # Sin prefijo ni sufijo automático
+            return '', ''
         return super()._get_sequence_prefix_suffix()
 
     def _set_next_sequence(self):
         """Evitar que Odoo asigne secuencia automática"""
         if self.move_type == 'out_invoice':
-            return  # No hacer nada, usar nuestro formato
+            return
         return super()._set_next_sequence()
 
     @api.model_create_multi
@@ -25,6 +25,7 @@ class AccountMove(models.Model):
             if (vals.get('move_type') == 'out_invoice' and 
                 vals.get('name', '/') == '/'):
                 
+                # Buscar facturas con formato INV-XXX
                 existing = self.search([
                     ('move_type', '=', 'out_invoice'),
                     ('name', 'like', 'INV-%'),
@@ -37,8 +38,21 @@ class AccountMove(models.Model):
                     except Exception:
                         return 0
 
-                max_num = max([extract_number(rec.name) for rec in existing], default=569)
+                # Empezar en 1 si no hay facturas, sino continuar del máximo
+                max_num = max([extract_number(rec.name) for rec in existing], default=0)
                 next_num = max_num + 1
                 vals['name'] = f'INV-{next_num}'
 
         return super(AccountMove, self).create(vals_list)
+
+    def write(self, vals):
+        """Cuando se modifica manualmente el número, actualizar referencia"""
+        result = super().write(vals)
+        return result
+
+    @api.model
+    def _get_last_sequence_domain(self, relaxed=False):
+        """Personalizar búsqueda de última secuencia para evitar conflictos"""
+        if self.move_type == 'out_invoice':
+            return []  # No buscar secuencias automáticas para facturas
+        return super()._get_last_sequence_domain(relaxed)
