@@ -25,7 +25,6 @@ class AccountMove(models.Model):
             if (vals.get('move_type') == 'out_invoice' and 
                 vals.get('name', '/') == '/'):
                 
-                # Buscar facturas con formato INV-XXX
                 existing = self.search([
                     ('move_type', '=', 'out_invoice'),
                     ('name', 'like', 'INV-%'),
@@ -38,7 +37,6 @@ class AccountMove(models.Model):
                     except Exception:
                         return 0
 
-                # Empezar en 1 si no hay facturas, sino continuar del máximo
                 max_num = max([extract_number(rec.name) for rec in existing], default=0)
                 next_num = max_num + 1
                 vals['name'] = f'INV-{next_num}'
@@ -54,5 +52,5 @@ class AccountMove(models.Model):
     def _get_last_sequence_domain(self, relaxed=False):
         """Personalizar búsqueda de última secuencia para evitar conflictos"""
         if self.move_type == 'out_invoice':
-            return []  # No buscar secuencias automáticas para facturas
+            return "", []  # Tupla con string vacío y lista vacía
         return super()._get_last_sequence_domain(relaxed)
