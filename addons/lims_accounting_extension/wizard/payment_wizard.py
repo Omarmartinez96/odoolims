@@ -75,8 +75,9 @@ class PaymentWizard(models.TransientModel):
                               (self.amount, self.invoice_id.amount_residual))
             
             # Verificar que sea factura PPD
-            if self.invoice_id.l10n_mx_edi_payment_method_id != 'PPD':
-                raise UserError(_('Error: Solo se pueden generar complementos para facturas PPD'))
+            raise UserError(_('Debug - Método de pago detectado: "%s" (tipo: %s)') % 
+                            (self.invoice_id.l10n_mx_edi_payment_method_id, 
+                            type(self.invoice_id.l10n_mx_edi_payment_method_id)))
             
             # Paso 1: Crear contexto para wizard nativo
             ctx = {
