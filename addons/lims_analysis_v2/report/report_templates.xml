@@ -45,30 +45,30 @@
 
             <!-- HEADER GLOBAL (FUERA DEL LOOP) -->
             <div class="header">
-                <table style="height: 180px; border: none !important; border-collapse: collapse !important; width: 100%;">
-                    <tr style="height: 150px; border: none !important;">
+                <table style="height: 100px; border: none !important; border-collapse: collapse !important; width: 100%;">
+                    <tr style="height: 80px; border: none !important;">
                         <!-- LOGO IZQUIERDA -->
-                        <td style="width: 20%; text-align: left; vertical-align: middle; border: none !important; padding: 25px 15px;">
+                        <td style="width: 20%; text-align: left; vertical-align: middle; border: none !important; padding: 10px 8px;">
                             <img t-if="company.logo"
                                 t-att-src="image_data_uri(company.logo)"
-                                style="max-height: 140px; width: auto;"/>
+                                style="max-height: 60px; width: auto;"/>
                         </td>
                         
                         <!-- INFORMACIÓN DEL LABORATORIO CENTRO -->
-                        <td style="width: 60%; text-align: center; vertical-align: middle; border: none !important; padding: 25px 15px;">
+                        <td style="width: 60%; text-align: center; vertical-align: middle; border: none !important; padding: 10px 5px;">
                             <div style="text-align: center; font-family: Arial, sans-serif;">
                                 <!-- Nombre del laboratorio - SIEMPRE EN ESPAÑOL -->
-                                <div style="font-size: 20px; font-weight: bold; color: #000; margin-bottom: 4px;">
+                                <div style="font-size: 18px; font-weight: bold; color: #000; margin-bottom: 2px;">
                                     Laboratorio de Microbiología
                                 </div>
                                 
                                 <!-- Nombre PROTEUS - SIEMPRE IGUAL -->
-                                <div style="font-size: 20px; font-weight: bold; color: #000; margin-bottom: 14px;">
+                                <div style="font-size: 18px; font-weight: bold; color: #000; margin-bottom: 8px;">
                                     PROTEUS
                                 </div>
                                 
                                 <!-- ✅ TIPO DE REPORTE - SIN DEBUG -->
-                                <div style="font-size: 16px; font-weight: bold; color: #000;">
+                                <div style="font-size: 14px; font-weight: bold; color: #000; position: absolute; left: 50%; transform: translateX(-50%); width: 100vw; margin-left: -50vw;">
                                     <t t-if="language == 'es'">INFORME DE ENSAYO</t>
                                     <t t-else="">TEST REPORT</t>
                                 </div>
@@ -76,8 +76,8 @@
                         </td>
                         
                         <!-- LOGOS PLACEHOLDER DERECHA -->
-                        <td style="width: 20%; text-align: right; vertical-align: middle; border: none !important; padding: 25px 15px !important;">
-                            <div style="border: 1px solid #000; padding: 15px; min-height: 80px; display: flex; align-items: center; justify-content: center; font-size: 12px; width: 100%; box-sizing: border-box;">
+                        <td style="width: 20%; text-align: right; vertical-align: middle; border: none !important; padding: 10px 8px;">
+                            <div style="border: 1px solid #000; padding: 6px; min-height: 35px; display: flex; align-items: center; justify-content: center; font-size: 8px; width: 100%; box-sizing: border-box;">
                                 [ILAC LOGOS]
                             </div>
                         </td>
@@ -87,7 +87,7 @@
 
             <!-- FOOTER GLOBAL (FUERA DEL LOOP) -->
             <div class="footer">
-                <table style="width: 100%; font-size: 9px; margin: 0; padding: 0; border-top: 1px solid #000; font-family: Arial, sans-serif;">
+                <table style="width: 100%; font-size: 9px; margin: 0; padding: 0 0 15px 0; border-top: 1px solid #000; font-family: Arial, sans-serif;">
                     <tr>
                         <td style="width: 33%; text-align: left; padding: 3px;">
                             Teléfono: (664) 973-8185
@@ -136,36 +136,36 @@
                         <!-- INFORMACIÓN SUPERIOR -->
                         <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin: 15px 0 1px 0;">
                             <tr>
-                                <td style="width: 25%; padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
+                                <td style="width: 15%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
                                     <t t-if="language == 'es'">Identificación de la muestra:</t>
                                     <t t-else="">Sample identification:</t>
                                 </td>
-                                <td style="width: 25%; padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;"><span t-esc="analysis.sample_identifier or 'Sin identificación'"/></td>
-                                <td style="width: 25%; padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
+                                <td style="width: 45%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;"><span t-esc="analysis.sample_identifier or 'Sin identificación'"/></td>
+                                <td style="width: 10%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
                                     <t t-if="language == 'es'">Fecha de emisión:</t>
                                     <t t-else="">Issue date:</t>
                                 </td>
-                                <td style="width: 25%; padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">
+                                <td style="width: 10%; padding: 1px 15px 1px 15px; vertical-align: middle; line-height: 1.2; text-align: left;">
                                     <t t-set="today" t-value="datetime.datetime.now()"/>
                                     <span t-esc="today.strftime('%d/%b/%Y')"/>
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
+                                <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
                                     <t t-if="language == 'es'">Descripción de la muestra:</t>
                                     <t t-else="">Sample description:</t>
                                 </td>
-                                <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">
+                                <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
                                     <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id">
                                         <span t-esc="analysis.sample_reception_id.sample_id.sample_description or 'Sin descripción'"/>
                                     </t>
                                     <t t-else="">Sin descripción</t>
                                 </td>
-                                <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
+                                <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
                                     <t t-if="language == 'es'">Cadena de custodia:</t>
                                     <t t-else="">Chain of custody:</t>
                                 </td>
-                                <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;"><span t-esc="analysis.custody_chain_code or 'Sin código'"/></td>
+                                <td style="width: 10%; padding: 1px 15px 1px 15px; vertical-align: middle; line-height: 1.2; text-align: left;"><span t-esc="analysis.custody_chain_code or 'Sin código'"/></td>
                             </tr>
                         </table>
 
@@ -231,18 +231,18 @@
                         <!-- INFORMACIÓN DE MUESTREO Y RECEPCIÓN -->
                         <table style="width: 100%; border-collapse: collapse; margin: 8px 0; page-break-inside: avoid;">
                             <tr>
-                                <td style="width: 50%; vertical-align: top; padding: 0 8px;">
+                                <td style="width: 50%; vertical-align: middle; padding: 0 8px;">
                                     <div style="background-color: rgb(218,227,243); font-weight: bold; padding: 6px; text-align: center; font-size: 12px; margin: 10px 0 5px 0; page-break-inside: avoid;">
                                         <t t-if="language == 'es'">INFORMACIÓN DE MUESTREO</t>
                                         <t t-else="">SAMPLING INFORMATION</t>
                                     </div>
                                     <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin: 1px 0;">
                                         <tr>
-                                            <td style="width: 45%; padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
+                                            <td style="width: 45%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
                                                 <t t-if="language == 'es'">Fecha y hora de muestreo:</t>
                                                 <t t-else="">Sampling date and time:</t>
                                             </td>
-                                            <td style="width: 55%; padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">
+                                            <td style="width: 55%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
                                                 <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sampling_date">
                                                     <span t-esc="analysis.sample_reception_id.sample_id.sampling_date.strftime('%d/%b/%Y')"/>
                                                 </t>
@@ -250,8 +250,8 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Tipo de muestra:</td>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Tipo de muestra:</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
                                                 <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sample_type_id">
                                                     <span t-esc="analysis.sample_reception_id.sample_id.sample_type_id.name"/>
                                                 </t>
@@ -259,33 +259,33 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Sitio de muestreo:</td>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">Empresa</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Sitio de muestreo:</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">Empresa</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Muestreador:</td>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">Cliente</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Muestreador:</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">Cliente</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Método/plan de muestreo (si aplica):</td>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">N/A</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Método/plan de muestreo (si aplica):</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">N/A</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Observaciones:</td>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">Muestra proporcionada por el cliente</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Observaciones:</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">Muestra proporcionada por el cliente</td>
                                         </tr>
                                     </table>
                                 </td>
                                 
-                                <td style="width: 50%; vertical-align: top; padding: 0 8px;">
+                                <td style="width: 50%; vertical-align: middle; padding: 0 8px;">
                                     <div style="background-color: rgb(218,227,243); font-weight: bold; padding: 6px; text-align: center; font-size: 12px; margin: 10px 0 5px 0; page-break-inside: avoid;">
                                         <t t-if="language == 'es'">INFORMACIÓN DE RECEPCIÓN</t>
                                         <t t-else="">RECEPTION INFORMATION</t>
                                     </div>
                                     <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin: 1px 0;">
                                         <tr>
-                                            <td style="width: 45%; padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Fecha y hora de recepción:</td>
-                                            <td style="width: 55%; padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">
+                                            <td style="width: 45%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Fecha y hora de recepción:</td>
+                                            <td style="width: 55%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
                                                 <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.reception_date">
                                                     <span t-esc="analysis.sample_reception_id.reception_date.strftime('%d/%b/%Y')"/>
                                                 </t>
@@ -293,28 +293,28 @@
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Clave de la muestra:</td>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;"><span t-esc="analysis.sample_code or 'Sin código'"/></td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Clave de la muestra:</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;"><span t-esc="analysis.sample_code or 'Sin código'"/></td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Cantidad de muestra:</td>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">100g</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Cantidad de muestra:</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">100g</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Temperatura de recepción:</td>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">-</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Temperatura de recepción:</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">-</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Recipiente de la muestra:</td>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">Envase original</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Recipiente de la muestra:</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">Envase original</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Recibió:</td>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">Daniela Rangel</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Recibió:</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">Daniela Rangel</td>
                                         </tr>
                                         <tr>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Observaciones:</td>
-                                            <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">Sin observaciones</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Observaciones:</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">Sin observaciones</td>
                                         </tr>
                                     </table>
                                 </td>
@@ -324,32 +324,32 @@
                         <!-- DATOS DEL ANÁLISIS -->
                         <div style="background-color: rgb(218,227,243); font-weight: bold; padding: 6px; text-align: center; font-size: 12px; margin: 10px 0 5px 0; page-break-inside: avoid;">DATOS DEL ANÁLISIS</div>
                         
-                        <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin: 8px 0; page-break-inside: auto; border: none;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin: 8px auto; page-break-inside: auto; border: none;">
                             <thead>
                                 <tr style="page-break-inside: avoid;">
-                                    <th style="width: 14%; border: none; padding: 5px 3px; vertical-align: top; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">Parámetro</th>
-                                    <th style="width: 18%; border: none; padding: 5px 3px; vertical-align: top; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">Método</th>
-                                    <th style="width: 3%; border: none; padding: 5px 3px; vertical-align: top; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">C</th>
-                                    <th style="width: 3%; border: none; padding: 5px 3px; vertical-align: top; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">T</th>
-                                    <th style="width: 4%; border: none; padding: 5px 3px; vertical-align: top; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">LAB</th>
-                                    <th style="width: 12%; border: none; padding: 5px 3px; vertical-align: top; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">Resultado</th>
-                                    <th style="width: 10%; border: none; padding: 5px 3px; vertical-align: top; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">Unidades</th>
-                                    <th style="width: 12%; border: none; padding: 5px 3px; vertical-align: top; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">Referencia</th>
-                                    <th style="width: 10%; border: none; padding: 5px 3px; vertical-align: top; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">Fecha de análisis</th>
-                                    <th style="width: 4%; border: none; padding: 5px 3px; vertical-align: top; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">AN</th>
+                                    <th style="width: 14%; border: none; padding: 5px 3px; vertical-align: middle; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">Parámetro</th>
+                                    <th style="width: 18%; border: none; padding: 5px 3px; vertical-align: middle; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">Método</th>
+                                    <th style="width: 3%; border: none; padding: 5px 3px; vertical-align: middle; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">C</th>
+                                    <th style="width: 3%; border: none; padding: 5px 3px; vertical-align: middle; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">T</th>
+                                    <th style="width: 4%; border: none; padding: 5px 3px; vertical-align: middle; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">LAB</th>
+                                    <th style="width: 12%; border: none; padding: 5px 3px; vertical-align: middle; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">Resultado</th>
+                                    <th style="width: 10%; border: none; padding: 5px 3px; vertical-align: middle; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">Unidades</th>
+                                    <th style="width: 12%; border: none; padding: 5px 3px; vertical-align: middle; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">Referencia</th>
+                                    <th style="width: 10%; border: none; padding: 5px 3px; vertical-align: middle; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">Fecha de análisis</th>
+                                    <th style="width: 4%; border: none; padding: 5px 3px; vertical-align: middle; text-align: center; background-color: rgb(218,227,243); font-weight: bold; font-size: 10px;">AN</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <t t-set="analysis_params" t-value="analysis.parameter_analysis_ids.filtered(lambda p: (p.report_status == 'ready' if status == 'preliminary' else p.report_status in ['ready', 'reported']))"/>
                                 <t t-foreach="analysis_params" t-as="parameter">
                                     <tr style="page-break-inside: avoid;">
-                                        <td style="border: none; padding: 5px 3px; vertical-align: top; text-align: center;"><span t-esc="parameter.microorganism or parameter.name or 'Sin nombre'"/></td>
-                                        <td style="border: none; padding: 5px 3px; vertical-align: top; text-align: center;"><span t-esc="parameter.method or 'No especificado'"/></td>
-                                        <td style="border: none; padding: 5px 3px; vertical-align: top; text-align: center;">C</td>
-                                        <td style="border: none; padding: 5px 3px; vertical-align: top; text-align: center;">T</td>
-                                        <td style="border: none; padding: 5px 3px; vertical-align: top; text-align: center;">LAB</td>
-                                        <td style="border: none; padding: 5px 3px; vertical-align: top; text-align: center;"><span t-esc="parameter.result_value or 'Sin resultado'"/></td>
-                                        <td style="border: none; padding: 5px 3px; vertical-align: top; text-align: center;">
+                                        <td style="border: none; padding: 5px 3px; vertical-align: middle; text-align: center;"><span t-esc="parameter.microorganism or parameter.name or 'Sin nombre'"/></td>
+                                        <td style="border: none; padding: 5px 3px; vertical-align: middle; text-align: center;"><span t-esc="parameter.method or 'No especificado'"/></td>
+                                        <td style="border: none; padding: 5px 3px; vertical-align: middle; text-align: center;">C</td>
+                                        <td style="border: none; padding: 5px 3px; vertical-align: middle; text-align: center;">T</td>
+                                        <td style="border: none; padding: 5px 3px; vertical-align: middle; text-align: center;">LAB</td>
+                                        <td style="border: none; padding: 5px 3px; vertical-align: middle; text-align: center;"><span t-esc="parameter.result_value or 'Sin resultado'"/></td>
+                                        <td style="border: none; padding: 5px 3px; vertical-align: middle; text-align: center;">
                                             <t t-if="parameter.result_unit_selection == 'custom'">
                                                 <span t-esc="parameter.custom_unit or ''"/>
                                             </t>
@@ -360,14 +360,14 @@
                                                 <span t-esc="parameter.unit or ''"/>
                                             </t>
                                         </td>
-                                        <td style="border: none; padding: 5px 3px; vertical-align: top; text-align: center;">Límites del cliente</td>
-                                        <td style="border: none; padding: 5px 3px; vertical-align: top; text-align: center;">
+                                        <td style="border: none; padding: 5px 3px; vertical-align: middle; text-align: center;">Límites del cliente</td>
+                                        <td style="border: none; padding: 5px 3px; vertical-align: middle; text-align: center;">
                                             <t t-if="parameter.analysis_date">
                                                 <span t-esc="parameter.analysis_date.strftime('%d/%b/%Y')"/>
                                             </t>
                                             <t t-else="">-</t>
                                         </td>
-                                        <td style="border: none; padding: 5px 3px; vertical-align: top; text-align: center;"><span t-esc="parameter.analyst_names or 'N/A'"/></td>
+                                        <td style="border: none; padding: 5px 3px; vertical-align: middle; text-align: center;"><span t-esc="parameter.analyst_names or 'N/A'"/></td>
                                     </tr>
                                 </t>
                             </tbody>
@@ -377,12 +377,12 @@
                         <div style="margin-top: 15px; font-size: 11px;">
                             <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin: 1px 0;">
                                 <tr>
-                                    <td style="width: 25%; padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Referencia normativa:</td>
-                                    <td style="width: 75%; padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">Límites de referencia proporcionados por el cliente.</td>
+                                    <td style="width: 25%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Referencia normativa:</td>
+                                    <td style="width: 75%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">Límites de referencia proporcionados por el cliente.</td>
                                 </tr>
                                 <tr>
-                                    <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Observaciones analíticas y de resultados:</td>
-                                    <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">Sin observaciones.</td>
+                                    <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Observaciones analíticas y de resultados:</td>
+                                    <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">Sin observaciones.</td>
                                 </tr>
                             </table>
                         </div>
