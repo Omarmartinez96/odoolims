@@ -176,11 +176,11 @@
                         </div>
                         <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin: 1px 0;">
                             <tr>
-                                <td style="width: 22%; padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
+                                <td style="width: 22%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
                                     <t t-if="language == 'es'">Nombre o Razón social:</t>
                                     <t t-else="">Name or Company name:</t>
                                 </td>
-                                <td style="width: 78%; padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">
+                                <td style="width: 78%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
                                     <t t-if="analysis.customer_id">
                                         <span t-esc="analysis.customer_id.name"/>
                                     </t>
@@ -188,11 +188,11 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
+                                <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
                                     <t t-if="language == 'es'">Dirección fiscal:</t>
                                     <t t-else="">Fiscal address:</t>
                                 </td>
-                                <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">
+                                <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
                                     <t t-if="analysis.customer_id">
                                         <span t-esc="analysis.customer_id.street or ''"/>
                                         <t t-if="analysis.customer_id.street2">, <span t-esc="analysis.customer_id.street2"/></t>
@@ -203,11 +203,11 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
+                                <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
                                     <t t-if="language == 'es'">Código de cliente:</t>
                                     <t t-else="">Customer code:</t>
                                 </td>
-                                <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">
+                                <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
                                     <t t-if="analysis.customer_id and analysis.customer_id.client_code">
                                         <span t-esc="analysis.customer_id.client_code"/>
                                     </t>
@@ -215,11 +215,11 @@
                                 </td>
                             </tr>
                             <tr>
-                                <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
+                                <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
                                     <t t-if="language == 'es'">Contacto:</t>
                                     <t t-else="">Contact:</t>
                                 </td>
-                                <td style="padding: 1px 2px; vertical-align: top; line-height: 1.2; text-align: left;">
+                                <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
                                     <t t-if="analysis.custody_chain_id and analysis.custody_chain_id.contact_ids">
                                         <span t-esc="', '.join([c.name for c in analysis.custody_chain_id.contact_ids])"/>
                                     </t>
