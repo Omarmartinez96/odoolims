@@ -136,12 +136,12 @@
                         <!-- INFORMACIÓN SUPERIOR -->
                         <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin: 15px 0 1px 0;">
                             <tr>
-                                <td style="width: 15%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
+                                <td style="width: 25%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
                                     <t t-if="language == 'es'">Identificación de la muestra:</t>
                                     <t t-else="">Sample identification:</t>
                                 </td>
                                 <td style="width: 45%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;"><span t-esc="analysis.sample_identifier or 'Sin identificación'"/></td>
-                                <td style="width: 10%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
+                                <td style="width: 20%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
                                     <t t-if="language == 'es'">Fecha de emisión:</t>
                                     <t t-else="">Issue date:</t>
                                 </td>
