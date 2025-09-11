@@ -128,12 +128,12 @@
                     <strong>Cadena de Custodia:</strong> <span t-esc="doc.custody_chain_code"/>
                   </td>
                   <td style="width:50%; padding:4px; text-align:right;">
-                    <strong>Fecha de emisión:</strong>
-                    <t t-set="today" t-value="datetime.datetime.now()"/>
-                    <t t-set="d_today" t-value="today.strftime('%d')"/>
-                    <t t-set="m_today" t-value="today.strftime('%m')"/>
-                    <t t-set="y_today" t-value="today.strftime('%Y')"/>
-                    <span t-esc="d_today + '/' + meses[m_today] + '/' + y_today"/>
+                    <strong>Fecha de cadena de custodia:</strong>
+                    <t t-set="chain_date" t-value="doc.date_chainofcustody"/>
+                    <t t-set="d_chain" t-value="chain_date.strftime('%d')"/>
+                    <t t-set="m_chain" t-value="chain_date.strftime('%m')"/>
+                    <t t-set="y_chain" t-value="chain_date.strftime('%Y')"/>
+                    <span t-esc="d_chain + '/' + meses[m_chain] + '/' + y_chain"/>
                   </td>
                 </tr>
                 <!-- Fila 2: Cliente y código  -->
