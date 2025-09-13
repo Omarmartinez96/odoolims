@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- ========== VISTA FORMULARIO EXTENDIDA DE EQUIPOS ========== -->
+        <record id="view_lims_lab_equipment_form_inherited" model="ir.ui.view">
+            <field name="name">lims.lab.equipment.form.inherited</field>
+            <field name="model">lims.lab.equipment</field>
+            <field name="inherit_id" ref="lims_analysis_config.view_lims_lab_equipment_form"/>
+            <field name="arch" type="xml">
+                
+                <!-- Agregar botón en el header -->
+                <xpath expr="//form/header" position="inside">
+                    <button name="action_sync_equipment_historical_usage"
+                            type="object"
+                            string="🔄 Sincronizar Bitácora"
+                            class="btn-info"
+                            confirm="¿Sincronizar el uso histórico de este equipo? Esto creará registros automáticos basados en los análisis realizados."/>
+                    
+                    <button name="action_view_usage_log"
+                            type="object"
+                            string="📋 Ver Bitácora de Uso"
+                            class="btn-secondary"/>
+                </xpath>
+
+                <!-- Agregar información de uso después de las fechas de calibración -->
+                <xpath expr="//group[last()]" position="after">
+                    
+                    <!-- Estadísticas de Uso -->
+                    <group string="📊 Estadísticas de Uso" colspan="4">
+                        <div class="o_field_widget o_readonly_modifier">
+                            <div class="row">
+                                <div class="col-3">
+                                    <div class="text-center">
+                                        <div class="h2 text-primary">
+                                            <field name="usage_log_count"/>
+                                        </div>
+                                        <small>Total de Usos</small>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-center">
+                                        <div class="h2 text-success">
+                                            <field name="total_usage_hours"/>
+                                        </div>
+                                        <small>Horas Totales</small>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-center">
+                                        <field name="is_currently_in_use" widget="boolean_toggle"/>
+                                        <br/><small>En Uso Actual</small>
+                                    </div>
+                                </div>
+                                <div class="col-3">
+                                    <div class="text-center">
+                                        <button name="action_view_usage_log" 
+                                                type="object" 
+                                                string="Ver Historial" 
+                                                class="btn btn-sm btn-outline-primary"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </group>
+
+                    <!-- Uso Actual (si existe) -->
+                    <group string="🔄 Uso Actual" invisible="is_currently_in_use == False">
+                        <field name="current_usage_id" readonly="1">
+                            <form string="Uso Actual">
+                                <group>
+                                    <field name="usage_type" readonly="1"/>
+                                    <field name="process_context" readonly="1"/>
+                                    <field name="start_datetime" readonly="1"/>
+                                    <field name="used_by_name" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="related_analysis_id" readonly="1"/>
+                                    <field name="sample_code" readonly="1"/>
+                                    <field name="usage_notes" readonly="1"/>
+                                </group>
+                            </form>
+                        </field>
+                    </group>
+                    
+                </xpath>
+
+                <!-- Agregar notebook con historial de uso -->
+                <xpath expr="//sheet" position="inside">
+                    <notebook>
+                        <page string="📋 Historial de Uso">
+                            <field name="usage_log_ids" nolabel="1" readonly="1">
+                                <list string="Registros de Uso" 
+                                      decoration-success="end_datetime != False"
+                                      decoration-info="is_active_use == True"
+                                      decoration-muted="is_historical == True">
+                                    
+                                    <field name="start_datetime" string="Inicio"/>
+                                    <field name="end_datetime" string="Fin"/>
+                                    <field name="usage_type" string="Tipo"/>
+                                    <field name="process_context" string="Proceso"/>
+                                    <field name="sample_code" string="Muestra"/>
+                                    <field name="customer_id" string="Cliente"/>
+                                    <field name="duration_hours" string="Duración (h)"/>
+                                    <field name="used_by_name" string="Usuario"/>
+                                    <field name="status_display" string="Estado"/>
+                                    <field name="is_historical" string="Histórico" widget="boolean_toggle"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </xpath>
+
+            </field>
+        </record>
+
+    </data>
+</odoo>

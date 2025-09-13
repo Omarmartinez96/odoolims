@@ -1,0 +1,383 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- ========================================================= -->
+        <!-- VISTA LISTA DE BITÁCORA DE USO DE EQUIPOS -->
+        <!-- ========================================================= -->
+        <record id="view_lims_equipment_usage_log_list" model="ir.ui.view">
+            <field name="name">lims.equipment.usage.log.list</field>
+            <field name="model">lims.equipment.usage.log</field>
+            <field name="arch" type="xml">
+                <list string="Bitácora de Uso de Equipos" 
+                      create="false" 
+                      decoration-success="end_datetime != False and is_active_use == False"
+                      decoration-info="is_active_use == True"
+                      decoration-warning="is_historical == True"
+                      default_group_by="equipment_id"
+                      limit="200">
+
+                    <!-- Campos para agrupación y decoración -->
+                    <field name="equipment_id" column_invisible="True"/>
+                    <field name="is_active_use" column_invisible="True"/>
+                    <field name="is_historical" column_invisible="True"/>
+
+                    <!-- Campos principales visibles -->
+                    <field name="start_datetime" string="Inicio" width="15%"/>
+                    <field name="end_datetime" string="Fin" width="15%"/>
+                    <field name="duration_hours" string="Duración (h)" sum="Total Horas" width="10%"/>
+                    <field name="usage_type" string="Tipo de Uso" width="12%"/>
+                    <field name="process_context" string="Proceso" width="15%"/>
+                    
+                    <!-- Información del análisis -->
+                    <field name="sample_code" string="Muestra" width="10%"/>
+                    <field name="customer_id" string="Cliente" width="15%"/>
+                    
+                    <!-- Usuario y estado -->
+                    <field name="used_by_name" string="Usuario" width="10%"/>
+                    <field name="status_display" string="Estado" width="8%"/>
+                    
+                    <!-- Indicadores compactos -->
+                    <field name="is_historical" string="📚" widget="boolean_toggle" width="30px"/>
+                    
+                </list>
+            </field>
+        </record>
+
+        <!-- ========================================================= -->
+        <!-- VISTA FORMULARIO DE REGISTRO DE USO -->
+        <!-- ========================================================= -->
+        <record id="view_lims_equipment_usage_log_form" model="ir.ui.view">
+            <field name="name">lims.equipment.usage.log.form</field>
+            <field name="model">lims.equipment.usage.log</field>
+            <field name="arch" type="xml">
+                <form string="Registro de Uso de Equipo" create="false" edit="false">
+                    
+                    <header>
+                        <!-- Badge para registros históricos -->
+                        <div class="alert alert-info" invisible="is_historical == False" style="margin-bottom: 10px;">
+                            <strong>📚 Registro Histórico:</strong> Este registro fue creado automáticamente por sincronización de datos existentes.
+                        </div>
+                        
+                        <!-- Badge para uso activo -->
+                        <div class="alert alert-success" invisible="is_active_use == False" style="margin-bottom: 10px;">
+                            <strong>🟢 Equipo en Uso:</strong> Este equipo está actualmente siendo utilizado.
+                        </div>
+                    </header>
+                    
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="display_name" readonly="1"/>
+                            </h1>
+                            <h3>
+                                <field name="status_display" readonly="1"/>
+                            </h3>
+                        </div>
+
+                        <!-- Información del equipo y uso -->
+                        <group>
+                            <group string="🔧 Equipo y Tipo de Uso">
+                                <field name="equipment_id" readonly="1"/>
+                                <field name="usage_type" readonly="1"/>
+                                <field name="process_context" readonly="1"/>
+                            </group>
+                            <group string="⏰ Información de Tiempos">
+                                <field name="start_datetime" readonly="1"/>
+                                <field name="planned_end_datetime" readonly="1"/>
+                                <field name="end_datetime" readonly="1"/>
+                                <field name="duration_hours" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <!-- Información del análisis relacionado -->
+                        <group string="🔬 Análisis Relacionado" invisible="related_analysis_id == False">
+                            <group>
+                                <field name="related_analysis_id" readonly="1"/>
+                                <field name="related_parameter_id" readonly="1"/>
+                                <field name="sample_code" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="customer_id" readonly="1"/>
+                                <field name="related_media_id" readonly="1"/>
+                            </group>
+                        </group>
+
+                        <!-- Usuario y observaciones -->
+                        <group string="👤 Usuario y Observaciones">
+                            <field name="used_by_name" readonly="1"/>
+                            <field name="usage_notes" readonly="1" nolabel="1" placeholder="Sin observaciones adicionales"/>
+                        </group>
+
+                        <!-- Marcadores especiales -->
+                        <group string="🏷️ Información Adicional">
+                            <field name="is_historical" readonly="1" widget="boolean_toggle"/>
+                            <field name="is_active_use" readonly="1" widget="boolean_toggle"/>
+                        </group>
+
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- ========================================================= -->
+        <!-- VISTA DE BÚSQUEDA Y FILTROS -->
+        <!-- ========================================================= -->
+        <record id="view_lims_equipment_usage_log_search" model="ir.ui.view">
+            <field name="name">lims.equipment.usage.log.search</field>
+            <field name="model">lims.equipment.usage.log</field>
+            <field name="arch" type="xml">
+                <search string="Buscar en Bitácora de Equipos">
+                    
+                    <!-- Campos de búsqueda principal -->
+                    <field name="equipment_id" 
+                           filter_domain="['|', '|', '|',
+                                          ('equipment_id.name', 'ilike', self),
+                                          ('sample_code', 'ilike', self),
+                                          ('customer_id.name', 'ilike', self),
+                                          ('used_by_name', 'ilike', self)]"
+                           string="🔍 Buscar equipo, muestra, cliente o usuario..."/>
+                    
+                    <field name="sample_code" string="Muestra"/>
+                    <field name="customer_id" string="Cliente"/>
+                    <field name="used_by_name" string="Usuario"/>
+
+                    <!-- Filtros de estado -->
+                    <filter string="🟢 En Uso Actualmente" 
+                            name="active_use"
+                            domain="[('is_active_use', '=', True)]"/>
+                    
+                    <filter string="✅ Usos Completados" 
+                            name="completed"
+                            domain="[('end_datetime', '!=', False)]"/>
+                    
+                    <filter string="📚 Registros Históricos" 
+                            name="historical"
+                            domain="[('is_historical', '=', True)]"/>
+                    
+                    <filter string="⚡ Registros en Tiempo Real" 
+                            name="real_time"
+                            domain="[('is_historical', '=', False)]"/>
+                    
+                    <separator/>
+                    
+                    <!-- Filtros por tipo de uso -->
+                    <filter string="🦠 Incubación" 
+                            name="incubation"
+                            domain="[('usage_type', '=', 'incubation')]"/>
+                    
+                    <filter string="⚖️ Pesado" 
+                            name="weighing"
+                            domain="[('usage_type', '=', 'weighing')]"/>
+                    
+                    <filter string="📏 Medición" 
+                            name="measurement"
+                            domain="[('usage_type', '=', 'measurement')]"/>
+                    
+                    <filter string="🔥 Esterilización" 
+                            name="sterilization"
+                            domain="[('usage_type', '=', 'sterilization')]"/>
+                    
+                    <separator/>
+                    
+                    <!-- Filtros temporales -->
+                    <filter string="Hoy" 
+                            name="today"
+                            domain="[('start_datetime', '&gt;=', context_today()), ('start_datetime', '&lt;', (context_today() + datetime.timedelta(days=1)))]"/>
+                    
+                    <filter string="Esta Semana" 
+                            name="this_week"
+                            domain="[('start_datetime', '&gt;=', (context_today() - datetime.timedelta(days=7)))]"/>
+                    
+                    <filter string="Este Mes" 
+                            name="this_month"
+                            domain="[('start_datetime', '&gt;=', (context_today().replace(day=1)))]"/>
+                    
+                    <filter string="Últimos 3 Meses" 
+                            name="last_quarter"
+                            domain="[('start_datetime', '&gt;=', (context_today() - datetime.timedelta(days=90)))]"/>
+
+                    <!-- Agrupaciones -->
+                    <group expand="0" string="Agrupar Por">
+                        <filter string="Equipo" 
+                                name="group_equipment"
+                                context="{'group_by': 'equipment_id'}"/>
+                        <filter string="Tipo de Uso"
+                                name="group_usage_type"
+                                context="{'group_by': 'usage_type'}"/>
+                        <filter string="Proceso/Contexto"
+                                name="group_process"
+                                context="{'group_by': 'process_context'}"/>
+                        <filter string="Usuario"
+                                name="group_user"
+                                context="{'group_by': 'used_by_name'}"/>
+                        <filter string="Cliente"
+                                name="group_customer"
+                                context="{'group_by': 'customer_id'}"/>
+                        <filter string="Estado"
+                                name="group_status"
+                                context="{'group_by': 'status_display'}"/>
+                        <filter string="Fecha (Día)"
+                                name="group_day"
+                                context="{'group_by': 'start_datetime:day'}"/>
+                        <filter string="Fecha (Semana)"
+                                name="group_week"
+                                context="{'group_by': 'start_datetime:week'}"/>
+                        <filter string="Fecha (Mes)"
+                                name="group_month"
+                                context="{'group_by': 'start_datetime:month'}"/>
+                    </group>
+
+                </search>
+            </field>
+        </record>
+
+        <!-- ========================================================= -->
+        <!-- VISTA KANBAN DASHBOARD DE ESTADO DE EQUIPOS -->
+        <!-- ========================================================= -->
+        <record id="view_lims_equipment_usage_dashboard" model="ir.ui.view">
+            <field name="name">lims.equipment.usage.dashboard</field>
+            <field name="model">lims.equipment.usage.log</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_dashboard" create="false" sample="0">
+                    <field name="equipment_id"/>
+                    <field name="usage_type"/>
+                    <field name="is_active_use"/>
+                    <field name="duration_hours"/>
+                    <field name="start_datetime"/>
+                    <field name="sample_code"/>
+                    <field name="used_by_name"/>
+                    
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div class="oe_kanban_card" style="min-height: 120px;">
+                                <div class="oe_kanban_content">
+                                    
+                                    <!-- Título del equipo -->
+                                    <div class="o_kanban_record_title" style="font-weight: bold; margin-bottom: 8px;">
+                                        <field name="equipment_id"/>
+                                    </div>
+                                    
+                                    <!-- Estado actual -->
+                                    <div class="o_kanban_record_subtitle" style="margin-bottom: 10px;">
+                                        <t t-if="record.is_active_use.raw_value">
+                                            <span class="badge badge-success" style="font-size: 12px;">🟢 En Uso</span>
+                                        </t>
+                                        <t t-else="">
+                                            <span class="badge badge-secondary" style="font-size: 12px;">⚪ Disponible</span>
+                                        </t>
+                                    </div>
+                                    
+                                    <!-- Detalles del uso actual -->
+                                    <div class="o_kanban_record_body" style="font-size: 11px;">
+                                        <t t-if="record.is_active_use.raw_value">
+                                            <div><strong>Desde:</strong> <field name="start_datetime"/></div>
+                                            <div><strong>Tipo:</strong> <field name="usage_type"/></div>
+                                            <div><strong>Muestra:</strong> <field name="sample_code"/></div>
+                                            <div><strong>Usuario:</strong> <field name="used_by_name"/></div>
+                                        </t>
+                                        <t t-else="">
+                                            <div style="color: #666; font-style: italic;">
+                                                Equipo disponible para uso
+                                            </div>
+                                        </t>
+                                    </div>
+                                    
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- ========================================================= -->
+        <!-- ACCIÓN PRINCIPAL DE LA BITÁCORA -->
+        <!-- ========================================================= -->
+        <record id="action_lims_equipment_usage_log" model="ir.actions.act_window">
+            <field name="name">Bitácora de Uso de Equipos</field>
+            <field name="res_model">lims.equipment.usage.log</field>
+            <field name="view_mode">list,form,kanban</field>
+            <field name="view_ids" eval="[
+                (5, 0, 0),
+                (0, 0, {'view_mode': 'list', 'view_id': ref('view_lims_equipment_usage_log_list')}),
+                (0, 0, {'view_mode': 'form', 'view_id': ref('view_lims_equipment_usage_log_form')}),
+                (0, 0, {'view_mode': 'kanban', 'view_id': ref('view_lims_equipment_usage_dashboard')})
+            ]"/>
+            <field name="search_view_id" ref="view_lims_equipment_usage_log_search"/>
+            <field name="limit">200</field>
+            <field name="context">{
+                'group_by': 'equipment_id',
+                'create': False,
+                'group_by_no_leaf': True
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No hay registros de uso de equipos
+                </p>
+                <p>
+                    La bitácora se alimenta automáticamente cuando se utilizan equipos en los análisis.
+                    <br/>
+                    <strong>Para datos históricos:</strong> Usa el botón "🔄 Sincronizar Bitácora" en cada equipo.
+                    <br/>
+                    <strong>Datos en tiempo real:</strong> Se crean automáticamente al usar equipos en incubaciones.
+                </p>
+            </field>
+        </record>
+
+        <!-- ========================================================= -->
+        <!-- ACCIÓN DASHBOARD DE ESTADO DE EQUIPOS -->
+        <!-- ========================================================= -->
+        <record id="action_lims_equipment_dashboard" model="ir.actions.act_window">
+            <field name="name">Estado Actual de Equipos</field>
+            <field name="res_model">lims.equipment.usage.log</field>
+            <field name="view_mode">kanban,list</field>
+            <field name="view_id" ref="view_lims_equipment_usage_dashboard"/>
+            <field name="domain">[('is_active_use', '=', True)]</field>
+            <field name="context">{
+                'create': False,
+                'search_default_active_use': 1
+            }</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No hay equipos en uso actualmente
+                </p>
+                <p>
+                    Cuando los equipos estén siendo utilizados en análisis aparecerán aquí.
+                </p>
+            </field>
+        </record>
+
+        <!-- ========================================================= -->
+        <!-- MENÚS PRINCIPALES -->
+        <!-- ========================================================= -->
+        
+        <!-- Menú raíz de bitácora de equipos -->
+        <menuitem id="menu_lims_equipment_usage_root" 
+                  name="Bitácora de Equipos" 
+                  parent="lims_analysis_v2.menu_lims_analysis_v2_root"
+                  sequence="50"/>
+
+        <!-- Bitácora completa -->
+        <menuitem id="menu_lims_equipment_usage_log" 
+                  name="📋 Bitácora Completa" 
+                  parent="menu_lims_equipment_usage_root" 
+                  action="action_lims_equipment_usage_log" 
+                  sequence="10"/>
+
+        <!-- Dashboard de equipos en uso -->
+        <menuitem id="menu_lims_equipment_dashboard" 
+                  name="🔄 Estado Actual de Equipos" 
+                  parent="menu_lims_equipment_usage_root" 
+                  action="action_lims_equipment_dashboard" 
+                  sequence="20"/>
+
+        <!-- Acceso directo a equipos con botón de sincronización -->
+        <menuitem id="menu_lims_equipment_with_usage" 
+                  name="🔧 Gestión de Equipos" 
+                  parent="menu_lims_equipment_usage_root" 
+                  action="lims_analysis_config.action_lims_lab_equipment" 
+                  sequence="30"/>
+
+    </data>
+</odoo>

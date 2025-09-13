@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_lims_equipment_usage_log_user,lims.equipment.usage.log.user,model_lims_equipment_usage_log,base.group_user,1,1,1,0
+access_lims_equipment_usage_log_manager,lims.equipment.usage.log.manager,model_lims_equipment_usage_log,base.group_system,1,1,1,1
