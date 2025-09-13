@@ -14,5 +14,6 @@
         'views/lims_lab_equipment_views.xml',
     ],
     'installable': True,
+    'application': True,
     'auto_install': False,
 }
