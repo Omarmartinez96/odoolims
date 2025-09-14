@@ -206,3 +206,59 @@ class LimsEquipmentFinishWizard(models.TransientModel):
                 defaults['samples_info'] = "<p>No hay registros que se puedan finalizar</p>"
         
         return defaults
+
+    def action_finish_usage(self):
+        """Finalizar el uso de los equipos y sincronizar con medios originales"""
+        if not self.usage_log_ids:
+            raise UserError('No hay registros para finalizar.')
+        
+        if not self.finish_date or not self.finish_time:
+            raise UserError('Debe especificar la fecha y hora de finalización.')
+        
+        # Validar formato de hora
+        try:
+            time_parts = self.finish_time.split(':')
+            hour = int(time_parts[0])
+            minute = int(time_parts[1]) if len(time_parts) > 1 else 0
+            if not (0 <= hour <= 23 and 0 <= minute <= 59):
+                raise ValueError()
+        except:
+            raise UserError('El formato de hora debe ser HH:MM (ejemplo: 14:30)')
+        
+        # Combinar fecha y hora EN TIMEZONE DE TIJUANA
+        finish_datetime_utc = self._combine_date_time_to_utc(self.finish_date, self.finish_time)
+        
+        # Finalizar registros en bitácora
+        update_values = {
+            'end_datetime': finish_datetime_utc,
+        }
+        
+        self.usage_log_ids.write(update_values)
+        
+        # SINCRONIZAR CON MEDIOS ORIGINALES EN LIMS_ANALYSIS_V2
+        updated_media_count = 0
+        for log in self.usage_log_ids:
+            if log.related_media_id and log.usage_type == 'incubation':
+                # Actualizar el medio original con la fecha/hora real de finalización
+                log.related_media_id.write({
+                    'incubation_end_date_real': self.finish_date,
+                    'incubation_end_time_real': self.finish_time
+                })
+                updated_media_count += 1
+        
+        # Crear mensaje de éxito
+        message = f'Se finalizaron {len(self.usage_log_ids)} incubaciones correctamente.'
+        if updated_media_count > 0:
+            message += f' Se actualizaron {updated_media_count} medios en análisis.'
+        
+        # Mostrar notificación temporal y cerrar wizard
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'notification',
+            'params': {
+                'title': 'Completado',
+                'message': message,
+                'type': 'success',
+                'next': {'type': 'ir.actions.act_window_close'}
+            }
+        }
