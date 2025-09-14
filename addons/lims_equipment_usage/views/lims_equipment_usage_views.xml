@@ -32,9 +32,9 @@
                     </header>
 
                     <!-- Campos principales visibles -->
-                    <field name="start_datetime" string="Inicio"/>
-                    <field name="planned_end_datetime" string="Fin Previsto"/>
-                    <field name="end_datetime" string="Fin Real"/>
+                    <field name="start_datetime" string="Inicio" widget="datetime" options="{'timezone_field': 'user_timezone'}"/>
+                    <field name="planned_end_datetime" string="Fin Previsto" widget="datetime" options="{'timezone_field': 'user_timezone'}"/>
+                    <field name="end_datetime" string="Fin Real" widget="datetime" options="{'timezone_field': 'user_timezone'}"/>
                     <field name="duration_hours" string="Duración (h)" sum="Total Horas"/>
                     <field name="usage_type" string="Tipo"/>
                     <field name="media_culture_name" string="Medio de Cultivo"/>

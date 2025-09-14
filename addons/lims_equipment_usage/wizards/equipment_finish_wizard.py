@@ -125,7 +125,7 @@ class LimsEquipmentFinishWizard(models.TransientModel):
             wizard.samples_info = html_content
     
     def action_finish_usage(self):
-        """Finalizar el uso de los equipos"""
+        """Finalizar el uso de los equipos y sincronizar con medios originales"""
         if not self.usage_log_ids:
             raise UserError('No hay registros para finalizar.')
         
@@ -142,14 +142,15 @@ class LimsEquipmentFinishWizard(models.TransientModel):
         except:
             raise UserError('El formato de hora debe ser HH:MM (ejemplo: 14:30)')
         
-        # Combinar fecha y hora
-        finish_datetime = self._combine_date_time(self.finish_date, self.finish_time)
+        # Combinar fecha y hora EN TIMEZONE DE TIJUANA
+        finish_datetime_utc = self._combine_date_time_to_utc(self.finish_date, self.finish_time)
         
-        # Finalizar todos los registros
+        # Finalizar registros en bitácora
         update_values = {
-            'end_datetime': finish_datetime,
+            'end_datetime': finish_datetime_utc,
         }
         
+        # Actualizar notas si las hay
         if self.notes:
             for log in self.usage_log_ids:
                 current_notes = log.usage_notes or ''
@@ -158,15 +159,66 @@ class LimsEquipmentFinishWizard(models.TransientModel):
         
         self.usage_log_ids.write(update_values)
         
+        # SINCRONIZAR CON MEDIOS ORIGINALES EN LIMS_ANALYSIS_V2
+        updated_media_count = 0
+        for log in self.usage_log_ids:
+            if log.related_media_id and log.usage_type == 'incubation':
+                # Actualizar el medio original con la fecha/hora real de finalización
+                log.related_media_id.write({
+                    'incubation_end_date_real': self.finish_date,
+                    'incubation_end_time_real': self.finish_time
+                })
+                updated_media_count += 1
+        
+        message = f'✅ Se finalizaron {len(self.usage_log_ids)} incubaciones correctamente.'
+        if updated_media_count > 0:
+            message += f'\n📋 Se actualizaron {updated_media_count} medios en análisis.'
+        
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': 'Incubaciones Finalizadas',
-                'message': f'✅ Se finalizaron {len(self.usage_log_ids)} incubaciones correctamente.',
+                'message': message,
                 'type': 'success',
             }
         }
+
+    def _combine_date_time_to_utc(self, date_field, time_field):
+        """Combinar fecha y hora de Tijuana y convertir a UTC para almacenamiento"""
+        if not date_field:
+            return False
+        
+        if not time_field:
+            time_field = '12:00'
+        
+        try:
+            import pytz
+            
+            # Parsear tiempo HH:MM
+            time_parts = time_field.split(':')
+            hour = int(time_parts[0])
+            minute = int(time_parts[1]) if len(time_parts) > 1 else 0
+            
+            # Crear datetime naive en tiempo local (Tijuana)
+            local_datetime = datetime.combine(
+                date_field,
+                datetime.min.time().replace(hour=hour, minute=minute)
+            )
+            
+            # Localizar en zona de Tijuana
+            tijuana_tz = pytz.timezone('America/Tijuana')
+            tijuana_datetime = tijuana_tz.localize(local_datetime)
+            
+            # Convertir a UTC para almacenamiento en Odoo
+            utc_datetime = tijuana_datetime.astimezone(pytz.UTC)
+            
+            # Retornar sin timezone info (Odoo lo maneja internamente)
+            return utc_datetime.replace(tzinfo=None)
+            
+        except Exception as e:
+            # Fallback: usar datetime naive (puede causar inconsistencias)
+            return datetime.combine(date_field, datetime.min.time().replace(hour=hour, minute=minute))
     
     @api.model
     def default_get(self, fields_list):

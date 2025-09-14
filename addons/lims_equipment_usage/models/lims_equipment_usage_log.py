@@ -199,24 +199,118 @@ class LimsEquipmentUsageLog(models.Model):
             else:
                 record.duration_hours = 0.0
     
-    @api.depends('start_datetime', 'end_datetime')
+    @api.depends('start_datetime', 'end_datetime', 'planned_end_datetime')
     def _compute_is_active_use(self):
         for record in self:
             record.is_active_use = bool(record.start_datetime and not record.end_datetime)
-    
+
     @api.depends('is_active_use', 'end_datetime', 'planned_end_datetime')
     def _compute_status_display(self):
-        now = fields.Datetime.now()
-        for record in self:
-            if record.is_active_use:
-                if record.planned_end_datetime and now > record.planned_end_datetime:
-                    record.status_display = "🔴 Vencido"
+        """Calcular estado usando timezone de Tijuana"""
+        try:
+            import pytz
+            
+            # Obtener hora actual en Tijuana
+            tijuana_tz = pytz.timezone('America/Tijuana')
+            utc_now = pytz.UTC.localize(datetime.utcnow())
+            tijuana_now = utc_now.astimezone(tijuana_tz)
+            
+            for record in self:
+                if record.is_active_use:
+                    if record.planned_end_datetime:
+                        # Convertir planned_end_datetime de UTC a Tijuana para comparar
+                        planned_utc = pytz.UTC.localize(record.planned_end_datetime)
+                        planned_tijuana = planned_utc.astimezone(tijuana_tz)
+                        
+                        if tijuana_now > planned_tijuana:
+                            record.status_display = "🔴 Vencido"
+                        else:
+                            record.status_display = "🟢 En Uso"
+                    else:
+                        record.status_display = "🟢 En Uso"
+                elif record.end_datetime:
+                    record.status_display = "✅ Completado"
                 else:
-                    record.status_display = "🟢 En Uso"
-            elif record.end_datetime:
-                record.status_display = "✅ Completado"
-            else:
-                record.status_display = "⏸️ Sin Definir"
+                    record.status_display = "⏸️ Sin Definir"
+                    
+        except Exception as e:
+            # Fallback sin timezone
+            now = fields.Datetime.now()
+            for record in self:
+                if record.is_active_use:
+                    if record.planned_end_datetime and now > record.planned_end_datetime:
+                        record.status_display = "🔴 Vencido"
+                    else:
+                        record.status_display = "🟢 En Uso"
+                elif record.end_datetime:
+                    record.status_display = "✅ Completado"
+                else:
+                    record.status_display = "⏸️ Sin Definir"
+
+    @api.depends('start_datetime', 'incubation_start_time', 'incubation_end_date', 'incubation_end_time', 'incubation_end_date_real')
+    def _compute_time_remaining(self):
+        """Calcular tiempo restante con zona horaria de Tijuana"""
+        try:
+            import pytz
+            
+            # Obtener hora actual en Tijuana
+            tijuana_tz = pytz.timezone('America/Tijuana')
+            utc_now = pytz.UTC.localize(datetime.utcnow())
+            tijuana_now = utc_now.astimezone(tijuana_tz)
+            
+            for record in self:
+                if not record.requires_incubation:
+                    record.time_remaining = ""
+                    continue
+                    
+                # Si ya finalizó
+                if record.end_datetime:
+                    if record.start_datetime:
+                        # Convertir ambos a Tijuana para calcular duración
+                        start_utc = pytz.UTC.localize(record.start_datetime)
+                        start_tijuana = start_utc.astimezone(tijuana_tz)
+                        
+                        end_utc = pytz.UTC.localize(record.end_datetime)
+                        end_tijuana = end_utc.astimezone(tijuana_tz)
+                        
+                        duration = end_tijuana - start_tijuana
+                        hours = int(duration.total_seconds() / 3600)
+                        minutes = int((duration.total_seconds() % 3600) / 60)
+                        
+                        record.time_remaining = f"✅ Finalizado: {hours}h {minutes}min"
+                    else:
+                        record.time_remaining = "✅ Finalizado"
+                    continue
+                
+                # Si tiene fechas planificadas
+                if record.planned_end_datetime:
+                    # Convertir planned a Tijuana
+                    planned_utc = pytz.UTC.localize(record.planned_end_datetime)
+                    planned_tijuana = planned_utc.astimezone(tijuana_tz)
+                    
+                    if tijuana_now < planned_tijuana:
+                        # Aún no vence
+                        time_left = planned_tijuana - tijuana_now
+                        hours = int(time_left.total_seconds() / 3600)
+                        minutes = int((time_left.total_seconds() % 3600) / 60)
+                        
+                        if hours > 0:
+                            record.time_remaining = f"⏰ Restante: {hours}h {minutes}min"
+                        else:
+                            record.time_remaining = f"⏰ Restante: {minutes}min"
+                    else:
+                        # Ya venció
+                        time_over = tijuana_now - planned_tijuana
+                        hours = int(time_over.total_seconds() / 3600)
+                        minutes = int((time_over.total_seconds() % 3600) / 60)
+                        record.time_remaining = f"⚠️ Vencido: +{hours}h {minutes}min"
+                else:
+                    record.time_remaining = "⚪ Sin fecha límite"
+                    
+        except Exception as e:
+            # Fallback sin timezone
+            for record in self:
+                record.time_remaining = "❌ Error de timezone"
 
     def action_finish_individual(self):
         """Finalizar uso individual de equipo"""
