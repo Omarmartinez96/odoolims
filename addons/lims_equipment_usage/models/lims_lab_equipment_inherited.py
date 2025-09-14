@@ -55,11 +55,12 @@ class LimsLabEquipmentInherited(models.Model):
                 equipment.is_currently_in_use = False
     
     def action_sync_equipment_historical_usage(self):
-        """Sincronizar uso histórico de este equipo específico - TODOS los tipos"""
+        """Sincronizar uso histórico con timezone correcto - TODOS los tipos"""
         
         created_count = 0
         updated_count = 0
         skipped_count = 0
+        error_count = 0
         
         # ===== 1. EQUIPOS DE INCUBACIÓN =====
         historical_media = self.env['lims.analysis.media.v2'].search([
@@ -67,66 +68,90 @@ class LimsLabEquipmentInherited(models.Model):
             ('incubation_start_date', '!=', False)
         ])
         
+        _logger.info(f"Sincronizando {len(historical_media)} registros de medios para equipo {self.name}")
+        
         for media in historical_media:
-            existing_log = self.env['lims.equipment.usage.log'].search([
-                ('equipment_id', '=', self.id),
-                ('related_media_id', '=', media.id),
-                ('usage_type', '=', 'incubation')
-            ])
-            
-            if existing_log:
-                # Actualizar si es necesario
-                updates = {}
-                if media.incubation_end_date_real and not existing_log.end_datetime:
-                    end_datetime = self._combine_date_time(
-                        media.incubation_end_date_real,
-                        media.incubation_end_time_real or '23:59'
-                    )
-                    updates['end_datetime'] = end_datetime
+            try:
+                existing_log = self.env['lims.equipment.usage.log'].search([
+                    ('equipment_id', '=', self.id),
+                    ('related_media_id', '=', media.id),
+                    ('usage_type', '=', 'incubation')
+                ])
                 
-                if updates:
-                    existing_log.write(updates)
-                    updated_count += 1
+                if existing_log:
+                    # RECALCULAR horarios existentes con timezone correcto
+                    updates = {}
+                    
+                    if media.incubation_start_date:
+                        start_datetime = self._combine_date_time_to_utc(
+                            media.incubation_start_date,
+                            media.incubation_start_time or '00:00'
+                        )
+                        updates['start_datetime'] = start_datetime
+                    
+                    if media.incubation_end_date:
+                        planned_end_datetime = self._combine_date_time_to_utc(
+                            media.incubation_end_date,
+                            media.incubation_end_time or '23:59'
+                        )
+                        updates['planned_end_datetime'] = planned_end_datetime
+                    
+                    if media.incubation_end_date_real:
+                        end_datetime = self._combine_date_time_to_utc(
+                            media.incubation_end_date_real,
+                            media.incubation_end_time_real or '23:59'
+                        )
+                        updates['end_datetime'] = end_datetime
+                    
+                    if updates:
+                        existing_log.write(updates)
+                        updated_count += 1
+                    else:
+                        skipped_count += 1
                 else:
-                    skipped_count += 1
-            else:
-                # Crear nuevo registro de incubación
-                start_datetime = self._combine_date_time(
-                    media.incubation_start_date,
-                    media.incubation_start_time or '00:00'
-                )
-                
-                end_datetime = False
-                if media.incubation_end_date_real:
-                    end_datetime = self._combine_date_time(
-                        media.incubation_end_date_real,
-                        media.incubation_end_time_real or '23:59'
+                    # Crear nuevo registro con timezone correcto
+                    start_datetime = self._combine_date_time_to_utc(
+                        media.incubation_start_date,
+                        media.incubation_start_time or '00:00'
                     )
-                
-                planned_end_datetime = False
-                if media.incubation_end_date:
-                    planned_end_datetime = self._combine_date_time(
-                        media.incubation_end_date,
-                        media.incubation_end_time or '23:59'
-                    )
-                
-                self.env['lims.equipment.usage.log'].create({
-                    'equipment_id': self.id,
-                    'usage_type': 'incubation',
-                    'process_context': media.process_type,
-                    'related_analysis_id': media.parameter_analysis_id.analysis_id.id,
-                    'related_parameter_id': media.parameter_analysis_id.id,
-                    'related_media_id': media.id,
-                    'start_datetime': start_datetime,
-                    'end_datetime': end_datetime,
-                    'planned_end_datetime': planned_end_datetime,
-                    'used_by_name': 'Sistema (Histórico)',
-                    'usage_notes': f"Incubación - {media.culture_media_name or 'Medio'}",
-                    'is_historical': True
-                })
-                created_count += 1
+                    
+                    planned_end_datetime = False
+                    if media.incubation_end_date:
+                        planned_end_datetime = self._combine_date_time_to_utc(
+                            media.incubation_end_date,
+                            media.incubation_end_time or '23:59'
+                        )
+                    
+                    end_datetime = False
+                    if media.incubation_end_date_real:
+                        end_datetime = self._combine_date_time_to_utc(
+                            media.incubation_end_date_real,
+                            media.incubation_end_time_real or '23:59'
+                        )
+                    
+                    self.env['lims.equipment.usage.log'].create({
+                        'equipment_id': self.id,
+                        'usage_type': 'incubation',
+                        'process_context': media.process_type,
+                        'related_analysis_id': media.parameter_analysis_id.analysis_id.id,
+                        'related_parameter_id': media.parameter_analysis_id.id,
+                        'related_media_id': media.id,
+                        'start_datetime': start_datetime,
+                        'end_datetime': end_datetime,
+                        'planned_end_datetime': planned_end_datetime,
+                        'used_by_name': 'Sistema (Sincronizado)',
+                        'usage_notes': f"Incubación - {media.culture_media_name or 'Medio'}",
+                        'is_historical': True
+                    })
+                    created_count += 1
+                    
+            except Exception as e:
+                _logger.error(f"Error procesando medio ID {media.id}: {e}")
+                error_count += 1
+                continue
         
         # ===== 2. EQUIPOS DE AMBIENTES DE PROCESAMIENTO =====
+        
         # Pre-enriquecimiento
         pre_enrichment_params = self.env['lims.parameter.analysis.v2'].search([
             ('pre_enrichment_equipment_id', '=', self.id),
@@ -134,30 +159,35 @@ class LimsLabEquipmentInherited(models.Model):
         ])
         
         for param in pre_enrichment_params:
-            existing_log = self.env['lims.equipment.usage.log'].search([
-                ('equipment_id', '=', self.id),
-                ('related_parameter_id', '=', param.id),
-                ('process_context', '=', 'pre_enrichment')
-            ])
-            
-            if not existing_log:
-                start_datetime = self._combine_date_time(
-                    param.pre_enrichment_processing_date,
-                    param.pre_enrichment_processing_time or '12:00'
-                )
+            try:
+                existing_log = self.env['lims.equipment.usage.log'].search([
+                    ('equipment_id', '=', self.id),
+                    ('related_parameter_id', '=', param.id),
+                    ('process_context', '=', 'pre_enrichment')
+                ])
                 
-                self.env['lims.equipment.usage.log'].create({
-                    'equipment_id': self.id,
-                    'usage_type': 'processing',
-                    'process_context': 'pre_enrichment',
-                    'related_analysis_id': param.analysis_id.id,
-                    'related_parameter_id': param.id,
-                    'start_datetime': start_datetime,
-                    'used_by_name': 'Sistema (Histórico)',
-                    'usage_notes': f"Procesamiento Pre-enriquecimiento - {param.name}",
-                    'is_historical': True
-                })
-                created_count += 1
+                if not existing_log:
+                    start_datetime = self._combine_date_time_to_utc(
+                        param.pre_enrichment_processing_date,
+                        param.pre_enrichment_processing_time or '12:00'
+                    )
+                    
+                    self.env['lims.equipment.usage.log'].create({
+                        'equipment_id': self.id,
+                        'usage_type': 'processing',
+                        'process_context': 'pre_enrichment',
+                        'related_analysis_id': param.analysis_id.id,
+                        'related_parameter_id': param.id,
+                        'start_datetime': start_datetime,
+                        'used_by_name': 'Sistema (Sincronizado)',
+                        'usage_notes': f"Procesamiento Pre-enriquecimiento - {param.name}",
+                        'is_historical': True
+                    })
+                    created_count += 1
+            except Exception as e:
+                _logger.error(f"Error procesando pre-enriquecimiento param ID {param.id}: {e}")
+                error_count += 1
+                continue
         
         # Enriquecimiento Selectivo
         selective_params = self.env['lims.parameter.analysis.v2'].search([
@@ -166,30 +196,35 @@ class LimsLabEquipmentInherited(models.Model):
         ])
         
         for param in selective_params:
-            existing_log = self.env['lims.equipment.usage.log'].search([
-                ('equipment_id', '=', self.id),
-                ('related_parameter_id', '=', param.id),
-                ('process_context', '=', 'selective_enrichment')
-            ])
-            
-            if not existing_log:
-                start_datetime = self._combine_date_time(
-                    param.selective_enrichment_processing_date,
-                    param.selective_enrichment_processing_time or '12:00'
-                )
+            try:
+                existing_log = self.env['lims.equipment.usage.log'].search([
+                    ('equipment_id', '=', self.id),
+                    ('related_parameter_id', '=', param.id),
+                    ('process_context', '=', 'selective_enrichment')
+                ])
                 
-                self.env['lims.equipment.usage.log'].create({
-                    'equipment_id': self.id,
-                    'usage_type': 'processing',
-                    'process_context': 'selective_enrichment',
-                    'related_analysis_id': param.analysis_id.id,
-                    'related_parameter_id': param.id,
-                    'start_datetime': start_datetime,
-                    'used_by_name': 'Sistema (Histórico)',
-                    'usage_notes': f"Procesamiento Selectivo - {param.name}",
-                    'is_historical': True
-                })
-                created_count += 1
+                if not existing_log:
+                    start_datetime = self._combine_date_time_to_utc(
+                        param.selective_enrichment_processing_date,
+                        param.selective_enrichment_processing_time or '12:00'
+                    )
+                    
+                    self.env['lims.equipment.usage.log'].create({
+                        'equipment_id': self.id,
+                        'usage_type': 'processing',
+                        'process_context': 'selective_enrichment',
+                        'related_analysis_id': param.analysis_id.id,
+                        'related_parameter_id': param.id,
+                        'start_datetime': start_datetime,
+                        'used_by_name': 'Sistema (Sincronizado)',
+                        'usage_notes': f"Procesamiento Selectivo - {param.name}",
+                        'is_historical': True
+                    })
+                    created_count += 1
+            except Exception as e:
+                _logger.error(f"Error procesando enriquecimiento selectivo param ID {param.id}: {e}")
+                error_count += 1
+                continue
         
         # Cuantitativo
         quantitative_params = self.env['lims.parameter.analysis.v2'].search([
@@ -198,30 +233,35 @@ class LimsLabEquipmentInherited(models.Model):
         ])
         
         for param in quantitative_params:
-            existing_log = self.env['lims.equipment.usage.log'].search([
-                ('equipment_id', '=', self.id),
-                ('related_parameter_id', '=', param.id),
-                ('process_context', '=', 'quantitative')
-            ])
-            
-            if not existing_log:
-                start_datetime = self._combine_date_time(
-                    param.quantitative_processing_date,
-                    param.quantitative_processing_time or '12:00'
-                )
+            try:
+                existing_log = self.env['lims.equipment.usage.log'].search([
+                    ('equipment_id', '=', self.id),
+                    ('related_parameter_id', '=', param.id),
+                    ('process_context', '=', 'quantitative')
+                ])
                 
-                self.env['lims.equipment.usage.log'].create({
-                    'equipment_id': self.id,
-                    'usage_type': 'processing',
-                    'process_context': 'quantitative',
-                    'related_analysis_id': param.analysis_id.id,
-                    'related_parameter_id': param.id,
-                    'start_datetime': start_datetime,
-                    'used_by_name': 'Sistema (Histórico)',
-                    'usage_notes': f"Procesamiento Cuantitativo - {param.name}",
-                    'is_historical': True
-                })
-                created_count += 1
+                if not existing_log:
+                    start_datetime = self._combine_date_time_to_utc(
+                        param.quantitative_processing_date,
+                        param.quantitative_processing_time or '12:00'
+                    )
+                    
+                    self.env['lims.equipment.usage.log'].create({
+                        'equipment_id': self.id,
+                        'usage_type': 'processing',
+                        'process_context': 'quantitative',
+                        'related_analysis_id': param.analysis_id.id,
+                        'related_parameter_id': param.id,
+                        'start_datetime': start_datetime,
+                        'used_by_name': 'Sistema (Sincronizado)',
+                        'usage_notes': f"Procesamiento Cuantitativo - {param.name}",
+                        'is_historical': True
+                    })
+                    created_count += 1
+            except Exception as e:
+                _logger.error(f"Error procesando cuantitativo param ID {param.id}: {e}")
+                error_count += 1
+                continue
         
         # Cualitativo
         qualitative_params = self.env['lims.parameter.analysis.v2'].search([
@@ -230,30 +270,35 @@ class LimsLabEquipmentInherited(models.Model):
         ])
         
         for param in qualitative_params:
-            existing_log = self.env['lims.equipment.usage.log'].search([
-                ('equipment_id', '=', self.id),
-                ('related_parameter_id', '=', param.id),
-                ('process_context', '=', 'qualitative')
-            ])
-            
-            if not existing_log:
-                start_datetime = self._combine_date_time(
-                    param.qualitative_processing_date,
-                    param.qualitative_processing_time or '12:00'
-                )
+            try:
+                existing_log = self.env['lims.equipment.usage.log'].search([
+                    ('equipment_id', '=', self.id),
+                    ('related_parameter_id', '=', param.id),
+                    ('process_context', '=', 'qualitative')
+                ])
                 
-                self.env['lims.equipment.usage.log'].create({
-                    'equipment_id': self.id,
-                    'usage_type': 'processing',
-                    'process_context': 'qualitative',
-                    'related_analysis_id': param.analysis_id.id,
-                    'related_parameter_id': param.id,
-                    'start_datetime': start_datetime,
-                    'used_by_name': 'Sistema (Histórico)',
-                    'usage_notes': f"Procesamiento Cualitativo - {param.name}",
-                    'is_historical': True
-                })
-                created_count += 1
+                if not existing_log:
+                    start_datetime = self._combine_date_time_to_utc(
+                        param.qualitative_processing_date,
+                        param.qualitative_processing_time or '12:00'
+                    )
+                    
+                    self.env['lims.equipment.usage.log'].create({
+                        'equipment_id': self.id,
+                        'usage_type': 'processing',
+                        'process_context': 'qualitative',
+                        'related_analysis_id': param.analysis_id.id,
+                        'related_parameter_id': param.id,
+                        'start_datetime': start_datetime,
+                        'used_by_name': 'Sistema (Sincronizado)',
+                        'usage_notes': f"Procesamiento Cualitativo - {param.name}",
+                        'is_historical': True
+                    })
+                    created_count += 1
+            except Exception as e:
+                _logger.error(f"Error procesando cualitativo param ID {param.id}: {e}")
+                error_count += 1
+                continue
         
         # Confirmación
         confirmation_params = self.env['lims.parameter.analysis.v2'].search([
@@ -262,30 +307,35 @@ class LimsLabEquipmentInherited(models.Model):
         ])
         
         for param in confirmation_params:
-            existing_log = self.env['lims.equipment.usage.log'].search([
-                ('equipment_id', '=', self.id),
-                ('related_parameter_id', '=', param.id),
-                ('process_context', '=', 'confirmation')
-            ])
-            
-            if not existing_log:
-                start_datetime = self._combine_date_time(
-                    param.confirmation_processing_date,
-                    param.confirmation_processing_time or '12:00'
-                )
+            try:
+                existing_log = self.env['lims.equipment.usage.log'].search([
+                    ('equipment_id', '=', self.id),
+                    ('related_parameter_id', '=', param.id),
+                    ('process_context', '=', 'confirmation')
+                ])
                 
-                self.env['lims.equipment.usage.log'].create({
-                    'equipment_id': self.id,
-                    'usage_type': 'processing',
-                    'process_context': 'confirmation',
-                    'related_analysis_id': param.analysis_id.id,
-                    'related_parameter_id': param.id,
-                    'start_datetime': start_datetime,
-                    'used_by_name': 'Sistema (Histórico)',
-                    'usage_notes': f"Procesamiento Confirmación - {param.name}",
-                    'is_historical': True
-                })
-                created_count += 1
+                if not existing_log:
+                    start_datetime = self._combine_date_time_to_utc(
+                        param.confirmation_processing_date,
+                        param.confirmation_processing_time or '12:00'
+                    )
+                    
+                    self.env['lims.equipment.usage.log'].create({
+                        'equipment_id': self.id,
+                        'usage_type': 'processing',
+                        'process_context': 'confirmation',
+                        'related_analysis_id': param.analysis_id.id,
+                        'related_parameter_id': param.id,
+                        'start_datetime': start_datetime,
+                        'used_by_name': 'Sistema (Sincronizado)',
+                        'usage_notes': f"Procesamiento Confirmación - {param.name}",
+                        'is_historical': True
+                    })
+                    created_count += 1
+            except Exception as e:
+                _logger.error(f"Error procesando confirmación param ID {param.id}: {e}")
+                error_count += 1
+                continue
         
         # ===== 3. EQUIPOS INVOLUCRADOS ADICIONALES =====
         equipment_involved = self.env['lims.equipment.involved.v2'].search([
@@ -294,194 +344,112 @@ class LimsLabEquipmentInherited(models.Model):
         ])
         
         for equipment_use in equipment_involved:
-            existing_log = self.env['lims.equipment.usage.log'].search([
-                ('equipment_id', '=', self.id),
-                ('related_parameter_id', '=', equipment_use.parameter_analysis_id.id),
-                ('usage_type', '=', 'other'),
-                ('start_datetime', '=', self._combine_date_time(
-                    equipment_use.usage_date,
-                    equipment_use.usage_time or '12:00'
-                ))
-            ])
-            
-            if not existing_log:
-                self.env['lims.equipment.usage.log'].create({
-                    'equipment_id': self.id,
-                    'usage_type': 'other',
-                    'process_context': 'other',
-                    'related_analysis_id': equipment_use.parameter_analysis_id.analysis_id.id,
-                    'related_parameter_id': equipment_use.parameter_analysis_id.id,
-                    'start_datetime': self._combine_date_time(
+            try:
+                existing_log = self.env['lims.equipment.usage.log'].search([
+                    ('equipment_id', '=', self.id),
+                    ('related_parameter_id', '=', equipment_use.parameter_analysis_id.id),
+                    ('usage_type', '=', 'other'),
+                    ('start_datetime', '=', self._combine_date_time_to_utc(
                         equipment_use.usage_date,
                         equipment_use.usage_time or '12:00'
-                    ),
-                    'used_by_name': equipment_use.used_by_name or 'Usuario',
-                    'usage_notes': f"Uso: {equipment_use.usage} - {equipment_use.notes or ''}",
-                    'is_historical': True
-                })
-                created_count += 1
+                    ))
+                ])
+                
+                if not existing_log:
+                    self.env['lims.equipment.usage.log'].create({
+                        'equipment_id': self.id,
+                        'usage_type': 'other',
+                        'process_context': 'other',
+                        'related_analysis_id': equipment_use.parameter_analysis_id.analysis_id.id,
+                        'related_parameter_id': equipment_use.parameter_analysis_id.id,
+                        'start_datetime': self._combine_date_time_to_utc(
+                            equipment_use.usage_date,
+                            equipment_use.usage_time or '12:00'
+                        ),
+                        'used_by_name': equipment_use.used_by_name or 'Usuario',
+                        'usage_notes': f"Uso: {equipment_use.usage} - {equipment_use.notes or ''}",
+                        'is_historical': True
+                    })
+                    created_count += 1
+            except Exception as e:
+                _logger.error(f"Error procesando equipo involucrado ID {equipment_use.id}: {e}")
+                error_count += 1
+                continue
+        
+        message = f'✅ {created_count} nuevos, 🔄 {updated_count} recalculados, ⏭️ {skipped_count} omitidos'
+        if error_count > 0:
+            message += f', ❌ {error_count} errores'
         
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': f'Sincronización de {self.name}',
-                'message': f'✅ {created_count} nuevos, 🔄 {updated_count} actualizados, ⏭️ {skipped_count} omitidos',
-                'type': 'success'
-            }
-        }
-    
-    def _combine_date_time(self, date_field, time_field):
-        """Combinar fecha y hora en datetime"""
-        if not date_field:
-            return False
-        
-        if not time_field:
-            time_field = '12:00'
-        
-        try:
-            # Parsear tiempo HH:MM
-            time_parts = time_field.split(':')
-            hour = int(time_parts[0])
-            minute = int(time_parts[1]) if len(time_parts) > 1 else 0
-            
-            # Combinar fecha y hora
-            combined = datetime.combine(
-                date_field,
-                datetime.min.time().replace(hour=hour, minute=minute)
-            )
-            
-            return combined
-        except:
-            # Si hay error, usar mediodía como default
-            return datetime.combine(date_field, datetime.min.time().replace(hour=12))
-    
-    def action_view_usage_log(self):
-        """Ver bitácora de uso de este equipo"""
-        return {
-            'type': 'ir.actions.act_window',
-            'name': f'Bitácora de Uso - {self.name}',
-            'res_model': 'lims.equipment.usage.log',
-            'view_mode': 'list,form',
-            'domain': [('equipment_id', '=', self.id)],
-            'context': {'default_equipment_id': self.id}
-        }
-
-    def action_sync_equipment_historical_usage(self):
-        """Sincronizar uso histórico con timezone correcto"""
-        
-        created_count = 0
-        updated_count = 0
-        skipped_count = 0
-        
-        # ===== EQUIPOS DE INCUBACIÓN =====
-        historical_media = self.env['lims.analysis.media.v2'].search([
-            ('incubation_equipment', '=', self.id),
-            ('incubation_start_date', '!=', False)
-        ])
-        
-        for media in historical_media:
-            existing_log = self.env['lims.equipment.usage.log'].search([
-                ('equipment_id', '=', self.id),
-                ('related_media_id', '=', media.id),
-                ('usage_type', '=', 'incubation')
-            ])
-            
-            if existing_log:
-                # RECALCULAR horarios existentes con timezone correcto
-                updates = {}
-                
-                # Recalcular start_datetime
-                if media.incubation_start_date:
-                    start_datetime = self._combine_date_time_to_utc(
-                        media.incubation_start_date,
-                        media.incubation_start_time or '00:00'
-                    )
-                    updates['start_datetime'] = start_datetime
-                
-                # Recalcular planned_end_datetime  
-                if media.incubation_end_date:
-                    planned_end_datetime = self._combine_date_time_to_utc(
-                        media.incubation_end_date,
-                        media.incubation_end_time or '23:59'
-                    )
-                    updates['planned_end_datetime'] = planned_end_datetime
-                
-                # Recalcular end_datetime real
-                if media.incubation_end_date_real:
-                    end_datetime = self._combine_date_time_to_utc(
-                        media.incubation_end_date_real,
-                        media.incubation_end_time_real or '23:59'
-                    )
-                    updates['end_datetime'] = end_datetime
-                
-                if updates:
-                    existing_log.write(updates)
-                    updated_count += 1
-                else:
-                    skipped_count += 1
-            else:
-                # Crear nuevo registro con timezone correcto
-                start_datetime = self._combine_date_time_to_utc(
-                    media.incubation_start_date,
-                    media.incubation_start_time or '00:00'
-                )
-                
-                planned_end_datetime = False
-                if media.incubation_end_date:
-                    planned_end_datetime = self._combine_date_time_to_utc(
-                        media.incubation_end_date,
-                        media.incubation_end_time or '23:59'
-                    )
-                
-                end_datetime = False
-                if media.incubation_end_date_real:
-                    end_datetime = self._combine_date_time_to_utc(
-                        media.incubation_end_date_real,
-                        media.incubation_end_time_real or '23:59'
-                    )
-                
-                self.env['lims.equipment.usage.log'].create({
-                    'equipment_id': self.id,
-                    'usage_type': 'incubation',
-                    'process_context': media.process_type,
-                    'related_analysis_id': media.parameter_analysis_id.analysis_id.id,
-                    'related_parameter_id': media.parameter_analysis_id.id,
-                    'related_media_id': media.id,
-                    'start_datetime': start_datetime,
-                    'end_datetime': end_datetime,
-                    'planned_end_datetime': planned_end_datetime,
-                    'used_by_name': 'Sistema (Sincronizado)',
-                    'usage_notes': f"Incubación - {media.culture_media_name or 'Medio'}",
-                    'is_historical': True
-                })
-                created_count += 1
-        
-        return {
-            'type': 'ir.actions.client',
-            'tag': 'display_notification',
-            'params': {
-                'title': f'Sincronización de {self.name}',
-                'message': f'✅ {created_count} nuevos, 🔄 {updated_count} recalculados, ⏭️ {skipped_count} omitidos',
-                'type': 'success'
+                'message': message,
+                'type': 'success' if error_count == 0 else 'warning'
             }
         }
 
     def _combine_date_time_to_utc(self, date_field, time_field):
-        """Combinar fecha y hora de Tijuana y convertir a UTC"""
+        """Combinar fecha y hora de Tijuana y convertir a UTC con validación robusta"""
         if not date_field:
             return False
         
+        # Manejar casos problemáticos
         if not time_field:
+            time_field = '12:00'
+        
+        # Convertir a string y limpiar
+        time_field = str(time_field).strip()
+        
+        # Si está completamente vacío o es 'False'
+        if not time_field or time_field.lower() in ['false', 'none', '']:
             time_field = '12:00'
         
         try:
             import pytz
             
-            # Parsear tiempo HH:MM
-            time_parts = time_field.split(':')
-            hour = int(time_parts[0])
-            minute = int(time_parts[1]) if len(time_parts) > 1 else 0
+            # Parsear tiempo HH:MM con múltiples formatos
+            hour, minute = 12, 0  # Default
+            
+            if ':' in time_field:
+                parts = time_field.split(':')
+                if len(parts) >= 2:
+                    try:
+                        hour = int(float(parts[0]))  # float por si viene "12.0"
+                        minute = int(float(parts[1]))
+                    except (ValueError, TypeError):
+                        hour, minute = 12, 0
+            else:
+                # Solo número, asumir que es hora
+                try:
+                    hour = int(float(time_field))
+                    minute = 0
+                except (ValueError, TypeError):
+                    hour, minute = 12, 0
+            
+            # CORRECCIÓN DE RANGOS AUTOMÁTICA
+            # Manejar 24:00 como 00:00 del día siguiente
+            if hour == 24 and minute == 0:
+                hour = 0
+                from datetime import timedelta
+                date_field = date_field + timedelta(days=1)
+            elif hour >= 24:
+                # Si es mayor a 24, usar módulo para obtener hora válida
+                hour = hour % 24
+            elif hour < 0:
+                hour = 0
+            
+            # Corregir minutos
+            if minute >= 60:
+                extra_hours = minute // 60
+                hour += extra_hours
+                minute = minute % 60
+                # Volver a verificar hora después de agregar minutos extra
+                if hour >= 24:
+                    hour = hour % 24
+            elif minute < 0:
+                minute = 0
             
             # Crear datetime naive en tiempo local (Tijuana)
             local_datetime = datetime.combine(
@@ -496,9 +464,21 @@ class LimsLabEquipmentInherited(models.Model):
             # Convertir a UTC para almacenamiento en Odoo
             utc_datetime = tijuana_datetime.astimezone(pytz.UTC)
             
-            # Retornar sin timezone info (Odoo lo maneja internamente)
             return utc_datetime.replace(tzinfo=None)
             
         except Exception as e:
-            # Fallback: usar datetime naive 
-            return datetime.combine(date_field, datetime.min.time().replace(hour=hour, minute=minute))
+            # Último fallback: usar mediodía
+            _logger.warning(f"Error parsing time '{time_field}' for date '{date_field}': {e}. Using 12:00 as fallback.")
+            
+            return datetime.combine(date_field, datetime.min.time().replace(hour=12, minute=0))
+    
+    def action_view_usage_log(self):
+        """Ver bitácora de uso de este equipo"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': f'Bitácora de Uso - {self.name}',
+            'res_model': 'lims.equipment.usage.log',
+            'view_mode': 'list,form',
+            'domain': [('equipment_id', '=', self.id)],
+            'context': {'default_equipment_id': self.id}
+        }
