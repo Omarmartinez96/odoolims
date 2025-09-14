@@ -14,20 +14,20 @@
                         <div class="oe_title">
                             <h1>Finalizar Incubación</h1>
                             <h3 class="text-warning">
-                                Terminar proceso de incubación
+                                Verificar muestras antes de finalizar
                             </h3>
                         </div>
                         
-                        <div class="alert alert-warning" style="margin: 20px 0;">
-                            <strong>⚠️ Importante:</strong><br/>
-                            Esta acción marcará las incubaciones como finalizadas y registrará la fecha/hora de finalización.
-                            <br/>Una vez finalizado, el equipo estará disponible para nuevo uso.
-                        </div>
-                        
-                        <!-- Información de las muestras -->
-                        <group string="📋 Resumen de Finalización">
+                        <!-- Información de las muestras PRIMERO -->
+                        <group string="📋 Muestras a Finalizar">
                             <field name="samples_info" nolabel="1" readonly="1"/>
                         </group>
+                        
+                        <div class="alert alert-warning" style="margin: 20px 0;">
+                            <strong>⚠️ Confirmar:</strong><br/>
+                            Verifica que las muestras listadas arriba son las correctas.
+                            <br/>Esta acción marcará las incubaciones como finalizadas y el equipo estará disponible para nuevo uso.
+                        </div>
                         
                         <!-- Fecha y hora de finalización -->
                         <group string="⏰ Fecha y Hora de Finalización">
@@ -38,12 +38,6 @@
                                    required="1"
                                    placeholder="HH:MM"
                                    help="Hora de finalización (formato HH:MM) - Hora de Tijuana"/>
-                        </group>
-                        
-                        <!-- Observaciones -->
-                        <group string="📝 Observaciones (Opcional)">
-                            <field name="notes" nolabel="1" 
-                                   placeholder="Agregar observaciones sobre la finalización de la incubación..."/>
                         </group>
                         
                     </sheet>
