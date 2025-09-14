@@ -104,12 +104,30 @@ class LimsParameterAnalysisV2(models.Model):
         ('approved', 'Aprobado')
     ], string='Estado del Análisis', default='draft')
     
-    # ===============================================
-    # === RESPONSABLES ===
-    # ===============================================
+    # =============================================== CAMPO DEPRECADO ===============================================
     analyst_names = fields.Char(
+        string='Analistas Responsables (DEPRECADO)',
+        help='CAMPO DEPRECADO - USAR ANALYST_IDS'
+    )
+    # =============================================== CAMPO DEPRECADO ===============================================
+
+    # ===============================================
+    # === NUEVOS CAMPOS DE ANALISTAS ===
+    # ===============================================
+    analyst_ids = fields.Many2many(
+        'lims.analyst',
+        'parameter_analyst_rel',
+        'parameter_id',
+        'analyst_id',
         string='Analistas Responsables',
-        help='Firma (Iniciales separadas por comas)'
+        help='Analistas asignados con verificación PIN'
+    )
+
+    analyst_display_names = fields.Char(
+        string='Analistas',
+        compute='_compute_analyst_display_names',
+        store=True,
+        help='Nombres de analistas para mostrar en listas'
     )
     
     # ===============================================
@@ -829,3 +847,35 @@ class LimsParameterAnalysisV2(models.Model):
                 self.executed_qc_ids = qc_lines
                 # Incrementar contador
                 self.qc_template_id.sudo().write({'times_used': self.qc_template_id.times_used + 1})
+
+    @api.depends('analyst_ids')
+    def _compute_analyst_display_names(self):
+        """Generar cadena de nombres para mostrar"""
+        for record in self:
+            if record.analyst_ids:
+                names = [analyst.initials or analyst.full_name for analyst in record.analyst_ids]
+                record.analyst_display_names = ', '.join(names)
+            else:
+                record.analyst_display_names = ''
+
+    def action_assign_analysts(self):
+        """Abrir wizard para asignar múltiples analistas"""
+        self.ensure_one()
+        
+        return {
+            'name': 'Asignar Analistas Responsables',
+            'type': 'ir.actions.act_window',
+            'res_model': 'parameter.analyst.assignment.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_parameter_analysis_id': self.id,
+                'default_current_analyst_ids': [(6, 0, self.analyst_ids.ids)],
+            }
+        }
+
+    def action_clear_analysts(self):
+        """Limpiar todos los analistas"""
+        self.ensure_one()
+        self.analyst_ids = [(5, 0, 0)]
+        return True

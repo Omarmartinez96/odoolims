@@ -224,7 +224,7 @@
                                                decoration-info="report_status == 'reported'"
                                                decoration-muted="report_status == 'draft'"/>
                                         <field name="result_complete" class="o_field_highlight" string="Resultado"/>
-                                        <field name="analyst_names"/>
+                                        <field name="analyst_display_names" string="Analistas"/>
                                     </list>
                                 </field>
                             </page>

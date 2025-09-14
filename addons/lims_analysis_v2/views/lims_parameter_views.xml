@@ -31,13 +31,53 @@
                             <group string="📅 Información del Análisis">
                                 <field name="analysis_start_date"/>
                                 <field name="analysis_commitment_date"/>
-                                <field name="analyst_names" placeholder="Iniciales separadas por comas"/>
+                                
+                                <!-- Campo deprecado (oculto) -->
+                                <field name="analyst_names" invisible="1"/>
+                                
                                 <field name="analysis_status_checkbox" widget="radio"/>
                                 <field name="report_status" readonly="1"
-                                       decoration-success="report_status == 'ready'"
-                                       decoration-info="report_status == 'reported'"
-                                       decoration-muted="report_status == 'draft'"/>
+                                    decoration-success="report_status == 'ready'"
+                                    decoration-info="report_status == 'reported'"
+                                    decoration-muted="report_status == 'draft'"/>
                             </group>
+                        </group>
+
+                        <!-- Nueva sección separada para analistas -->
+                        <group string="👥 Analistas Responsables" colspan="4">
+                            <!-- Tags de analistas actuales -->
+                            <field name="analyst_ids" widget="many2many_tags" readonly="1" nolabel="1" 
+                                placeholder="Sin analistas asignados" 
+                                invisible="not analyst_ids"/>
+                            
+                            <!-- Mensaje cuando no hay analistas -->
+                            <div invisible="analyst_ids" style="color: #6c757d; font-style: italic; text-align: center; margin: 10px 0;">
+                                <i class="fa fa-info-circle"/> No hay analistas asignados actualmente
+                            </div>
+                            
+                            <!-- Botones de gestión centrados -->
+                            <div style="display: flex; gap: 10px; justify-content: center; margin: 15px 0;">
+                                <button name="action_assign_analysts" 
+                                        type="object" 
+                                        string="👥 Gestionar Analistas" 
+                                        class="btn-primary"
+                                        help="Agregar/remover analistas con verificación PIN"/>
+                                
+                                <button name="action_clear_analysts" 
+                                        type="object" 
+                                        string="🗑️ Limpiar Todos" 
+                                        class="btn-secondary"
+                                        invisible="not analyst_ids"
+                                        confirm="¿Remover todos los analistas asignados?"/>
+                            </div>
+                            
+                            <!-- Nota informativa -->
+                            <div style="background-color: #e7f3ff; padding: 10px; border-left: 4px solid #2196F3; margin: 10px 0; border-radius: 4px;">
+                                <small style="color: #1976D2;">
+                                    <i class="fa fa-shield-alt"/> <strong>Seguridad:</strong> 
+                                    Cada analista debe verificar su identidad con PIN personal para ser asignado.
+                                </small>
+                            </div>
                         </group>
 
                         <!-- Configuración de procesos según categoría y tipo -->
