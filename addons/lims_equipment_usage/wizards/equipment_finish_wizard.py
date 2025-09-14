@@ -13,11 +13,18 @@ class LimsEquipmentFinishWizard(models.TransientModel):
         readonly=True
     )
     
-    finish_datetime = fields.Datetime(
-        string='Fecha y Hora de Finalización',
+    finish_date = fields.Date(
+        string='Fecha de Finalización',
         required=True,
-        default=lambda self: self._get_tijuana_now(),
-        help='Fecha y hora de finalización del uso'
+        default=fields.Date.context_today,
+        help='Fecha de finalización del uso'
+    )
+    
+    finish_time = fields.Char(
+        string='Hora de Finalización',
+        required=True,
+        default=lambda self: self._get_tijuana_time(),
+        help='Hora de finalización en formato HH:MM'
     )
     
     samples_info = fields.Html(
@@ -31,12 +38,41 @@ class LimsEquipmentFinishWizard(models.TransientModel):
         help='Observaciones adicionales sobre la finalización'
     )
     
-    def _get_tijuana_now(self):
-        """Obtener hora actual de Tijuana"""
-        tijuana_tz = pytz.timezone('America/Tijuana')
-        utc_now = pytz.UTC.localize(datetime.utcnow())
-        tijuana_now = utc_now.astimezone(tijuana_tz)
-        return tijuana_now.replace(tzinfo=None)
+    def _get_tijuana_time(self):
+        """Obtener hora actual de Tijuana en formato HH:MM"""
+        try:
+            tijuana_tz = pytz.timezone('America/Tijuana')
+            utc_now = pytz.UTC.localize(datetime.utcnow())
+            tijuana_now = utc_now.astimezone(tijuana_tz)
+            return tijuana_now.strftime('%H:%M')
+        except:
+            # Fallback si hay problemas con timezone
+            return datetime.now().strftime('%H:%M')
+    
+    def _combine_date_time(self, date_field, time_field):
+        """Combinar fecha y hora en datetime"""
+        if not date_field:
+            return False
+        
+        if not time_field:
+            time_field = '12:00'
+        
+        try:
+            # Parsear tiempo HH:MM
+            time_parts = time_field.split(':')
+            hour = int(time_parts[0])
+            minute = int(time_parts[1]) if len(time_parts) > 1 else 0
+            
+            # Combinar fecha y hora
+            combined = datetime.combine(
+                date_field,
+                datetime.min.time().replace(hour=hour, minute=minute)
+            )
+            
+            return combined
+        except:
+            # Si hay error, usar mediodía como default
+            return datetime.combine(date_field, datetime.min.time().replace(hour=12))
     
     @api.depends('usage_log_ids')
     def _compute_samples_info(self):
@@ -47,14 +83,14 @@ class LimsEquipmentFinishWizard(models.TransientModel):
             
             html_content = """
             <div style="margin: 10px 0;">
-                <h4>🔬 Muestras que se finalizarán:</h4>
+                <h4>🔬 Estas a punto de finalizar la incubación de las siguientes muestras:</h4>
                 <table class="table table-sm table-striped">
                     <thead>
                         <tr>
-                            <th>Equipo</th>
                             <th>Código Muestra</th>
                             <th>Identificación</th>
                             <th>Medio de Cultivo</th>
+                            <th>Equipo</th>
                             <th>Inicio</th>
                         </tr>
                     </thead>
@@ -72,10 +108,10 @@ class LimsEquipmentFinishWizard(models.TransientModel):
                 
                 html_content += f"""
                         <tr>
-                            <td><strong>{log.equipment_id.name}</strong></td>
-                            <td>{sample_code}</td>
+                            <td><strong>{sample_code}</strong></td>
                             <td>{sample_id}</td>
                             <td>{media_name}</td>
+                            <td>{log.equipment_id.name}</td>
                             <td>{start_date}</td>
                         </tr>
                 """
@@ -93,12 +129,25 @@ class LimsEquipmentFinishWizard(models.TransientModel):
         if not self.usage_log_ids:
             raise UserError('No hay registros para finalizar.')
         
-        if not self.finish_datetime:
+        if not self.finish_date or not self.finish_time:
             raise UserError('Debe especificar la fecha y hora de finalización.')
+        
+        # Validar formato de hora
+        try:
+            time_parts = self.finish_time.split(':')
+            hour = int(time_parts[0])
+            minute = int(time_parts[1]) if len(time_parts) > 1 else 0
+            if not (0 <= hour <= 23 and 0 <= minute <= 59):
+                raise ValueError()
+        except:
+            raise UserError('El formato de hora debe ser HH:MM (ejemplo: 14:30)')
+        
+        # Combinar fecha y hora
+        finish_datetime = self._combine_date_time(self.finish_date, self.finish_time)
         
         # Finalizar todos los registros
         update_values = {
-            'end_datetime': self.finish_datetime,
+            'end_datetime': finish_datetime,
         }
         
         if self.notes:
@@ -113,8 +162,8 @@ class LimsEquipmentFinishWizard(models.TransientModel):
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
-                'title': 'Equipos Finalizados',
-                'message': f'✅ Se finalizaron {len(self.usage_log_ids)} registros de uso de equipos.',
+                'title': 'Incubaciones Finalizadas',
+                'message': f'✅ Se finalizaron {len(self.usage_log_ids)} incubaciones correctamente.',
                 'type': 'success',
             }
         }

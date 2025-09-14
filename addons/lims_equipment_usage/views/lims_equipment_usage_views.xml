@@ -26,8 +26,8 @@
                     <header>
                         <button name="action_finish_equipment_usage" 
                                 type="object" 
-                                string="🏁 Finalizar Seleccionados" 
-                                class="btn-warning"
+                                string="Finalizar Seleccionados" 
+                                class="btn-success"
                                 invisible="context.get('active_ids') == False"/>
                     </header>
 
@@ -46,8 +46,8 @@
                     <!-- Botón individual de finalizar -->
                     <button name="action_finish_individual" 
                             type="object" 
-                            string="🏁" 
-                            class="btn btn-sm btn-warning" 
+                            string="Finalizar" 
+                            class="btn btn-sm btn-success" 
                             title="Finalizar este uso"
                             invisible="is_active_use == False and status_display != '🔴 Vencido'"/>
                     

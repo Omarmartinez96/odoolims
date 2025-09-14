@@ -235,10 +235,15 @@ class LimsEquipmentUsageLog(models.Model):
             }
         }
 
-    @api.model
     def action_finish_equipment_usage(self):
         """Finalizar uso masivo de equipos"""
-        active_ids = self.env.context.get('active_ids', [])
+        # Si se llama desde un recordset específico, usar esos IDs
+        if self:
+            active_ids = self.ids
+        else:
+            # Si se llama desde contexto (botón de header)
+            active_ids = self.env.context.get('active_ids', [])
+        
         if not active_ids:
             raise UserError('No hay registros seleccionados.')
         

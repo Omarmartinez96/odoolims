@@ -12,7 +12,7 @@
                 <form string="Finalizar Incubación">
                     <sheet>
                         <div class="oe_title">
-                            <h1>🏁 Finalizar Incubación</h1>
+                            <h1>Finalizar Incubación</h1>
                             <h3 class="text-warning">
                                 Terminar proceso de incubación
                             </h3>
@@ -31,9 +31,13 @@
                         
                         <!-- Fecha y hora de finalización -->
                         <group string="⏰ Fecha y Hora de Finalización">
-                            <field name="finish_datetime" 
+                            <field name="finish_date" 
                                    required="1"
-                                   help="Hora actual de Tijuana (ajustada automáticamente)"/>
+                                   help="Fecha de finalización"/>
+                            <field name="finish_time" 
+                                   required="1"
+                                   placeholder="HH:MM"
+                                   help="Hora de finalización (formato HH:MM) - Hora de Tijuana"/>
                         </group>
                         
                         <!-- Observaciones -->
@@ -45,12 +49,12 @@
                     </sheet>
                     
                     <footer>
-                        <button string="🏁 Finalizar Incubación" 
+                        <button string="Finalizar Incubación" 
                                 name="action_finish_usage" 
                                 type="object" 
-                                class="btn-primary"
+                                class="btn-success"
                                 confirm="¿Está seguro de finalizar estas incubaciones?"/>
-                        <button string="❌ Cancelar" 
+                        <button string="Cancelar" 
                                 class="btn-secondary" 
                                 special="cancel"/>
                     </footer>
