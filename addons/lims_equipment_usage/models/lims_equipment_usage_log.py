@@ -174,7 +174,7 @@ class LimsEquipmentUsageLog(models.Model):
                 if record.start_datetime:
                     start_utc = pytz.UTC.localize(record.start_datetime)
                     start_tijuana = start_utc.astimezone(tijuana_tz)
-                    record.tijuana_start_display = start_tijuana.strftime('%d/%m/%Y %H:%M')
+                    record.tijuana_start_display = start_tijuana.strftime('%d/%b/%Y %H:%M')  # CAMBIO
                 else:
                     record.tijuana_start_display = ''
                 
@@ -182,7 +182,7 @@ class LimsEquipmentUsageLog(models.Model):
                 if record.planned_end_datetime:
                     planned_utc = pytz.UTC.localize(record.planned_end_datetime)
                     planned_tijuana = planned_utc.astimezone(tijuana_tz)
-                    record.tijuana_planned_display = planned_tijuana.strftime('%d/%m/%Y %H:%M')
+                    record.tijuana_planned_display = planned_tijuana.strftime('%d/%b/%Y %H:%M')  # CAMBIO
                 else:
                     record.tijuana_planned_display = ''
                 
@@ -190,16 +190,16 @@ class LimsEquipmentUsageLog(models.Model):
                 if record.end_datetime:
                     end_utc = pytz.UTC.localize(record.end_datetime)
                     end_tijuana = end_utc.astimezone(tijuana_tz)
-                    record.tijuana_end_display = end_tijuana.strftime('%d/%m/%Y %H:%M')
+                    record.tijuana_end_display = end_tijuana.strftime('%d/%b/%Y %H:%M')  # CAMBIO
                 else:
                     record.tijuana_end_display = ''
                     
         except Exception as e:
             # Fallback sin timezone
             for record in self:
-                record.tijuana_start_display = record.start_datetime.strftime('%d/%m/%Y %H:%M') if record.start_datetime else ''
-                record.tijuana_planned_display = record.planned_end_datetime.strftime('%d/%m/%Y %H:%M') if record.planned_end_datetime else ''
-                record.tijuana_end_display = record.end_datetime.strftime('%d/%m/%Y %H:%M') if record.end_datetime else ''
+                record.tijuana_start_display = record.start_datetime.strftime('%d/%b/%Y %H:%M') if record.start_datetime else ''
+                record.tijuana_planned_display = record.planned_end_datetime.strftime('%d/%b/%Y %H:%M') if record.planned_end_datetime else ''
+                record.tijuana_end_display = record.end_datetime.strftime('%d/%b/%Y %H:%M') if record.end_datetime else ''
 
     @api.depends('related_media_id.culture_media_name', 'process_context', 'related_parameter_id.name')
     def _compute_media_info(self):

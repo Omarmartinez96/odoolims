@@ -158,7 +158,7 @@ class LimsEquipmentFinishWizard(models.TransientModel):
                                 <th>Identificación</th>
                                 <th>Medio de Cultivo</th>
                                 <th>Equipo</th>
-                                <th>Inicio</th>
+                                <th>Fin Previsto</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -171,7 +171,19 @@ class LimsEquipmentFinishWizard(models.TransientModel):
                         sample_id = log.related_analysis_id.sample_identifier
                     
                     media_name = log.media_culture_name or 'Sin medio'
-                    start_date = log.start_datetime.strftime('%d/%m/%Y %H:%M') if log.start_datetime else 'Sin fecha'
+                    
+                    # CAMBIO: Mostrar fin previsto en formato dd/mmm/yyyy
+                    if log.planned_end_datetime:
+                        try:
+                            # Convertir de UTC a Tijuana para mostrar
+                            tijuana_tz = pytz.timezone('America/Tijuana')
+                            planned_utc = pytz.UTC.localize(log.planned_end_datetime)
+                            planned_tijuana = planned_utc.astimezone(tijuana_tz)
+                            planned_date = planned_tijuana.strftime('%d/%b/%Y %H:%M')
+                        except:
+                            planned_date = log.planned_end_datetime.strftime('%d/%b/%Y %H:%M')
+                    else:
+                        planned_date = 'Sin fecha límite'
                     
                     html_content += f"""
                             <tr>
@@ -179,7 +191,7 @@ class LimsEquipmentFinishWizard(models.TransientModel):
                                 <td>{sample_id}</td>
                                 <td>{media_name}</td>
                                 <td>{log.equipment_id.name}</td>
-                                <td>{start_date}</td>
+                                <td>{planned_date}</td>
                             </tr>
                     """
                 
