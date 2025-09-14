@@ -366,4 +366,139 @@ class LimsLabEquipmentInherited(models.Model):
             'domain': [('equipment_id', '=', self.id)],
             'context': {'default_equipment_id': self.id}
         }
-    
+
+    def action_sync_equipment_historical_usage(self):
+        """Sincronizar uso histórico con timezone correcto"""
+        
+        created_count = 0
+        updated_count = 0
+        skipped_count = 0
+        
+        # ===== EQUIPOS DE INCUBACIÓN =====
+        historical_media = self.env['lims.analysis.media.v2'].search([
+            ('incubation_equipment', '=', self.id),
+            ('incubation_start_date', '!=', False)
+        ])
+        
+        for media in historical_media:
+            existing_log = self.env['lims.equipment.usage.log'].search([
+                ('equipment_id', '=', self.id),
+                ('related_media_id', '=', media.id),
+                ('usage_type', '=', 'incubation')
+            ])
+            
+            if existing_log:
+                # RECALCULAR horarios existentes con timezone correcto
+                updates = {}
+                
+                # Recalcular start_datetime
+                if media.incubation_start_date:
+                    start_datetime = self._combine_date_time_to_utc(
+                        media.incubation_start_date,
+                        media.incubation_start_time or '00:00'
+                    )
+                    updates['start_datetime'] = start_datetime
+                
+                # Recalcular planned_end_datetime  
+                if media.incubation_end_date:
+                    planned_end_datetime = self._combine_date_time_to_utc(
+                        media.incubation_end_date,
+                        media.incubation_end_time or '23:59'
+                    )
+                    updates['planned_end_datetime'] = planned_end_datetime
+                
+                # Recalcular end_datetime real
+                if media.incubation_end_date_real:
+                    end_datetime = self._combine_date_time_to_utc(
+                        media.incubation_end_date_real,
+                        media.incubation_end_time_real or '23:59'
+                    )
+                    updates['end_datetime'] = end_datetime
+                
+                if updates:
+                    existing_log.write(updates)
+                    updated_count += 1
+                else:
+                    skipped_count += 1
+            else:
+                # Crear nuevo registro con timezone correcto
+                start_datetime = self._combine_date_time_to_utc(
+                    media.incubation_start_date,
+                    media.incubation_start_time or '00:00'
+                )
+                
+                planned_end_datetime = False
+                if media.incubation_end_date:
+                    planned_end_datetime = self._combine_date_time_to_utc(
+                        media.incubation_end_date,
+                        media.incubation_end_time or '23:59'
+                    )
+                
+                end_datetime = False
+                if media.incubation_end_date_real:
+                    end_datetime = self._combine_date_time_to_utc(
+                        media.incubation_end_date_real,
+                        media.incubation_end_time_real or '23:59'
+                    )
+                
+                self.env['lims.equipment.usage.log'].create({
+                    'equipment_id': self.id,
+                    'usage_type': 'incubation',
+                    'process_context': media.process_type,
+                    'related_analysis_id': media.parameter_analysis_id.analysis_id.id,
+                    'related_parameter_id': media.parameter_analysis_id.id,
+                    'related_media_id': media.id,
+                    'start_datetime': start_datetime,
+                    'end_datetime': end_datetime,
+                    'planned_end_datetime': planned_end_datetime,
+                    'used_by_name': 'Sistema (Sincronizado)',
+                    'usage_notes': f"Incubación - {media.culture_media_name or 'Medio'}",
+                    'is_historical': True
+                })
+                created_count += 1
+        
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': f'Sincronización de {self.name}',
+                'message': f'✅ {created_count} nuevos, 🔄 {updated_count} recalculados, ⏭️ {skipped_count} omitidos',
+                'type': 'success'
+            }
+        }
+
+    def _combine_date_time_to_utc(self, date_field, time_field):
+        """Combinar fecha y hora de Tijuana y convertir a UTC"""
+        if not date_field:
+            return False
+        
+        if not time_field:
+            time_field = '12:00'
+        
+        try:
+            import pytz
+            
+            # Parsear tiempo HH:MM
+            time_parts = time_field.split(':')
+            hour = int(time_parts[0])
+            minute = int(time_parts[1]) if len(time_parts) > 1 else 0
+            
+            # Crear datetime naive en tiempo local (Tijuana)
+            local_datetime = datetime.combine(
+                date_field,
+                datetime.min.time().replace(hour=hour, minute=minute)
+            )
+            
+            # Localizar en zona de Tijuana
+            tijuana_tz = pytz.timezone('America/Tijuana')
+            tijuana_datetime = tijuana_tz.localize(local_datetime)
+            
+            # Convertir a UTC para almacenamiento en Odoo
+            utc_datetime = tijuana_datetime.astimezone(pytz.UTC)
+            
+            # Retornar sin timezone info (Odoo lo maneja internamente)
+            return utc_datetime.replace(tzinfo=None)
+            
+        except Exception as e:
+            # Fallback: usar datetime naive 
+            return datetime.combine(date_field, datetime.min.time().replace(hour=hour, minute=minute))

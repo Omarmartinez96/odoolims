@@ -12,10 +12,16 @@
                 <!-- Solo botón de ver bitácora en el header -->
                 <xpath expr="//form" position="inside">
                     <header>
+                        <button name="action_sync_equipment_historical_usage"
+                                type="object"
+                                string="🔄 Sincronizar Bitácora"
+                                class="btn-info"
+                                confirm="¿Sincronizar el uso histórico de este equipo? Esto recalculará los horarios con timezone correcto."/>
+                        
                         <button name="action_view_usage_log"
                                 type="object"
                                 string="📋 Ver Bitácora de Uso"
-                                class="btn-primary"/>
+                                class="btn-secondary"/>
                     </header>
                 </xpath>
 

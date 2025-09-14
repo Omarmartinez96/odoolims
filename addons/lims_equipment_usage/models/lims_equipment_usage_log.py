@@ -142,7 +142,64 @@ class LimsEquipmentUsageLog(models.Model):
         help='Proceso más específico basado en el contexto'
     )
 
+    tijuana_start_display = fields.Char(
+        string='Inicio (Tijuana)',
+        compute='_compute_tijuana_times',
+        help='Hora de inicio en timezone de Tijuana'
+    )
+    
+    tijuana_planned_display = fields.Char(
+        string='Fin Previsto (Tijuana)', 
+        compute='_compute_tijuana_times',
+        help='Hora planificada de fin en timezone de Tijuana'
+    )
+    
+    tijuana_end_display = fields.Char(
+        string='Fin Real (Tijuana)',
+        compute='_compute_tijuana_times',
+        help='Hora real de fin en timezone de Tijuana'
+    )
+
     # === MÉTODOS COMPUTADOS ===
+
+    @api.depends('start_datetime', 'planned_end_datetime', 'end_datetime')
+    def _compute_tijuana_times(self):
+        """Convertir horarios UTC a Tijuana para mostrar"""
+        try:
+            import pytz
+            tijuana_tz = pytz.timezone('America/Tijuana')
+            
+            for record in self:
+                # Inicio
+                if record.start_datetime:
+                    start_utc = pytz.UTC.localize(record.start_datetime)
+                    start_tijuana = start_utc.astimezone(tijuana_tz)
+                    record.tijuana_start_display = start_tijuana.strftime('%d/%m/%Y %H:%M')
+                else:
+                    record.tijuana_start_display = ''
+                
+                # Fin Previsto
+                if record.planned_end_datetime:
+                    planned_utc = pytz.UTC.localize(record.planned_end_datetime)
+                    planned_tijuana = planned_utc.astimezone(tijuana_tz)
+                    record.tijuana_planned_display = planned_tijuana.strftime('%d/%m/%Y %H:%M')
+                else:
+                    record.tijuana_planned_display = ''
+                
+                # Fin Real
+                if record.end_datetime:
+                    end_utc = pytz.UTC.localize(record.end_datetime)
+                    end_tijuana = end_utc.astimezone(tijuana_tz)
+                    record.tijuana_end_display = end_tijuana.strftime('%d/%m/%Y %H:%M')
+                else:
+                    record.tijuana_end_display = ''
+                    
+        except Exception as e:
+            # Fallback sin timezone
+            for record in self:
+                record.tijuana_start_display = record.start_datetime.strftime('%d/%m/%Y %H:%M') if record.start_datetime else ''
+                record.tijuana_planned_display = record.planned_end_datetime.strftime('%d/%m/%Y %H:%M') if record.planned_end_datetime else ''
+                record.tijuana_end_display = record.end_datetime.strftime('%d/%m/%Y %H:%M') if record.end_datetime else ''
 
     @api.depends('related_media_id.culture_media_name', 'process_context', 'related_parameter_id.name')
     def _compute_media_info(self):
