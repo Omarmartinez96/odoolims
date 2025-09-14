@@ -54,23 +54,23 @@ class LimsLabEquipmentInherited(models.Model):
                 equipment.is_currently_in_use = False
     
     def action_sync_equipment_historical_usage(self):
-        """Sincronizar uso histórico de este equipo específico"""
-        
-        # Buscar todos los medios que han usado este equipo
-        historical_media = self.env['lims.analysis.media.v2'].search([
-            ('incubation_equipment', '=', self.id),
-            ('incubation_start_date', '!=', False)
-        ])
+        """Sincronizar uso histórico de este equipo específico - TODOS los tipos"""
         
         created_count = 0
         updated_count = 0
         skipped_count = 0
         
+        # ===== 1. EQUIPOS DE INCUBACIÓN =====
+        historical_media = self.env['lims.analysis.media.v2'].search([
+            ('incubation_equipment', '=', self.id),
+            ('incubation_start_date', '!=', False)
+        ])
+        
         for media in historical_media:
-            # Verificar si ya existe registro
             existing_log = self.env['lims.equipment.usage.log'].search([
                 ('equipment_id', '=', self.id),
-                ('related_media_id', '=', media.id)
+                ('related_media_id', '=', media.id),
+                ('usage_type', '=', 'incubation')
             ])
             
             if existing_log:
@@ -89,7 +89,7 @@ class LimsLabEquipmentInherited(models.Model):
                 else:
                     skipped_count += 1
             else:
-                # Crear nuevo registro
+                # Crear nuevo registro de incubación
                 start_datetime = self._combine_date_time(
                     media.incubation_start_date,
                     media.incubation_start_time or '00:00'
@@ -120,19 +120,179 @@ class LimsLabEquipmentInherited(models.Model):
                     'end_datetime': end_datetime,
                     'planned_end_datetime': planned_end_datetime,
                     'used_by_name': 'Sistema (Histórico)',
-                    'usage_notes': f"Sincronización histórica - {media.culture_media_name or 'Medio'}",
+                    'usage_notes': f"Incubación - {media.culture_media_name or 'Medio'}",
                     'is_historical': True
                 })
                 created_count += 1
         
-        # También sincronizar equipos involucrados (no incubación)
+        # ===== 2. EQUIPOS DE AMBIENTES DE PROCESAMIENTO =====
+        # Pre-enriquecimiento
+        pre_enrichment_params = self.env['lims.parameter.analysis.v2'].search([
+            ('pre_enrichment_equipment_id', '=', self.id),
+            ('pre_enrichment_processing_date', '!=', False)
+        ])
+        
+        for param in pre_enrichment_params:
+            existing_log = self.env['lims.equipment.usage.log'].search([
+                ('equipment_id', '=', self.id),
+                ('related_parameter_id', '=', param.id),
+                ('process_context', '=', 'pre_enrichment')
+            ])
+            
+            if not existing_log:
+                start_datetime = self._combine_date_time(
+                    param.pre_enrichment_processing_date,
+                    param.pre_enrichment_processing_time or '12:00'
+                )
+                
+                self.env['lims.equipment.usage.log'].create({
+                    'equipment_id': self.id,
+                    'usage_type': 'processing',
+                    'process_context': 'pre_enrichment',
+                    'related_analysis_id': param.analysis_id.id,
+                    'related_parameter_id': param.id,
+                    'start_datetime': start_datetime,
+                    'used_by_name': 'Sistema (Histórico)',
+                    'usage_notes': f"Procesamiento Pre-enriquecimiento - {param.name}",
+                    'is_historical': True
+                })
+                created_count += 1
+        
+        # Enriquecimiento Selectivo
+        selective_params = self.env['lims.parameter.analysis.v2'].search([
+            ('selective_enrichment_equipment_id', '=', self.id),
+            ('selective_enrichment_processing_date', '!=', False)
+        ])
+        
+        for param in selective_params:
+            existing_log = self.env['lims.equipment.usage.log'].search([
+                ('equipment_id', '=', self.id),
+                ('related_parameter_id', '=', param.id),
+                ('process_context', '=', 'selective_enrichment')
+            ])
+            
+            if not existing_log:
+                start_datetime = self._combine_date_time(
+                    param.selective_enrichment_processing_date,
+                    param.selective_enrichment_processing_time or '12:00'
+                )
+                
+                self.env['lims.equipment.usage.log'].create({
+                    'equipment_id': self.id,
+                    'usage_type': 'processing',
+                    'process_context': 'selective_enrichment',
+                    'related_analysis_id': param.analysis_id.id,
+                    'related_parameter_id': param.id,
+                    'start_datetime': start_datetime,
+                    'used_by_name': 'Sistema (Histórico)',
+                    'usage_notes': f"Procesamiento Selectivo - {param.name}",
+                    'is_historical': True
+                })
+                created_count += 1
+        
+        # Cuantitativo
+        quantitative_params = self.env['lims.parameter.analysis.v2'].search([
+            ('quantitative_equipment_id', '=', self.id),
+            ('quantitative_processing_date', '!=', False)
+        ])
+        
+        for param in quantitative_params:
+            existing_log = self.env['lims.equipment.usage.log'].search([
+                ('equipment_id', '=', self.id),
+                ('related_parameter_id', '=', param.id),
+                ('process_context', '=', 'quantitative')
+            ])
+            
+            if not existing_log:
+                start_datetime = self._combine_date_time(
+                    param.quantitative_processing_date,
+                    param.quantitative_processing_time or '12:00'
+                )
+                
+                self.env['lims.equipment.usage.log'].create({
+                    'equipment_id': self.id,
+                    'usage_type': 'processing',
+                    'process_context': 'quantitative',
+                    'related_analysis_id': param.analysis_id.id,
+                    'related_parameter_id': param.id,
+                    'start_datetime': start_datetime,
+                    'used_by_name': 'Sistema (Histórico)',
+                    'usage_notes': f"Procesamiento Cuantitativo - {param.name}",
+                    'is_historical': True
+                })
+                created_count += 1
+        
+        # Cualitativo
+        qualitative_params = self.env['lims.parameter.analysis.v2'].search([
+            ('qualitative_equipment_id', '=', self.id),
+            ('qualitative_processing_date', '!=', False)
+        ])
+        
+        for param in qualitative_params:
+            existing_log = self.env['lims.equipment.usage.log'].search([
+                ('equipment_id', '=', self.id),
+                ('related_parameter_id', '=', param.id),
+                ('process_context', '=', 'qualitative')
+            ])
+            
+            if not existing_log:
+                start_datetime = self._combine_date_time(
+                    param.qualitative_processing_date,
+                    param.qualitative_processing_time or '12:00'
+                )
+                
+                self.env['lims.equipment.usage.log'].create({
+                    'equipment_id': self.id,
+                    'usage_type': 'processing',
+                    'process_context': 'qualitative',
+                    'related_analysis_id': param.analysis_id.id,
+                    'related_parameter_id': param.id,
+                    'start_datetime': start_datetime,
+                    'used_by_name': 'Sistema (Histórico)',
+                    'usage_notes': f"Procesamiento Cualitativo - {param.name}",
+                    'is_historical': True
+                })
+                created_count += 1
+        
+        # Confirmación
+        confirmation_params = self.env['lims.parameter.analysis.v2'].search([
+            ('confirmation_equipment_id', '=', self.id),
+            ('confirmation_processing_date', '!=', False)
+        ])
+        
+        for param in confirmation_params:
+            existing_log = self.env['lims.equipment.usage.log'].search([
+                ('equipment_id', '=', self.id),
+                ('related_parameter_id', '=', param.id),
+                ('process_context', '=', 'confirmation')
+            ])
+            
+            if not existing_log:
+                start_datetime = self._combine_date_time(
+                    param.confirmation_processing_date,
+                    param.confirmation_processing_time or '12:00'
+                )
+                
+                self.env['lims.equipment.usage.log'].create({
+                    'equipment_id': self.id,
+                    'usage_type': 'processing',
+                    'process_context': 'confirmation',
+                    'related_analysis_id': param.analysis_id.id,
+                    'related_parameter_id': param.id,
+                    'start_datetime': start_datetime,
+                    'used_by_name': 'Sistema (Histórico)',
+                    'usage_notes': f"Procesamiento Confirmación - {param.name}",
+                    'is_historical': True
+                })
+                created_count += 1
+        
+        # ===== 3. EQUIPOS INVOLUCRADOS ADICIONALES =====
         equipment_involved = self.env['lims.equipment.involved.v2'].search([
             ('equipment_id', '=', self.id),
             ('usage_date', '!=', False)
         ])
         
         for equipment_use in equipment_involved:
-            # Verificar si ya existe
             existing_log = self.env['lims.equipment.usage.log'].search([
                 ('equipment_id', '=', self.id),
                 ('related_parameter_id', '=', equipment_use.parameter_analysis_id.id),
@@ -147,6 +307,7 @@ class LimsLabEquipmentInherited(models.Model):
                 self.env['lims.equipment.usage.log'].create({
                     'equipment_id': self.id,
                     'usage_type': 'other',
+                    'process_context': 'other',
                     'related_analysis_id': equipment_use.parameter_analysis_id.analysis_id.id,
                     'related_parameter_id': equipment_use.parameter_analysis_id.id,
                     'start_datetime': self._combine_date_time(

@@ -21,6 +21,7 @@ class LimsEquipmentUsageLog(models.Model):
     # === TIPO Y CONTEXTO DE USO ===
     usage_type = fields.Selection([
         ('incubation', 'Incubación'),
+        ('processing', 'Procesamiento de Ambiente'), 
         ('weighing', 'Pesado'),
         ('measurement', 'Medición'),
         ('sterilization', 'Esterilización'),
@@ -127,17 +128,40 @@ class LimsEquipmentUsageLog(models.Model):
     )
     
     # === MÉTODOS COMPUTADOS ===
-    @api.depends('equipment_id.name', 'usage_type', 'start_datetime', 'related_media_id.culture_media_name')
+    @api.depends('equipment_id.name', 'usage_type', 'process_context', 'start_datetime', 'related_media_id.culture_media_name')
     def _compute_display_name(self):
         for record in self:
-            if record.related_media_id and record.related_media_id.culture_media_name:
+            # Procesos más explícitos
+            process_names = {
+                'pre_enrichment': 'Pre-enriquecimiento',
+                'selective_enrichment': 'Enriquecimiento Selectivo',
+                'quantitative': 'Análisis Cuantitativo',
+                'qualitative': 'Análisis Cualitativo',
+                'confirmation': 'Confirmación',
+                'other': 'Otro'
+            }
+            
+            usage_names = {
+                'incubation': 'Incubación',
+                'processing': 'Procesamiento',
+                'weighing': 'Pesado',
+                'measurement': 'Medición',
+                'sterilization': 'Esterilización',
+                'storage': 'Almacenamiento',
+                'other': 'Otro'
+            }
+            
+            usage_display = usage_names.get(record.usage_type, record.usage_type)
+            
+            if record.process_context and record.process_context != 'other':
+                process_display = process_names.get(record.process_context, record.process_context)
+                context = f" - {process_display}"
+            elif record.related_media_id and record.related_media_id.culture_media_name:
                 context = f" - {record.related_media_id.culture_media_name}"
-            elif record.process_context:
-                context = f" - {dict(record._fields['process_context'].selection).get(record.process_context, '')}"
             else:
                 context = ""
             
-            record.display_name = f"{record.equipment_id.name} ({dict(record._fields['usage_type'].selection).get(record.usage_type, '')}){context}"
+            record.display_name = f"{record.equipment_id.name} ({usage_display}){context}"
     
     @api.depends('start_datetime', 'end_datetime')
     def _compute_duration(self):

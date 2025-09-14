@@ -22,22 +22,23 @@
                     <field name="is_active_use" column_invisible="True"/>
                     <field name="is_historical" column_invisible="True"/>
 
-                    <!-- Campos principales visibles -->
-                    <field name="start_datetime" string="Inicio" width="15%"/>
-                    <field name="end_datetime" string="Fin" width="15%"/>
-                    <field name="duration_hours" string="Duración (h)" sum="Total Horas" width="10%"/>
-                    <field name="usage_type" string="Tipo de Uso" width="12%"/>
-                    <field name="process_context" string="Proceso" width="15%"/>
+                    <!-- Campos principales visibles - TOTAL: 95% + 30px fijo -->
+                    <field name="start_datetime" string="Inicio" width="11%"/>
+                    <field name="planned_end_datetime" string="Fin Previsto" width="11%"/>
+                    <field name="end_datetime" string="Fin Real" width="11%"/>
+                    <field name="duration_hours" string="Duración (h)" sum="Total Horas" width="8%"/>
+                    <field name="usage_type" string="Tipo" width="10%"/>
+                    <field name="process_context" string="Proceso" width="13%"/>
                     
                     <!-- Información del análisis -->
-                    <field name="sample_code" string="Muestra" width="10%"/>
-                    <field name="customer_id" string="Cliente" width="15%"/>
+                    <field name="sample_code" string="Muestra" width="8%"/>
+                    <field name="customer_id" string="Cliente" width="12%"/>
                     
                     <!-- Usuario y estado -->
-                    <field name="used_by_name" string="Usuario" width="10%"/>
+                    <field name="used_by_name" string="Usuario" width="8%"/>
                     <field name="status_display" string="Estado" width="8%"/>
                     
-                    <!-- Indicadores compactos -->
+                    <!-- Indicador compacto -->
                     <field name="is_historical" string="📚" widget="boolean_toggle" width="30px"/>
                     
                 </list>
