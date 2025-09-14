@@ -10,6 +10,7 @@
     ],
     'data': [
         'security/ir.model.access.csv',
+        'views/wizard_views.xml',  # Wizards primero
         'views/lims_equipment_usage_views.xml',
         'views/lims_lab_equipment_views.xml',
     ],

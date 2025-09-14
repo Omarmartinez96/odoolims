@@ -13,33 +13,43 @@
                       create="false" 
                       decoration-success="end_datetime != False and is_active_use == False"
                       decoration-info="is_active_use == True"
-                      decoration-warning="is_historical == True"
+                      decoration-danger="status_display == '🔴 Vencido'"
                       default_group_by="equipment_id"
                       limit="200">
 
-                    <!-- Campos para agrupación y decoración -->
+                    <!-- Campos para decoración -->
                     <field name="equipment_id" column_invisible="True"/>
                     <field name="is_active_use" column_invisible="True"/>
-                    <field name="is_historical" column_invisible="True"/>
+                    <field name="status_display" column_invisible="True"/>
 
-                    <!-- Campos principales visibles - TOTAL: 95% + 30px fijo -->
-                    <field name="start_datetime" string="Inicio" width="11%"/>
-                    <field name="planned_end_datetime" string="Fin Previsto" width="11%"/>
-                    <field name="end_datetime" string="Fin Real" width="11%"/>
-                    <field name="duration_hours" string="Duración (h)" sum="Total Horas" width="8%"/>
-                    <field name="usage_type" string="Tipo" width="10%"/>
-                    <field name="process_context" string="Proceso" width="13%"/>
+                    <!-- Botones de acción en header -->
+                    <header>
+                        <button name="action_finish_equipment_usage" 
+                                type="object" 
+                                string="🏁 Finalizar Seleccionados" 
+                                class="btn-warning"
+                                invisible="context.get('active_ids') == False"/>
+                    </header>
+
+                    <!-- Campos principales visibles -->
+                    <field name="start_datetime" string="Inicio"/>
+                    <field name="planned_end_datetime" string="Fin Previsto"/>
+                    <field name="end_datetime" string="Fin Real"/>
+                    <field name="duration_hours" string="Duración (h)" sum="Total Horas"/>
+                    <field name="usage_type" string="Tipo"/>
+                    <field name="media_culture_name" string="Medio de Cultivo"/>
+                    <field name="sample_code" string="Muestra"/>
+                    <field name="customer_id" string="Cliente"/>
+                    <field name="used_by_name" string="Usuario"/>
+                    <field name="status_display" string="Estado"/>
                     
-                    <!-- Información del análisis -->
-                    <field name="sample_code" string="Muestra" width="8%"/>
-                    <field name="customer_id" string="Cliente" width="12%"/>
-                    
-                    <!-- Usuario y estado -->
-                    <field name="used_by_name" string="Usuario" width="8%"/>
-                    <field name="status_display" string="Estado" width="8%"/>
-                    
-                    <!-- Indicador compacto -->
-                    <field name="is_historical" string="📚" widget="boolean_toggle" width="30px"/>
+                    <!-- Botón individual de finalizar -->
+                    <button name="action_finish_individual" 
+                            type="object" 
+                            string="🏁" 
+                            class="btn btn-sm btn-warning" 
+                            title="Finalizar este uso"
+                            invisible="is_active_use == False and status_display != '🔴 Vencido'"/>
                     
                 </list>
             </field>

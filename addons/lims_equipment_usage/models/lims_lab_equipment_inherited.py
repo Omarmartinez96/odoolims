@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import UserError
 from datetime import datetime
 import logging
 
@@ -364,4 +365,23 @@ class LimsLabEquipmentInherited(models.Model):
             'view_mode': 'list,form',
             'domain': [('equipment_id', '=', self.id)],
             'context': {'default_equipment_id': self.id}
+        }
+    
+    @api.model
+    def action_sync_multiple_equipment(self):
+        """Sincronizar múltiples equipos"""
+        active_ids = self.env.context.get('active_ids', [])
+        if not active_ids:
+            raise UserError('No hay equipos seleccionados.')
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Sincronizar Equipos',
+            'res_model': 'lims.equipment.sync.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'active_ids': active_ids,
+                'default_equipment_ids': [(6, 0, active_ids)]
+            }
         }

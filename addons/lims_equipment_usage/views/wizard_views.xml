@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- ========================================================= -->
+        <!-- WIZARD DE FINALIZACIÓN DE USO DE EQUIPOS -->
+        <!-- ========================================================= -->
+        <record id="view_equipment_finish_wizard_form" model="ir.ui.view">
+            <field name="name">lims.equipment.finish.wizard.form</field>
+            <field name="model">lims.equipment.finish.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Finalizar Incubación">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>🏁 Finalizar Incubación</h1>
+                            <h3 class="text-warning">
+                                Terminar proceso de incubación
+                            </h3>
+                        </div>
+                        
+                        <div class="alert alert-warning" style="margin: 20px 0;">
+                            <strong>⚠️ Importante:</strong><br/>
+                            Esta acción marcará las incubaciones como finalizadas y registrará la fecha/hora de finalización.
+                            <br/>Una vez finalizado, el equipo estará disponible para nuevo uso.
+                        </div>
+                        
+                        <!-- Información de las muestras -->
+                        <group string="📋 Resumen de Finalización">
+                            <field name="samples_info" nolabel="1" readonly="1"/>
+                        </group>
+                        
+                        <!-- Fecha y hora de finalización -->
+                        <group string="⏰ Fecha y Hora de Finalización">
+                            <field name="finish_datetime" 
+                                   required="1"
+                                   help="Hora actual de Tijuana (ajustada automáticamente)"/>
+                        </group>
+                        
+                        <!-- Observaciones -->
+                        <group string="📝 Observaciones (Opcional)">
+                            <field name="notes" nolabel="1" 
+                                   placeholder="Agregar observaciones sobre la finalización de la incubación..."/>
+                        </group>
+                        
+                    </sheet>
+                    
+                    <footer>
+                        <button string="🏁 Finalizar Incubación" 
+                                name="action_finish_usage" 
+                                type="object" 
+                                class="btn-primary"
+                                confirm="¿Está seguro de finalizar estas incubaciones?"/>
+                        <button string="❌ Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

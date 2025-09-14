@@ -1,4 +1,5 @@
 from odoo import models, fields, api
+from odoo.exceptions import UserError
 from datetime import datetime
 import logging
 
@@ -127,20 +128,46 @@ class LimsEquipmentUsageLog(models.Model):
         store=True
     )
     
+    media_culture_name = fields.Char(
+        string='Medio de Cultivo',
+        compute='_compute_media_info',
+        store=True,
+        help='Nombre del medio de cultivo específico'
+    )
+
+    process_display = fields.Char(
+        string='Proceso Específico',
+        compute='_compute_media_info',
+        store=True,
+        help='Proceso más específico basado en el contexto'
+    )
+
     # === MÉTODOS COMPUTADOS ===
-    @api.depends('equipment_id.name', 'usage_type', 'process_context', 'start_datetime', 'related_media_id.culture_media_name')
-    def _compute_display_name(self):
+
+    @api.depends('related_media_id.culture_media_name', 'process_context', 'related_parameter_id.name')
+    def _compute_media_info(self):
         for record in self:
-            # Procesos más explícitos
+            # Priorizar medio de cultivo
+            if record.related_media_id and record.related_media_id.culture_media_name:
+                record.media_culture_name = record.related_media_id.culture_media_name
+            else:
+                record.media_culture_name = 'Sin medio específico'
+            
+            # Proceso más específico
             process_names = {
                 'pre_enrichment': 'Pre-enriquecimiento',
                 'selective_enrichment': 'Enriquecimiento Selectivo',
-                'quantitative': 'Análisis Cuantitativo',
-                'qualitative': 'Análisis Cualitativo',
+                'quantitative': 'Cuantitativo',
+                'qualitative': 'Cualitativo',
                 'confirmation': 'Confirmación',
                 'other': 'Otro'
             }
             
+            record.process_display = process_names.get(record.process_context, record.process_context or 'Sin especificar')
+
+    @api.depends('equipment_id.name', 'usage_type', 'media_culture_name', 'process_display')
+    def _compute_display_name(self):
+        for record in self:
             usage_names = {
                 'incubation': 'Incubación',
                 'processing': 'Procesamiento',
@@ -153,11 +180,11 @@ class LimsEquipmentUsageLog(models.Model):
             
             usage_display = usage_names.get(record.usage_type, record.usage_type)
             
-            if record.process_context and record.process_context != 'other':
-                process_display = process_names.get(record.process_context, record.process_context)
-                context = f" - {process_display}"
-            elif record.related_media_id and record.related_media_id.culture_media_name:
-                context = f" - {record.related_media_id.culture_media_name}"
+            # Priorizar medio de cultivo sobre proceso
+            if record.media_culture_name and record.media_culture_name != 'Sin medio específico':
+                context = f" - {record.media_culture_name}"
+            elif record.process_display and record.process_display != 'Sin especificar':
+                context = f" - {record.process_display}"
             else:
                 context = ""
             
@@ -190,3 +217,47 @@ class LimsEquipmentUsageLog(models.Model):
                 record.status_display = "✅ Completado"
             else:
                 record.status_display = "⏸️ Sin Definir"
+
+    def action_finish_individual(self):
+        """Finalizar uso individual de equipo"""
+        if not self.is_active_use and self.status_display != '🔴 Vencido':
+            raise UserError('Este registro ya está finalizado.')
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Finalizar Uso de Equipo',
+            'res_model': 'lims.equipment.finish.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'active_ids': [self.id],
+                'default_usage_log_ids': [(6, 0, [self.id])]
+            }
+        }
+
+    @api.model
+    def action_finish_equipment_usage(self):
+        """Finalizar uso masivo de equipos"""
+        active_ids = self.env.context.get('active_ids', [])
+        if not active_ids:
+            raise UserError('No hay registros seleccionados.')
+        
+        # Filtrar solo registros que pueden finalizarse
+        logs_to_finish = self.browse(active_ids).filtered(
+            lambda l: l.is_active_use or l.status_display == '🔴 Vencido'
+        )
+        
+        if not logs_to_finish:
+            raise UserError('Ningún registro seleccionado puede finalizarse.')
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Finalizar Uso de Equipos',
+            'res_model': 'lims.equipment.finish.wizard',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'active_ids': logs_to_finish.ids,
+                'default_usage_log_ids': [(6, 0, logs_to_finish.ids)]
+            }
+        }
