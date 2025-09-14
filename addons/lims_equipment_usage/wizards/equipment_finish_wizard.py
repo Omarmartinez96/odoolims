@@ -254,11 +254,12 @@ class LimsEquipmentFinishWizard(models.TransientModel):
         # Mostrar notificación temporal y cerrar wizard
         return {
             'type': 'ir.actions.client',
-            'tag': 'notification',
+            'tag': 'display_notification',
             'params': {
-                'title': 'Completado',
+                'title': 'Incubaciones Finalizadas',
                 'message': message,
                 'type': 'success',
+                'sticky': False,  # Se quita automáticamente
                 'next': {'type': 'ir.actions.act_window_close'}
             }
         }
