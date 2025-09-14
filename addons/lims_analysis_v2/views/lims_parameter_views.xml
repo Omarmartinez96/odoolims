@@ -32,9 +32,6 @@
                                 <field name="analysis_start_date"/>
                                 <field name="analysis_commitment_date"/>
                                 
-                                <!-- Campo deprecado (oculto) -->
-                                <field name="analyst_names" invisible="1"/>
-                                
                                 <field name="analysis_status_checkbox" widget="radio"/>
                                 <field name="report_status" readonly="1"
                                     decoration-success="report_status == 'ready'"
@@ -43,41 +40,45 @@
                             </group>
                         </group>
 
-                        <!-- Nueva sección separada para analistas -->
-                        <group string="👥 Analistas Responsables" colspan="4">
-                            <!-- Tags de analistas actuales -->
-                            <field name="analyst_ids" widget="many2many_tags" readonly="1" nolabel="1" 
-                                placeholder="Sin analistas asignados" 
-                                invisible="not analyst_ids"/>
+                        <!-- Sección de analista responsable -->
+                        <group string="👤 Analista Responsable" colspan="4">
                             
-                            <!-- Mensaje cuando no hay analistas -->
-                            <div invisible="analyst_ids" style="color: #6c757d; font-style: italic; text-align: center; margin: 10px 0;">
-                                <i class="fa fa-info-circle"/> No hay analistas asignados actualmente
-                            </div>
+                            <!-- Campo de solo lectura que muestra el analista asignado -->
+                            <field name="analyst_id" readonly="1" invisible="not analyst_id"
+                                style="font-weight: bold; color: #28a745;"/>
                             
-                            <!-- Botones de gestión centrados -->
+                            <!-- Botones de gestión -->
                             <div style="display: flex; gap: 10px; justify-content: center; margin: 15px 0;">
-                                <button name="action_assign_analysts" 
-                                        type="object" 
-                                        string="👥 Gestionar Analistas" 
+                                <!-- Botón para asignar analista (cuando no hay ninguno) -->
+                                <button name="action_assign_analyst"
+                                        type="object"
+                                        string="👤 Asignar Responsable"
                                         class="btn-primary"
-                                        help="Agregar/remover analistas con verificación PIN"/>
+                                        invisible="analyst_id"
+                                        help="Seleccionar y verificar analista responsable"/>
                                 
-                                <button name="action_clear_analysts" 
-                                        type="object" 
-                                        string="🗑️ Limpiar Todos" 
+                                <!-- Botón para cambiar analista (cuando ya hay uno asignado) -->
+                                <button name="action_change_analyst"
+                                        type="object"
+                                        string="🔄 Cambiar Responsable"
+                                        class="btn-warning"
+                                        invisible="not analyst_id"
+                                        help="Cambiar el analista responsable"/>
+                                
+                                <!-- Botón para limpiar -->
+                                <button name="action_clear_analyst"
+                                        type="object"
+                                        string="🗑️ Remover"
                                         class="btn-secondary"
-                                        invisible="not analyst_ids"
-                                        confirm="¿Remover todos los analistas asignados?"/>
+                                        invisible="not analyst_id"
+                                        confirm="¿Remover el analista responsable?"/>
                             </div>
                             
-                            <!-- Nota informativa -->
-                            <div style="background-color: #e7f3ff; padding: 10px; border-left: 4px solid #2196F3; margin: 10px 0; border-radius: 4px;">
-                                <small style="color: #1976D2;">
-                                    <i class="fa fa-shield-alt"/> <strong>Seguridad:</strong> 
-                                    Cada analista debe verificar su identidad con PIN personal para ser asignado.
-                                </small>
+                            <!-- Mensaje informativo -->
+                            <div invisible="analyst_id" style="color: #6c757d; font-style: italic; text-align: center; margin: 10px 0;">
+                                <i class="fa fa-info-circle"/> Para asignar un analista responsable, use "Asignar Responsable" con verificación PIN.
                             </div>
+                            
                         </group>
 
                         <!-- Configuración de procesos según categoría y tipo -->
