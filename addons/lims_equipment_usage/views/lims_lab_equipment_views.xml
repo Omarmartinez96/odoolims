@@ -9,23 +9,17 @@
             <field name="inherit_id" ref="lims_analysis_config.view_lims_lab_equipment_form"/>
             <field name="arch" type="xml">
                 
-                <!-- Crear header si no existe - agregar después de <form> -->
+                <!-- Solo botón de ver bitácora en el header -->
                 <xpath expr="//form" position="inside">
                     <header>
-                        <button name="action_sync_equipment_historical_usage"
-                                type="object"
-                                string="🔄 Sincronizar Bitácora"
-                                class="btn-info"
-                                confirm="¿Sincronizar el uso histórico de este equipo? Esto creará registros automáticos basados en los análisis realizados."/>
-                        
                         <button name="action_view_usage_log"
                                 type="object"
                                 string="📋 Ver Bitácora de Uso"
-                                class="btn-secondary"/>
+                                class="btn-primary"/>
                     </header>
                 </xpath>
 
-                <!-- Agregar información de uso después del último grupo -->
+                <!-- Resto del archivo igual... -->
                 <xpath expr="//sheet//group[last()]" position="after">
                     
                     <!-- Estadísticas de Uso -->
@@ -82,7 +76,7 @@
                     
                 </xpath>
 
-                <!-- Agregar notebook al final del sheet -->
+                <!-- Notebook igual... -->
                 <xpath expr="//sheet" position="inside">
                     <notebook>
                         <page string="📋 Historial de Uso">
