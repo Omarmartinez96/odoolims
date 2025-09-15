@@ -593,6 +593,68 @@ class LimsSample(models.Model):
         
         return reception.action_print_label()
 
+    def action_print_all_labels(self):
+        """Imprimir etiquetas de todas las muestras"""
+        self.ensure_one()
+        
+        if not self.sample_ids:
+            raise UserError(_('No hay muestras en esta cadena de custodia.'))
+        
+        # Verificar que las muestras tengan recepciones con códigos
+        samples_without_reception = []
+        for sample in self.sample_ids:
+            reception = self.env['lims.sample.reception'].search([
+                ('sample_id', '=', sample.id)
+            ], limit=1)
+            if not reception or not reception.sample_code or reception.sample_code == '/':
+                samples_without_reception.append(sample.sample_identifier)
+        
+        if samples_without_reception:
+            raise UserError(_(
+                'Las siguientes muestras no tienen código asignado y no se pueden imprimir etiquetas:\n' +
+                '\n'.join(samples_without_reception) +
+                '\n\nPrimero debe crear las recepciones para estas muestras.'
+            ))
+        
+        return self.env.ref('lims_sample_reception.action_report_sample_labels_mass').report_action(self)
+
+    def action_print_selected_labels(self):
+        """Imprimir etiquetas de muestras seleccionadas"""
+        selected_samples = self.browse(self.env.context.get('active_ids', []))
+        
+        if not selected_samples:
+            raise UserError(_('Debe seleccionar al menos una muestra.'))
+        
+        # Verificar que las muestras tengan recepciones con códigos
+        samples_without_reception = []
+        valid_receptions = []
+        
+        for sample in selected_samples:
+            reception = self.env['lims.sample.reception'].search([
+                ('sample_id', '=', sample.id)
+            ], limit=1)
+            
+            if not reception or not reception.sample_code or reception.sample_code == '/':
+                samples_without_reception.append(sample.sample_identifier)
+            else:
+                valid_receptions.append(reception)
+        
+        if samples_without_reception:
+            samples_list = ', '.join(samples_without_reception[:3])
+            if len(samples_without_reception) > 3:
+                samples_list += f' y {len(samples_without_reception) - 3} más'
+            raise UserError(_(
+                f'Las siguientes muestras no tienen código asignado y no se pueden imprimir etiquetas:\n\n'
+                f'{samples_list}\n\n'
+                f'Primero debe crear las recepciones para estas muestras.'
+            ))
+        
+        if not valid_receptions:
+            raise UserError(_('No hay muestras válidas para imprimir etiquetas.'))
+        
+        # Generar reporte con las recepciones válidas
+        return self.env.ref('lims_sample_reception.action_report_sample_label').report_action(valid_receptions)
+
 # CLASE 3: Herencia de LimsCustodyChain  
 class LimsCustodyChain(models.Model):
     _inherit = 'lims.custody_chain'
@@ -811,68 +873,6 @@ class LimsCustodyChain(models.Model):
             },
             'target': 'current',
         }
-    
-    def action_print_all_labels(self):
-        """Imprimir etiquetas de todas las muestras"""
-        self.ensure_one()
-        
-        if not self.sample_ids:
-            raise UserError(_('No hay muestras en esta cadena de custodia.'))
-        
-        # Verificar que las muestras tengan recepciones con códigos
-        samples_without_reception = []
-        for sample in self.sample_ids:
-            reception = self.env['lims.sample.reception'].search([
-                ('sample_id', '=', sample.id)
-            ], limit=1)
-            if not reception or not reception.sample_code or reception.sample_code == '/':
-                samples_without_reception.append(sample.sample_identifier)
-        
-        if samples_without_reception:
-            raise UserError(_(
-                'Las siguientes muestras no tienen código asignado y no se pueden imprimir etiquetas:\n' +
-                '\n'.join(samples_without_reception) +
-                '\n\nPrimero debe crear las recepciones para estas muestras.'
-            ))
-        
-        return self.env.ref('lims_sample_reception.action_report_sample_labels_mass').report_action(self)
-
-    def action_print_selected_labels(self):
-        """Imprimir etiquetas de muestras seleccionadas"""
-        selected_samples = self.browse(self.env.context.get('active_ids', []))
-        
-        if not selected_samples:
-            raise UserError(_('Debe seleccionar al menos una muestra.'))
-        
-        # Verificar que las muestras tengan recepciones con códigos
-        samples_without_reception = []
-        valid_receptions = []
-        
-        for sample in selected_samples:
-            reception = self.env['lims.sample.reception'].search([
-                ('sample_id', '=', sample.id)
-            ], limit=1)
-            
-            if not reception or not reception.sample_code or reception.sample_code == '/':
-                samples_without_reception.append(sample.sample_identifier)
-            else:
-                valid_receptions.append(reception)
-        
-        if samples_without_reception:
-            samples_list = ', '.join(samples_without_reception[:3])
-            if len(samples_without_reception) > 3:
-                samples_list += f' y {len(samples_without_reception) - 3} más'
-            raise UserError(_(
-                f'Las siguientes muestras no tienen código asignado y no se pueden imprimir etiquetas:\n\n'
-                f'{samples_list}\n\n'
-                f'Primero debe crear las recepciones para estas muestras.'
-            ))
-        
-        if not valid_receptions:
-            raise UserError(_('No hay muestras válidas para imprimir etiquetas.'))
-        
-        # Generar reporte con las recepciones válidas
-        return self.env.ref('lims_sample_reception.action_report_sample_label').report_action(valid_receptions)
 
     def action_assign_change_analyst(self):
         """Abrir wizard universal para asignar/cambiar analista responsable"""
