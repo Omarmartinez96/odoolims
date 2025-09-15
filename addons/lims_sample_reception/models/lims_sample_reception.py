@@ -600,40 +600,35 @@ class LimsSample(models.Model):
         if not selected_samples:
             raise UserError(_('Debe seleccionar al menos una muestra.'))
         
-        # Verificar que las muestras tengan recepciones con códigos
+        # Buscar todas las recepciones válidas
+        valid_receptions = self.env['lims.sample.reception']
         samples_without_reception = []
-        valid_samples = []
         
         for sample in selected_samples:
             reception = self.env['lims.sample.reception'].search([
                 ('sample_id', '=', sample.id)
             ], limit=1)
             
-            if not reception or not reception.sample_code or reception.sample_code == '/':
-                samples_without_reception.append(sample.sample_identifier)
+            if reception and reception.sample_code and reception.sample_code != '/':
+                valid_receptions |= reception
             else:
-                valid_samples.append(sample)
+                samples_without_reception.append(sample.sample_identifier)
         
         if samples_without_reception:
             samples_list = ', '.join(samples_without_reception[:3])
             if len(samples_without_reception) > 3:
                 samples_list += f' y {len(samples_without_reception) - 3} más'
             raise UserError(_(
-                f'Las siguientes muestras no tienen código asignado y no se pueden imprimir etiquetas:\n\n'
+                f'Las siguientes muestras no tienen código asignado:\n\n'
                 f'{samples_list}\n\n'
-                f'Primero debe crear las recepciones para estas muestras.'
+                f'Primero debe crear las recepciones.'
             ))
         
-        if not valid_samples:
-            raise UserError(_('No hay muestras válidas para imprimir etiquetas.'))
+        if not valid_receptions:
+            raise UserError(_('No hay recepciones válidas para imprimir.'))
         
-        # Crear un recordset temporal con las cadenas de custodia únicas
-        custody_chains = valid_samples.mapped('custody_chain_id')
-        
-        # Usar el reporte masivo pero filtrar solo las muestras seleccionadas
-        return self.env.ref('lims_sample_reception.action_report_sample_labels_mass').with_context(
-            selected_sample_ids=valid_samples.ids
-        ).report_action(custody_chains)
+        # Generar reporte para cada recepción válida (múltiples PDFs)
+        return self.env.ref('lims_sample_reception.action_report_sample_label').report_action(valid_receptions)
 
 # CLASE 3: Herencia de LimsCustodyChain  
 class LimsCustodyChain(models.Model):
