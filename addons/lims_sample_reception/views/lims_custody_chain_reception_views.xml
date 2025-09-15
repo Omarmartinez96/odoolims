@@ -248,6 +248,10 @@
                                 type="object" 
                                 string="📦 Recibir Muestras Seleccionadas"
                                 class="btn-primary"/>
+                        <button name="action_print_selected_labels" 
+                                type="object" 
+                                string="🏷️ Imprimir Etiquetas Seleccionadas"
+                                class="btn-secondary"/>
                     </header>
                     
                     <field name="custody_chain_id"/>
