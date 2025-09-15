@@ -9,4 +9,3 @@ access_lims_equipment_involved_v2,lims.equipment.involved.v2,model_lims_equipmen
 access_lims_revision_wizard_v2,lims.revision.request.wizard.v2,model_lims_revision_request_wizard_v2,,1,1,1,1
 access_lims_signature_wizard_v2,lims.sample.signature.wizard.v2,model_lims_sample_signature_wizard_v2,,1,1,1,1
 access_lims_report_selection_wizard_v2,lims.report.selection.wizard.v2,model_lims_report_selection_wizard_v2,,1,1,1,1
-access_parameter_analyst_wizard_v2,parameter.analyst.assignment.wizard.v2,model_parameter_analyst_assignment_wizard,,1,1,1,1
