@@ -602,7 +602,7 @@ class LimsSample(models.Model):
         
         # Verificar que las muestras tengan recepciones con códigos
         samples_without_reception = []
-        valid_receptions = []
+        valid_samples = []
         
         for sample in selected_samples:
             reception = self.env['lims.sample.reception'].search([
@@ -612,7 +612,7 @@ class LimsSample(models.Model):
             if not reception or not reception.sample_code or reception.sample_code == '/':
                 samples_without_reception.append(sample.sample_identifier)
             else:
-                valid_receptions.append(reception)
+                valid_samples.append(sample)
         
         if samples_without_reception:
             samples_list = ', '.join(samples_without_reception[:3])
@@ -624,11 +624,16 @@ class LimsSample(models.Model):
                 f'Primero debe crear las recepciones para estas muestras.'
             ))
         
-        if not valid_receptions:
+        if not valid_samples:
             raise UserError(_('No hay muestras válidas para imprimir etiquetas.'))
         
-        # Generar reporte con las recepciones válidas
-        return self.env.ref('lims_sample_reception.action_report_sample_label').report_action(valid_receptions)
+        # Crear un recordset temporal con las cadenas de custodia únicas
+        custody_chains = valid_samples.mapped('custody_chain_id')
+        
+        # Usar el reporte masivo pero filtrar solo las muestras seleccionadas
+        return self.env.ref('lims_sample_reception.action_report_sample_labels_mass').with_context(
+            selected_sample_ids=valid_samples.ids
+        ).report_action(custody_chains)
 
 # CLASE 3: Herencia de LimsCustodyChain  
 class LimsCustodyChain(models.Model):
