@@ -164,14 +164,14 @@
                                         style="min-width: 180px; padding: 8px 16px;"
                                         title="Seleccionar muestras específicas"/>
                             </div>
-                            <!-- <div style="display: inline-block; margin-left: 15px;">
+                            <div style="display: inline-block; margin-left: 15px;">
                                 <button name="action_print_all_labels" 
                                         type="object" 
                                         string="🏷️ Imprimir Etiquetas" 
                                         class="btn-secondary" 
                                         style="min-width: 180px; padding: 8px 16px;"
                                         title="Imprimir etiquetas QR de todas las muestras"/>
-                            </div> -->
+                            </div>
                         </div>
 
                         <!-- Lista de muestras -->
