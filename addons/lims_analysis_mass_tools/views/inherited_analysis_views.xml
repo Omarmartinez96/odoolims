@@ -8,7 +8,8 @@
             <field name="model">lims.analysis.v2</field>
             <field name="inherit_id" ref="lims_analysis_v2.view_lims_analysis_v2_form"/>
             <field name="arch" type="xml">
-                <xpath expr="//page[@string='🔬 Parámetros de Análisis']" position="inside">
+                <!-- Agregar después del campo parameter_analysis_ids -->
+                <xpath expr="//field[@name='parameter_analysis_ids']" position="before">
                     <!-- Botones de acciones rápidas -->
                     <div class="alert alert-info" style="margin-bottom: 15px; border-left: 4px solid #007bff;">
                         <strong>⚡ Herramientas de Productividad:</strong>
