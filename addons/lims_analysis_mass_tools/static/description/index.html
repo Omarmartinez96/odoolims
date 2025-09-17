@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>LIMS - Herramientas de Asignación Masiva</title>
+    <style>
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; max-width: 800px; margin: 0 auto; padding: 20px; }
+        h1 { color: #2c3e50; border-bottom: 2px solid #3498db; padding-bottom: 10px; }
+        h2 { color: #34495e; margin-top: 30px; }
+        .feature { background: #f8f9fa; padding: 15px; margin: 10px 0; border-left: 4px solid #007bff; }
+        .benefit { background: #e8f5e8; padding: 10px; margin: 5px 0; border-radius: 5px; }
+        .warning { background: #fff3cd; padding: 10px; margin: 10px 0; border: 1px solid #ffeaa7; border-radius: 5px; }
+        ul { padding-left: 20px; }
+        .emoji { font-size: 1.2em; }
+    </style>
+</head>
+<body>
+    <h1>🎯 LIMS - Herramientas de Asignación Masiva</h1>
+    
+    <p><strong>Versión:</strong> 1.0.0</p>
+    <p><strong>Autor:</strong> Omar Martinez</p>
+    <p><strong>Compatibilidad:</strong> Odoo 18, requiere lims_analysis_v2</p>
+
+    <h2>📋 Descripción</h2>
+    <p>Módulo de productividad que extiende las funcionalidades de <strong>lims_analysis_v2</strong> con herramientas de asignación masiva para reducir tareas repetitivas y mejorar la eficiencia del laboratorio.</p>
+
+    <h2>🎯 Características Principales</h2>
+    
+    <div class="feature">
+        <h3>👤 Asignación Masiva de Analistas</h3>
+        <ul>
+            <li>Asignar analista responsable a múltiples parámetros simultáneamente</li>
+            <li>Verificación PIN para seguridad y trazabilidad</li>
+            <li>Opción de sobrescribir asignaciones existentes</li>
+        </ul>
+    </div>
+
+    <div class="feature">
+        <h3>🧪 Asignación Masiva de Medios de Cultivo</h3>
+        <ul>
+            <li>Usar sets de medios predefinidos para asignación rápida</li>
+            <li>Seleccionar medios individuales para múltiples parámetros</li>
+            <li>Copiar configuración de medios desde otro parámetro</li>
+            <li>Configuración automática de incubación</li>
+        </ul>
+    </div>
+
+    <div class="feature">
+        <h3>📅 Asignación Masiva de Fechas</h3>
+        <ul>
+            <li>Fechas generales de análisis (inicio, compromiso)</li>
+            <li>Fechas específicas por tipo de proceso</li>
+            <li>Inclusión de horas de procesamiento</li>
+        </ul>
+    </div>
+
+    <div class="feature">
+        <h3>🔧 Asignación Masiva de Equipos</h3>
+        <ul>
+            <li>Equipos de procesamiento por tipo de proceso</li>
+            <li>Equipos de incubación para medios específicos</li>
+            <li>Equipos adicionales con uso personalizado</li>
+        </ul>
+    </div>
+
+    <div class="feature">
+        <h3>📊 Cambio Masivo de Estados</h3>
+        <ul>
+            <li>Estados de análisis (sin procesar, en proceso, finalizado)</li>
+            <li>Estados de reporte (borrador, listo)</li>
+            <li>Configuración de procesos requeridos</li>
+            <li>Filtros avanzados por estado actual o tipo de resultado</li>
+        </ul>
+    </div>
+
+    <div class="feature">
+        <h3>🏭 Asignación Masiva de Ambientes</h3>
+        <ul>
+            <li>Ambientes de procesamiento por tipo de proceso</li>
+            <li>Asignación de equipos específicos (campanas)</li>
+            <li>Filtros por tipo de resultado (cualitativo/cuantitativo)</li>
+        </ul>
+    </div>
+
+    <h2>⚡ Beneficios</h2>
+    
+    <div class="benefit">
+        <strong>🚀 Eficiencia:</strong> Reduce significativamente el tiempo de captura de datos repetitivos
+    </div>
+    
+    <div class="benefit">
+        <strong>✅ Consistencia:</strong> Minimiza errores por asignaciones manuales repetitivas
+    </div>
+    
+    <div class="benefit">
+        <strong>🎯 Productividad:</strong> Permite a los analistas enfocarse en el trabajo científico
+    </div>
+    
+    <div class="benefit">
+        <strong>🔒 Trazabilidad:</strong> Mantiene todos los controles de seguridad del sistema base
+    </div>
+
+    <h2>🚀 Instalación</h2>
+    <ol>
+        <li>Asegurar que <code>lims_analysis_v2</code> esté instalado</li>
+        <li>Copiar este módulo a la carpeta addons</li>
+        <li>Actualizar lista de módulos</li>
+        <li>Instalar <code>lims_analysis_mass_tools</code></li>
+    </ol>
+
+    <div class="warning">
+        <strong>⚠️ Importante:</strong> Este módulo requiere <code>lims_analysis_v2</code> y <code>lims_analysis_config</code> para funcionar correctamente.
+    </div>
+
+    <h2>📖 Uso</h2>
+    
+    <h3>Desde Lista de Parámetros</h3>
+    <ol>
+        <li>Navegar a cualquier lista de parámetros de análisis</li>
+        <li>Seleccionar múltiples parámetros</li>
+        <li>Usar botón "🎯 Asignación Masiva" del menú Acción</li>
+        <li>Seleccionar tipo de asignación deseada</li>
+    </ol>
+
+    <h3>Desde Formulario de Análisis</h3>
+    <ol>
+        <li>Abrir cualquier análisis de muestra</li>
+        <li>En la pestaña "Parámetros de Análisis"</li>
+        <li>Usar botones de "Herramientas de Productividad"</li>
+        <li>Los cambios se aplicarán a todos los parámetros del análisis</li>
+    </ol>
+
+    <h2>🆘 Soporte</h2>
+    <p><strong>Email:</strong> contacto@proteuslaboratorio.com</p>
+    <p><strong>Teléfono:</strong> (664) 973-8185</p>
+
+    <h2>📄 Licencia</h2>
+    <p>LGPL-3 - Este módulo es software libre</p>
+
+</body>
+</html>

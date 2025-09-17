@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- ========== HEREDAR FORMULARIO DE ANÁLISIS PARA BOTONES RÁPIDOS ========== -->
+        <record id="view_lims_analysis_v2_form_inherited" model="ir.ui.view">
+            <field name="name">lims.analysis.v2.form.inherited</field>
+            <field name="model">lims.analysis.v2</field>
+            <field name="inherit_id" ref="lims_analysis_v2.view_lims_analysis_v2_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@string='🔬 Parámetros de Análisis']" position="inside">
+                    <!-- Botones de acciones rápidas -->
+                    <div class="alert alert-info" style="margin-bottom: 15px; border-left: 4px solid #007bff;">
+                        <strong>⚡ Herramientas de Productividad:</strong>
+                        <small style="display: block; margin-top: 5px; color: #6c757d;">
+                            Aplica cambios a todos los parámetros de este análisis de forma masiva
+                        </small>
+                        <div class="row" style="margin-top: 15px;">
+                            <div class="col-2">
+                                <button name="action_mass_assign_analyst_quick" 
+                                        type="object" 
+                                        string="👤 Analista" 
+                                        class="btn btn-primary btn-sm btn-block"
+                                        help="Asignar analista responsable a todos los parámetros"/>
+                            </div>
+                            <div class="col-2">
+                                <button name="action_mass_assign_dates_quick" 
+                                        type="object" 
+                                        string="📅 Fechas" 
+                                        class="btn btn-info btn-sm btn-block"
+                                        help="Asignar fechas de procesamiento"/>
+                            </div>
+                            <div class="col-2">
+                                <button name="action_mass_assign_media_quick" 
+                                        type="object" 
+                                        string="🧪 Medios" 
+                                        class="btn btn-success btn-sm btn-block"
+                                        help="Asignar medios de cultivo masivamente"/>
+                            </div>
+                            <div class="col-2">
+                                <button name="action_mass_assign_equipment_quick" 
+                                        type="object" 
+                                        string="🔧 Equipos" 
+                                        class="btn btn-warning btn-sm btn-block"
+                                        help="Asignar equipos de laboratorio"/>
+                            </div>
+                            <div class="col-2">
+                                <button name="action_mass_assign_status_quick" 
+                                        type="object" 
+                                        string="📊 Estados" 
+                                        class="btn btn-secondary btn-sm btn-block"
+                                        help="Cambiar estados masivamente"/>
+                            </div>
+                            <div class="col-2">
+                                <button name="action_mass_assign_environment_quick" 
+                                        type="object" 
+                                        string="🏭 Ambientes" 
+                                        class="btn btn-dark btn-sm btn-block"
+                                        help="Asignar ambientes de procesamiento"/>
+                            </div>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- ========== ACCIONES MASIVAS EN LISTA DE PARÁMETROS ========== -->
+        <record id="action_mass_assignment_parameters" model="ir.actions.server">
+            <field name="name">🎯 Asignación Masiva</field>
+            <field name="model_id" ref="lims_analysis_v2.model_lims_parameter_analysis_v2"/>
+            <field name="binding_model_id" ref="lims_analysis_v2.model_lims_parameter_analysis_v2"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    action = {
+        'type': 'ir.actions.act_window',
+        'name': 'Asignación Masiva',
+        'res_model': 'lims.mass.assignment.wizard.v2',
+        'view_mode': 'form',
+        'target': 'new',
+        'context': {
+            'default_parameter_analysis_ids': [(6, 0, records.ids)]
+        }
+    }
+else:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Sin Selección',
+            'message': 'Debe seleccionar parámetros para asignación masiva.',
+            'type': 'warning',
+        }
+    }
+            </field>
+        </record>
+
+        <!-- ========== ACCIONES RÁPIDAS ESPECÍFICAS ========== -->
+        <record id="action_mass_assign_analyst_direct" model="ir.actions.server">
+            <field name="name">👤 Asignar Analista Masivamente</field>
+            <field name="model_id" ref="lims_analysis_v2.model_lims_parameter_analysis_v2"/>
+            <field name="binding_model_id" ref="lims_analysis_v2.model_lims_parameter_analysis_v2"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    action = {
+        'type': 'ir.actions.act_window',
+        'name': 'Asignar Analista Masivamente',
+        'res_model': 'lims.mass.analyst.wizard.v2',
+        'view_mode': 'form',
+        'target': 'new',
+        'context': {
+            'default_parameter_analysis_ids': [(6, 0, records.ids)]
+        }
+    }
+else:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Sin Selección',
+            'message': 'Debe seleccionar parámetros.',
+            'type': 'warning',
+        }
+    }
+            </field>
+        </record>
+
+        <record id="action_mass_assign_media_direct" model="ir.actions.server">
+            <field name="name">🧪 Asignar Medios Masivamente</field>
+            <field name="model_id" ref="lims_analysis_v2.model_lims_parameter_analysis_v2"/>
+            <field name="binding_model_id" ref="lims_analysis_v2.model_lims_parameter_analysis_v2"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    action = {
+        'type': 'ir.actions.act_window',
+        'name': 'Asignar Medios Masivamente',
+        'res_model': 'lims.mass.media.wizard.v2',
+        'view_mode': 'form',
+        'target': 'new',
+        'context': {
+            'default_parameter_analysis_ids': [(6, 0, records.ids)]
+        }
+    }
+else:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Sin Selección',
+            'message': 'Debe seleccionar parámetros.',
+            'type': 'warning',
+        }
+    }
+            </field>
+        </record>
+
+        <record id="action_mass_assign_status_direct" model="ir.actions.server">
+            <field name="name">📊 Cambiar Estados Masivamente</field>
+            <field name="model_id" ref="lims_analysis_v2.model_lims_parameter_analysis_v2"/>
+            <field name="binding_model_id" ref="lims_analysis_v2.model_lims_parameter_analysis_v2"/>
+            <field name="binding_view_types">list</field>
+            <field name="state">code</field>
+            <field name="code">
+if records:
+    action = {
+        'type': 'ir.actions.act_window',
+        'name': 'Cambiar Estados Masivamente',
+        'res_model': 'lims.mass.status.wizard.v2',
+        'view_mode': 'form',
+        'target': 'new',
+        'context': {
+            'default_parameter_analysis_ids': [(6, 0, records.ids)]
+        }
+    }
+else:
+    action = {
+        'type': 'ir.actions.client',
+        'tag': 'display_notification',
+        'params': {
+            'title': 'Sin Selección',
+            'message': 'Debe seleccionar parámetros.',
+            'type': 'warning',
+        }
+    }
+            </field>
+        </record>
+
+    </data>
+</odoo>

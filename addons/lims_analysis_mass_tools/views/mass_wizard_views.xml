@@ -1,0 +1,451 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        
+        <!-- ========== WIZARD PRINCIPAL DE ASIGNACIÓN MASIVA ========== -->
+        <record id="view_mass_assignment_wizard_form" model="ir.ui.view">
+            <field name="name">lims.mass.assignment.wizard.v2.form</field>
+            <field name="model">lims.mass.assignment.wizard.v2</field>
+            <field name="arch" type="xml">
+                <form string="Asignación Masiva">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>🎯 Asignación Masiva</h1>
+                            <h3 class="text-success">
+                                <field name="parameters_count" readonly="1"/> parámetros seleccionados
+                            </h3>
+                        </div>
+                        
+                        <div class="alert alert-info" style="margin: 20px 0;">
+                            <strong>⚡ Herramientas de Productividad:</strong><br/>
+                            Selecciona el tipo de asignación que deseas realizar para aplicar 
+                            cambios a todos los parámetros seleccionados de una vez.
+                        </div>
+                        
+                        <group string="🎛️ Tipo de Asignación">
+                            <field name="assignment_type" widget="radio" required="1"/>
+                        </group>
+                        
+                        <!-- Lista de parámetros seleccionados -->
+                        <group string="📋 Parámetros Seleccionados" invisible="parameters_count == 0">
+                            <field name="parameter_analysis_ids" nolabel="1" readonly="1">
+                                <list string="Parámetros">
+                                    <field name="name"/>
+                                    <field name="microorganism"/>
+                                    <field name="result_type"/>
+                                    <field name="analysis_status_checkbox"/>
+                                    <field name="analyst_id"/>
+                                </list>
+                            </field>
+                        </group>
+                        
+                    </sheet>
+                    
+                    <footer>
+                        <button string="▶️ Continuar" 
+                                name="action_open_specific_wizard" 
+                                type="object" 
+                                class="btn-primary"/>
+                        <button string="❌ Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- ========== WIZARD DE ASIGNACIÓN MASIVA DE ANALISTAS ========== -->
+        <record id="view_mass_analyst_wizard_form" model="ir.ui.view">
+            <field name="name">lims.mass.analyst.wizard.v2.form</field>
+            <field name="model">lims.mass.analyst.wizard.v2</field>
+            <field name="arch" type="xml">
+                <form string="Asignar Analista Masivamente">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>👤 Asignación Masiva de Analista</h1>
+                            <h3 class="text-success">
+                                <field name="parameters_count" readonly="1"/> parámetros seleccionados
+                            </h3>
+                        </div>
+                        
+                        <div class="alert alert-warning" style="margin: 20px 0;">
+                            <strong>🔒 Verificación de Seguridad:</strong><br/>
+                            Para asegurar la trazabilidad, se requiere verificación PIN del analista
+                            que será asignado como responsable.
+                        </div>
+                        
+                        <group string="👤 Selección de Analista">
+                            <field name="analyst_id" placeholder="Seleccionar analista responsable..." required="1"/>
+                        </group>
+                        
+                        <group string="🔒 Verificación de Seguridad">
+                            <field name="verify_pin"/>
+                            <field name="pin_code" password="1" 
+                                   placeholder="PIN del analista"
+                                   invisible="verify_pin == False"
+                                   required="verify_pin == True"/>
+                        </group>
+                        
+                        <group string="⚙️ Opciones">
+                            <field name="override_existing"/>
+                        </group>
+                        
+                    </sheet>
+                    
+                    <footer>
+                        <button string="✅ Asignar Analista" 
+                                name="action_assign_analyst" 
+                                type="object" 
+                                class="btn-primary"
+                                confirm="¿Está seguro de asignar este analista a todos los parámetros seleccionados?"/>
+                        <button string="❌ Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- ========== WIZARD DE ASIGNACIÓN MASIVA DE MEDIOS ========== -->
+        <record id="view_mass_media_wizard_form" model="ir.ui.view">
+            <field name="name">lims.mass.media.wizard.v2.form</field>
+            <field name="model">lims.mass.media.wizard.v2</field>
+            <field name="arch" type="xml">
+                <form string="Asignar Medios Masivamente">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>🧪 Asignación Masiva de Medios</h1>
+                            <h3 class="text-success">
+                                <field name="parameters_count" readonly="1"/> parámetros seleccionados
+                            </h3>
+                        </div>
+                        
+                        <group string="🔬 Configuración del Proceso">
+                            <field name="process_type" required="1"/>
+                            <field name="assignment_method" widget="radio" required="1"/>
+                        </group>
+                        
+                        <!-- Para sets de medios -->
+                        <group string="📦 Set de Medios" invisible="assignment_method != 'media_set'">
+                            <field name="media_set_id" 
+                                   placeholder="Seleccionar set predefinido..."
+                                   required="assignment_method == 'media_set'"
+                                   options="{'no_create': True}"/>
+                        </group>
+                        
+                        <!-- Para medios individuales -->
+                        <group string="🧪 Medios Individuales" invisible="assignment_method != 'individual_media'">
+                            <field name="selected_media_ids" widget="many2many_tags"
+                                   placeholder="Seleccionar medios..."
+                                   required="assignment_method == 'individual_media'"/>
+                            <field name="media_usage" 
+                                   required="assignment_method == 'individual_media'"/>
+                        </group>
+                        
+                        <!-- Para copiar desde otro parámetro -->
+                        <group string="📋 Copiar desde Parámetro" invisible="assignment_method != 'copy_from_parameter'">
+                            <field name="source_parameter_id" 
+                                   placeholder="Seleccionar parámetro fuente..."
+                                   required="assignment_method == 'copy_from_parameter'"
+                                   options="{'no_create': True}"/>
+                        </group>
+                        
+                        <group string="⚙️ Opciones">
+                            <field name="include_incubation_settings"/>
+                            <field name="clear_existing_media"/>
+                        </group>
+                        
+                    </sheet>
+                    
+                    <footer>
+                        <button string="✅ Asignar Medios" 
+                                name="action_assign_media" 
+                                type="object" 
+                                class="btn-primary"
+                                confirm="¿Está seguro de asignar estos medios a todos los parámetros seleccionados?"/>
+                        <button string="❌ Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- ========== WIZARD DE ASIGNACIÓN MASIVA DE FECHAS ========== -->
+        <record id="view_mass_dates_wizard_form" model="ir.ui.view">
+            <field name="name">lims.mass.dates.wizard.v2.form</field>
+            <field name="model">lims.mass.dates.wizard.v2</field>
+            <field name="arch" type="xml">
+                <form string="Asignar Fechas Masivamente">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>📅 Asignación Masiva de Fechas</h1>
+                            <h3 class="text-success">
+                                <field name="parameters_count" readonly="1"/> parámetros seleccionados
+                            </h3>
+                        </div>
+                        
+                        <group string="📅 Tipo de Fechas">
+                            <field name="date_type" widget="radio" required="1"/>
+                        </group>
+                        
+                        <!-- Fechas generales -->
+                        <group string="📅 Fechas de Análisis General" 
+                               invisible="date_type != 'analysis_dates'" colspan="2">
+                            <group>
+                                <field name="analysis_start_date"/>
+                            </group>
+                            <group>
+                                <field name="analysis_commitment_date"/>
+                            </group>
+                        </group>
+                        
+                        <!-- Fechas de procesos -->
+                        <group string="🔬 Fechas de Procesos Específicos" 
+                               invisible="date_type != 'process_dates'" colspan="2">
+                            <group>
+                                <field name="process_type" required="date_type == 'process_dates'"/>
+                                <field name="processing_date" required="date_type == 'process_dates'"/>
+                            </group>
+                            <group>
+                                <field name="processing_time" placeholder="HH:MM"/>
+                            </group>
+                        </group>
+                        
+                        <group string="⚙️ Opciones">
+                            <field name="override_existing"/>
+                        </group>
+                        
+                    </sheet>
+                    
+                    <footer>
+                        <button string="✅ Asignar Fechas" 
+                                name="action_assign_dates" 
+                                type="object" 
+                                class="btn-primary"
+                                confirm="¿Está seguro de asignar estas fechas a todos los parámetros seleccionados?"/>
+                        <button string="❌ Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- ========== WIZARD DE ASIGNACIÓN MASIVA DE EQUIPOS ========== -->
+        <record id="view_mass_equipment_wizard_form" model="ir.ui.view">
+            <field name="name">lims.mass.equipment.wizard.v2.form</field>
+            <field name="model">lims.mass.equipment.wizard.v2</field>
+            <field name="arch" type="xml">
+                <form string="Asignar Equipos Masivamente">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>🔧 Asignación Masiva de Equipos</h1>
+                            <h3 class="text-success">
+                                <field name="parameters_count" readonly="1"/> parámetros seleccionados
+                            </h3>
+                        </div>
+                        
+                        <group string="🔧 Tipo de Equipo">
+                            <field name="equipment_type" widget="radio" required="1"/>
+                        </group>
+                        
+                        <!-- Equipos de procesamiento -->
+                        <group string="🏭 Equipos de Procesamiento" 
+                               invisible="equipment_type != 'processing_equipment'" colspan="2">
+                            <group>
+                                <field name="process_type" required="equipment_type == 'processing_equipment'"/>
+                            </group>
+                            <group>
+                                <field name="processing_equipment_id" 
+                                       required="equipment_type == 'processing_equipment'"
+                                       placeholder="Seleccionar equipo..."/>
+                            </group>
+                        </group>
+                        
+                        <!-- Equipos de incubación -->
+                        <group string="🌡️ Equipos de Incubación" 
+                               invisible="equipment_type != 'incubation_equipment'" colspan="2">
+                            <group>
+                                <field name="incubation_process_type" required="equipment_type == 'incubation_equipment'"/>
+                            </group>
+                            <group>
+                                <field name="incubation_equipment_id" 
+                                       required="equipment_type == 'incubation_equipment'"
+                                       placeholder="Seleccionar incubadora..."/>
+                            </group>
+                        </group>
+                        
+                        <!-- Equipos adicionales -->
+                        <group string="⚙️ Equipos Adicionales" 
+                               invisible="equipment_type != 'additional_equipment'" colspan="2">
+                            <group>
+                                <field name="additional_equipment_id" 
+                                       required="equipment_type == 'additional_equipment'"
+                                       placeholder="Seleccionar equipo..."/>
+                                <field name="equipment_usage" 
+                                       required="equipment_type == 'additional_equipment'"
+                                       placeholder="Especificar uso del equipo"/>
+                            </group>
+                            <group>
+                                <field name="usage_date"/>
+                                <field name="used_by_name"/>
+                            </group>
+                        </group>
+                        
+                        <group string="⚙️ Opciones">
+                            <field name="override_existing"/>
+                        </group>
+                        
+                    </sheet>
+                    
+                    <footer>
+                        <button string="✅ Asignar Equipos" 
+                                name="action_assign_equipment" 
+                                type="object" 
+                                class="btn-primary"
+                                confirm="¿Está seguro de asignar estos equipos a todos los parámetros seleccionados?"/>
+                        <button string="❌ Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- ========== WIZARD DE CAMBIO MASIVO DE ESTADOS ========== -->
+        <record id="view_mass_status_wizard_form" model="ir.ui.view">
+            <field name="name">lims.mass.status.wizard.v2.form</field>
+            <field name="model">lims.mass.status.wizard.v2</field>
+            <field name="arch" type="xml">
+                <form string="Cambiar Estados Masivamente">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>📊 Cambio Masivo de Estados</h1>
+                            <h3 class="text-success">
+                                <field name="parameters_count" readonly="1"/> parámetros seleccionados
+                            </h3>
+                        </div>
+                        
+                        <group string="📊 Tipo de Estado">
+                            <field name="status_type" widget="radio" required="1"/>
+                        </group>
+                        
+                        <!-- Estados de análisis -->
+                        <group string="🔬 Estado de Análisis" 
+                               invisible="status_type != 'analysis_status'">
+                            <field name="new_analysis_status" 
+                                   required="status_type == 'analysis_status'"
+                                   widget="radio"/>
+                        </group>
+                        
+                        <!-- Estados de reporte -->
+                        <group string="📄 Estado de Reporte" 
+                               invisible="status_type != 'report_status'">
+                            <field name="new_report_status" 
+                                   required="status_type == 'report_status'"
+                                   widget="radio"/>
+                        </group>
+                        
+                        <!-- Configuración de procesos -->
+                        <group string="⚙️ Configuración de Procesos Requeridos" 
+                               invisible="status_type != 'process_requirements'" colspan="2">
+                            <group>
+                                <field name="requires_pre_enrichment"/>
+                                <field name="requires_selective_enrichment"/>
+                            </group>
+                            <group>
+                                <field name="requires_confirmation"/>
+                                <field name="requires_ph_adjustment"/>
+                            </group>
+                        </group>
+                        
+                        <group string="🎯 Criterios de Aplicación">
+                            <field name="apply_to_filter" widget="radio"/>
+                        </group>
+                        
+                        <!-- Filtros específicos -->
+                        <group string="🔍 Filtros" colspan="2" 
+                               invisible="apply_to_filter == 'all_selected'">
+                            <group invisible="apply_to_filter != 'by_current_status'">
+                                <field name="current_status_filter" 
+                                       required="apply_to_filter == 'by_current_status'"/>
+                            </group>
+                            <group invisible="apply_to_filter != 'by_result_type'">
+                                <field name="result_type_filter" 
+                                       required="apply_to_filter == 'by_result_type'"/>
+                            </group>
+                        </group>
+                        
+                    </sheet>
+                    
+                    <footer>
+                        <button string="✅ Cambiar Estados" 
+                                name="action_change_status" 
+                                type="object" 
+                                class="btn-primary"
+                                confirm="¿Está seguro de cambiar los estados según la configuración especificada?"/>
+                        <button string="❌ Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- ========== WIZARD DE ASIGNACIÓN MASIVA DE AMBIENTES ========== -->
+        <record id="view_mass_environment_wizard_form" model="ir.ui.view">
+            <field name="name">lims.mass.environment.wizard.v2.form</field>
+            <field name="model">lims.mass.environment.wizard.v2</field>
+            <field name="arch" type="xml">
+                <form string="Asignar Ambientes Masivamente">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>🏭 Asignación Masiva de Ambientes</h1>
+                            <h3 class="text-success">
+                                <field name="parameters_count" readonly="1"/> parámetros seleccionados
+                            </h3>
+                        </div>
+                        
+                        <group string="🔬 Configuración del Proceso">
+                            <field name="process_type" required="1"/>
+                            <field name="environment" widget="radio" required="1"/>
+                        </group>
+                        
+                        <!-- Equipo específico para campanas -->
+                        <group string="🔧 Equipo Específico" 
+                               invisible="environment not in ['campana_flujo', 'campana_bioseguridad']">
+                            <field name="specific_equipment_id" 
+                                   placeholder="Seleccionar equipo específico..."
+                                   help="Opcional: Asignar un equipo específico"/>
+                        </group>
+                        
+                        <group string="🎯 Criterios de Aplicación">
+                            <field name="filter_by_result_type"/>
+                            <field name="result_type_filter" 
+                                   invisible="filter_by_result_type == False"
+                                   required="filter_by_result_type == True"/>
+                        </group>
+                        
+                        <group string="⚙️ Opciones">
+                            <field name="override_existing"/>
+                        </group>
+                        
+                    </sheet>
+                    
+                    <footer>
+                        <button string="✅ Asignar Ambientes" 
+                                name="action_assign_environment" 
+                                type="object" 
+                                class="btn-primary"
+                                confirm="¿Está seguro de asignar estos ambientes a todos los parámetros seleccionados?"/>
+                        <button string="❌ Cancelar" 
+                                class="btn-secondary" 
+                                special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

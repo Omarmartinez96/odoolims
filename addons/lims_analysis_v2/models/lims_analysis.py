@@ -1235,3 +1235,87 @@ class LimsAnalysisV2(models.Model):
             },
             'target': 'current'
         }
+    
+
+    # ===============================================
+    # === MÉTODOS PARA HERRAMIENTAS MASIVAS ===
+    # ===============================================
+    def action_mass_assign_analyst_quick(self):
+        """Asignación rápida de analista a todos los parámetros"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Asignar Analista a Todos los Parámetros',
+            'res_model': 'lims.mass.analyst.wizard.v2',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_parameter_analysis_ids': [(6, 0, self.parameter_analysis_ids.ids)]
+            }
+        }
+
+    def action_mass_assign_dates_quick(self):
+        """Asignación rápida de fechas"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Asignar Fechas a Todos los Parámetros',
+            'res_model': 'lims.mass.dates.wizard.v2',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_parameter_analysis_ids': [(6, 0, self.parameter_analysis_ids.ids)],
+                'default_analysis_start_date': self.analysis_start_date,
+                'default_analysis_commitment_date': self.analysis_commitment_date
+            }
+        }
+
+    def action_mass_assign_media_quick(self):
+        """Asignación rápida de medios"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Asignar Medios a Todos los Parámetros',
+            'res_model': 'lims.mass.media.wizard.v2',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_parameter_analysis_ids': [(6, 0, self.parameter_analysis_ids.ids)]
+            }
+        }
+
+    def action_mass_assign_equipment_quick(self):
+        """Asignación rápida de equipos"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Asignar Equipos a Todos los Parámetros',
+            'res_model': 'lims.mass.equipment.wizard.v2',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_parameter_analysis_ids': [(6, 0, self.parameter_analysis_ids.ids)]
+            }
+        }
+
+    def action_mass_assign_status_quick(self):
+        """Cambio rápido de estados"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Cambiar Estados de Todos los Parámetros',
+            'res_model': 'lims.mass.status.wizard.v2',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_parameter_analysis_ids': [(6, 0, self.parameter_analysis_ids.ids)]
+            }
+        }
+
+    def action_mass_assign_environment_quick(self):
+        """Asignación rápida de ambientes"""
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Asignar Ambientes a Todos los Parámetros',
+            'res_model': 'lims.mass.environment.wizard.v2',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_parameter_analysis_ids': [(6, 0, self.parameter_analysis_ids.ids)]
+            }
+        }
