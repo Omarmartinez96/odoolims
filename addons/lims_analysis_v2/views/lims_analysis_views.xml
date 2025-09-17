@@ -207,22 +207,33 @@
 
                         <!-- Notebook principal -->
                         <notebook>
-                            <!-- Página de parámetros -->
                             <page string="🔬 Parámetros de Análisis">
+                                <!-- Botón para acciones masivas sobre seleccionados -->
+                                <div style="margin-bottom: 10px; padding: 10px; background: #e3f2fd; border-radius: 5px;">
+                                    <button name="action_mass_operations_selected" 
+                                            type="object" 
+                                            string="🎯 Acciones sobre Seleccionados"
+                                            class="btn btn-primary"
+                                            help="Realizar acciones masivas sobre parámetros seleccionados en la lista"/>
+                                    <small style="display: block; margin-top: 5px; color: #666;">
+                                        💡 Selecciona parámetros marcando las casillas y luego usa este botón
+                                    </small>
+                                </div>
+                                
                                 <field name="parameter_analysis_ids" nolabel="1" context="{'form_view_ref': 'lims_analysis_v2.view_parameter_analysis_v2_form'}">
-                                    <list string="Parámetros">
+                                    <list string="Parámetros" editable="false" selectable="1" multi_edit="false">
                                         <field name="sequence" widget="handle"/>
                                         <field name="name"/>
                                         <field name="microorganism"/>
                                         <field name="method"/>
                                         <field name="analysis_status" 
-                                               decoration-success="analysis_status == 'completed'"
-                                               decoration-info="analysis_status == 'in_progress'"
-                                               decoration-muted="analysis_status == 'draft'"/>
+                                            decoration-success="analysis_status == 'completed'"
+                                            decoration-info="analysis_status == 'in_progress'"
+                                            decoration-muted="analysis_status == 'draft'"/>
                                         <field name="report_status" 
-                                               decoration-success="report_status == 'ready'"
-                                               decoration-info="report_status == 'reported'"
-                                               decoration-muted="report_status == 'draft'"/>
+                                            decoration-success="report_status == 'ready'"
+                                            decoration-info="report_status == 'reported'"
+                                            decoration-muted="report_status == 'draft'"/>
                                         <field name="result_complete" class="o_field_highlight" string="Resultado"/>
                                         <field name="analyst_id"/>
                                     </list>

@@ -1319,3 +1319,33 @@ class LimsAnalysisV2(models.Model):
                 'default_parameter_analysis_ids': [(6, 0, self.parameter_analysis_ids.ids)]
             }
         }
+    
+    # ===============================================
+    # === MÉTODO PARA SELECCIÓN MÚLTIPLE ===
+    # ===============================================
+    def action_mass_operations_selected(self):
+        """Abrir wizard con parámetros seleccionados del contexto"""
+        # Obtener IDs seleccionados desde el contexto de la interfaz
+        selected_param_ids = self.env.context.get('active_ids', [])
+        
+        if not selected_param_ids:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': 'Sin Selección',
+                    'message': 'Debe seleccionar parámetros de la lista marcando las casillas.',
+                    'type': 'warning',
+                }
+            }
+        
+        return {
+            'type': 'ir.actions.act_window',
+            'name': 'Asignación Masiva - Parámetros Seleccionados',
+            'res_model': 'lims.mass.assignment.wizard.v2',
+            'view_mode': 'form',
+            'target': 'new',
+            'context': {
+                'default_parameter_analysis_ids': [(6, 0, selected_param_ids)]
+            }
+        }

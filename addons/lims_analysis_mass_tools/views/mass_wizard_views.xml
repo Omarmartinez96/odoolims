@@ -2,7 +2,7 @@
 <odoo>
     <data>
         
-        <!-- ========== WIZARD PRINCIPAL DE ASIGNACIÓN MASIVA ========== -->
+        <!-- ========== WIZARD PRINCIPAL DE ASIGNACIÓN MASIVA MEJORADO ========== -->
         <record id="view_mass_assignment_wizard_form" model="ir.ui.view">
             <field name="name">lims.mass.assignment.wizard.v2.form</field>
             <field name="model">lims.mass.assignment.wizard.v2</field>
@@ -21,13 +21,39 @@
                             Selecciona el tipo de asignación que deseas realizar para aplicar 
                             cambios a todos los parámetros seleccionados de una vez.
                         </div>
+
+                        <!-- ANÁLISIS DE PARÁMETROS SELECCIONADOS -->
+                        <group string="📊 Análisis de Parámetros Seleccionados" colspan="4">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div style="background: #e8f5e8; padding: 15px; border-radius: 5px; margin: 5px;">
+                                        <h4 style="margin-bottom: 10px;">📈 Distribución por Tipo y Categoría</h4>
+                                        <field name="parameters_by_type_info" readonly="1" nolabel="1"
+                                            widget="text" style="font-family: monospace; background: transparent;"/>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div style="background: #f8f9fa; padding: 15px; border-radius: 5px; margin: 5px;">
+                                        <h4 style="margin-bottom: 10px;">📊 Estados y Asignaciones</h4>
+                                        <field name="parameters_by_status_info" readonly="1" nolabel="1"
+                                            widget="text" style="font-family: monospace; background: transparent;"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </group>
+
+                        <!-- DETALLE COMPLETO DE PARÁMETROS -->
+                        <group string="📋 Detalle Completo de Parámetros" colspan="4">
+                            <field name="parameters_summary" readonly="1" nolabel="1"
+                                widget="text" style="font-family: monospace; background: #fff3cd; padding: 15px; border-radius: 5px;"/>
+                        </group>
                         
-                        <group string="🎛️ Tipo de Asignación">
+                        <group string="🎛️ Tipo de Asignación" colspan="4">
                             <field name="assignment_type" widget="radio" required="1"/>
                         </group>
                         
-                        <!-- Lista de parámetros seleccionados -->
-                        <group string="📋 Parámetros Seleccionados" invisible="parameters_count == 0">
+                        <!-- Lista resumida de parámetros seleccionados -->
+                        <group string="📋 Parámetros Seleccionados (Vista Rápida)" invisible="parameters_count == 0" colspan="4">
                             <field name="parameter_analysis_ids" nolabel="1" readonly="1">
                                 <list string="Parámetros">
                                     <field name="name"/>
@@ -35,6 +61,7 @@
                                     <field name="result_type"/>
                                     <field name="analysis_status_checkbox"/>
                                     <field name="analyst_id"/>
+                                    <field name="result_value"/>
                                 </list>
                             </field>
                         </group>
@@ -54,7 +81,7 @@
             </field>
         </record>
 
-        <!-- ========== WIZARD DE ASIGNACIÓN MASIVA DE ANALISTAS ========== -->
+        <!-- ========== WIZARD DE ASIGNACIÓN MASIVA DE ANALISTAS MEJORADO ========== -->
         <record id="view_mass_analyst_wizard_form" model="ir.ui.view">
             <field name="name">lims.mass.analyst.wizard.v2.form</field>
             <field name="model">lims.mass.analyst.wizard.v2</field>
@@ -68,22 +95,59 @@
                             </h3>
                         </div>
                         
-                        <div class="alert alert-warning" style="margin: 20px 0;">
-                            <strong>🔒 Verificación de Seguridad:</strong><br/>
-                            Para asegurar la trazabilidad, se requiere verificación PIN del analista
-                            que será asignado como responsable.
+                        <!-- INFORMACIÓN ACTUAL -->
+                        <group string="📊 Estado Actual de Asignaciones" colspan="4">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="text-center">
+                                        <div class="h2 text-success">
+                                            <field name="parameters_without_analyst_count" readonly="1"/>
+                                        </div>
+                                        <small>Sin Analista</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-center">
+                                        <div class="h2 text-info">
+                                            <field name="parameters_with_analyst_count" readonly="1"/>
+                                        </div>
+                                        <small>Ya Tienen Analista</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-center">
+                                        <div class="h2 text-warning">
+                                            <field name="will_override_count" readonly="1"/>
+                                        </div>
+                                        <small>Se Sobrescribirán</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </group>
+
+                        <!-- DETALLE DE ASIGNACIONES ACTUALES -->
+                        <group string="📋 Asignaciones Actuales" 
+                            invisible="parameters_with_analyst_count == 0">
+                            <field name="current_assignments_info" readonly="1" nolabel="1"
+                                widget="text" style="font-family: monospace; background: #f8f9fa; padding: 10px;"/>
+                        </group>
+
+                        <!-- ADVERTENCIA SI VA A SOBRESCRIBIR -->
+                        <div class="alert alert-warning" 
+                            invisible="will_override_count == 0" 
+                            style="margin: 15px 0;">
+                            <strong>⚠️ Advertencia:</strong><br/>
+                            Se sobrescribirán <field name="will_override_count" readonly="1"/> asignaciones existentes.
+                            Revise la información actual antes de continuar.
                         </div>
                         
-                        <group string="👤 Selección de Analista">
+                        <!-- CONFIGURACIÓN DEL NUEVO ANALISTA -->
+                        <group string="👤 Nuevo Analista">
                             <field name="analyst_id" placeholder="Seleccionar analista responsable..." required="1"/>
-                        </group>
-                        
-                        <group string="🔒 Verificación de Seguridad">
                             <field name="verify_pin"/>
                             <field name="pin_code" password="1" 
-                                   placeholder="PIN del analista"
-                                   invisible="verify_pin == False"
-                                   required="verify_pin == True"/>
+                                invisible="verify_pin == False"
+                                required="verify_pin == True"/>
                         </group>
                         
                         <group string="⚙️ Opciones">
@@ -93,11 +157,10 @@
                     </sheet>
                     
                     <footer>
-                        <button string="✅ Asignar Analista" 
+                        <button string="✅ Confirmar Asignación" 
                                 name="action_assign_analyst" 
                                 type="object" 
-                                class="btn-primary"
-                                confirm="¿Está seguro de asignar este analista a todos los parámetros seleccionados?"/>
+                                class="btn-primary"/>
                         <button string="❌ Cancelar" 
                                 class="btn-secondary" 
                                 special="cancel"/>
@@ -106,7 +169,7 @@
             </field>
         </record>
 
-        <!-- ========== WIZARD DE ASIGNACIÓN MASIVA DE MEDIOS ========== -->
+        <!-- ========== WIZARD DE ASIGNACIÓN MASIVA DE MEDIOS MEJORADO ========== -->
         <record id="view_mass_media_wizard_form" model="ir.ui.view">
             <field name="name">lims.mass.media.wizard.v2.form</field>
             <field name="model">lims.mass.media.wizard.v2</field>
@@ -125,29 +188,77 @@
                             <field name="assignment_method" widget="radio" required="1"/>
                         </group>
                         
+                        <!-- INFORMACIÓN ACTUAL DE MEDIOS -->
+                        <group string="📊 Estado Actual de Medios" colspan="4" 
+                            invisible="not process_type">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="text-center">
+                                        <div class="h2 text-success">
+                                            <field name="parameters_without_media_count" readonly="1"/>
+                                        </div>
+                                        <small>Sin Medios del Proceso</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-center">
+                                        <div class="h2 text-info">
+                                            <field name="parameters_with_media_count" readonly="1"/>
+                                        </div>
+                                        <small>Ya Tienen Medios</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-center">
+                                        <div class="h2 text-warning">
+                                            <field name="total_media_will_be_affected" readonly="1"/>
+                                        </div>
+                                        <small>Medios que se Eliminarán</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </group>
+
+                        <!-- DETALLE DE MEDIOS ACTUALES -->
+                        <group string="📋 Medios Actuales por Parámetro" 
+                            invisible="parameters_with_media_count == 0">
+                            <field name="current_media_summary" readonly="1" nolabel="1"
+                                widget="text" style="font-family: monospace; background: #f8f9fa; padding: 10px;"/>
+                        </group>
+
+                        <!-- ADVERTENCIA SI VA A LIMPIAR MEDIOS -->
+                        <div class="alert alert-warning" 
+                            invisible="total_media_will_be_affected == 0 or clear_existing_media == False" 
+                            style="margin: 15px 0;">
+                            <strong>⚠️ Advertencia:</strong><br/>
+                            Se eliminarán <field name="total_media_will_be_affected" readonly="1"/> medios existentes 
+                            del proceso <field name="process_type" readonly="1"/>.
+                            <br/>Revise la información actual antes de continuar.
+                        </div>
+                        
                         <!-- Para sets de medios -->
                         <group string="📦 Set de Medios" invisible="assignment_method != 'media_set'">
                             <field name="media_set_id" 
-                                   placeholder="Seleccionar set predefinido..."
-                                   required="assignment_method == 'media_set'"
-                                   options="{'no_create': True}"/>
+                                placeholder="Seleccionar set predefinido..."
+                                required="assignment_method == 'media_set'"
+                                options="{'no_create': True}"/>
                         </group>
                         
                         <!-- Para medios individuales -->
                         <group string="🧪 Medios Individuales" invisible="assignment_method != 'individual_media'">
                             <field name="selected_media_ids" widget="many2many_tags"
-                                   placeholder="Seleccionar medios..."
-                                   required="assignment_method == 'individual_media'"/>
+                                placeholder="Seleccionar medios..."
+                                required="assignment_method == 'individual_media'"/>
                             <field name="media_usage" 
-                                   required="assignment_method == 'individual_media'"/>
+                                required="assignment_method == 'individual_media'"/>
                         </group>
                         
                         <!-- Para copiar desde otro parámetro -->
                         <group string="📋 Copiar desde Parámetro" invisible="assignment_method != 'copy_from_parameter'">
                             <field name="source_parameter_id" 
-                                   placeholder="Seleccionar parámetro fuente..."
-                                   required="assignment_method == 'copy_from_parameter'"
-                                   options="{'no_create': True}"/>
+                                placeholder="Seleccionar parámetro fuente..."
+                                required="assignment_method == 'copy_from_parameter'"
+                                options="{'no_create': True}"/>
                         </group>
                         
                         <group string="⚙️ Opciones">
@@ -171,7 +282,7 @@
             </field>
         </record>
 
-        <!-- ========== WIZARD DE ASIGNACIÓN MASIVA DE FECHAS ========== -->
+        <!-- ========== WIZARD DE ASIGNACIÓN MASIVA DE FECHAS MEJORADO ========== -->
         <record id="view_mass_dates_wizard_form" model="ir.ui.view">
             <field name="name">lims.mass.dates.wizard.v2.form</field>
             <field name="model">lims.mass.dates.wizard.v2</field>
@@ -188,10 +299,49 @@
                         <group string="📅 Tipo de Fechas">
                             <field name="date_type" widget="radio" required="1"/>
                         </group>
+
+                        <!-- INFORMACIÓN ACTUAL DE FECHAS -->
+                        <group string="📊 Estado Actual de Fechas" colspan="4" 
+                            invisible="not date_type">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="text-center">
+                                        <div class="h2 text-success">
+                                            <field name="parameters_without_dates_count" readonly="1"/>
+                                        </div>
+                                        <small>Sin Fechas</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="text-center">
+                                        <div class="h2 text-info">
+                                            <field name="parameters_with_dates_count" readonly="1"/>
+                                        </div>
+                                        <small>Ya Tienen Fechas</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </group>
+
+                        <!-- DETALLE DE FECHAS ACTUALES -->
+                        <group string="📋 Fechas Actuales" 
+                            invisible="parameters_with_dates_count == 0">
+                            <field name="current_dates_summary" readonly="1" nolabel="1"
+                                widget="text" style="font-family: monospace; background: #f8f9fa; padding: 10px;"/>
+                        </group>
+
+                        <!-- ADVERTENCIA SI VA A SOBRESCRIBIR -->
+                        <div class="alert alert-warning" 
+                            invisible="parameters_with_dates_count == 0 or override_existing == False" 
+                            style="margin: 15px 0;">
+                            <strong>⚠️ Advertencia:</strong><br/>
+                            Se sobrescribirán fechas existentes en <field name="parameters_with_dates_count" readonly="1"/> parámetros.
+                            <br/>Revise la información actual antes de continuar.
+                        </div>
                         
                         <!-- Fechas generales -->
                         <group string="📅 Fechas de Análisis General" 
-                               invisible="date_type != 'analysis_dates'" colspan="2">
+                            invisible="date_type != 'analysis_dates'" colspan="2">
                             <group>
                                 <field name="analysis_start_date"/>
                             </group>
@@ -202,7 +352,7 @@
                         
                         <!-- Fechas de procesos -->
                         <group string="🔬 Fechas de Procesos Específicos" 
-                               invisible="date_type != 'process_dates'" colspan="2">
+                            invisible="date_type != 'process_dates'" colspan="2">
                             <group>
                                 <field name="process_type" required="date_type == 'process_dates'"/>
                                 <field name="processing_date" required="date_type == 'process_dates'"/>
@@ -232,7 +382,7 @@
             </field>
         </record>
 
-        <!-- ========== WIZARD DE ASIGNACIÓN MASIVA DE EQUIPOS ========== -->
+        <!-- ========== WIZARD DE ASIGNACIÓN MASIVA DE EQUIPOS MEJORADO ========== -->
         <record id="view_mass_equipment_wizard_form" model="ir.ui.view">
             <field name="name">lims.mass.equipment.wizard.v2.form</field>
             <field name="model">lims.mass.equipment.wizard.v2</field>
@@ -249,43 +399,82 @@
                         <group string="🔧 Tipo de Equipo">
                             <field name="equipment_type" widget="radio" required="1"/>
                         </group>
+
+                        <!-- INFORMACIÓN ACTUAL DE EQUIPOS -->
+                        <group string="📊 Estado Actual de Equipos" colspan="4" 
+                            invisible="not equipment_type">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="text-center">
+                                        <div class="h2 text-success">
+                                            <field name="parameters_without_equipment_count" readonly="1"/>
+                                        </div>
+                                        <small>Sin Equipos</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="text-center">
+                                        <div class="h2 text-info">
+                                            <field name="parameters_with_equipment_count" readonly="1"/>
+                                        </div>
+                                        <small>Ya Tienen Equipos</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </group>
+
+                        <!-- DETALLE DE EQUIPOS ACTUALES -->
+                        <group string="📋 Equipos Actuales por Parámetro" 
+                            invisible="parameters_with_equipment_count == 0">
+                            <field name="current_equipment_summary" readonly="1" nolabel="1"
+                                widget="text" style="font-family: monospace; background: #f8f9fa; padding: 10px;"/>
+                        </group>
+
+                        <!-- ADVERTENCIA SI VA A SOBRESCRIBIR -->
+                        <div class="alert alert-warning" 
+                            invisible="parameters_with_equipment_count == 0 or override_existing == False" 
+                            style="margin: 15px 0;">
+                            <strong>⚠️ Advertencia:</strong><br/>
+                            Se sobrescribirán equipos existentes en <field name="parameters_with_equipment_count" readonly="1"/> parámetros.
+                            <br/>Revise la información actual antes de continuar.
+                        </div>
                         
                         <!-- Equipos de procesamiento -->
                         <group string="🏭 Equipos de Procesamiento" 
-                               invisible="equipment_type != 'processing_equipment'" colspan="2">
+                            invisible="equipment_type != 'processing_equipment'" colspan="2">
                             <group>
                                 <field name="process_type" required="equipment_type == 'processing_equipment'"/>
                             </group>
                             <group>
                                 <field name="processing_equipment_id" 
-                                       required="equipment_type == 'processing_equipment'"
-                                       placeholder="Seleccionar equipo..."/>
+                                    required="equipment_type == 'processing_equipment'"
+                                    placeholder="Seleccionar equipo..."/>
                             </group>
                         </group>
                         
                         <!-- Equipos de incubación -->
                         <group string="🌡️ Equipos de Incubación" 
-                               invisible="equipment_type != 'incubation_equipment'" colspan="2">
+                            invisible="equipment_type != 'incubation_equipment'" colspan="2">
                             <group>
                                 <field name="incubation_process_type" required="equipment_type == 'incubation_equipment'"/>
                             </group>
                             <group>
                                 <field name="incubation_equipment_id" 
-                                       required="equipment_type == 'incubation_equipment'"
-                                       placeholder="Seleccionar incubadora..."/>
+                                    required="equipment_type == 'incubation_equipment'"
+                                    placeholder="Seleccionar incubadora..."/>
                             </group>
                         </group>
                         
                         <!-- Equipos adicionales -->
                         <group string="⚙️ Equipos Adicionales" 
-                               invisible="equipment_type != 'additional_equipment'" colspan="2">
+                            invisible="equipment_type != 'additional_equipment'" colspan="2">
                             <group>
                                 <field name="additional_equipment_id" 
-                                       required="equipment_type == 'additional_equipment'"
-                                       placeholder="Seleccionar equipo..."/>
+                                    required="equipment_type == 'additional_equipment'"
+                                    placeholder="Seleccionar equipo..."/>
                                 <field name="equipment_usage" 
-                                       required="equipment_type == 'additional_equipment'"
-                                       placeholder="Especificar uso del equipo"/>
+                                    required="equipment_type == 'additional_equipment'"
+                                    placeholder="Especificar uso del equipo"/>
                             </group>
                             <group>
                                 <field name="usage_date"/>
@@ -313,7 +502,7 @@
             </field>
         </record>
 
-        <!-- ========== WIZARD DE CAMBIO MASIVO DE ESTADOS ========== -->
+        <!-- ========== WIZARD DE CAMBIO MASIVO DE ESTADOS MEJORADO ========== -->
         <record id="view_mass_status_wizard_form" model="ir.ui.view">
             <field name="name">lims.mass.status.wizard.v2.form</field>
             <field name="model">lims.mass.status.wizard.v2</field>
@@ -330,26 +519,39 @@
                         <group string="📊 Tipo de Estado">
                             <field name="status_type" widget="radio" required="1"/>
                         </group>
+
+                        <!-- DISTRIBUCIÓN DE ESTADOS ACTUALES -->
+                        <group string="📊 Distribución de Estados Actuales" colspan="4" 
+                            invisible="not status_type">
+                            <field name="parameters_by_status_info" readonly="1" nolabel="1"
+                                widget="text" style="font-family: monospace; background: #e8f5e8; padding: 10px;"/>
+                        </group>
+
+                        <!-- DETALLE DE ESTADOS ACTUALES -->
+                        <group string="📋 Estados Actuales por Parámetro" colspan="4">
+                            <field name="current_status_summary" readonly="1" nolabel="1"
+                                widget="text" style="font-family: monospace; background: #f8f9fa; padding: 10px;"/>
+                        </group>
                         
                         <!-- Estados de análisis -->
-                        <group string="🔬 Estado de Análisis" 
-                               invisible="status_type != 'analysis_status'">
+                        <group string="🔬 Nuevo Estado de Análisis" 
+                            invisible="status_type != 'analysis_status'">
                             <field name="new_analysis_status" 
-                                   required="status_type == 'analysis_status'"
-                                   widget="radio"/>
+                                required="status_type == 'analysis_status'"
+                                widget="radio"/>
                         </group>
                         
                         <!-- Estados de reporte -->
-                        <group string="📄 Estado de Reporte" 
-                               invisible="status_type != 'report_status'">
+                        <group string="📄 Nuevo Estado de Reporte" 
+                            invisible="status_type != 'report_status'">
                             <field name="new_report_status" 
-                                   required="status_type == 'report_status'"
-                                   widget="radio"/>
+                                required="status_type == 'report_status'"
+                                widget="radio"/>
                         </group>
                         
                         <!-- Configuración de procesos -->
-                        <group string="⚙️ Configuración de Procesos Requeridos" 
-                               invisible="status_type != 'process_requirements'" colspan="2">
+                        <group string="⚙️ Nueva Configuración de Procesos Requeridos" 
+                            invisible="status_type != 'process_requirements'" colspan="2">
                             <group>
                                 <field name="requires_pre_enrichment"/>
                                 <field name="requires_selective_enrichment"/>
@@ -366,15 +568,37 @@
                         
                         <!-- Filtros específicos -->
                         <group string="🔍 Filtros" colspan="2" 
-                               invisible="apply_to_filter == 'all_selected'">
+                            invisible="apply_to_filter == 'all_selected'">
                             <group invisible="apply_to_filter != 'by_current_status'">
                                 <field name="current_status_filter" 
-                                       required="apply_to_filter == 'by_current_status'"/>
+                                    required="apply_to_filter == 'by_current_status'"/>
                             </group>
                             <group invisible="apply_to_filter != 'by_result_type'">
                                 <field name="result_type_filter" 
-                                       required="apply_to_filter == 'by_result_type'"/>
+                                    required="apply_to_filter == 'by_result_type'"/>
                             </group>
+                        </group>
+
+                        <!-- RESUMEN DE CAMBIOS -->
+                        <group string="📈 Resumen de Cambios" colspan="4">
+                            <div class="row">
+                                <div class="col-6">
+                                    <div class="text-center">
+                                        <div class="h2 text-success">
+                                            <field name="will_change_count" readonly="1"/>
+                                        </div>
+                                        <small>Parámetros que Cambiarán</small>
+                                    </div>
+                                </div>
+                                <div class="col-6">
+                                    <div class="text-center">
+                                        <div class="h2 text-muted">
+                                            <field name="will_remain_count" readonly="1"/>
+                                        </div>
+                                        <small>Sin Cambios</small>
+                                    </div>
+                                </div>
+                            </div>
                         </group>
                         
                     </sheet>
@@ -393,7 +617,7 @@
             </field>
         </record>
 
-        <!-- ========== WIZARD DE ASIGNACIÓN MASIVA DE AMBIENTES ========== -->
+        <!-- ========== WIZARD DE ASIGNACIÓN MASIVA DE AMBIENTES MEJORADO ========== -->
         <record id="view_mass_environment_wizard_form" model="ir.ui.view">
             <field name="name">lims.mass.environment.wizard.v2.form</field>
             <field name="model">lims.mass.environment.wizard.v2</field>
@@ -411,20 +635,67 @@
                             <field name="process_type" required="1"/>
                             <field name="environment" widget="radio" required="1"/>
                         </group>
+
+                        <!-- INFORMACIÓN ACTUAL DE AMBIENTES -->
+                        <group string="📊 Estado Actual de Ambientes" colspan="4" 
+                            invisible="not process_type">
+                            <div class="row">
+                                <div class="col-4">
+                                    <div class="text-center">
+                                        <div class="h2 text-success">
+                                            <field name="parameters_without_environment_count" readonly="1"/>
+                                        </div>
+                                        <small>Sin Ambiente</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-center">
+                                        <div class="h2 text-info">
+                                            <field name="parameters_with_environment_count" readonly="1"/>
+                                        </div>
+                                        <small>Ya Tienen Ambiente</small>
+                                    </div>
+                                </div>
+                                <div class="col-4">
+                                    <div class="text-center">
+                                        <div class="h2 text-warning">
+                                            <field name="filtered_parameters_count" readonly="1"/>
+                                        </div>
+                                        <small>Aplicarán Cambios</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </group>
+
+                        <!-- DETALLE DE AMBIENTES ACTUALES -->
+                        <group string="📋 Ambientes Actuales por Parámetro" 
+                            invisible="parameters_with_environment_count == 0">
+                            <field name="current_environment_summary" readonly="1" nolabel="1"
+                                widget="text" style="font-family: monospace; background: #f8f9fa; padding: 10px;"/>
+                        </group>
+
+                        <!-- ADVERTENCIA SI VA A SOBRESCRIBIR -->
+                        <div class="alert alert-warning" 
+                            invisible="parameters_with_environment_count == 0 or override_existing == False" 
+                            style="margin: 15px 0;">
+                            <strong>⚠️ Advertencia:</strong><br/>
+                            Se sobrescribirán ambientes existentes en <field name="parameters_with_environment_count" readonly="1"/> parámetros.
+                            <br/>Revise la información actual antes de continuar.
+                        </div>
                         
                         <!-- Equipo específico para campanas -->
                         <group string="🔧 Equipo Específico" 
-                               invisible="environment not in ['campana_flujo', 'campana_bioseguridad']">
+                            invisible="environment not in ['campana_flujo', 'campana_bioseguridad']">
                             <field name="specific_equipment_id" 
-                                   placeholder="Seleccionar equipo específico..."
-                                   help="Opcional: Asignar un equipo específico"/>
+                                placeholder="Seleccionar equipo específico..."
+                                help="Opcional: Asignar un equipo específico"/>
                         </group>
                         
                         <group string="🎯 Criterios de Aplicación">
                             <field name="filter_by_result_type"/>
                             <field name="result_type_filter" 
-                                   invisible="filter_by_result_type == False"
-                                   required="filter_by_result_type == True"/>
+                                invisible="filter_by_result_type == False"
+                                required="filter_by_result_type == True"/>
                         </group>
                         
                         <group string="⚙️ Opciones">

@@ -39,6 +39,57 @@ class LimsMassAnalystWizardV2(models.TransientModel):
         help='Si está marcado, reemplazará analistas ya asignados'
     )
 
+    current_assignments_info = fields.Text(
+        string='Asignaciones Actuales',
+        compute='_compute_current_assignments_info',
+        readonly=True
+    )
+
+    parameters_with_analyst_count = fields.Integer(
+        string='Ya tienen analista',
+        compute='_compute_assignment_summary'
+    )
+
+    parameters_without_analyst_count = fields.Integer(
+        string='Sin analista',
+        compute='_compute_assignment_summary'
+    )
+
+    will_override_count = fields.Integer(
+        string='Se sobrescribirán',
+        compute='_compute_assignment_summary'
+    )
+
+    @api.depends('parameter_analysis_ids', 'override_existing')
+    def _compute_current_assignments_info(self):
+        for record in self:
+            if not record.parameter_analysis_ids:
+                record.current_assignments_info = "No hay parámetros seleccionados"
+                continue
+            
+            info_lines = []
+            for param in record.parameter_analysis_ids:
+                current_analyst = param.analyst_id.full_name if param.analyst_id else "Sin asignar"
+                info_lines.append(f"• {param.name}: {current_analyst}")
+            
+            record.current_assignments_info = "\n".join(info_lines)
+
+    @api.depends('parameter_analysis_ids', 'override_existing')
+    def _compute_assignment_summary(self):
+        for record in self:
+            if not record.parameter_analysis_ids:
+                record.parameters_with_analyst_count = 0
+                record.parameters_without_analyst_count = 0
+                record.will_override_count = 0
+                continue
+            
+            with_analyst = record.parameter_analysis_ids.filtered('analyst_id')
+            without_analyst = record.parameter_analysis_ids.filtered(lambda p: not p.analyst_id)
+            
+            record.parameters_with_analyst_count = len(with_analyst)
+            record.parameters_without_analyst_count = len(without_analyst)
+            record.will_override_count = len(with_analyst) if record.override_existing else 0
+
     @api.depends('parameter_analysis_ids')
     def _compute_parameters_count(self):
         for record in self:

@@ -78,6 +78,109 @@ class LimsMassEquipmentWizardV2(models.TransientModel):
         default=False
     )
 
+    current_equipment_summary = fields.Text(
+        string='Equipos Actuales',
+        compute='_compute_current_equipment_summary',
+        readonly=True
+    )
+
+    parameters_with_equipment_count = fields.Integer(
+        string='Ya tienen equipos',
+        compute='_compute_equipment_summary'
+    )
+
+    parameters_without_equipment_count = fields.Integer(
+        string='Sin equipos',
+        compute='_compute_equipment_summary'
+    )
+
+    @api.depends('parameter_analysis_ids', 'equipment_type', 'process_type', 'incubation_process_type')
+    def _compute_current_equipment_summary(self):
+        for record in self:
+            if not record.parameter_analysis_ids:
+                record.current_equipment_summary = "No hay parámetros seleccionados"
+                continue
+            
+            info_lines = []
+            
+            if record.equipment_type == 'processing_equipment' and record.process_type:
+                field_mapping = {
+                    'pre_enrichment': 'pre_enrichment_equipment_id',
+                    'selective_enrichment': 'selective_enrichment_equipment_id',
+                    'quantitative': 'quantitative_equipment_id',
+                    'qualitative': 'qualitative_equipment_id',
+                    'confirmation': 'confirmation_equipment_id',
+                }
+                
+                equipment_field = field_mapping.get(record.process_type)
+                if equipment_field:
+                    for param in record.parameter_analysis_ids:
+                        current_equipment = getattr(param, equipment_field)
+                        equipment_name = current_equipment.name if current_equipment else "Sin equipo"
+                        info_lines.append(f"• {param.name}: {equipment_name}")
+            
+            elif record.equipment_type == 'incubation_equipment' and record.incubation_process_type:
+                for param in record.parameter_analysis_ids:
+                    media_with_incubation = param.media_ids.filtered(
+                        lambda m: m.process_type == record.incubation_process_type and m.requires_incubation
+                    )
+                    
+                    if media_with_incubation:
+                        equipment_names = list(set([m.incubation_equipment.name for m in media_with_incubation if m.incubation_equipment]))
+                        equipment_str = ', '.join(equipment_names) if equipment_names else "Sin equipo"
+                        info_lines.append(f"• {param.name}: {len(media_with_incubation)} medios - {equipment_str}")
+                    else:
+                        info_lines.append(f"• {param.name}: Sin medios de incubación")
+            
+            elif record.equipment_type == 'additional_equipment':
+                for param in record.parameter_analysis_ids:
+                    equipment_count = len(param.equipment_involved_ids)
+                    if equipment_count > 0:
+                        equipment_names = ', '.join(param.equipment_involved_ids.mapped('equipment_id.name'))
+                        info_lines.append(f"• {param.name}: {equipment_count} equipos ({equipment_names})")
+                    else:
+                        info_lines.append(f"• {param.name}: Sin equipos adicionales")
+            
+            record.current_equipment_summary = "\n".join(info_lines) if info_lines else "Seleccione tipo de equipo"
+
+    @api.depends('parameter_analysis_ids', 'equipment_type', 'process_type', 'incubation_process_type')
+    def _compute_equipment_summary(self):
+        for record in self:
+            if not record.parameter_analysis_ids:
+                record.parameters_with_equipment_count = 0
+                record.parameters_without_equipment_count = 0
+                continue
+            
+            with_equipment = 0
+            without_equipment = 0
+            
+            if record.equipment_type == 'processing_equipment' and record.process_type:
+                field_mapping = {
+                    'pre_enrichment': 'pre_enrichment_equipment_id',
+                    'selective_enrichment': 'selective_enrichment_equipment_id',
+                    'quantitative': 'quantitative_equipment_id',
+                    'qualitative': 'qualitative_equipment_id',
+                    'confirmation': 'confirmation_equipment_id',
+                }
+                
+                equipment_field = field_mapping.get(record.process_type)
+                if equipment_field:
+                    for param in record.parameter_analysis_ids:
+                        if getattr(param, equipment_field):
+                            with_equipment += 1
+                        else:
+                            without_equipment += 1
+            
+            elif record.equipment_type == 'additional_equipment':
+                for param in record.parameter_analysis_ids:
+                    if param.equipment_involved_ids:
+                        with_equipment += 1
+                    else:
+                        without_equipment += 1
+            
+            record.parameters_with_equipment_count = with_equipment
+            record.parameters_without_equipment_count = without_equipment
+
     @api.depends('parameter_analysis_ids')
     def _compute_parameters_count(self):
         for record in self:

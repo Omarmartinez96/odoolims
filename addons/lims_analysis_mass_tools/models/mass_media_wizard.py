@@ -74,6 +74,77 @@ class LimsMassMediaWizardV2(models.TransientModel):
         help='Eliminar medios existentes del mismo tipo de proceso antes de agregar nuevos'
     )
 
+    current_media_summary = fields.Text(
+        string='Medios Actuales por Parámetro',
+        compute='_compute_current_media_summary',
+        readonly=True
+    )
+
+    parameters_with_media_count = fields.Integer(
+        string='Tienen medios del proceso',
+        compute='_compute_media_summary'
+    )
+
+    parameters_without_media_count = fields.Integer(
+        string='Sin medios del proceso',
+        compute='_compute_media_summary'
+    )
+
+    total_media_will_be_affected = fields.Integer(
+        string='Total medios afectados',
+        compute='_compute_media_summary'
+    )
+
+    @api.depends('parameter_analysis_ids', 'process_type')
+    def _compute_current_media_summary(self):
+        for record in self:
+            if not record.parameter_analysis_ids or not record.process_type:
+                record.current_media_summary = "Seleccione parámetros y tipo de proceso"
+                continue
+            
+            info_lines = []
+            for param in record.parameter_analysis_ids:
+                current_media = param.media_ids.filtered(
+                    lambda m: m.process_type == record.process_type
+                )
+                
+                if current_media:
+                    media_names = ', '.join(current_media.mapped('culture_media_name'))
+                    info_lines.append(f"• {param.name}: {len(current_media)} medios ({media_names})")
+                else:
+                    info_lines.append(f"• {param.name}: Sin medios")
+            
+            record.current_media_summary = "\n".join(info_lines)
+
+    @api.depends('parameter_analysis_ids', 'process_type', 'clear_existing_media')
+    def _compute_media_summary(self):
+        for record in self:
+            if not record.parameter_analysis_ids or not record.process_type:
+                record.parameters_with_media_count = 0
+                record.parameters_without_media_count = 0
+                record.total_media_will_be_affected = 0
+                continue
+            
+            total_affected = 0
+            with_media = 0
+            without_media = 0
+            
+            for param in record.parameter_analysis_ids:
+                current_media = param.media_ids.filtered(
+                    lambda m: m.process_type == record.process_type
+                )
+                
+                if current_media:
+                    with_media += 1
+                    if record.clear_existing_media:
+                        total_affected += len(current_media)
+                else:
+                    without_media += 1
+            
+            record.parameters_with_media_count = with_media
+            record.parameters_without_media_count = without_media
+            record.total_media_will_be_affected = total_affected
+
     @api.depends('parameter_analysis_ids')
     def _compute_parameters_count(self):
         for record in self:

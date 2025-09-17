@@ -54,6 +54,105 @@ class LimsMassEnvironmentWizardV2(models.TransientModel):
         ('quantitative', 'Solo Cuantitativos')
     ], string='Tipo de Resultado')
 
+    current_environment_summary = fields.Text(
+        string='Ambientes Actuales',
+        compute='_compute_current_environment_summary',
+        readonly=True
+    )
+
+    parameters_with_environment_count = fields.Integer(
+        string='Ya tienen ambiente',
+        compute='_compute_environment_summary'
+    )
+
+    parameters_without_environment_count = fields.Integer(
+        string='Sin ambiente',
+        compute='_compute_environment_summary'
+    )
+
+    filtered_parameters_count = fields.Integer(
+        string='Parámetros que aplicarán',
+        compute='_compute_environment_summary'
+    )
+
+    @api.depends('parameter_analysis_ids', 'process_type')
+    def _compute_current_environment_summary(self):
+        for record in self:
+            if not record.parameter_analysis_ids or not record.process_type:
+                record.current_environment_summary = "Seleccione parámetros y tipo de proceso"
+                continue
+            
+            field_mapping = {
+                'pre_enrichment': ('pre_enrichment_environment', 'pre_enrichment_equipment_id'),
+                'selective_enrichment': ('selective_enrichment_environment', 'selective_enrichment_equipment_id'),
+                'quantitative': ('quantitative_environment', 'quantitative_equipment_id'),
+                'qualitative': ('qualitative_environment', 'qualitative_equipment_id'),
+                'confirmation': ('confirmation_environment', 'confirmation_equipment_id'),
+            }
+            
+            if record.process_type not in field_mapping:
+                record.current_environment_summary = "Proceso no válido"
+                continue
+            
+            environment_field, equipment_field = field_mapping[record.process_type]
+            info_lines = []
+            
+            for param in record.parameter_analysis_ids:
+                current_environment = getattr(param, environment_field)
+                current_equipment = getattr(param, equipment_field)
+                
+                if current_environment:
+                    env_label = dict(param._fields[environment_field].selection)[current_environment]
+                    if current_equipment:
+                        info_lines.append(f"• {param.name}: {env_label} ({current_equipment.name})")
+                    else:
+                        info_lines.append(f"• {param.name}: {env_label}")
+                else:
+                    info_lines.append(f"• {param.name}: Sin ambiente asignado")
+            
+            record.current_environment_summary = "\n".join(info_lines)
+
+    @api.depends('parameter_analysis_ids', 'process_type', 'override_existing', 'filter_by_result_type', 'result_type_filter')
+    def _compute_environment_summary(self):
+        for record in self:
+            if not record.parameter_analysis_ids or not record.process_type:
+                record.parameters_with_environment_count = 0
+                record.parameters_without_environment_count = 0
+                record.filtered_parameters_count = 0
+                continue
+            
+            field_mapping = {
+                'pre_enrichment': 'pre_enrichment_environment',
+                'selective_enrichment': 'selective_enrichment_environment',
+                'quantitative': 'quantitative_environment',
+                'qualitative': 'qualitative_environment',
+                'confirmation': 'confirmation_environment',
+            }
+            
+            if record.process_type not in field_mapping:
+                record.parameters_with_environment_count = 0
+                record.parameters_without_environment_count = 0
+                record.filtered_parameters_count = 0
+                continue
+            
+            environment_field = field_mapping[record.process_type]
+            
+            # Filtrar parámetros según criterios
+            filtered_params = record._filter_parameters()
+            
+            with_environment = 0
+            without_environment = 0
+            
+            for param in record.parameter_analysis_ids:
+                if getattr(param, environment_field):
+                    with_environment += 1
+                else:
+                    without_environment += 1
+            
+            record.parameters_with_environment_count = with_environment
+            record.parameters_without_environment_count = without_environment
+            record.filtered_parameters_count = len(filtered_params)
+
     @api.depends('parameter_analysis_ids')
     def _compute_parameters_count(self):
         for record in self:

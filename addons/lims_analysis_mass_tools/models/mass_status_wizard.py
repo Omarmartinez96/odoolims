@@ -67,6 +67,103 @@ class LimsMassStatusWizardV2(models.TransientModel):
         ('quantitative', 'Cuantitativo')
     ], string='Tipo de Resultado a Filtrar')
 
+    current_status_summary = fields.Text(
+        string='Estados Actuales',
+        compute='_compute_current_status_summary',
+        readonly=True
+    )
+
+    parameters_by_status_info = fields.Text(
+        string='Distribución de Estados',
+        compute='_compute_status_distribution',
+        readonly=True
+    )
+
+    will_change_count = fields.Integer(
+        string='Parámetros que cambiarán',
+        compute='_compute_change_summary'
+    )
+
+    will_remain_count = fields.Integer(
+        string='Parámetros sin cambios',
+        compute='_compute_change_summary'
+    )
+
+    @api.depends('parameter_analysis_ids', 'status_type')
+    def _compute_current_status_summary(self):
+        for record in self:
+            if not record.parameter_analysis_ids:
+                record.current_status_summary = "No hay parámetros seleccionados"
+                continue
+            
+            info_lines = []
+            
+            if record.status_type == 'analysis_status':
+                for param in record.parameter_analysis_ids:
+                    current_status = dict(param._fields['analysis_status_checkbox'].selection)[param.analysis_status_checkbox]
+                    info_lines.append(f"• {param.name}: {current_status}")
+            
+            elif record.status_type == 'report_status':
+                for param in record.parameter_analysis_ids:
+                    current_status = dict(param._fields['report_status'].selection)[param.report_status]
+                    info_lines.append(f"• {param.name}: {current_status}")
+            
+            elif record.status_type == 'process_requirements':
+                for param in record.parameter_analysis_ids:
+                    requirements = []
+                    if param.requires_pre_enrichment:
+                        requirements.append("Pre-enriquecimiento")
+                    if param.requires_selective_enrichment:
+                        requirements.append("Enriquecimiento Selectivo")
+                    if param.requires_confirmation:
+                        requirements.append("Confirmación")
+                    if param.requires_ph_adjustment:
+                        requirements.append("Ajuste pH")
+                    
+                    req_str = ", ".join(requirements) if requirements else "Sin procesos requeridos"
+                    info_lines.append(f"• {param.name}: {req_str}")
+            
+            record.current_status_summary = "\n".join(info_lines) if info_lines else "Seleccione tipo de estado"
+
+    @api.depends('parameter_analysis_ids', 'status_type')
+    def _compute_status_distribution(self):
+        for record in self:
+            if not record.parameter_analysis_ids or not record.status_type:
+                record.parameters_by_status_info = "Seleccione parámetros y tipo de estado"
+                continue
+            
+            distribution = {}
+            
+            if record.status_type == 'analysis_status':
+                for param in record.parameter_analysis_ids:
+                    status = param.analysis_status_checkbox
+                    status_label = dict(param._fields['analysis_status_checkbox'].selection)[status]
+                    distribution[status_label] = distribution.get(status_label, 0) + 1
+            
+            elif record.status_type == 'report_status':
+                for param in record.parameter_analysis_ids:
+                    status = param.report_status
+                    status_label = dict(param._fields['report_status'].selection)[status]
+                    distribution[status_label] = distribution.get(status_label, 0) + 1
+            
+            info_lines = [f"• {status}: {count} parámetros" for status, count in distribution.items()]
+            record.parameters_by_status_info = "\n".join(info_lines)
+
+    @api.depends('parameter_analysis_ids', 'status_type', 'new_analysis_status', 'new_report_status', 
+                'apply_to_filter', 'current_status_filter', 'result_type_filter')
+    def _compute_change_summary(self):
+        for record in self:
+            if not record.parameter_analysis_ids:
+                record.will_change_count = 0
+                record.will_remain_count = 0
+                continue
+            
+            # Filtrar parámetros según criterios
+            filtered_params = record._filter_parameters()
+            
+            record.will_change_count = len(filtered_params)
+            record.will_remain_count = len(record.parameter_analysis_ids) - len(filtered_params)
+
     @api.depends('parameter_analysis_ids')
     def _compute_parameters_count(self):
         for record in self:
