@@ -2,7 +2,6 @@ id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
 access_mass_assignment_wizard,lims.mass.assignment.wizard.v2,model_lims_mass_assignment_wizard_v2,,1,1,1,1
 access_mass_analyst_wizard,lims.mass.analyst.wizard.v2,model_lims_mass_analyst_wizard_v2,,1,1,1,1
 access_mass_media_wizard,lims.mass.media.wizard.v2,model_lims_mass_media_wizard_v2,,1,1,1,1
-# access_mass_media_comparison_line,lims.mass.media.comparison.line,model_lims_mass_media_comparison_line,,1,1,1,1
 access_mass_dates_wizard,lims.mass.dates.wizard.v2,model_lims_mass_dates_wizard_v2,,1,1,1,1
 access_mass_equipment_wizard,lims.mass.equipment.wizard.v2,model_lims_mass_equipment_wizard_v2,,1,1,1,1
 access_mass_status_wizard,lims.mass.status.wizard.v2,model_lims_mass_status_wizard_v2,,1,1,1,1
