@@ -2,119 +2,25 @@
 <odoo>
     <data>
         
-        <!-- ========== VISTA DE LISTA INDEPENDIENTE DE PARÁMETROS ========== -->
+        <!-- ========== VISTA SIMPLE PARA DIAGNOSTICAR ========== -->
         <record id="view_parameter_analysis_v2_list_selectable" model="ir.ui.view">
             <field name="name">lims.parameter.analysis.v2.list.selectable</field>
             <field name="model">lims.parameter.analysis.v2</field>
             <field name="arch" type="xml">
-                <list string="Parámetros - Selección Múltiple" selectable="1">
-                    <field name="analysis_id" column_invisible="True"/>
-                    <field name="sequence" widget="handle"/>
+                <list string="Parámetros" selectable="1">
                     <field name="name"/>
-                    <field name="microorganism"/>
                     <field name="method"/>
-                    <field name="result_type"/>
-                    <field name="category"/>
-                    <field name="unit"/>
                 </list>
             </field>
         </record>
 
-        <!-- ========== ACCIÓN PARA LA VISTA DE LISTA ========== -->
+        <!-- ========== ACCIÓN SIMPLE ========== -->
         <record id="action_parameter_analysis_selectable" model="ir.actions.act_window">
             <field name="name">Parámetros - Selección Múltiple</field>
             <field name="res_model">lims.parameter.analysis.v2</field>
             <field name="view_mode">list</field>
             <field name="view_id" ref="view_parameter_analysis_v2_list_selectable"/>
-            <field name="domain">[('analysis_id', '=', active_id)]</field>
-            <field name="context">{'create': False, 'delete': False}</field>
-        </record>
-
-        <!-- ========== HEREDAR FORMULARIO PARA AGREGAR SMART BUTTON ========== -->
-        <record id="view_lims_analysis_v2_form_inherited" model="ir.ui.view">
-            <field name="name">lims.analysis.v2.form.inherited</field>
-            <field name="model">lims.analysis.v2</field>
-            <field name="inherit_id" ref="lims_analysis_v2.view_lims_analysis_v2_form"/>
-            <field name="arch" type="xml">
-                <!-- Agregar smart button en el oe_button_box -->
-                <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
-                    <button name="action_open_parameters_for_mass_operations" 
-                            type="object" 
-                            class="oe_stat_button" 
-                            icon="fa-list-alt">
-                        <div class="o_field_widget o_stat_info">
-                            <span class="o_stat_value">
-                                <field name="total_parameters_count"/>
-                            </span>
-                            <span class="o_stat_text">🎯 Acciones Masivas</span>
-                        </div>
-                    </button>
-                </xpath>
-            </field>
-        </record>
-
-        <!-- ========== ACCIONES MASIVAS EN LISTA DE PARÁMETROS ========== -->
-        <record id="action_mass_assignment_parameters" model="ir.actions.server">
-            <field name="name">🎯 Asignación Masiva</field>
-            <field name="model_id" ref="lims_analysis_v2.model_lims_parameter_analysis_v2"/>
-            <field name="binding_model_id" ref="lims_analysis_v2.model_lims_parameter_analysis_v2"/>
-            <field name="binding_view_types">list</field>
-            <field name="state">code</field>
-            <field name="code">
-if records:
-    action = {
-        'type': 'ir.actions.act_window',
-        'name': 'Asignación Masiva',
-        'res_model': 'lims.mass.assignment.wizard.v2',
-        'view_mode': 'form',
-        'target': 'new',
-        'context': {
-            'default_parameter_analysis_ids': [(6, 0, records.ids)]
-        }
-    }
-else:
-    action = {
-        'type': 'ir.actions.client',
-        'tag': 'display_notification',
-        'params': {
-            'title': 'Sin Selección',
-            'message': 'Debe seleccionar parámetros para asignación masiva.',
-            'type': 'warning',
-        }
-    }
-            </field>
-        </record>
-
-        <!-- ========== ACCIONES RÁPIDAS ESPECÍFICAS ========== -->
-        <record id="action_mass_assign_analyst_direct" model="ir.actions.server">
-            <field name="name">👤 Asignar Analista Masivamente</field>
-            <field name="model_id" ref="lims_analysis_v2.model_lims_parameter_analysis_v2"/>
-            <field name="binding_model_id" ref="lims_analysis_v2.model_lims_parameter_analysis_v2"/>
-            <field name="binding_view_types">list</field>
-            <field name="state">code</field>
-            <field name="code">
-if records:
-    action = {
-        'type': 'ir.actions.act_window',
-        'name': 'Asignar Analista Masivamente',
-        'res_model': 'lims.mass.analyst.wizard.v2',
-        'view_mode': 'form',
-        'target': 'new',
-        'context': {
-            'default_parameter_analysis_ids': [(6, 0, records.ids)]
-        }
-    }
-else:
-    action = {
-        'type': 'ir.actions.client',
-        'tag': 'display_notification',
-        'params': {
-            'title': 'Sin Selección',
-            'message': 'Debe seleccionar parámetros.',
-            'type': 'warning',
-        }
-    }
-            </field>
+            <field name="context">{'create': False}</field>
         </record>
 
     </data>
