@@ -1381,3 +1381,4 @@ class LimsAnalysisV2(models.Model):
             },
             'target': 'current',
         }
+    
