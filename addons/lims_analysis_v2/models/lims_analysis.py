@@ -1349,7 +1349,7 @@ class LimsAnalysisV2(models.Model):
                 'default_parameter_analysis_ids': [(6, 0, selected_param_ids)]
             }
         }
-    
+        
     def action_open_parameters_for_mass_operations(self):
         """Abrir vista de parámetros con selección múltiple"""
         return {
@@ -1365,20 +1365,3 @@ class LimsAnalysisV2(models.Model):
             },
             'target': 'current',
         }
-    
-    def action_open_parameters_for_mass_operations(self):
-        """Abrir vista de parámetros con selección múltiple"""
-        return {
-            'type': 'ir.actions.act_window',
-            'name': f'Parámetros de {self.sample_code} - Selección Múltiple',
-            'res_model': 'lims.parameter.analysis.v2',
-            'view_mode': 'list',
-            'view_id': self.env.ref('lims_analysis_mass_tools.view_parameter_analysis_v2_list_selectable').id,
-            'domain': [('analysis_id', '=', self.id)],
-            'context': {
-                'create': False,
-                'delete': False,
-            },
-            'target': 'current',
-        }
-    

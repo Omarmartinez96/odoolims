@@ -2,14 +2,19 @@
 <odoo>
     <data>
         
-        <!-- ========== VISTA SIMPLE PARA DIAGNOSTICAR ========== -->
+        <!-- ========== VISTA SIMPLE PARA SELECCIÓN MÚLTIPLE ========== -->
         <record id="view_parameter_analysis_v2_list_selectable" model="ir.ui.view">
             <field name="name">lims.parameter.analysis.v2.list.selectable</field>
             <field name="model">lims.parameter.analysis.v2</field>
             <field name="arch" type="xml">
-                <list string="Parámetros" selectable="1">
+                <list string="Parámetros" selectable="1" create="false" delete="false">
+                    <field name="sequence" widget="handle"/>
                     <field name="name"/>
+                    <field name="microorganism"/>
                     <field name="method"/>
+                    <field name="result_type"/>
+                    <field name="analysis_status_checkbox"/>
+                    <field name="result_value"/>
                 </list>
             </field>
         </record>
@@ -20,7 +25,7 @@
             <field name="res_model">lims.parameter.analysis.v2</field>
             <field name="view_mode">list</field>
             <field name="view_id" ref="view_parameter_analysis_v2_list_selectable"/>
-            <field name="context">{'create': False}</field>
+            <field name="context">{'create': False, 'delete': False}</field>
         </record>
 
     </data>
