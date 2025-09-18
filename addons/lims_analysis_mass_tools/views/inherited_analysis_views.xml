@@ -7,7 +7,7 @@
             <field name="name">lims.parameter.analysis.v2.list.selectable</field>
             <field name="model">lims.parameter.analysis.v2</field>
             <field name="arch" type="xml">
-                <list string="Parámetros" selectable="1" create="false" delete="false">
+                <list string="Parámetros" create="false" delete="false">
                     <field name="sequence" widget="handle"/>
                     <field name="name"/>
                     <field name="microorganism"/>
