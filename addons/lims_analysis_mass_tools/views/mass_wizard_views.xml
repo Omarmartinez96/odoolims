@@ -142,15 +142,48 @@
                         </div>
                         
                         <!-- CONFIGURACIÓN DEL NUEVO ANALISTA -->
-                        <group string="👤 Nuevo Analista">
-                            <field name="analyst_id" placeholder="Seleccionar analista responsable..." required="1"/>
-                            <field name="verify_pin"/>
-                            <field name="pin_code" password="1" 
-                                invisible="verify_pin == False"
-                                required="verify_pin == True"/>
+                        <group string="👤 Selección de Analista" colspan="2">
+                            <group>
+                                <field name="analyst_id" 
+                                    placeholder="Seleccionar analista responsable..." 
+                                    required="1"
+                                    options="{'no_create': True}"/>
+                            </group>
+                            <group>
+                                <!-- Información del analista seleccionado -->
+                                <div invisible="not analyst_id" style="background: #e8f5e8; padding: 10px; border-radius: 5px;">
+                                    <strong>Analista Seleccionado:</strong><br/>
+                                    <span><field name="analyst_id" readonly="1" nolabel="1"/></span>
+                                </div>
+                            </group>
                         </group>
+
+                        <!-- VERIFICACIÓN DE SEGURIDAD -->
+                        <group string="🔒 Verificación de Seguridad" colspan="2">
+                            <group>
+                                <field name="verify_pin"/>
+                            </group>
+                            <group>
+                                <field name="pin_code" 
+                                    password="1" 
+                                    placeholder="Ingrese PIN del analista"
+                                    invisible="verify_pin == False"
+                                    required="verify_pin == True"/>
+                            </group>
+                        </group>
+
+                        <!-- INFORMACIÓN DE SEGURIDAD -->
+                        <div class="alert alert-info" 
+                            invisible="verify_pin == False" 
+                            style="margin: 15px 0;">
+                            <strong>🔒 Verificación de Seguridad:</strong><br/>
+                            Para garantizar la trazabilidad del laboratorio, se requiere verificación PIN 
+                            del analista que será asignado como responsable.
+                            <br/><small>🔐 El PIN será validado contra el sistema de autenticación del laboratorio.</small>
+                        </div>
                         
-                        <group string="⚙️ Opciones">
+                        <!-- OPCIONES DE CONFIGURACIÓN -->
+                        <group string="⚙️ Opciones de Asignación">
                             <field name="override_existing"/>
                         </group>
                         
@@ -160,7 +193,8 @@
                         <button string="✅ Confirmar Asignación" 
                                 name="action_assign_analyst" 
                                 type="object" 
-                                class="btn-primary"/>
+                                class="btn-primary"
+                                confirm="¿Está seguro de asignar este analista a todos los parámetros seleccionados?"/>
                         <button string="❌ Cancelar" 
                                 class="btn-secondary" 
                                 special="cancel"/>

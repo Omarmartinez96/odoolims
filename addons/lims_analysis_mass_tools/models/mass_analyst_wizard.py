@@ -1,5 +1,9 @@
 from odoo import models, fields, api
 from odoo.exceptions import UserError
+import logging
+
+_logger = logging.getLogger(__name__)
+
 
 class LimsMassAnalystWizardV2(models.TransientModel):
     _name = 'lims.mass.analyst.wizard.v2'
@@ -106,36 +110,52 @@ class LimsMassAnalystWizardV2(models.TransientModel):
         if not self.parameter_analysis_ids:
             raise UserError('No hay parámetros seleccionados.')
         
-        # Verificar PIN si está habilitado
+        if not self.analyst_id:
+            raise UserError('Debe seleccionar un analista.')
+        
+        # Verificación PIN usando el sistema existente
         if self.verify_pin:
             if not self.pin_code:
-                raise UserError('Debe ingresar el PIN de verificación.')
+                raise UserError('Debe ingresar el PIN del analista.')
             
-            if not self.analyst_id.verify_pin(self.pin_code):
+            # Usar el método validate_pin del modelo lims.analyst
+            if not self.analyst_id.validate_pin(self.pin_code):
                 raise UserError('PIN incorrecto para el analista seleccionado.')
+            
+            _logger.info(f'PIN verificado exitosamente para analista: {self.analyst_id.full_name}')
         
-        # Filtrar parámetros a actualizar
+        # Filtrar parámetros según configuración
         parameters_to_update = self.parameter_analysis_ids
         if not self.override_existing:
-            parameters_to_update = self.parameter_analysis_ids.filtered(
+            parameters_to_update = parameters_to_update.filtered(
                 lambda p: not p.analyst_id
             )
         
         if not parameters_to_update:
-            raise UserError('No hay parámetros disponibles para actualizar. Verifique la opción "Sobrescribir Analistas Existentes".')
+            raise UserError('No hay parámetros disponibles para actualizar. Verifique la opción "Sobrescribir Asignaciones Existentes".')
         
         # Asignar analista
         parameters_to_update.write({
-            'analyst_id': self.analyst_id.id,
-            'analyst_names': self.analyst_id.initials or self.analyst_id.full_name
+            'analyst_id': self.analyst_id.id
         })
+        
+        # Log de auditoría en cada parámetro
+        for param in parameters_to_update:
+            param.message_post(
+                body=f'Analista asignado masivamente: {self.analyst_id.full_name} (Código: {self.analyst_id.employee_code or "N/A"})',
+                subject='Asignación Masiva de Analista',
+                subtype_xmlid='mail.mt_note'
+            )
+        
+        # Log en el sistema
+        _logger.info(f'Asignación masiva completada: {self.analyst_id.full_name} asignado a {len(parameters_to_update)} parámetros')
         
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
-                'title': 'Analista Asignado',
-                'message': f'Se asignó {self.analyst_id.full_name} a {len(parameters_to_update)} parámetros.',
+                'title': 'Analista Asignado con Verificación PIN',
+                'message': f'Se asignó {self.analyst_id.full_name} a {len(parameters_to_update)} parámetros con verificación PIN exitosa.',
                 'type': 'success',
             }
         }
