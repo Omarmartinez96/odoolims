@@ -2,65 +2,64 @@
 <odoo>
     <data>
         
-        <!-- ========== HEREDAR FORMULARIO DE ANÁLISIS PARA BOTONES RÁPIDOS ========== -->
+        <!-- ========== VISTA DE LISTA INDEPENDIENTE DE PARÁMETROS ========== -->
+        <record id="view_parameter_analysis_v2_list_selectable" model="ir.ui.view">
+            <field name="name">lims.parameter.analysis.v2.list.selectable</field>
+            <field name="model">lims.parameter.analysis.v2</field>
+            <field name="arch" type="xml">
+                <list string="Parámetros de Análisis - Selección Múltiple" 
+                      editable="false" 
+                      selectable="1" 
+                      multi_edit="false"
+                      create="false"
+                      delete="false">
+                    <field name="analysis_id" column_invisible="True"/>
+                    <field name="sequence" widget="handle"/>
+                    <field name="name"/>
+                    <field name="microorganism"/>
+                    <field name="method"/>
+                    <field name="result_type"/>
+                    <field name="analysis_status_checkbox"/>
+                    <field name="analyst_id"/>
+                    <field name="result_value"/>
+                    <field name="report_status"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- ========== ACCIÓN PARA LA VISTA DE LISTA ========== -->
+        <record id="action_parameter_analysis_selectable" model="ir.actions.act_window">
+            <field name="name">Parámetros - Selección Múltiple</field>
+            <field name="res_model">lims.parameter.analysis.v2</field>
+            <field name="view_mode">list</field>
+            <field name="view_id" ref="view_parameter_analysis_v2_list_selectable"/>
+            <field name="domain">[('analysis_id', '=', active_id)]</field>
+            <field name="context">{
+                'create': False,
+                'delete': False,
+                'group_by': False
+            }</field>
+        </record>
+
+        <!-- ========== HEREDAR FORMULARIO PARA AGREGAR SMART BUTTON ========== -->
         <record id="view_lims_analysis_v2_form_inherited" model="ir.ui.view">
             <field name="name">lims.analysis.v2.form.inherited</field>
             <field name="model">lims.analysis.v2</field>
             <field name="inherit_id" ref="lims_analysis_v2.view_lims_analysis_v2_form"/>
             <field name="arch" type="xml">
-                <!-- Agregar después del campo parameter_analysis_ids -->
-                <xpath expr="//field[@name='parameter_analysis_ids']" position="before">
-                    <!-- Botones de acciones rápidas -->
-                    <div class="alert alert-info" style="margin-bottom: 15px; border-left: 4px solid #007bff;">
-                        <strong>⚡ Herramientas de Productividad:</strong>
-                        <small style="display: block; margin-top: 5px; color: #6c757d;">
-                            Aplica cambios a todos los parámetros de este análisis de forma masiva
-                        </small>
-                        <div class="row" style="margin-top: 15px;">
-                            <div class="col-2">
-                                <button name="action_mass_assign_analyst_quick" 
-                                        type="object" 
-                                        string="👤 Analista" 
-                                        class="btn btn-primary btn-sm btn-block"
-                                        help="Asignar analista responsable a todos los parámetros"/>
-                            </div>
-                            <div class="col-2">
-                                <button name="action_mass_assign_dates_quick" 
-                                        type="object" 
-                                        string="📅 Fechas" 
-                                        class="btn btn-info btn-sm btn-block"
-                                        help="Asignar fechas de procesamiento"/>
-                            </div>
-                            <div class="col-2">
-                                <button name="action_mass_assign_media_quick" 
-                                        type="object" 
-                                        string="🧪 Medios" 
-                                        class="btn btn-success btn-sm btn-block"
-                                        help="Asignar medios de cultivo masivamente"/>
-                            </div>
-                            <div class="col-2">
-                                <button name="action_mass_assign_equipment_quick" 
-                                        type="object" 
-                                        string="🔧 Equipos" 
-                                        class="btn btn-warning btn-sm btn-block"
-                                        help="Asignar equipos de laboratorio"/>
-                            </div>
-                            <div class="col-2">
-                                <button name="action_mass_assign_status_quick" 
-                                        type="object" 
-                                        string="📊 Estados" 
-                                        class="btn btn-secondary btn-sm btn-block"
-                                        help="Cambiar estados masivamente"/>
-                            </div>
-                            <div class="col-2">
-                                <button name="action_mass_assign_environment_quick" 
-                                        type="object" 
-                                        string="🏭 Ambientes" 
-                                        class="btn btn-dark btn-sm btn-block"
-                                        help="Asignar ambientes de procesamiento"/>
-                            </div>
+                <!-- Agregar smart button en el oe_button_box -->
+                <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+                    <button name="action_open_parameters_for_mass_operations" 
+                            type="object" 
+                            class="oe_stat_button" 
+                            icon="fa-list-alt">
+                        <div class="o_field_widget o_stat_info">
+                            <span class="o_stat_value">
+                                <field name="total_parameters_count"/>
+                            </span>
+                            <span class="o_stat_text">🎯 Acciones Masivas</span>
                         </div>
-                    </div>
+                    </button>
                 </xpath>
             </field>
         </record>
