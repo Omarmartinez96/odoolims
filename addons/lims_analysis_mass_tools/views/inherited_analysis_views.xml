@@ -8,7 +8,6 @@
             <field name="model">lims.parameter.analysis.v2</field>
             <field name="arch" type="xml">
                 <list string="Parámetros de Análisis - Selección Múltiple" 
-                      editable="false" 
                       selectable="1" 
                       multi_edit="false"
                       create="false"
