@@ -35,19 +35,21 @@
             <field name="model">lims.analysis.v2</field>
             <field name="inherit_id" ref="lims_analysis_v2.view_lims_analysis_v2_form"/>
             <field name="arch" type="xml">
-                <!-- Agregar smart button en el oe_button_box -->
-                <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
-                    <button name="action_open_parameters_for_mass_operations" 
-                            type="object" 
-                            class="oe_stat_button" 
-                            icon="fa-list-alt">
-                        <div class="o_field_widget o_stat_info">
-                            <span class="o_stat_value">
-                                <field name="total_parameters_count"/>
-                            </span>
-                            <span class="o_stat_text">🎯 Acciones Masivas</span>
-                        </div>
-                    </button>
+                <!-- Agregar al inicio del sheet -->
+                <xpath expr="//sheet" position="inside">
+                    <div class="oe_button_box" name="button_box" style="margin-bottom: 20px;">
+                        <button name="action_open_parameters_for_mass_operations" 
+                                type="object" 
+                                class="oe_stat_button" 
+                                icon="fa-list-alt">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_value">
+                                    <field name="total_parameters_count"/>
+                                </span>
+                                <span class="o_stat_text">🎯 Acciones Masivas</span>
+                            </div>
+                        </button>
+                    </div>
                 </xpath>
             </field>
         </record>
