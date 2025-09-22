@@ -139,23 +139,38 @@ class LimsMassAnalystWizardV2(models.TransientModel):
             'analyst_id': self.analyst_id.id
         })
         
-        # Log de auditoría en cada parámetro
-        for param in parameters_to_update:
-            param.message_post(
-                body=f'Analista asignado masivamente: {self.analyst_id.full_name} (Código: {self.analyst_id.employee_code or "N/A"})',
-                subject='Asignación Masiva de Analista',
-                subtype_xmlid='mail.mt_note'
-            )
+        # Log detallado en el sistema para auditoría
+        _logger.info(f'=== ASIGNACIÓN MASIVA DE ANALISTA ===')
+        _logger.info(f'Analista: {self.analyst_id.full_name} (ID: {self.analyst_id.id})')
+        _logger.info(f'Código Empleado: {self.analyst_id.employee_code or "N/A"}')
+        _logger.info(f'Parámetros actualizados: {len(parameters_to_update)}')
+        _logger.info(f'Verificación PIN: {"Sí" if self.verify_pin else "No"}')
         
-        # Log en el sistema
-        _logger.info(f'Asignación masiva completada: {self.analyst_id.full_name} asignado a {len(parameters_to_update)} parámetros')
+        # Log individual de cada parámetro
+        for param in parameters_to_update:
+            _logger.info(f'  - Parámetro: {param.name} (ID: {param.id}) → Analista: {self.analyst_id.full_name}')
+        
+        # Intentar logging en el análisis padre si tiene message_post
+        try:
+            for param in parameters_to_update:
+                if hasattr(param.analysis_id, 'message_post'):
+                    param.analysis_id.message_post(
+                        body=f'Asignación masiva de analista: {self.analyst_id.full_name} '
+                            f'asignado al parámetro "{param.name}"',
+                        subject='Asignación Masiva de Analista',
+                        subtype_xmlid='mail.mt_note'
+                    )
+        except Exception as e:
+            _logger.warning(f'No se pudo registrar en message_post: {e}')
         
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
-                'title': 'Analista Asignado con Verificación PIN',
-                'message': f'Se asignó {self.analyst_id.full_name} a {len(parameters_to_update)} parámetros con verificación PIN exitosa.',
+                'title': 'Analista Asignado Exitosamente',
+                'message': f'Se asignó {self.analyst_id.full_name} a {len(parameters_to_update)} parámetros' + 
+                        (f' con verificación PIN' if self.verify_pin else ''),
                 'type': 'success',
+                'sticky': True,
             }
         }
