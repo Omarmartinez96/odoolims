@@ -69,7 +69,7 @@
                         <!-- LOGOS ILAC DERECHA -->
                         <td style="width: 20%; text-align: right; vertical-align: middle; padding: 10px 8px;">
                             <img src="/lims_analysis_v2/static/src/img/ilac_logos.png" 
-                                style="max-height: 115px; width: auto;" 
+                                style="max-height: 125px; width: auto;" 
                                 alt="ILAC Logos"/>
                         </td>
                     </tr>
