@@ -45,13 +45,13 @@
 
             <!-- HEADER GLOBAL (FUERA DEL LOOP) -->
             <div class="header">
-                <table style="height: 100px; border: none !important; border-collapse: collapse !important; width: 100%;">
-                    <tr style="height: 80px; border: none !important;">
+                <table style="height: 100px; width: 100%; border: none !important; border-collapse: collapse !important; margin: 0; padding: 0;">
+                    <tr style="height: 80px;">
                         <!-- LOGO IZQUIERDA -->
                         <td style="width: 20%; text-align: left; vertical-align: middle; border: none !important; padding: 10px 8px;">
                             <img t-if="company.logo"
                                 t-att-src="image_data_uri(company.logo)"
-                                style="max-height: 108px; width: auto;"/>
+                                style="max-height: 108px; width: auto; border: none !important; outline: none !important;"/>
                         </td>
                         
                         <!-- INFORMACIÓN DEL LABORATORIO CENTRO -->
@@ -67,7 +67,7 @@
                                     PROTEUS
                                 </div>
                                 
-                                <!-- ✅ TIPO DE REPORTE - SIN DEBUG -->
+                                <!-- TIPO DE REPORTE -->
                                 <div style="font-size: 14px; font-weight: bold; color: #000; position: absolute; left: 50%; transform: translateX(-50%); width: 100vw; margin-left: -50vw;">
                                     <t t-if="language == 'es'">INFORME DE ENSAYO</t>
                                     <t t-else="">TEST REPORT</t>
@@ -75,13 +75,11 @@
                             </div>
                         </td>
                         
-                        <!-- LOGOS PLACEHOLDER DERECHA -->
-                        <td style="width: 22%; vertical-align: middle; border: none !important; padding: 8px 8px;">
-                            <div style="padding: 6px; min-height: 35px; display: flex; align-items: center; justify-content: center; font-size: 8px; width: 100%; box-sizing: border-box;">
-                                <img src="/lims_analysis_v2/static/src/img/ilac_logos.png" 
-                                    style="max-height: 108px; width: auto;" 
-                                    alt="ILAC Logos"/>
-                            </div>
+                        <!-- LOGOS ILAC DERECHA - SIN BORDES -->
+                        <td style="width: 20%; text-align: right; vertical-align: middle; border: none !important; padding: 10px 8px;">
+                            <img src="/lims_analysis_v2/static/src/img/ilac_logos.png" 
+                                style="max-height: 35px; width: auto; border: none !important; outline: none !important; box-shadow: none !important;" 
+                                alt="ILAC Logos"/>
                         </td>
                     </tr>
                 </table>
@@ -197,9 +195,9 @@
                                 <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
                                     <t t-if="analysis.customer_id">
                                         <span t-esc="analysis.customer_id.street or ''"/>
-                                        <t t-if="analysis.customer_id.street2">, <span t-esc="analysis.customer_id.street2"/></t>
-                                        <t t-if="analysis.customer_id.city">, <span t-esc="analysis.customer_id.city"/></t>
-                                        <t t-if="analysis.customer_id.zip"> C.P. <span t-esc="analysis.customer_id.zip"/></t>
+                                        <t t-if="analysis.customer_id.street2">,<span t-esc="analysis.customer_id.street2"/></t>
+                                        <t t-if="analysis.customer_id.city">,<span t-esc="analysis.customer_id.city"/></t>
+                                        <t t-if="analysis.customer_id.zip"> C.P.<span t-esc="analysis.customer_id.zip"/></t>
                                     </t>
                                     <t t-else="">Sin dirección</t>
                                 </td>
@@ -252,7 +250,7 @@
                                                     </t>
                                                 </t>
                                                 <t t-else="">-</t>
-                                            </td>
+                                            </td>   
                                         </tr>
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Tipo de muestra:</td>
@@ -286,7 +284,7 @@
                                                 <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sampling_observations and analysis.sample_reception_id.sample_id.sampling_observations != 'N/A'">
                                                     <span t-esc="analysis.sample_reception_id.sample_id.sampling_observations"/>
                                                 </t>
-                                                <t t-else="">Muestra proporcionada por el cliente</t>
+                                                <t t-else="">N/A</t>
                                             </td>
                                         </tr>
                                     </table>
