@@ -31,7 +31,7 @@
     <!-- Ejemplo: <template id="report_endotoxin_template"> -->
     <!-- ========================================================= -->
 
-    <!-- ========== TEMPLATE GENERAL ILAC (CON ESTILOS INLINE) ========== -->
+    <!-- ========== TEMPLATE GENERAL ILAC (CON DATOS DINÁMICOS) ========== -->
     <template id="report_general_ilac_template">
         <t t-call="web.html_container">
             <meta charset="UTF-8"/>
@@ -245,6 +245,9 @@
                                             <td style="width: 55%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
                                                 <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sampling_date">
                                                     <span t-esc="analysis.sample_reception_id.sample_id.sampling_date.strftime('%d/%b/%Y')"/>
+                                                    <t t-if="analysis.sample_reception_id.sample_id.sampling_time">
+                                                        <br/><span t-esc="analysis.sample_reception_id.sample_id.sampling_time"/>
+                                                    </t>
                                                 </t>
                                                 <t t-else="">-</t>
                                             </td>
@@ -255,24 +258,44 @@
                                                 <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sample_type_id">
                                                     <span t-esc="analysis.sample_reception_id.sample_id.sample_type_id.name"/>
                                                 </t>
-                                                <t t-else="">Producto terminado</t>
+                                                <t t-else="">No especificado</t>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Sitio de muestreo:</td>
-                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">Empresa</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
+                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sampling_site">
+                                                    <span t-esc="analysis.sample_reception_id.sample_id.sampling_site"/>
+                                                </t>
+                                                <t t-else="">No especificado</t>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Muestreador:</td>
-                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">Cliente</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
+                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sampling_technician">
+                                                    <span t-esc="analysis.sample_reception_id.sample_id.sampling_technician"/>
+                                                </t>
+                                                <t t-else="">No especificado</t>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Método/plan de muestreo (si aplica):</td>
-                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">N/A</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
+                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sampling_method">
+                                                    <span t-esc="analysis.sample_reception_id.sample_id.sampling_method"/>
+                                                </t>
+                                                <t t-else="">N/A</t>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Observaciones:</td>
-                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">Muestra proporcionada por el cliente</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
+                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sampling_observations">
+                                                    <span t-esc="analysis.sample_reception_id.sample_id.sampling_observations"/>
+                                                </t>
+                                                <t t-else="">Muestra proporcionada por el cliente</t>
+                                            </td>
                                         </tr>
                                     </table>
                                 </td>
@@ -288,6 +311,9 @@
                                             <td style="width: 55%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
                                                 <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.reception_date">
                                                     <span t-esc="analysis.sample_reception_id.reception_date.strftime('%d/%b/%Y')"/>
+                                                    <t t-if="analysis.sample_reception_id.reception_time">
+                                                        <br/><span t-esc="analysis.sample_reception_id.reception_time"/>
+                                                    </t>
                                                 </t>
                                                 <t t-else="">-</t>
                                             </td>
@@ -298,23 +324,48 @@
                                         </tr>
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Cantidad de muestra:</td>
-                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">100g</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
+                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sample_quantity">
+                                                    <span t-esc="analysis.sample_reception_id.sample_id.sample_quantity"/>
+                                                </t>
+                                                <t t-else="">No especificada</t>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Temperatura de recepción:</td>
-                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">-</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
+                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.reception_temperature">
+                                                    <span t-esc="analysis.sample_reception_id.reception_temperature"/>
+                                                </t>
+                                                <t t-else="">No registrada</t>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Recipiente de la muestra:</td>
-                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">Envase original</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
+                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.container_type_id">
+                                                    <span t-esc="analysis.sample_reception_id.sample_id.container_type_id.name"/>
+                                                </t>
+                                                <t t-else="">No especificado</t>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Recibió:</td>
-                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">Daniela Rangel</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
+                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.received_by">
+                                                    <span t-esc="analysis.sample_reception_id.received_by"/>
+                                                </t>
+                                                <t t-else="">No especificado</t>
+                                            </td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Observaciones:</td>
-                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">Sin observaciones</td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
+                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.reception_observations">
+                                                    <span t-esc="analysis.sample_reception_id.reception_observations"/>
+                                                </t>
+                                                <t t-else="">Sin observaciones</t>
+                                            </td>
                                         </tr>
                                     </table>
                                 </td>
@@ -382,7 +433,18 @@
                                 </tr>
                                 <tr>
                                     <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Observaciones analíticas y de resultados:</td>
-                                    <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">Sin observaciones.</td>
+                                    <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
+                                        <t t-set="all_notes" t-value="[]"/>
+                                        <t t-foreach="analysis.parameter_analysis_ids" t-as="param">
+                                            <t t-if="param.analyst_notes">
+                                                <t t-set="all_notes" t-value="all_notes + [param.analyst_notes]"/>
+                                            </t>
+                                        </t>
+                                        <t t-if="all_notes">
+                                            <span t-esc="'; '.join(all_notes)"/>
+                                        </t>
+                                        <t t-else="">Sin observaciones.</t>
+                                    </td>
                                 </tr>
                             </table>
                         </div>
