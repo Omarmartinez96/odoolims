@@ -45,40 +45,35 @@
 
             <!-- HEADER GLOBAL (FUERA DEL LOOP) -->
             <div class="header">
-                <table style="height: 100px; width: 100%; border: none !important; border-collapse: collapse !important; margin: 0; padding: 0;">
-                    <tr style="height: 80px;">
+                <table cellpadding="0" cellspacing="0" 
+                    style="height: 100px; width: 100%; border: none; border-collapse: collapse; margin: 0; padding: 0; border-spacing: 0;">
+                    <tr style="border: none; margin: 0; padding: 0;">
                         <!-- LOGO IZQUIERDA -->
-                        <td style="width: 20%; text-align: left; vertical-align: middle; border: none !important; padding: 10px 8px;">
+                        <td style="width: 20%; text-align: left; vertical-align: middle; border: none; padding: 10px 8px; margin: 0;">
                             <img t-if="company.logo"
                                 t-att-src="image_data_uri(company.logo)"
-                                style="max-height: 108px; width: auto; border: none !important; outline: none !important;"/>
+                                style="max-height: 108px; width: auto; border: none; outline: none; box-shadow: none; display: block;"/>
                         </td>
                         
                         <!-- INFORMACIÓN DEL LABORATORIO CENTRO -->
-                        <td style="width: 60%; text-align: center; vertical-align: middle; border: none !important; padding: 10px 5px;">
-                            <div style="text-align: center; font-family: Arial, sans-serif;">
-                                <!-- Nombre del laboratorio - SIEMPRE EN ESPAÑOL -->
-                                <div style="font-size: 18px; font-weight: bold; color: #000; margin-bottom: 2px;">
+                        <td style="width: 60%; text-align: center; vertical-align: middle; border: none; padding: 10px 5px; margin: 0;">
+                            <div style="text-align: center; font-family: Arial, sans-serif; border: none; margin: 0; padding: 0;">
+                                <!-- Nombre del laboratorio -->
+                                <div style="font-size: 18px; font-weight: bold; color: #000; margin-bottom: 8px; border: none; padding: 0;">
                                     Laboratorio de Microbiología
                                 </div>
                                 
-                                <!-- Nombre PROTEUS - SIEMPRE IGUAL -->
-                                <div style="font-size: 18px; font-weight: bold; color: #000; margin-bottom: 8px;">
+                                <!-- Nombre PROTEUS -->
+                                <div style="font-size: 18px; font-weight: bold; color: #000; margin-bottom: 0; border: none; padding: 0;">
                                     PROTEUS
-                                </div>
-                                
-                                <!-- TIPO DE REPORTE -->
-                                <div style="font-size: 14px; font-weight: bold; color: #000; position: absolute; left: 50%; transform: translateX(-50%); width: 100vw; margin-left: -50vw;">
-                                    <t t-if="language == 'es'">INFORME DE ENSAYO</t>
-                                    <t t-else="">TEST REPORT</t>
                                 </div>
                             </div>
                         </td>
                         
-                        <!-- LOGOS ILAC DERECHA - SIN BORDES -->
-                        <td style="width: 20%; text-align: right; vertical-align: middle; border: none !important; padding: 10px 8px;">
+                        <!-- LOGOS ILAC DERECHA - MÁS GRANDE -->
+                        <td style="width: 20%; text-align: right; vertical-align: middle; border: none; padding: 10px 8px; margin: 0;">
                             <img src="/lims_analysis_v2/static/src/img/ilac_logos.png" 
-                                style="max-height: 35px; width: auto; border: none !important; outline: none !important; box-shadow: none !important;" 
+                                style="max-height: 65px; width: auto; border: none; outline: none; box-shadow: none; display: block; margin-left: auto;" 
                                 alt="ILAC Logos"/>
                         </td>
                     </tr>
@@ -123,6 +118,14 @@
                 <!-- CONTENIDO PRINCIPAL -->
                 <div t-att-style="'page-break-inside: avoid; min-height: 90vh; font-family: Arial, sans-serif; font-size: 12px; line-height: 1.3;' + (' page-break-before: always;' if analysis_index > 0 else '')">
                     <div style="width: 100%; margin: 0; padding: 0;">
+
+                        <!-- ✅ TÍTULO CENTRADO AQUÍ -->
+                        <div style="text-align: center; margin: 20px 0 15px 0; padding: 0; border: none;">
+                            <div style="font-size: 16px; font-weight: bold; color: #000; border: none; margin: 0; padding: 8px 0;">
+                                <t t-if="language == 'es'">INFORME DE ENSAYO</t>
+                                <t t-else="">TEST REPORT</t>
+                            </div>
+                        </div>
 
                         <!-- Badge preliminar si aplica -->
                         <t t-if="status == 'preliminary'">
