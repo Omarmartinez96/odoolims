@@ -221,7 +221,7 @@
                                 </div>
                                 
                                 <field name="parameter_analysis_ids" nolabel="1" context="{'form_view_ref': 'lims_analysis_v2.view_parameter_analysis_v2_form'}">
-                                    <list string="Parámetros" editable="false" selectable="1" multi_edit="false">
+                                    <list string="Parámetros" selectable="1" multi_edit="false">
                                         <field name="sequence" widget="handle"/>
                                         <field name="name"/>
                                         <field name="microorganism"/>
