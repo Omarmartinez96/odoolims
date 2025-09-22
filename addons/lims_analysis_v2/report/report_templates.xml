@@ -31,7 +31,7 @@
     <!-- Ejemplo: <template id="report_endotoxin_template"> -->
     <!-- ========================================================= -->
 
-    <!-- ========== TEMPLATE GENERAL ILAC (CON DATOS DINÁMICOS) ========== -->
+    <!-- ========== TEMPLATE GENERAL ILAC (CON DATOS DINÁMICOS CORRECTOS) ========== -->
     <template id="report_general_ilac_template">
         <t t-call="web.html_container">
             <meta charset="UTF-8"/>
@@ -263,12 +263,7 @@
                                         </tr>
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Sitio de muestreo:</td>
-                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
-                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sampling_site">
-                                                    <span t-esc="analysis.sample_reception_id.sample_id.sampling_site"/>
-                                                </t>
-                                                <t t-else="">No especificado</t>
-                                            </td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">Empresa</td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Muestreador:</td>
@@ -276,22 +271,17 @@
                                                 <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sampling_technician">
                                                     <span t-esc="analysis.sample_reception_id.sample_id.sampling_technician"/>
                                                 </t>
-                                                <t t-else="">No especificado</t>
+                                                <t t-else="">Cliente</t>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Método/plan de muestreo (si aplica):</td>
-                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
-                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sampling_method">
-                                                    <span t-esc="analysis.sample_reception_id.sample_id.sampling_method"/>
-                                                </t>
-                                                <t t-else="">N/A</t>
-                                            </td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">N/A</td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Observaciones:</td>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
-                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sampling_observations">
+                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sampling_observations and analysis.sample_reception_id.sample_id.sampling_observations != 'N/A'">
                                                     <span t-esc="analysis.sample_reception_id.sample_id.sampling_observations"/>
                                                 </t>
                                                 <t t-else="">Muestra proporcionada por el cliente</t>
@@ -333,12 +323,7 @@
                                         </tr>
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Temperatura de recepción:</td>
-                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
-                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.reception_temperature">
-                                                    <span t-esc="analysis.sample_reception_id.reception_temperature"/>
-                                                </t>
-                                                <t t-else="">No registrada</t>
-                                            </td>
+                                            <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">-</td>
                                         </tr>
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Recipiente de la muestra:</td>
@@ -352,8 +337,8 @@
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Recibió:</td>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
-                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.received_by">
-                                                    <span t-esc="analysis.sample_reception_id.received_by"/>
+                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.analyst_id">
+                                                    <span t-esc="analysis.sample_reception_id.analyst_id.full_name or analysis.sample_reception_id.analyst_id.initials"/>
                                                 </t>
                                                 <t t-else="">No especificado</t>
                                             </td>
@@ -361,8 +346,8 @@
                                         <tr>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">Observaciones:</td>
                                             <td style="padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: left;">
-                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.reception_observations">
-                                                    <span t-esc="analysis.sample_reception_id.reception_observations"/>
+                                                <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.reception_notes">
+                                                    <span t-esc="analysis.sample_reception_id.reception_notes"/>
                                                 </t>
                                                 <t t-else="">Sin observaciones</t>
                                             </td>
@@ -418,7 +403,14 @@
                                             </t>
                                             <t t-else="">-</t>
                                         </td>
-                                        <td style="border: none; padding: 5px 3px; vertical-align: middle; text-align: center;"><span t-esc="parameter.analyst_names or 'N/A'"/></td>
+                                        <td style="border: none; padding: 5px 3px; vertical-align: middle; text-align: center;">
+                                            <t t-if="parameter.analyst_id">
+                                                <span t-esc="parameter.analyst_id.initials or parameter.analyst_names or 'N/A'"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span t-esc="parameter.analyst_names or 'N/A'"/>
+                                            </t>
+                                        </td>
                                     </tr>
                                 </t>
                             </tbody>
