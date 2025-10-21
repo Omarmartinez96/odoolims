@@ -131,13 +131,14 @@
                     <table class="consolidated-table">
                         <thead>
                             <tr>
-                                <th style="width: 8%;">Fecha Recepción</th>
-                                <th style="width: 14%;">Cadena de Custodia</th>
-                                <th style="width: 14%;">Identificación de Muestra</th>
+                                <th style="width: 7%;">Fecha Recepción</th>
+                                <th style="width: 12%;">Cadena de Custodia</th>
+                                <th style="width: 12%;">Identificación de Muestra</th>
+                                <th style="width: 10%;">Descripción</th>
                                 <th style="width: 10%;">Sitio de Muestreo</th>
-                                <th style="width: 10%;">Código de Muestra</th>
-                                <th style="width: 8%;">Temp. Recepción</th>
-                                <th style="width: 8%;">Estado</th>
+                                <th style="width: 9%;">Código de Muestra</th>
+                                <th style="width: 7%;">Temp. Recepción</th>
+                                <th style="width: 7%;">Estado</th>
                                 <th style="width: 16%;">Parámetros y Métodos</th>
                                 <th style="width: 10%;">Observaciones</th>
                             </tr>
@@ -166,8 +167,25 @@
                                         <!-- Identificación de Muestra -->
                                         <td><span t-esc="sample.sample_identifier"/></td>
                                         
-                                        <!-- Sitio de Muestreo (usar sample_description como sitio) -->
-                                        <td><span t-esc="sample.sample_description or 'No especificado'"/></td>
+                                        <!-- Descripción de la Muestra -->
+                                        <td>
+                                            <t t-if="sample.sample_description">
+                                                <span t-esc="sample.sample_description"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span style="color: #999;">No especificada</span>
+                                            </t>
+                                        </td>
+
+                                        <!-- Sitio de Muestreo -->
+                                        <td>
+                                            <t t-if="sample.sampling_site">
+                                                <span t-esc="sample.sampling_site"/>
+                                            </t>
+                                            <t t-else="">
+                                                <span style="color: #999;">No especificado</span>
+                                            </t>
+                                        </td>
                                         
                                         <!-- Código de Muestra -->
                                         <td>
