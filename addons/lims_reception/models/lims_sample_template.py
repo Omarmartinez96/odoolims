@@ -47,6 +47,11 @@ class LimsSampleTemplate(models.Model):
         help="Parámetros que se crearán automáticamente con esta plantilla"
     )
 
+    sampling_site = fields.Char(
+        string="Sitio de Muestreo Típico",
+        help="Sitio de muestreo que se copiará a nuevas muestras"
+    )
+
     # Campos de control
     times_used = fields.Integer(
         string="Veces Utilizada", 

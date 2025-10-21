@@ -123,6 +123,11 @@ class LimsSample(models.Model):
         string="Observaciones de Muestreo"
     )
 
+    sampling_site = fields.Char(
+        string="Sitio de Muestreo",
+        help="Lugar específico donde se tomó la muestra (ej: Tanque 1, Pozo Norte, Llave del comedor)"
+    )
+
     def create(self, vals_list):
         for vals in vals_list:
             text_fields_na = ['sampling_plan', 'sampling_observations']
@@ -155,6 +160,7 @@ class LimsSample(models.Model):
             self.sample_type_id = template.sample_type_id
             self.container_type_id = template.container_type_id
             self.sample_description = template.sample_description
+            self.sampling_site = template.sampling_site
             self.sample_quantity = template.sample_quantity
 
             template.increment_usage()
@@ -220,6 +226,7 @@ class LimsSample(models.Model):
             'sample_type_id': self.sample_type_id.id,
             'container_type_id': self.container_type_id.id if self.container_type_id else False,
             'sample_description': self.sample_description,
+            'sampling_site': self.sampling_site,
             'sample_quantity': self.sample_quantity,
         })
         

@@ -103,6 +103,7 @@
                                 </group>
                                 <group string="Datos de Muestreo">
                                   <field name="sampling_plan" nolabel="1" placeholder="Describe el plan de muestreo si aplica" colspan="4"/>
+                                  <field name="sampling_site" placeholder="Ej: Empresa X, Empresa Y, Comedor Industrial Compañia"/>
                                   <field name="sampling_date" placeholder="Seleccione fecha de muestreo"/>
                                   <field name="sampling_time" placeholder="Hora de muestreo (HH:MM)"/>
                                   <field name="sampling_temperature" placeholder="Temperatura de recolección en °C (vacío = N/A en reportes)"/>

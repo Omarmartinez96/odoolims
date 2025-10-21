@@ -31,6 +31,7 @@
                             <field name="sample_type_id"/>
                             <field name="container_type_id"/>
                             <field name="sample_description"/>
+                            <field name="sampling_site" placeholder="Sitio de muestreo predeterminado"/>
                             <field name="sample_quantity"/>
                         </group>
                         <!-- DESPUÉS del grupo con sample_quantity, AÑADIR: -->

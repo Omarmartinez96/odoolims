@@ -174,6 +174,9 @@
                       <td style="width:50%; padding:3px;">
                         <strong>Descripción:</strong> <span t-esc="sample.sample_description or 'No especificada'"/>
                       </td>
+                      <td style="padding:3px;">
+                          <strong>Sitio de muestreo:</strong> <span t-esc="sample.sampling_site or 'No especificado'"/>
+                      </td>
                       <td style="width:50%; padding:3px;">
                         <strong>Tipo de muestra:</strong> <span t-esc="sample.sample_type_id.name or 'No especificado'"/>
                       </td>
