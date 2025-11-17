@@ -4,7 +4,7 @@
     'summary': 'Paper formats personalizados para reportes LIMS',
     'description': 'Define tipos de papel personalizados para reportes como cotizaciones, resultados o facturas en el sistema LIMS.',
     'category': 'LIMS',
-    'author': 'Omar Martínez Pérez',
+    'author': 'Omar Alejandro Martínez ',
     'depends': ['base', 'web'],
     'data': [
         'data/paperformat.xml',
