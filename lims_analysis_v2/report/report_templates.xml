@@ -44,36 +44,33 @@
             <t t-set="status" t-value="report_config.get('status', 'final')"/>
 
             <!-- HEADER GLOBAL (FUERA DEL LOOP) -->
-            <div class="header" style="background: transparent;">
-                <table class="table table-borderless" style="height: 50px; width: 100%; margin: 0; padding: 0; background: transparent;">
-                    <tr>
-                        <!-- LOGO IZQUIERDA -->
-                        <td style="width: 33%; text-align: left; vertical-align: middle; padding: 10px 8px;">
-                            <img t-if="company.logo"
-                                t-att-src="image_data_uri(company.logo)"
-                                style="max-height: 100px; width: auto;"/>
-                        </td>
-                        
-                        <!-- INFORMACIÓN DEL LABORATORIO CENTRO - SIN PADDING LATERAL -->
-                        <td style="width: 47%; text-align: center; vertical-align: middle; padding: 10px 0;">
-                            <div style="text-align: center; font-family: Arial, sans-serif;">
-                                <div style="font-size: 18px; font-weight: bold; color: #000; margin-bottom: 8px;">
-                                    Laboratorio de Microbiología
-                                </div>
-                                <div style="font-size: 18px; font-weight: bold; color: #000; margin-bottom: 0;">
-                                    PROTEUS
-                                </div>
-                            </div>
-                        </td>
-                        
-                        <!-- LOGOS ILAC DERECHA -->
-                        <td style="width: 20%; text-align: right; vertical-align: middle; padding: 10px 8px;">
-                            <img src="/lims_analysis_v2/static/src/img/ilac_logos.png" 
-                                style="max-height: 120px; width: auto;" 
-                                alt="ILAC Logos"/>
-                        </td>
-                    </tr>
-                </table>
+            <div class="header">
+                <div style="display: flex; justify-content: space-between; align-items: center; width: 100%; padding: 5px 15px; min-height: 90px;">
+                    
+                    <!-- Logo izquierda -->
+                    <div style="flex: 0 0 20%; text-align: left;">
+                        <img t-if="company.logo"
+                            t-att-src="image_data_uri(company.logo)"
+                            style="max-height: 100px; width: auto;"/>
+                    </div>
+                    
+                    <!-- Texto centro -->
+                    <div style="flex: 0 0 50%; text-align: center;">
+                        <div style="font-size: 18px; font-weight: bold; color: #000; margin-bottom: 5px; font-family: Arial, sans-serif;">
+                            Laboratorio de Microbiología
+                        </div>
+                        <div style="font-size: 18px; font-weight: bold; color: #000; font-family: Arial, sans-serif;">
+                            PROTEUS
+                        </div>
+                    </div>
+                    
+                    <!-- Logos derecha -->
+                    <div style="flex: 0 0 20%; text-align: right;">
+                        <img src="/lims_analysis_v2/static/src/img/ilac_logos.png" 
+                            style="max-height: 100px; width: auto;" 
+                            alt="ILAC Logos"/>
+                    </div>
+                </div>
             </div>
 
             <!-- FOOTER GLOBAL (FUERA DEL LOOP) -->
