@@ -34,6 +34,9 @@
     <!-- ========== TEMPLATE GENERAL ILAC (CON DATOS DINÁMICOS CORRECTOS) ========== -->
     <template id="report_general_ilac_template">
         <t t-call="web.html_container">
+            <t t-set="data_report_margin_top" t-value="130"/>
+            <t t-set="data_report_header_spacing" t-value="125"/>
+            
             <meta charset="UTF-8"/>
             <t t-call-assets="web.report_assets_common" t-js="false"/>
             <t t-set="company" t-value="env.company"/>
