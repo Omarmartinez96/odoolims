@@ -245,7 +245,7 @@
                                                 <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.sample_id and analysis.sample_reception_id.sample_id.sampling_date">
                                                     <span t-esc="analysis.sample_reception_id.sample_id.sampling_date.strftime('%d/%b/%Y')"/>
                                                     <t t-if="analysis.sample_reception_id.sample_id.sampling_time">
-                                                        <br/><span t-esc="analysis.sample_reception_id.sample_id.sampling_time"/>
+                                                        , <span t-esc="analysis.sample_reception_id.sample_id.sampling_time"/>
                                                     </t>
                                                 </t>
                                                 <t t-else="">-</t>
@@ -301,7 +301,7 @@
                                                 <t t-if="analysis.sample_reception_id and analysis.sample_reception_id.reception_date">
                                                     <span t-esc="analysis.sample_reception_id.reception_date.strftime('%d/%b/%Y')"/>
                                                     <t t-if="analysis.sample_reception_id.reception_time">
-                                                        <br/><span t-esc="analysis.sample_reception_id.reception_time"/>
+                                                        , <span t-esc="analysis.sample_reception_id.reception_time"/>
                                                     </t>
                                                 </t>
                                                 <t t-else="">-</t>
