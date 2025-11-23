@@ -51,7 +51,7 @@
                         <td style="width: 25%; text-align: left; vertical-align: middle; padding: 5px 8px;">
                             <img t-if="company.logo"
                                 t-att-src="image_data_uri(company.logo)"
-                                style="max-height: 90px; width: auto;"/>
+                                style="max-height: 100px; width: auto;"/>
                         </td>
                         
                         <!-- INFORMACIÓN DEL LABORATORIO CENTRO -->
@@ -69,7 +69,7 @@
                         <!-- LOGOS ILAC DERECHA -->
                         <td style="width: 25%; text-align: right; vertical-align: middle; padding: 5px 8px;">
                             <img src="/lims_analysis_v2/static/src/img/ilac_logos.png" 
-                                style="max-height: 90px; width: auto;" 
+                                style="max-height: 100px; width: auto;" 
                                 alt="ILAC Logos"/>
                         </td>
                     </tr>
