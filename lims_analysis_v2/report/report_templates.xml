@@ -133,7 +133,7 @@
                         </t>
 
                         <!-- INFORMACIÓN SUPERIOR -->
-                        <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin: 15px 0 1px 0;">
+                        <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin: 2px 0 1px 0;">
                             <tr>
                                 <td style="width: 25%; padding: 1px 2px; vertical-align: middle; line-height: 1.2; text-align: right; font-weight: bold; font-size: 11px;">
                                     <t t-if="language == 'es'">Identificación de la muestra:</t>
@@ -291,7 +291,7 @@
                                 
                                 <td style="width: 50%; vertical-align: top; padding: 0 8px;">
                                     <div style="background-color: rgb(218,227,243); font-weight: bold; padding: 6px; text-align: center; font-size: 12px; margin: 0 0 5px 0; page-break-inside: avoid;">
-                                        <t t-if="language == 'es'">RECEPCIÓN</t>
+                                        <t t-if="language == 'es'">INFORMACIÓN DE RECEPCIÓN</t>
                                         <t t-else="">RECEPTION INFORMATION</t>
                                     </div>
                                     <table style="width: 100%; border-collapse: collapse; font-size: 11px; margin: 1px 0;">
