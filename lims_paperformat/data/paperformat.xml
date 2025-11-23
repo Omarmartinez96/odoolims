@@ -21,7 +21,7 @@
         <field name="default" eval="False"/>
         <field name="format">Letter</field>
         <field name="orientation">Portrait</field>
-        <field name="margin_top">48</field>
+        <field name="margin_top">45</field>
         <field name="margin_bottom">18</field>
         <field name="margin_left">5</field>
         <field name="margin_right">5</field>
