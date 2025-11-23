@@ -11,7 +11,7 @@
     ''',
     'sequence': 12,
     'category': 'LIMS',
-    'author': 'Omar A. Martinez',
+    'author': 'Omar Alejandro Martinez',
     'depends': [
         'base',
         'web',
