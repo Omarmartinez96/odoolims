@@ -116,7 +116,7 @@
                     <div style="width: 100%; margin: 0; padding: 0;">
 
                         <!-- ✅ TÍTULO CENTRADO AQUÍ -->
-                        <div style="text-align: center; margin: 20px 0 15px 0; padding: 0; border: none;">
+                        <div style="text-align: center; margin: 5px 0 10px 0; padding: 0; border: none;">
                             <div style="font-size: 16px; font-weight: bold; color: #000; border: none; margin: 0; padding: 8px 0;">
                                 <t t-if="language == 'es'">INFORME DE ENSAYO</t>
                                 <t t-else="">TEST REPORT</t>
@@ -230,7 +230,7 @@
                         <!-- INFORMACIÓN DE MUESTREO Y RECEPCIÓN -->
                         <table style="width: 100%; border-collapse: collapse; margin: 8px 0; page-break-inside: avoid;">
                             <tr>
-                                <td style="width: 50%; vertical-align: middle; padding: 0 8px;">
+                                <td style="width: 50%; vertical-align: top; padding: 0 8px;">
                                     <div style="background-color: rgb(218,227,243); font-weight: bold; padding: 6px; text-align: center; font-size: 12px; margin: 10px 0 5px 0; page-break-inside: avoid;">
                                         <t t-if="language == 'es'">INFORMACIÓN DE MUESTREO</t>
                                         <t t-else="">SAMPLING INFORMATION</t>
@@ -289,7 +289,7 @@
                                     </table>
                                 </td>
                                 
-                                <td style="width: 50%; vertical-align: middle; padding: 0 8px;">
+                                <td style="width: 50%; vertical-align: top; padding: 0 8px;">
                                     <div style="background-color: rgb(218,227,243); font-weight: bold; padding: 6px; text-align: center; font-size: 12px; margin: 10px 0 5px 0; page-break-inside: avoid;">
                                         <t t-if="language == 'es'">INFORMACIÓN DE RECEPCIÓN</t>
                                         <t t-else="">RECEPTION INFORMATION</t>
