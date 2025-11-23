@@ -112,7 +112,7 @@
             <t t-foreach="docs" t-as="analysis">
 
                 <!-- CONTENIDO PRINCIPAL -->
-                <div t-att-style="'page-break-inside: avoid; min-height: 90vh; font-family: Arial, sans-serif; font-size: 12px; line-height: 1.3;' + (' page-break-before: always;' if analysis_index > 0 else '')">
+                <div t-att-style="'page-break-inside: avoid; font-family: Arial, sans-serif; font-size: 12px; line-height: 1.3;' + (' page-break-before: always;' if analysis_index > 0 else '')">
                     <div style="width: 100%; margin: 0; padding: 0;">
 
                         <!-- ✅ TÍTULO CENTRADO AQUÍ -->
