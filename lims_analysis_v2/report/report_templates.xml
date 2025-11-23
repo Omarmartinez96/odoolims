@@ -231,7 +231,7 @@
                         <table style="width: 100%; border-collapse: collapse; margin: 8px 0; page-break-inside: avoid;">
                             <tr>
                                 <td style="width: 50%; vertical-align: top; padding: 0 8px;">
-                                    <div style="background-color: rgb(218,227,243); font-weight: bold; padding: 6px; text-align: center; font-size: 12px; margin: 10px 0 5px 0; page-break-inside: avoid;">
+                                    <div style="background-color: rgb(218,227,243); font-weight: bold; padding: 6px; text-align: center; font-size: 12px; margin: 0 0 5px 0; page-break-inside: avoid;">
                                         <t t-if="language == 'es'">INFORMACIÓN DE MUESTREO</t>
                                         <t t-else="">SAMPLING INFORMATION</t>
                                     </div>
@@ -290,7 +290,7 @@
                                 </td>
                                 
                                 <td style="width: 50%; vertical-align: top; padding: 0 8px;">
-                                    <div style="background-color: rgb(218,227,243); font-weight: bold; padding: 6px; text-align: center; font-size: 12px; margin: 10px 0 5px 0; page-break-inside: avoid;">
+                                    <div style="background-color: rgb(218,227,243); font-weight: bold; padding: 6px; text-align: center; font-size: 12px; margin: 0 0 5px 0; page-break-inside: avoid;">
                                         <t t-if="language == 'es'">INFORMACIÓN DE RECEPCIÓN</t>
                                         <t t-else="">RECEPTION INFORMATION</t>
                                     </div>
