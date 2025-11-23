@@ -45,7 +45,7 @@
 
             <!-- HEADER GLOBAL (FUERA DEL LOOP) -->
             <div class="header" style="background: transparent;">
-                <table class="table table-borderless" style="height: 130px; width: 100%; margin: 0; padding: 0; background: transparent;">
+                <table class="table table-borderless" style="height: 50px; width: 100%; margin: 0; padding: 0; background: transparent;">
                     <tr>
                         <!-- LOGO IZQUIERDA -->
                         <td style="width: 33%; text-align: left; vertical-align: middle; padding: 10px 8px;">
