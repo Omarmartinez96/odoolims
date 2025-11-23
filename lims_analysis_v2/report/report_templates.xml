@@ -44,7 +44,7 @@
             <t t-set="status" t-value="report_config.get('status', 'final')"/>
 
             <!-- HEADER GLOBAL (FUERA DEL LOOP) -->
-            <div class="header">
+            <div class="page-header">
                 <table class="table table-borderless" style="height: 100px; width: 100%; margin: 0; padding: 0;">
                     <tr>
                         <!-- LOGO IZQUIERDA -->
