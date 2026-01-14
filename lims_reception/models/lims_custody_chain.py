@@ -13,7 +13,7 @@ class LimsCustodyChain(models.Model):
     _inherit = ['mail.thread','mail.activity.mixin']
     _description = 'Cadena de Custodia'
     _rec_name = 'custody_chain_code'
-    _order = 'custody_chain_sequence desc, date_chainofcustody desc'
+    _order = 'date_chainofcustody desc, custody_chain_sequence desc'
 
     # Campos de la Cadena de Custodia
     contact_ids = fields.Many2many(
