@@ -762,12 +762,11 @@
         </t>
     </template>
 
-    <!-- ========== REPORTE DE TRAZABILIDAD DE PARÁMETRO ========== -->
+    <!-- ========== REPORTE DE TRAZABILIDAD DE PARAMETRO ========== -->
     <template id="report_parameter_traceability_template">
         <t t-call="web.html_container">
             <t t-set="data_report_margin_top" t-value="35"/>
             <t t-set="data_report_header_spacing" t-value="30"/>
-            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
             <t t-call-assets="web.report_assets_common" t-js="false"/>
             <t t-set="company" t-value="env.company"/>
 
@@ -794,33 +793,30 @@
                                     </div>
                                 </td>
                                 <td style="width: 30%; text-align: right; font-size: 10px;">
-                                    <div><strong>Fecha de Generación:</strong></div>
-                                    <div><span t-esc="datetime.datetime.now().strftime('%d/%m/%Y %H:%M')"/></div>
-                                    <div style="margin-top: 5px;"><strong>Generado por:</strong></div>
-                                    <div><span t-esc="env.user.name"/></div>
+                                    <!-- Espacio reservado -->
                                 </td>
                             </tr>
                         </table>
                     </div>
 
-                    <!-- IDENTIFICACIÓN DE LA MUESTRA -->
+                    <!-- IDENTIFICACION DE LA MUESTRA -->
                     <div style="background: #e3f2fd; padding: 10px; margin: 15px 0; border-radius: 5px;">
-                        <h3 style="margin: 0 0 10px 0; color: #1976d2;">📋 IDENTIFICACIÓN DE LA MUESTRA</h3>
+                        <h3 style="margin: 0 0 10px 0; color: #1976d2;">IDENTIFICACION DE LA MUESTRA</h3>
                         <table style="width: 100%; border-collapse: collapse;">
                             <tr>
-                                <td style="width: 25%; padding: 5px; font-weight: bold;">Código de Muestra:</td>
-                                <td style="width: 25%; padding: 5px;"><span t-esc="analysis.sample_code or 'Sin código'"/></td>
+                                <td style="width: 25%; padding: 5px; font-weight: bold;">Codigo de Muestra:</td>
+                                <td style="width: 25%; padding: 5px;"><span t-esc="analysis.sample_code or 'Sin codigo'"/></td>
                                 <td style="width: 25%; padding: 5px; font-weight: bold;">Cadena de Custodia:</td>
-                                <td style="width: 25%; padding: 5px;"><span t-esc="analysis.custody_chain_code or 'Sin código'"/></td>
+                                <td style="width: 25%; padding: 5px;"><span t-esc="analysis.custody_chain_code or 'Sin codigo'"/></td>
                             </tr>
                             <tr>
-                                <td style="padding: 5px; font-weight: bold;">Identificación:</td>
-                                <td style="padding: 5px;"><span t-esc="analysis.sample_identifier or 'Sin identificación'"/></td>
+                                <td style="padding: 5px; font-weight: bold;">Identificacion:</td>
+                                <td style="padding: 5px;"><span t-esc="analysis.sample_identifier or 'Sin identificacion'"/></td>
                                 <td style="padding: 5px; font-weight: bold;">Cliente:</td>
                                 <td style="padding: 5px;"><span t-esc="analysis.customer_id.name if analysis.customer_id else 'Sin cliente'"/></td>
                             </tr>
                             <tr>
-                                <td style="padding: 5px; font-weight: bold;">Fecha de Recepción:</td>
+                                <td style="padding: 5px; font-weight: bold;">Fecha de Recepcion:</td>
                                 <td style="padding: 5px;">
                                     <span t-if="reception and reception.reception_date" t-esc="reception.reception_date.strftime('%d/%m/%Y')"/>
                                     <span t-else="">No especificada</span>
@@ -834,18 +830,18 @@
                         </table>
                     </div>
 
-                    <!-- INFORMACIÓN DEL PARÁMETRO -->
+                    <!-- INFORMACION DEL PARAMETRO -->
                     <div style="background: #fff3e0; padding: 10px; margin: 15px 0; border-radius: 5px;">
-                        <h3 style="margin: 0 0 10px 0; color: #f57c00;">🔬 PARÁMETRO ANALIZADO</h3>
+                        <h3 style="margin: 0 0 10px 0; color: #f57c00;">PARAMETRO ANALIZADO</h3>
                         <table style="width: 100%; border-collapse: collapse;">
                             <tr>
-                                <td style="width: 25%; padding: 5px; font-weight: bold;">Parámetro:</td>
+                                <td style="width: 25%; padding: 5px; font-weight: bold;">Parametro:</td>
                                 <td style="width: 75%; padding: 5px;" colspan="3"><span t-esc="parameter.name or 'Sin nombre'"/></td>
                             </tr>
                             <tr>
                                 <td style="padding: 5px; font-weight: bold;">Microorganismo:</td>
                                 <td style="padding: 5px;"><span t-esc="parameter.microorganism or 'No especificado'"/></td>
-                                <td style="width: 25%; padding: 5px; font-weight: bold;">Método:</td>
+                                <td style="width: 25%; padding: 5px; font-weight: bold;">Metodo:</td>
                                 <td style="width: 25%; padding: 5px;"><span t-esc="parameter.method or 'No especificado'"/></td>
                             </tr>
                             <tr>
@@ -866,13 +862,13 @@
 
                     <!-- RESULTADO FINAL -->
                     <div style="background: #e8f5e9; padding: 10px; margin: 15px 0; border-radius: 5px;">
-                        <h3 style="margin: 0 0 10px 0; color: #2e7d32;">✅ RESULTADO FINAL</h3>
+                        <h3 style="margin: 0 0 10px 0; color: #2e7d32;">RESULTADO FINAL</h3>
                         <div style="text-align: center; font-size: 18px; font-weight: bold; padding: 10px; background: white; border-radius: 5px;">
                             <span t-esc="parameter.result_value or 'Sin resultado'"/>
                         </div>
                         <t t-if="parameter.analyst_notes">
                             <div style="margin-top: 10px; padding: 10px; background: #fffde7; border-left: 4px solid #fbc02d;">
-                                <strong>📝 Observaciones del Analista:</strong><br/>
+                                <strong>Observaciones del Analista:</strong><br/>
                                 <span t-esc="parameter.analyst_notes"/>
                             </div>
                         </t>
@@ -882,13 +878,13 @@
                     <t t-if="parameter.raw_dilution_data_ids">
                         <div style="margin: 15px 0;">
                             <h3 style="margin: 0 0 10px 0; color: #333; border-bottom: 2px solid #333; padding-bottom: 5px;">
-                                🔢 DATOS CRUDOS DE DILUCIONES
+                                DATOS CRUDOS DE DILUCIONES
                             </h3>
                             <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
                                 <thead>
                                     <tr style="background: #f5f5f5;">
-                                        <th style="border: 1px solid #ddd; padding: 8px;">Dilución</th>
-                                        <th style="border: 1px solid #ddd; padding: 8px;">Método</th>
+                                        <th style="border: 1px solid #ddd; padding: 8px;">Dilucion</th>
+                                        <th style="border: 1px solid #ddd; padding: 8px;">Metodo</th>
                                         <th style="border: 1px solid #ddd; padding: 8px;">UFC Contadas</th>
                                         <th style="border: 1px solid #ddd; padding: 8px;">Resultado Calculado</th>
                                         <th style="border: 1px solid #ddd; padding: 8px;">Observaciones</th>
@@ -925,7 +921,7 @@
                     <t t-if="parameter.media_ids">
                         <div style="margin: 15px 0;">
                             <h3 style="margin: 0 0 10px 0; color: #333; border-bottom: 2px solid #333; padding-bottom: 5px;">
-                                🧫 MEDIOS DE CULTIVO Y REACTIVOS UTILIZADOS
+                                MEDIOS DE CULTIVO Y REACTIVOS UTILIZADOS
                             </h3>
                             <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 10px;">
                                 <thead>
@@ -934,7 +930,7 @@
                                         <th style="border: 1px solid #ddd; padding: 6px;">Medio/Reactivo</th>
                                         <th style="border: 1px solid #ddd; padding: 6px;">Lote</th>
                                         <th style="border: 1px solid #ddd; padding: 6px;">Uso</th>
-                                        <th style="border: 1px solid #ddd; padding: 6px;">Incubación</th>
+                                        <th style="border: 1px solid #ddd; padding: 6px;">Incubacion</th>
                                         <th style="border: 1px solid #ddd; padding: 6px;">Estado</th>
                                     </tr>
                                 </thead>
@@ -952,7 +948,7 @@
                                                     <span t-esc="media.culture_media_batch_id.batch_code"/>
                                                 </t>
                                                 <t t-elif="media.media_source == 'external'">
-                                                    <span t-esc="media.external_batch_code or 'Sin código'"/> (Ext)
+                                                    <span t-esc="media.external_batch_code or 'Sin codigo'"/> (Ext)
                                                 </t>
                                                 <t t-else="">-</t>
                                             </td>
@@ -989,7 +985,7 @@
                     <t t-if="parameter.executed_qc_ids">
                         <div style="margin: 15px 0;">
                             <h3 style="margin: 0 0 10px 0; color: #333; border-bottom: 2px solid #333; padding-bottom: 5px;">
-                                ✓ CONTROLES DE CALIDAD EJECUTADOS
+                                CONTROLES DE CALIDAD EJECUTADOS
                             </h3>
                             <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
                                 <thead>
@@ -1016,10 +1012,10 @@
                                             </td>
                                             <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
                                                 <t t-if="qc.control_status == 'passed'">
-                                                    <span style="color: green; font-weight: bold;">✅ Exitoso</span>
+                                                    <span style="color: green; font-weight: bold;">Exitoso</span>
                                                 </t>
                                                 <t t-elif="qc.control_status == 'failed'">
-                                                    <span style="color: red; font-weight: bold;">❌ Falló</span>
+                                                    <span style="color: red; font-weight: bold;">Fallo</span>
                                                 </t>
                                                 <t t-else="">
                                                     <span t-esc="dict(qc._fields['control_status'].selection).get(qc.control_status, qc.control_status)"/>
@@ -1043,7 +1039,7 @@
                     <t t-if="parameter.equipment_involved_ids">
                         <div style="margin: 15px 0;">
                             <h3 style="margin: 0 0 10px 0; color: #333; border-bottom: 2px solid #333; padding-bottom: 5px;">
-                                🔧 EQUIPOS INVOLUCRADOS
+                                EQUIPOS INVOLUCRADOS
                             </h3>
                             <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
                                 <thead>
@@ -1083,8 +1079,7 @@
                             <strong>FOR-101 Rev. 06 / PROC-006</strong>
                         </div>
                         <p style="margin: 5px 0; text-align: center;">Este es un registro interno de trazabilidad de laboratorio</p>
-                        <p style="margin: 5px 0; text-align: center;">Generado el <span t-esc="datetime.datetime.now().strftime('%d/%m/%Y a las %H:%M')"/></p>
-                        <p style="margin: 5px 0; text-align: center;">Proteus Laboratorio de Microbiología • (664) 973-8185 • contacto@proteuslaboratorio.com</p>
+                        <p style="margin: 5px 0; text-align: center;">Proteus Laboratorio de Microbiologia - (664) 973-8185 - contacto@proteuslaboratorio.com</p>
                     </div>
 
                 </div>
