@@ -872,3 +872,8 @@ class LimsParameterAnalysisV2(models.Model):
         self.analyst_id = False
         self.analyst_names = False
         return True
+    
+    def action_print_traceability_record(self):
+        """Generar reporte de trazabilidad completo del parámetro"""
+        self.ensure_one()
+        return self.env.ref('lims_analysis_v2.action_report_parameter_traceability').report_action(self)

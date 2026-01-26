@@ -9,6 +9,14 @@
             <field name="arch" type="xml">
                 <form string="Parámetro de Análisis v2">
                     
+                    <header>
+                        <button name="action_print_traceability_record"
+                                type="object"
+                                string="📋 Registro de Trazabilidad"
+                                class="btn-info"
+                                help="Imprimir registro completo de trazabilidad de este parámetro"/>
+                    </header>
+                    
                     <sheet>
                         <!-- Título -->
                         <div class="oe_title">

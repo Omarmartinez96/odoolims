@@ -101,5 +101,16 @@
             <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_simplified_report"/>
         </record>
 
+        <!-- ========== REPORTE DE TRAZABILIDAD DE PARÁMETRO ========== -->
+        <record id="action_report_parameter_traceability" model="ir.actions.report">
+            <field name="name">Registro de Trazabilidad</field>
+            <field name="model">lims.parameter.analysis.v2</field>
+            <field name="report_type">qweb-pdf</field>
+            <field name="report_name">lims_analysis_v2.report_parameter_traceability_template</field>
+            <field name="report_file">lims_analysis_v2.report_parameter_traceability_template</field>
+            <field name="print_report_name">'Trazabilidad - ' + (object.analysis_id.sample_code or 'Sin código') + ' - ' + (object.name or 'Parámetro') + '.pdf'</field>
+            <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/>
+        </record>
+
     </data>
 </odoo>

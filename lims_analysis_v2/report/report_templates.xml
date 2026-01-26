@@ -762,5 +762,332 @@
         </t>
     </template>
 
+    <!-- ========== REPORTE DE TRAZABILIDAD DE PARÁMETRO ========== -->
+    <template id="report_parameter_traceability_template">
+        <t t-call="web.html_container">
+            <t t-set="data_report_margin_top" t-value="35"/>
+            <t t-set="data_report_header_spacing" t-value="30"/>
+            <meta charset="UTF-8"/>
+            <t t-call-assets="web.report_assets_common" t-js="false"/>
+            <t t-set="company" t-value="env.company"/>
+
+            <t t-foreach="docs" t-as="parameter">
+                <t t-set="analysis" t-value="parameter.analysis_id"/>
+                <t t-set="reception" t-value="analysis.sample_reception_id"/>
+                <t t-set="sample" t-value="reception.sample_id if reception else False"/>
+                
+                <div class="page" style="font-family: Arial, sans-serif; font-size: 11px;">
+                    
+                    <!-- HEADER -->
+                    <div class="header">
+                        <table style="width: 100%; margin-bottom: 10px;">
+                            <tr>
+                                <td style="width: 30%; text-align: left;">
+                                    <img t-if="company.logo" t-att-src="image_data_uri(company.logo)" style="max-height: 80px;"/>
+                                </td>
+                                <td style="width: 40%; text-align: center;">
+                                    <div style="font-size: 16px; font-weight: bold; margin-bottom: 5px;">
+                                        REGISTRO GENERAL DE RESULTADOS
+                                    </div>
+                                    <div style="font-size: 14px; font-weight: bold;">
+                                        TRAZABILIDAD COMPLETA
+                                    </div>
+                                </td>
+                                <td style="width: 30%; text-align: right; font-size: 10px;">
+                                    <div><strong>Fecha de Generación:</strong></div>
+                                    <div><span t-esc="datetime.datetime.now().strftime('%d/%m/%Y %H:%M')"/></div>
+                                    <div style="margin-top: 5px;"><strong>Generado por:</strong></div>
+                                    <div><span t-esc="env.user.name"/></div>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- IDENTIFICACIÓN DE LA MUESTRA -->
+                    <div style="background: #e3f2fd; padding: 10px; margin: 15px 0; border-radius: 5px;">
+                        <h3 style="margin: 0 0 10px 0; color: #1976d2;">📋 IDENTIFICACIÓN DE LA MUESTRA</h3>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 25%; padding: 5px; font-weight: bold;">Código de Muestra:</td>
+                                <td style="width: 25%; padding: 5px;"><span t-esc="analysis.sample_code or 'Sin código'"/></td>
+                                <td style="width: 25%; padding: 5px; font-weight: bold;">Cadena de Custodia:</td>
+                                <td style="width: 25%; padding: 5px;"><span t-esc="analysis.custody_chain_code or 'Sin código'"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px; font-weight: bold;">Identificación:</td>
+                                <td style="padding: 5px;"><span t-esc="analysis.sample_identifier or 'Sin identificación'"/></td>
+                                <td style="padding: 5px; font-weight: bold;">Cliente:</td>
+                                <td style="padding: 5px;"><span t-esc="analysis.customer_id.name if analysis.customer_id else 'Sin cliente'"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px; font-weight: bold;">Fecha de Recepción:</td>
+                                <td style="padding: 5px;">
+                                    <span t-if="reception and reception.reception_date" t-esc="reception.reception_date.strftime('%d/%m/%Y')"/>
+                                    <span t-else="">No especificada</span>
+                                </td>
+                                <td style="padding: 5px; font-weight: bold;">Tipo de Muestra:</td>
+                                <td style="padding: 5px;">
+                                    <span t-if="sample and sample.sample_type_id" t-esc="sample.sample_type_id.name"/>
+                                    <span t-else="">No especificado</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- INFORMACIÓN DEL PARÁMETRO -->
+                    <div style="background: #fff3e0; padding: 10px; margin: 15px 0; border-radius: 5px;">
+                        <h3 style="margin: 0 0 10px 0; color: #f57c00;">🔬 PARÁMETRO ANALIZADO</h3>
+                        <table style="width: 100%; border-collapse: collapse;">
+                            <tr>
+                                <td style="width: 25%; padding: 5px; font-weight: bold;">Parámetro:</td>
+                                <td style="width: 75%; padding: 5px;" colspan="3"><span t-esc="parameter.name or 'Sin nombre'"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px; font-weight: bold;">Microorganismo:</td>
+                                <td style="padding: 5px;"><span t-esc="parameter.microorganism or 'No especificado'"/></td>
+                                <td style="width: 25%; padding: 5px; font-weight: bold;">Método:</td>
+                                <td style="width: 25%; padding: 5px;"><span t-esc="parameter.method or 'No especificado'"/></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 5px; font-weight: bold;">Tipo de Resultado:</td>
+                                <td style="padding: 5px;">
+                                    <span t-if="parameter.result_type == 'quantitative'">Cuantitativo</span>
+                                    <span t-else="">Cualitativo</span>
+                                </td>
+                                <td style="padding: 5px; font-weight: bold;">Analista Responsable:</td>
+                                <td style="padding: 5px;">
+                                    <span t-if="parameter.analyst_id" t-esc="parameter.analyst_id.full_name or parameter.analyst_id.initials"/>
+                                    <span t-elif="parameter.analyst_names" t-esc="parameter.analyst_names"/>
+                                    <span t-else="">No asignado</span>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- RESULTADO FINAL -->
+                    <div style="background: #e8f5e9; padding: 10px; margin: 15px 0; border-radius: 5px;">
+                        <h3 style="margin: 0 0 10px 0; color: #2e7d32;">✅ RESULTADO FINAL</h3>
+                        <div style="text-align: center; font-size: 18px; font-weight: bold; padding: 10px; background: white; border-radius: 5px;">
+                            <span t-esc="parameter.result_value or 'Sin resultado'"/>
+                        </div>
+                        <t t-if="parameter.analyst_notes">
+                            <div style="margin-top: 10px; padding: 10px; background: #fffde7; border-left: 4px solid #fbc02d;">
+                                <strong>📝 Observaciones del Analista:</strong><br/>
+                                <span t-esc="parameter.analyst_notes"/>
+                            </div>
+                        </t>
+                    </div>
+
+                    <!-- DATOS CRUDOS DE DILUCIONES -->
+                    <t t-if="parameter.raw_dilution_data_ids">
+                        <div style="margin: 15px 0;">
+                            <h3 style="margin: 0 0 10px 0; color: #333; border-bottom: 2px solid #333; padding-bottom: 5px;">
+                                🔢 DATOS CRUDOS DE DILUCIONES
+                            </h3>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                                <thead>
+                                    <tr style="background: #f5f5f5;">
+                                        <th style="border: 1px solid #ddd; padding: 8px;">Dilución</th>
+                                        <th style="border: 1px solid #ddd; padding: 8px;">Método</th>
+                                        <th style="border: 1px solid #ddd; padding: 8px;">UFC Contadas</th>
+                                        <th style="border: 1px solid #ddd; padding: 8px;">Resultado Calculado</th>
+                                        <th style="border: 1px solid #ddd; padding: 8px;">Observaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="parameter.raw_dilution_data_ids" t-as="dilution">
+                                        <tr>
+                                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                                <span t-esc="dict(dilution._fields['dilution_factor'].selection).get(dilution.dilution_factor, dilution.dilution_factor)"/>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                                <span t-if="dilution.method_type == 'ufc'">UFC</span>
+                                                <span t-else="">NMP</span>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                                <span t-if="dilution.method_type == 'ufc'" t-esc="dilution.ufc_count"/>
+                                                <span t-else="">-</span>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 8px;">
+                                                <span t-esc="dilution.calculated_result or '-'"/>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 8px; font-size: 9px;">
+                                                <span t-esc="dilution.observations or '-'"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+
+                    <!-- MEDIOS DE CULTIVO Y REACTIVOS -->
+                    <t t-if="parameter.media_ids">
+                        <div style="margin: 15px 0;">
+                            <h3 style="margin: 0 0 10px 0; color: #333; border-bottom: 2px solid #333; padding-bottom: 5px;">
+                                🧫 MEDIOS DE CULTIVO Y REACTIVOS UTILIZADOS
+                            </h3>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 10px;">
+                                <thead>
+                                    <tr style="background: #f5f5f5;">
+                                        <th style="border: 1px solid #ddd; padding: 6px;">Proceso</th>
+                                        <th style="border: 1px solid #ddd; padding: 6px;">Medio/Reactivo</th>
+                                        <th style="border: 1px solid #ddd; padding: 6px;">Lote</th>
+                                        <th style="border: 1px solid #ddd; padding: 6px;">Uso</th>
+                                        <th style="border: 1px solid #ddd; padding: 6px;">Incubación</th>
+                                        <th style="border: 1px solid #ddd; padding: 6px;">Estado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="parameter.media_ids" t-as="media">
+                                        <tr>
+                                            <td style="border: 1px solid #ddd; padding: 6px;">
+                                                <span t-esc="dict(media._fields['process_type'].selection).get(media.process_type, media.process_type)"/>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 6px;">
+                                                <span t-esc="media.culture_media_name or 'Sin nombre'"/>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 6px;">
+                                                <t t-if="media.media_source == 'internal' and media.culture_media_batch_id">
+                                                    <span t-esc="media.culture_media_batch_id.batch_code"/>
+                                                </t>
+                                                <t t-elif="media.media_source == 'external'">
+                                                    <span t-esc="media.external_batch_code or 'Sin código'"/> (Ext)
+                                                </t>
+                                                <t t-else="">-</t>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 6px;">
+                                                <span t-esc="dict(media._fields['media_usage'].selection).get(media.media_usage, media.media_usage)"/>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 6px;">
+                                                <t t-if="media.requires_incubation">
+                                                    <div><strong>Inicio:</strong> 
+                                                        <span t-if="media.incubation_start_date" t-esc="media.incubation_start_date.strftime('%d/%m')"/>
+                                                        <span t-if="media.incubation_start_time" t-esc="media.incubation_start_time"/>
+                                                    </div>
+                                                    <div><strong>Fin:</strong> 
+                                                        <span t-if="media.incubation_end_date" t-esc="media.incubation_end_date.strftime('%d/%m')"/>
+                                                        <span t-if="media.incubation_end_time" t-esc="media.incubation_end_time"/>
+                                                    </div>
+                                                </t>
+                                                <t t-else="">N/A</t>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 6px; text-align: center;">
+                                                <t t-if="media.requires_incubation">
+                                                    <span t-esc="dict(media._fields['incubation_status'].selection).get(media.incubation_status, media.incubation_status)"/>
+                                                </t>
+                                                <t t-else="">-</t>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+
+                    <!-- CONTROLES DE CALIDAD -->
+                    <t t-if="parameter.executed_qc_ids">
+                        <div style="margin: 15px 0;">
+                            <h3 style="margin: 0 0 10px 0; color: #333; border-bottom: 2px solid #333; padding-bottom: 5px;">
+                                ✓ CONTROLES DE CALIDAD EJECUTADOS
+                            </h3>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                                <thead>
+                                    <tr style="background: #f5f5f5;">
+                                        <th style="border: 1px solid #ddd; padding: 8px;">Tipo de Control</th>
+                                        <th style="border: 1px solid #ddd; padding: 8px;">Resultado Esperado</th>
+                                        <th style="border: 1px solid #ddd; padding: 8px;">Resultado Obtenido</th>
+                                        <th style="border: 1px solid #ddd; padding: 8px;">Estado</th>
+                                        <th style="border: 1px solid #ddd; padding: 8px;">Fecha</th>
+                                        <th style="border: 1px solid #ddd; padding: 8px;">Ejecutado por</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="parameter.executed_qc_ids" t-as="qc">
+                                        <tr>
+                                            <td style="border: 1px solid #ddd; padding: 8px;">
+                                                <span t-esc="qc.qc_type_id.name if qc.qc_type_id else 'Sin especificar'"/>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 8px;">
+                                                <span t-esc="qc.expected_result or '-'"/>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 8px;">
+                                                <span t-esc="qc.actual_result or '-'"/>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                                <t t-if="qc.control_status == 'passed'">
+                                                    <span style="color: green; font-weight: bold;">✅ Exitoso</span>
+                                                </t>
+                                                <t t-elif="qc.control_status == 'failed'">
+                                                    <span style="color: red; font-weight: bold;">❌ Falló</span>
+                                                </t>
+                                                <t t-else="">
+                                                    <span t-esc="dict(qc._fields['control_status'].selection).get(qc.control_status, qc.control_status)"/>
+                                                </t>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                                <span t-if="qc.execution_date" t-esc="qc.execution_date.strftime('%d/%m/%Y')"/>
+                                                <span t-else="">-</span>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 8px;">
+                                                <span t-esc="qc.executed_by_name or '-'"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+
+                    <!-- EQUIPOS UTILIZADOS -->
+                    <t t-if="parameter.equipment_involved_ids">
+                        <div style="margin: 15px 0;">
+                            <h3 style="margin: 0 0 10px 0; color: #333; border-bottom: 2px solid #333; padding-bottom: 5px;">
+                                🔧 EQUIPOS INVOLUCRADOS
+                            </h3>
+                            <table style="width: 100%; border-collapse: collapse; margin-top: 10px;">
+                                <thead>
+                                    <tr style="background: #f5f5f5;">
+                                        <th style="border: 1px solid #ddd; padding: 8px;">Equipo</th>
+                                        <th style="border: 1px solid #ddd; padding: 8px;">Uso</th>
+                                        <th style="border: 1px solid #ddd; padding: 8px;">Fecha de Uso</th>
+                                        <th style="border: 1px solid #ddd; padding: 8px;">Utilizado por</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <t t-foreach="parameter.equipment_involved_ids" t-as="equipment">
+                                        <tr>
+                                            <td style="border: 1px solid #ddd; padding: 8px;">
+                                                <span t-esc="equipment.equipment_id.name if equipment.equipment_id else 'Sin especificar'"/>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 8px;">
+                                                <span t-esc="equipment.usage or '-'"/>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 8px; text-align: center;">
+                                                <span t-if="equipment.usage_date" t-esc="equipment.usage_date.strftime('%d/%m/%Y')"/>
+                                                <span t-else="">-</span>
+                                            </td>
+                                            <td style="border: 1px solid #ddd; padding: 8px;">
+                                                <span t-esc="equipment.used_by_name or '-'"/>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+                        </div>
+                    </t>
+
+                    <!-- FOOTER -->
+                    <div style="margin-top: 30px; padding-top: 15px; border-top: 2px solid #333; font-size: 9px; text-align: center; color: #666;">
+                        <p style="margin: 5px 0;">Este es un registro interno de trazabilidad de laboratorio</p>
+                        <p style="margin: 5px 0;">Generado el <span t-esc="datetime.datetime.now().strftime('%d/%m/%Y a las %H:%M')"/></p>
+                        <p style="margin: 5px 0;">Proteus Laboratorio de Microbiología • (664) 973-8185 • contacto@proteuslaboratorio.com</p>
+                    </div>
+
+                </div>
+            </t>
+        </t>
+    </template>
+
 
 </odoo>
