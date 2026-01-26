@@ -767,7 +767,7 @@
         <t t-call="web.html_container">
             <t t-set="data_report_margin_top" t-value="35"/>
             <t t-set="data_report_header_spacing" t-value="30"/>
-            <meta charset="UTF-8"/>
+            <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
             <t t-call-assets="web.report_assets_common" t-js="false"/>
             <t t-set="company" t-value="env.company"/>
 
@@ -1078,10 +1078,13 @@
                     </t>
 
                     <!-- FOOTER -->
-                    <div style="margin-top: 30px; padding-top: 15px; border-top: 2px solid #333; font-size: 9px; text-align: center; color: #666;">
-                        <p style="margin: 5px 0;">Este es un registro interno de trazabilidad de laboratorio</p>
-                        <p style="margin: 5px 0;">Generado el <span t-esc="datetime.datetime.now().strftime('%d/%m/%Y a las %H:%M')"/></p>
-                        <p style="margin: 5px 0;">Proteus Laboratorio de Microbiología • (664) 973-8185 • contacto@proteuslaboratorio.com</p>
+                    <div style="margin-top: 30px; padding-top: 15px; border-top: 2px solid #333; font-size: 9px; color: #666;">
+                        <div style="text-align: center; margin-bottom: 8px;">
+                            <strong>FOR-101 Rev. 06 / PROC-006</strong>
+                        </div>
+                        <p style="margin: 5px 0; text-align: center;">Este es un registro interno de trazabilidad de laboratorio</p>
+                        <p style="margin: 5px 0; text-align: center;">Generado el <span t-esc="datetime.datetime.now().strftime('%d/%m/%Y a las %H:%M')"/></p>
+                        <p style="margin: 5px 0; text-align: center;">Proteus Laboratorio de Microbiología • (664) 973-8185 • contacto@proteuslaboratorio.com</p>
                     </div>
 
                 </div>
