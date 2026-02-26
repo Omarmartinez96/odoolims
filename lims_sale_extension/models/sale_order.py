@@ -35,6 +35,13 @@ class SaleOrder(models.Model):
         domain="[('department_id', '=', lims_department_id)]"
     )
 
+    report_language = fields.Selection(
+        [('es', 'Español'), ('en', 'English')],
+        string="Idioma del Reporte",
+        default='es',
+        required=True,
+    )
+
     @api.model_create_multi
     def create(self, vals_list):
         year = str(datetime.today().year)

@@ -8,7 +8,7 @@
     <field name="report_name">lims_sale_extension.report_saleorder_custom</field>
     <field name="report_file">lims_sale_extension.report_saleorder_custom</field>
     <field name="paperformat_id" ref="lims_paperformat.paperformat_lims_letter"/> 
-    <field name="print_report_name">'Cotización - %s' % (object.name)</field>
+    <field name="print_report_name">'Quotation - %s' % (object.name) if object.report_language == 'en' else 'Cotización - %s' % (object.name)</field>
   </record>
 
   <!-- HEREDAR EL TEMPLATE DE EMAIL  -->
