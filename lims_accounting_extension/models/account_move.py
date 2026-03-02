@@ -1,5 +1,4 @@
 from datetime import datetime
-import json
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
@@ -38,25 +37,16 @@ class AccountMove(models.Model):
         return result
     
     def action_download_complemento(self):
-        """Descargar PDF del complemento de pago (representación impresa CFDI)"""
+        """Descargar PDF del Recibo de Pago (representación impresa CFDI)"""
         self.ensure_one()
-        # invoice_payments_widget es el mismo JSON que Odoo usa para mostrar
-        # los pagos en la cabecera de la factura — si Odoo lo muestra, está aquí
-        widget_raw = self.invoice_payments_widget
-        if not widget_raw or widget_raw == 'false':
-            raise UserError(_('No se encontraron pagos registrados para esta factura.'))
-        widget_data = json.loads(widget_raw) if isinstance(widget_raw, (str, bytes)) else widget_raw
-        content = (widget_data or {}).get('content', [])
-        payment_ids = list({
-            item.get('account_payment_id') or item.get('payment_id')
-            for item in content
-            if item.get('account_payment_id') or item.get('payment_id')
-        })
-        if not payment_ids:
-            raise UserError(_('No se encontraron pagos registrados para esta factura.'))
-        payments = self.env['account.payment'].browse(payment_ids).filtered(
-            lambda p: p.state == 'posted'
-        )
+        # reconciled_invoice_ids es calculado por instancia — no usable en dominio
+        # pero funciona correctamente al evaluar registro por registro en Python
+        candidates = self.env['account.payment'].search([
+            ('partner_id', 'child_of', self.partner_id.id),
+            ('payment_type', '=', 'inbound'),
+            ('state', '=', 'posted'),
+        ], order='id desc', limit=100)
+        payments = candidates.filtered(lambda p: self in p.reconciled_invoice_ids)
         if not payments:
             raise UserError(_('No se encontraron pagos registrados para esta factura.'))
         return self.env.ref('account.action_report_payment_receipt').report_action(payments)
