@@ -1,4 +1,5 @@
 from datetime import datetime
+import json
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
@@ -39,21 +40,23 @@ class AccountMove(models.Model):
     def action_download_complemento(self):
         """Descargar PDF del complemento de pago (representación impresa CFDI)"""
         self.ensure_one()
-        # Buscar todas las conciliaciones parciales de los apuntes de esta factura
-        partials = self.env['account.partial.reconcile'].search([
-            '|',
-            ('debit_move_id', 'in', self.line_ids.ids),
-            ('credit_move_id', 'in', self.line_ids.ids),
-        ])
-        # Las líneas contraparte son las del pago (excluir las propias de la factura)
-        counterpart_lines = (
-            partials.mapped('credit_move_id') | partials.mapped('debit_move_id')
-        ) - self.line_ids
-        counterpart_moves = counterpart_lines.mapped('move_id')
-        payments = self.env['account.payment'].search([
-            ('move_id', 'in', counterpart_moves.ids),
-            ('state', '=', 'posted'),
-        ])
+        # invoice_payments_widget es el mismo JSON que Odoo usa para mostrar
+        # los pagos en la cabecera de la factura — si Odoo lo muestra, está aquí
+        widget_raw = self.invoice_payments_widget
+        if not widget_raw or widget_raw == 'false':
+            raise UserError(_('No se encontraron pagos registrados para esta factura.'))
+        widget_data = json.loads(widget_raw) if isinstance(widget_raw, (str, bytes)) else widget_raw
+        content = (widget_data or {}).get('content', [])
+        payment_ids = list({
+            item.get('account_payment_id') or item.get('payment_id')
+            for item in content
+            if item.get('account_payment_id') or item.get('payment_id')
+        })
+        if not payment_ids:
+            raise UserError(_('No se encontraron pagos registrados para esta factura.'))
+        payments = self.env['account.payment'].browse(payment_ids).filtered(
+            lambda p: p.state == 'posted'
+        )
         if not payments:
             raise UserError(_('No se encontraron pagos registrados para esta factura.'))
         return self.env.ref('account.action_report_payment_receipt').report_action(payments)

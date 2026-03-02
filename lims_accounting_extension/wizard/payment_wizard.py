@@ -1,3 +1,4 @@
+import json
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 
@@ -101,21 +102,22 @@ class PaymentWizard(models.TransientModel):
             # Paso 4: Asegurar que los cambios están en BD
             self.env.flush_all()
 
-            # Paso 5: Localizar el pago recién creado via conciliaciones parciales
-            partials = self.env['account.partial.reconcile'].search([
-                '|',
-                ('debit_move_id', 'in', self.invoice_id.line_ids.ids),
-                ('credit_move_id', 'in', self.invoice_id.line_ids.ids),
-            ])
-            counterpart_lines = (
-                partials.mapped('credit_move_id') | partials.mapped('debit_move_id')
-            ) - self.invoice_id.line_ids
-            counterpart_moves = counterpart_lines.mapped('move_id')
-            payments = self.env['account.payment'].search([
-                ('move_id', 'in', counterpart_moves.ids),
-                ('state', '=', 'posted'),
-            ])
-            payment = payments.sorted('id', reverse=True)[:1] if payments else self.env['account.payment']
+            # Paso 5: Localizar el pago recién creado via invoice_payments_widget
+            widget_raw = self.invoice_id.invoice_payments_widget
+            payment = self.env['account.payment']
+            if widget_raw and widget_raw != 'false':
+                widget_data = json.loads(widget_raw) if isinstance(widget_raw, (str, bytes)) else widget_raw
+                content = (widget_data or {}).get('content', [])
+                payment_ids = list({
+                    item.get('account_payment_id') or item.get('payment_id')
+                    for item in content
+                    if item.get('account_payment_id') or item.get('payment_id')
+                })
+                if payment_ids:
+                    payments_found = self.env['account.payment'].browse(payment_ids).filtered(
+                        lambda p: p.state == 'posted'
+                    )
+                    payment = payments_found.sorted('id', reverse=True)[:1]
 
             if not payment:
                 raise UserError(_('Pago registrado pero no se pudo localizar. Busque en Contabilidad → Pagos.'))
