@@ -1,1 +1,1 @@
-from . import payment_wizard
+# Wizard eliminado
