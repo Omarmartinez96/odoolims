@@ -110,9 +110,11 @@ class PaymentWizard(models.TransientModel):
             counterpart_lines = (
                 partials.mapped('credit_move_id') | partials.mapped('debit_move_id')
             ) - self.invoice_id.line_ids
-            payments = counterpart_lines.mapped('move_id.payment_id').filtered(
-                lambda p: p.id and p.state == 'posted'
-            )
+            counterpart_moves = counterpart_lines.mapped('move_id')
+            payments = self.env['account.payment'].search([
+                ('move_id', 'in', counterpart_moves.ids),
+                ('state', '=', 'posted'),
+            ])
             payment = payments.sorted('id', reverse=True)[:1] if payments else self.env['account.payment']
 
             if not payment:

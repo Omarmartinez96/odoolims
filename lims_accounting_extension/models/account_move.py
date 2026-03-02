@@ -49,9 +49,11 @@ class AccountMove(models.Model):
         counterpart_lines = (
             partials.mapped('credit_move_id') | partials.mapped('debit_move_id')
         ) - self.line_ids
-        payments = counterpart_lines.mapped('move_id.payment_id').filtered(
-            lambda p: p.id and p.state == 'posted'
-        )
+        counterpart_moves = counterpart_lines.mapped('move_id')
+        payments = self.env['account.payment'].search([
+            ('move_id', 'in', counterpart_moves.ids),
+            ('state', '=', 'posted'),
+        ])
         if not payments:
             raise UserError(_('No se encontraron pagos registrados para esta factura.'))
         return self.env.ref('account.action_report_payment_receipt').report_action(payments)
