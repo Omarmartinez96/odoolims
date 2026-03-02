@@ -39,13 +39,19 @@ class AccountMove(models.Model):
     def action_download_complemento(self):
         """Descargar PDF del complemento de pago (representación impresa CFDI)"""
         self.ensure_one()
-        # Recorrer la conciliación real de apuntes para encontrar los pagos
-        reconcilable_lines = self.line_ids.filtered(lambda l: l.account_id.reconcile)
-        payment_lines = (
-            reconcilable_lines.mapped('matched_debit_ids.credit_move_id') |
-            reconcilable_lines.mapped('matched_credit_ids.debit_move_id')
+        # Buscar todas las conciliaciones parciales de los apuntes de esta factura
+        partials = self.env['account.partial.reconcile'].search([
+            '|',
+            ('debit_move_id', 'in', self.line_ids.ids),
+            ('credit_move_id', 'in', self.line_ids.ids),
+        ])
+        # Las líneas contraparte son las del pago (excluir las propias de la factura)
+        counterpart_lines = (
+            partials.mapped('credit_move_id') | partials.mapped('debit_move_id')
+        ) - self.line_ids
+        payments = counterpart_lines.mapped('move_id.payment_id').filtered(
+            lambda p: p.id and p.state == 'posted'
         )
-        payments = payment_lines.mapped('payment_id').filtered(lambda p: p.state == 'posted')
         if not payments:
             raise UserError(_('No se encontraron pagos registrados para esta factura.'))
         return self.env.ref('account.action_report_payment_receipt').report_action(payments)
