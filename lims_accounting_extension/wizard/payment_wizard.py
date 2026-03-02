@@ -101,11 +101,16 @@ class PaymentWizard(models.TransientModel):
             # Paso 4: Asegurar que los cambios están en BD
             self.env.flush_all()
 
-            # Paso 5: Localizar el pago recién creado (ligado a la factura por conciliación)
-            payment = self.env['account.payment'].search([
-                ('reconciled_invoice_ids', 'in', [self.invoice_id.id]),
-                ('state', '=', 'posted'),
-            ], limit=1, order='id desc')
+            # Paso 5: Localizar el pago recién creado (a través de conciliación real)
+            reconcilable_lines = self.invoice_id.line_ids.filtered(
+                lambda l: l.account_id.reconcile
+            )
+            payment_lines = (
+                reconcilable_lines.mapped('matched_debit_ids.credit_move_id') |
+                reconcilable_lines.mapped('matched_credit_ids.debit_move_id')
+            )
+            payments = payment_lines.mapped('payment_id').filtered(lambda p: p.state == 'posted')
+            payment = payments.sorted('id', reverse=True)[:1] if payments else self.env['account.payment']
 
             if not payment:
                 raise UserError(_('Pago registrado pero no se pudo localizar. Busque en Contabilidad → Pagos.'))
