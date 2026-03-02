@@ -1,5 +1,6 @@
 from datetime import datetime
-from odoo import models, fields, api
+from odoo import models, fields, api, _
+from odoo.exceptions import UserError
 
 class AccountMove(models.Model):
     _inherit = 'account.move'
@@ -35,6 +36,17 @@ class AccountMove(models.Model):
         result = super().write(vals)
         return result
     
+    def action_download_complemento(self):
+        """Descargar PDF del complemento de pago (representación impresa CFDI)"""
+        self.ensure_one()
+        payments = self.env['account.payment'].search([
+            ('reconciled_invoice_ids', 'in', [self.id]),
+            ('state', '=', 'posted'),
+        ])
+        if not payments:
+            raise UserError(_('No se encontraron pagos registrados para esta factura.'))
+        return self.env.ref('account.action_report_payment_receipt').report_action(payments)
+
     def action_open_payment_wizard(self):
         """Abrir wizard de complemento PPD con factura preseleccionada"""
         self.ensure_one()

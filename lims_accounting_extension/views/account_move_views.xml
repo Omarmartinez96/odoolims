@@ -13,11 +13,18 @@
       </xpath>
 
       <xpath expr="//header" position="inside">
-        <button name="action_open_payment_wizard" 
-                type="object" 
-                string="Complemento PPD" 
+        <!-- Solo visible en facturas PPD con saldo pendiente -->
+        <button name="action_open_payment_wizard"
+                type="object"
+                string="Complemento PPD"
                 class="btn-primary"
-                invisible="move_type != 'out_invoice' or state != 'posted'"/>
+                invisible="move_type != 'out_invoice' or state != 'posted' or payment_state not in ('not_paid', 'partial')"/>
+        <!-- Visible cuando ya hay al menos un pago registrado -->
+        <button name="action_download_complemento"
+                type="object"
+                string="Descargar Complemento"
+                class="btn-secondary"
+                invisible="move_type != 'out_invoice' or state != 'posted' or payment_state not in ('in_payment', 'partial', 'paid')"/>
       </xpath>
 
     </field>
