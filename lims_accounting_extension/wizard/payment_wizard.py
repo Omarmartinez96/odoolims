@@ -12,7 +12,7 @@ class PaymentWizard(models.TransientModel):
         domain=[
             ('move_type', '=', 'out_invoice'),
             ('state', '=', 'posted'),
-            ('l10n_mx_edi_payment_method_id', '=', 'PPD'),
+            ('l10n_mx_edi_payment_method_id.code', '=', 'PPD'),
             ('payment_state', 'in', ['not_paid', 'partial'])
         ]
     )
@@ -76,7 +76,7 @@ class PaymentWizard(models.TransientModel):
             
             # Verificar que sea factura PPD
             payment_method = self.invoice_id.l10n_mx_edi_payment_method_id
-            if not payment_method or payment_method.code not in ['PPD', '02']:
+            if not payment_method or payment_method.code != 'PPD':
                 current_method = payment_method.code if payment_method else 'Sin definir'
                 raise UserError(_('Error: Solo se pueden generar complementos para facturas PPD. Método actual: %s') % current_method)
             
@@ -96,43 +96,28 @@ class PaymentWizard(models.TransientModel):
             })
             
             # Paso 3: Ejecutar registro de pago (genera PPAGO automáticamente)
-            result = payment_register.action_create_payments()
-            
-            # Paso 4: Forzar actualización de documentos EDI si es necesario
-            self.invoice_id.flush()
-            
-            # Buscar si se generó el documento PPAGO (sin filtro de tiempo)
-            ppago_docs = self.env['l10n_mx_edi.document'].search([
-                ('move_id.ref', 'like', self.invoice_id.name),
-                ('document_type', '=', 'payment')
-            ], limit=1, order='create_date desc')
-            
-            # Paso 5: Si no se generó automáticamente, forzar actualización
-            if not ppago_docs:
-                try:
-                    self.invoice_id.l10n_mx_edi_update_sat_status()
-                except Exception as e:
-                    # No fallar si hay error en la actualización, solo advertir
-                    pass
-            
-            # Paso 6: Mensaje de éxito con instrucciones
-            message = _(
-                'Pago registrado exitosamente para factura %s.\n\n'
-                'Para verificar el complemento CFDI:\n'
-                '• Ir a Contabilidad → Configuración → Documentos EDI\n'
-                '• Buscar documentos tipo "payment" recientes\n'
-                '• O revisar la pestaña CFDI en la factura'
-            ) % self.invoice_id.name
-            
+            payment_register.action_create_payments()
+
+            # Paso 4: Asegurar que los cambios están en BD
+            self.env.flush_all()
+
+            # Paso 5: Localizar el pago recién creado (ligado a la factura por conciliación)
+            payment = self.env['account.payment'].search([
+                ('reconciled_invoice_ids', 'in', [self.invoice_id.id]),
+                ('state', '=', 'posted'),
+            ], limit=1, order='id desc')
+
+            if not payment:
+                raise UserError(_('Pago registrado pero no se pudo localizar. Busque en Contabilidad → Pagos.'))
+
+            # Paso 6: Abrir el pago (desde ahí el usuario descarga/imprime el complemento CFDI)
             return {
-                'type': 'ir.actions.client',
-                'tag': 'display_notification',
-                'params': {
-                    'title': _('Complemento PPD Procesado'),
-                    'message': message,
-                    'type': 'success',
-                    'sticky': True,
-                }
+                'type': 'ir.actions.act_window',
+                'name': _('Complemento de Pago'),
+                'res_model': 'account.payment',
+                'res_id': payment.id,
+                'view_mode': 'form',
+                'target': 'current',
             }
             
         except UserError:

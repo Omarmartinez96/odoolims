@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(xargs grep -l \"document_type\\\\|payment\\\\|complemento\")",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(where python)",
+      "Bash(where python3)",
+      "Bash(pip show odoo)",
+      "Bash(python -c \"import odoo; print\\(odoo.__file__\\)\")",
+      "Bash(tasklist)"
+    ]
+  }
+}
