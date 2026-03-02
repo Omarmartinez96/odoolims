@@ -101,16 +101,29 @@ class PaymentWizard(models.TransientModel):
             # Paso 4: Asegurar que los cambios están en BD
             self.env.flush_all()
 
-            # Paso 5: Localizar el pago recién creado via reconciled_invoice_ids por instancia
-            candidates = self.env['account.payment'].search([
-                ('partner_id', 'child_of', self.invoice_id.partner_id.id),
-                ('payment_type', '=', 'inbound'),
-                ('state', '=', 'posted'),
-            ], order='id desc', limit=20)
-            matched = candidates.filtered(
-                lambda p: self.invoice_id in p.reconciled_invoice_ids
-            )
-            payment = matched[:1] if matched else self.env['account.payment']
+            # Paso 5: Localizar el pago recién creado
+            payment = self.env['account.payment']
+            try:
+                for item in self.invoice_id._get_reconciled_info_JSON_values():
+                    pid = item.get('account_payment_id') or item.get('payment_id')
+                    if pid:
+                        p = self.env['account.payment'].browse(pid)
+                        if p.exists() and p.state == 'posted':
+                            payment = p
+                            break
+            except Exception:
+                pass
+            if not payment:
+                partner = self.invoice_id.partner_id.commercial_partner_id
+                candidates = self.env['account.payment'].search([
+                    ('partner_id', 'child_of', partner.id),
+                    ('payment_type', '=', 'inbound'),
+                    ('state', '=', 'posted'),
+                ], order='id desc', limit=20)
+                matched = candidates.filtered(
+                    lambda p: self.invoice_id in p.reconciled_invoice_ids
+                )
+                payment = matched[:1] if matched else self.env['account.payment']
 
             if not payment:
                 raise UserError(_('Pago registrado pero no se pudo localizar. Busque en Contabilidad → Pagos.'))

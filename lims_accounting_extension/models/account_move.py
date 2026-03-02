@@ -39,16 +39,35 @@ class AccountMove(models.Model):
     def action_download_complemento(self):
         """Descargar PDF del Recibo de Pago (representación impresa CFDI)"""
         self.ensure_one()
-        # reconciled_invoice_ids es calculado por instancia — no usable en dominio
-        # pero funciona correctamente al evaluar registro por registro en Python
-        candidates = self.env['account.payment'].search([
-            ('partner_id', 'child_of', self.partner_id.id),
-            ('payment_type', '=', 'inbound'),
-            ('state', '=', 'posted'),
-        ], order='id desc', limit=100)
-        payments = candidates.filtered(lambda p: self in p.reconciled_invoice_ids)
+        payments = self.env['account.payment']
+
+        # Intento 1: método interno que Odoo usa para mostrar pagos en la factura
+        try:
+            for item in self._get_reconciled_info_JSON_values():
+                pid = item.get('account_payment_id') or item.get('payment_id')
+                if pid:
+                    p = self.env['account.payment'].browse(pid)
+                    if p.exists() and p.state == 'posted':
+                        payments |= p
+        except Exception:
+            pass
+
+        # Intento 2: buscar por partner comercial (cubre empresa + todos sus contactos)
         if not payments:
-            raise UserError(_('No se encontraron pagos registrados para esta factura.'))
+            partner = self.partner_id.commercial_partner_id
+            candidates = self.env['account.payment'].search([
+                ('partner_id', 'child_of', partner.id),
+                ('payment_type', '=', 'inbound'),
+                ('state', '=', 'posted'),
+            ], order='id desc', limit=100)
+            payments = candidates.filtered(lambda p: self in p.reconciled_invoice_ids)
+
+        if not payments:
+            raise UserError(_(
+                'No se encontraron pagos para esta factura.\n\n'
+                'Si la factura está en "En proceso de pago", complete primero '
+                'la conciliación bancaria para que el pago quede registrado.'
+            ))
         return self.env.ref('account.action_report_payment_receipt').report_action(payments)
 
     def action_open_payment_wizard(self):
