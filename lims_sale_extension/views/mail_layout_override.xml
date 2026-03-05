@@ -8,8 +8,6 @@
   <template id="lims_mail_notification_layout_no_odoo_footer"
             inherit_id="mail.mail_notification_layout"
             name="LIMS - Sin footer de Odoo">
-    <!-- Elimina el número de registro (ej. "001/2026") que aparece como encabezado -->
-    <xpath expr="//t[@t-if='message_record_name']" position="replace"/>
     <!-- Elimina el footer "Con la tecnología de Odoo" -->
     <xpath expr="//a[contains(@href, 'odoo.com')]/.." position="replace">
       <p style="text-align: center; font-size: 11px; color: #aaaaaa; margin-top: 8px;">
