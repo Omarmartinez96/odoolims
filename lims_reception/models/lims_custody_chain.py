@@ -314,8 +314,15 @@ class LimsCustodyChain(models.Model):
                 <p>Gracias por su confianza.</p>
                 <br/>
                 <p>Atentamente,<br/>El equipo de {self.env.company.name}</p>
+                <br/>
+                <p style="font-size: 11px; color: #888888; border-top: 1px solid #eeeeee; padding-top: 8px;">
+                    Este correo es automático, favor de no responder directamente a este mensaje.
+                    Si tiene alguna duda, puede contactarnos en
+                    <a href="mailto:contacto@proteuslaboratorio.com" style="color: #888888;">contacto@proteuslaboratorio.com</a>
+                    o a través de cualquier medio de contacto autorizado.
+                </p>
             ''',
-            'email_from': self.env.user.email,
+            'email_from': f'"Lab. Proteus - Cadena de Custodia {self.custody_chain_code}" <no-responder@proteuslaboratorio.com>',
             'email_to': ','.join(email_list),
             'attachment_ids': [(6, 0, [attachment.id])],
         }
