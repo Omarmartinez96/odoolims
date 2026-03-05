@@ -14,6 +14,7 @@
         'views/sale_order_views.xml',
         'views/report_quote.xml',
         'views/report.xml',
+        'views/mail_layout_override.xml',
     ],
     'installable': True,
     'application': True,

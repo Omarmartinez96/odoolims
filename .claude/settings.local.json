@@ -8,7 +8,9 @@
       "Bash(where python3)",
       "Bash(pip show odoo)",
       "Bash(python -c \"import odoo; print\\(odoo.__file__\\)\")",
-      "Bash(tasklist)"
+      "Bash(tasklist)",
+      "Bash(xargs wc -l)",
+      "Bash(ssh -o ConnectTimeout=10 root@5.78.148.104 \"ls /opt/odoo/backups/ | tail -5\")"
     ]
   }
 }

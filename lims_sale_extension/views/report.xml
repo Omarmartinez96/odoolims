@@ -14,6 +14,55 @@
   <!-- HEREDAR EL TEMPLATE DE EMAIL  -->
   <record id="sale.email_template_edi_sale" model="mail.template">
     <field name="report_template" ref="action_report_saleorder_custom"/>
+    <field name="body_arch" type="html">
+      <div style="margin: 0px; padding: 0px;" data-oe-version="1.2">
+        <p style="margin: 0px; padding: 0px; font-size: 13px;">
+          <t t-set="doc_name" t-value="'cotización' if object.state in ('draft', 'sent') else 'orden'"/>
+          Estimado/a Cliente,<br/><br/>
+          Su
+          <t t-if="ctx.get('proforma')">
+            factura proforma para la <t t-out="doc_name or ''">cotización</t>
+            <span style="font-weight: bold;" t-out="object.name or ''">S00052</span>
+            <t t-if="object.origin">(con referencia: <t t-out="object.origin or ''"/>)</t>
+            por un importe de <span style="font-weight: bold;" t-out="format_amount(object.amount_total, object.currency_id) or ''">$10.00</span> está disponible.
+          </t>
+          <t t-else="">
+            <t t-out="doc_name or ''">cotización</t>
+            <span style="font-weight: bold;" t-out="object.name or ''">S00052</span>
+            <t t-if="object.origin">(con referencia: <t t-out="object.origin or ''">S00052</t>)</t>
+            por un importe de <span style="font-weight: bold;" t-out="format_amount(object.amount_total, object.currency_id) or ''">$10.00</span> está lista para su revisión.
+          </t>
+          <br/>
+          <t t-set="documents" t-value="object._get_product_documents()"/>
+          <t t-if="documents">
+            <br/>
+            <t t-if="len(documents) &gt; 1">Aquí hay algunos documentos adicionales que podrían interesarle:</t>
+            <t t-else="">Aquí hay otro documento que podría interesarle:</t>
+          </t>
+        </p>
+        <t t-if="documents">
+          <ul style="padding: 0 0 0 32px; margin: 0 0 0 0; list-style-type: disc;">
+            <t t-foreach="documents" t-as="document">
+              <li style="font-size: 13px;">
+                <a t-out="document.ir_attachment_id.name"
+                   t-att-href="object.get_portal_url('/document/' + str(document.id))"
+                   t-att-target="target"
+                   style="color: #374151; text-decoration: none;"/>
+              </li>
+            </t>
+          </ul>
+        </t>
+        <br/>
+        <p style="margin: 0px; padding: 0px; font-size: 13px;">
+          Quedamos atentos a cualquier comentario o solicitud que pueda tener.
+          <t t-if="not is_html_empty(object.user_id.signature)" data-o-mail-quote-container="1">
+            <br/><br/>
+            <t t-out="object.user_id.signature or ''" data-o-mail-quote="1"/>
+          </t>
+          <br/>
+        </p>
+      </div>
+    </field>
   </record>
 
   <!-- REEMPLAZAR EL REPORTE DEL PORTAL -->
