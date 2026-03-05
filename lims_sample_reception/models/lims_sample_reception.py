@@ -726,19 +726,65 @@ class LimsCustodyChain(models.Model):
         except Exception as e:
             raise UserError(_("Error al crear el archivo adjunto: %s") % str(e))
 
+        # Construir tabla de muestras
+        state_labels = {
+            'recibida': 'Recibida',
+            'rechazada': 'Rechazada',
+            'no_recibida': 'No Recibida',
+            'sin_procesar': 'Sin Procesar',
+        }
+        state_colors = {
+            'recibida': '#1a7f1a',
+            'rechazada': '#cc0000',
+            'no_recibida': '#cc7700',
+            'sin_procesar': '#888888',
+        }
+        sample_rows = ''
+        for sample in self.sample_ids:
+            params = ', '.join(filter(None, [
+                p.microorganism or p.name for p in sample.parameter_ids
+            ])) or 'Sin parámetros'
+            state_raw = getattr(sample, 'sample_reception_state', None) or 'sin_procesar'
+            state_label = state_labels.get(state_raw, state_raw)
+            state_color = state_colors.get(state_raw, '#888888')
+            sample_rows += f'''
+                <tr>
+                    <td style="padding: 6px 10px; border-bottom: 1px solid #f0f0f0;">{sample.sample_identifier or '-'}</td>
+                    <td style="padding: 6px 10px; border-bottom: 1px solid #f0f0f0; font-size: 12px; color: #444444;">{params}</td>
+                    <td style="padding: 6px 10px; border-bottom: 1px solid #f0f0f0; font-weight: bold; color: {state_color};">{state_label}</td>
+                </tr>'''
+
         # Preparar valores del email
         email_values = {
             'subject': f'Informe de Recepción de Muestras - {self.custody_chain_code}',
             'body_html': f'''
-                <p>Estimado/a Cliente,</p>
-                <p>Adjunto el informe de recepción de muestras correspondiente a:</p>
-                <p><strong>Cadena de Custodia:</strong> {self.custody_chain_code}</p>
-                <p><strong>Cliente:</strong> {self.cliente_id.name}</p>
-                <p>Este informe detalla el estado de recepción de cada una de las muestras procesadas.</p>
+                <p><strong style="color: #1a1a1a;">Estimado/a Cliente,</strong></p>
+                <p>En este correo encontrará adjunto el informe de recepción de muestras correspondiente a la
+                Cadena de Custodia <strong>{self.custody_chain_code}</strong>.</p>
+                <br/>
+                <table style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                    <thead>
+                        <tr style="background-color: rgb(218,227,243);">
+                            <th style="padding: 8px 10px; text-align: left; font-weight: bold;">Muestra</th>
+                            <th style="padding: 8px 10px; text-align: left; font-weight: bold;">Parámetros / Analitos</th>
+                            <th style="padding: 8px 10px; text-align: left; font-weight: bold;">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {sample_rows}
+                    </tbody>
+                </table>
                 <br/>
                 <p>Atentamente,<br/>El equipo de {self.env.company.name}</p>
+                <br/>
+                <p style="font-style: italic; font-size: 12px; color: #555555; border-left: 3px solid #cccccc; padding: 6px 12px;">
+                    "Este correo es generado automáticamente. Favor de no responder directamente a este mensaje.
+                    Para dudas o consultas, contáctenos en
+                    <a href="mailto:contacto@proteuslaboratorio.com" style="color: #555555;">contacto@proteuslaboratorio.com</a>
+                    o a través de cualquier medio de contacto autorizado."
+                </p>
             ''',
-            'email_from': self.env.user.email,
+            'email_from': f'"Lab. Proteus - Recepción de Muestras {self.custody_chain_code}" <no-responder@proteuslaboratorio.com>',
             'email_to': ','.join(email_list),
             'attachment_ids': [(6, 0, [attachment.id])],
         }

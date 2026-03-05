@@ -10,8 +10,8 @@
       <field name="subject">Comprobante de Cadena de Custodia - ${object.custody_chain_code}</field>
       <field name="body_html"><![CDATA[
         <p><strong style="color: #1a1a1a;">Estimado/a Cliente,</strong></p>
-        <p>En este correo encontrará adjunto el comprobante de cadena de custodia de las muestras:</p>
         <p><strong>Cadena de Custodia:</strong> ${object.custody_chain_code}</p>
+        <p>En este correo encontrará adjunto su comprobante de cadena de custodia.</p>
         <p>Gracias por su confianza.</p>
         <br/>
         <p>Atentamente,<br/>El equipo de ${user.company_id.name}</p>
