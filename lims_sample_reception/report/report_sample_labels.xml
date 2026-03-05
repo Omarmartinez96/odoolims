@@ -44,8 +44,8 @@
                                 <!-- Texto: código e identificador a la izquierda -->
                                 <td style="width: 60%; vertical-align: middle; text-align: left; border: none; padding-right: 1mm;">
                                     <t t-set="is_long" t-value="len(reception.sample_identifier or '') > 15"/>
-                                    <t t-set="code_font" t-value="'14px' if is_long else '16px'"/>
-                                    <t t-set="id_font" t-value="'12px' if is_long else '13px'"/>
+                                    <t t-set="code_font" t-value="'16px' if is_long else '18px'"/>
+                                    <t t-set="id_font" t-value="'14px' if is_long else '15px'"/>
                                     <div t-attf-style="font-weight: bold; font-size: #{code_font}; color: #000; font-family: Arial, sans-serif; line-height: 1.2; margin-bottom: 1mm;">
                                         <span t-esc="reception.sample_code or 'Sin código'"/>
                                     </div>
@@ -112,8 +112,8 @@
                                         <!-- Texto: código e identificador a la izquierda -->
                                         <td style="width: 60%; vertical-align: middle; text-align: left; border: none; padding-right: 1mm;">
                                             <t t-set="is_long" t-value="len(reception.sample_identifier or '') > 15"/>
-                                            <t t-set="code_font" t-value="'11px' if is_long else '13px'"/>
-                                            <t t-set="id_font" t-value="'9px' if is_long else '10px'"/>
+                                            <t t-set="code_font" t-value="'16px' if is_long else '18px'"/>
+                                            <t t-set="id_font" t-value="'14px' if is_long else '15px'"/>
                                             <div t-attf-style="font-weight: bold; font-size: #{code_font}; color: #000; font-family: Arial, sans-serif; line-height: 1.2; margin-bottom: 1mm;">
                                                 <span t-esc="reception.sample_code or 'Sin código'"/>
                                             </div>
