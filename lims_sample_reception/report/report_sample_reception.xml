@@ -216,7 +216,7 @@
                                                     <strong>Hora:</strong> <span t-esc="reception.reception_time or 'No registrada'"/>
                                                 </div>
                                                 <div style="font-size: 12px; color: #666;">
-                                                    <strong>Recibido por:</strong> <span t-esc="reception.received_by.name if reception.received_by else 'No especificado'"/>
+                                                    <strong>Recibido por:</strong> <span t-esc="reception.analyst_id.name if reception.analyst_id else 'No especificado'"/>
                                                 </div>
                                             </t>
                                             <t t-else="">
