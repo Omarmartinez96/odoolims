@@ -210,10 +210,14 @@
                                                     </t>
                                                 </div>
                                                 <div style="font-size: 12px; color: #666;">
-                                                    <strong>Fecha:</strong> <span t-esc="reception.reception_date.strftime('%d/%m/%Y') if reception.reception_date else 'No registrada'"/>
-                                                </div>
-                                                <div style="font-size: 12px; color: #666;">
-                                                    <strong>Hora:</strong> <span t-esc="reception.reception_time or 'No registrada'"/>
+                                                    <strong>Fecha:</strong>
+                                                    <t t-if="reception.reception_date">
+                                                        <t t-set="d_rec" t-value="reception.reception_date.strftime('%d')"/>
+                                                        <t t-set="m_rec" t-value="reception.reception_date.strftime('%m')"/>
+                                                        <t t-set="y_rec" t-value="reception.reception_date.strftime('%Y')"/>
+                                                        <span t-esc="d_rec + '/' + meses[m_rec] + '/' + y_rec"/>
+                                                    </t>
+                                                    <t t-else="">No registrada</t>
                                                 </div>
                                                 <div style="font-size: 12px; color: #666;">
                                                     <strong>Recibido por:</strong> <span t-esc="reception.analyst_id.full_name if reception.analyst_id else 'No especificado'"/>
