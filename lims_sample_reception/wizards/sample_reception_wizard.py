@@ -1,6 +1,7 @@
 from odoo import models, fields, api, _
 from odoo.exceptions import UserError
 from datetime import datetime
+import pytz
 
 class SampleReceptionWizard(models.TransientModel):
     _name = 'lims.sample.reception.wizard'
@@ -49,7 +50,7 @@ class SampleReceptionWizard(models.TransientModel):
     
     reception_time = fields.Char(
         string='Hora de Recepción',
-        default=lambda self: datetime.now().strftime('%H:%M'),
+        default=lambda self: datetime.now(pytz.timezone('America/Tijuana')).strftime('%H:%M'),
         required=True
     )
 

@@ -3,6 +3,7 @@ from odoo import models, fields, api, _
 from odoo.exceptions import UserError, ValidationError
 import base64
 from datetime import datetime
+import pytz
 import logging
 
 _logger = logging.getLogger(__name__)
@@ -72,7 +73,7 @@ class LimsCustodyChain(models.Model):
 
     time_chainofcustody = fields.Char(
         string="Hora de Cadena de Custodia",
-        default=lambda self: datetime.now().strftime('%H:%M'),
+        default=lambda self: datetime.now(pytz.timezone('America/Tijuana')).strftime('%H:%M'),
         help="Hora en que se crea la cadena de custodia"
     )
 
@@ -457,7 +458,7 @@ class LimsCustodyChain(models.Model):
             'signature_position': False,
             'is_signed': False,
             'date_chainofcustody': fields.Date.context_today(self),
-            'time_chainofcustody': datetime.now().strftime('%H:%M'),
+            'time_chainofcustody': datetime.now(pytz.timezone('America/Tijuana')).strftime('%H:%M'),
         })
         
         # Crear la nueva cadena SIN las muestras primero
