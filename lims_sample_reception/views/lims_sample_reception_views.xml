@@ -14,7 +14,7 @@
                     <field name="reception_date"/>
                     <field name="reception_time"/>
                     <field name="reception_state"/>
-                    <field name="received_by"/>
+                    <field name="analyst_id" string="Recibido por"/>
                 </list>
             </field>
         </record>
@@ -80,7 +80,7 @@
                             <group string="Datos de Recepción">
                                 <field name="reception_date"/>
                                 <field name="reception_time" placeholder="14:30"/>
-                                <field name="received_by"/>
+                                <field name="analyst_id" string="Recibido por"/>
                                 <field name="received_by_initials"/>
                             </group>
                         </group>
