@@ -147,8 +147,7 @@
                             <t t-foreach="docs" t-as="doc">
                                 <t t-foreach="doc.sample_ids" t-as="sample">
                                     <t t-set="reception" t-value="env['lims.sample.reception'].search([('sample_id', '=', sample.id)], limit=1)"/>
-                                    <t t-set="row_bg" t-value="'#d4edda' if reception and reception.reception_state == 'recibida' else ('#f8d7da' if reception and reception.reception_state == 'rechazada' else ('#fff3cd' if reception and reception.reception_state == 'no_recibida' else '#f9f9f9'))"/>
-                                    <tr t-attf-style="background-color: {{row_bg}}; border-bottom: 1px solid #ddd;">
+                                    <tr>
                                         <!-- Fecha de Recepción -->
                                         <td class="date-column">
                                             <t t-if="reception and reception.reception_date">
