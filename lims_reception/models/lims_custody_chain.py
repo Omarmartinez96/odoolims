@@ -308,20 +308,19 @@ class LimsCustodyChain(models.Model):
         email_values = {
             'subject': f'Comprobante de Cadena de Custodia - {self.custody_chain_code}',
             'body_html': f'''
-                <div style="margin-top: 20px; background-color: rgb(218,227,243); height: 12px; padding: 3px 2px; text-align: center; vertical-align: middle; margin-bottom: 15px;"></div>
-                <p style="font-style: italic; font-size: 12px; color: #555555; border-left: 3px solid #cccccc; padding: 6px 12px; margin-bottom: 16px;">
-                    "Este correo es generado automáticamente. Favor de no responder directamente a este mensaje.
-                    Para dudas o consultas, contáctenos en
-                    <a href="mailto:contacto@proteuslaboratorio.com" style="color: #555555;">contacto@proteuslaboratorio.com</a>
-                    o a través de cualquier medio de contacto autorizado."
-                </p>
                 <p><strong style="color: #1a1a1a;">Estimado/a Cliente,</strong></p>
                 <p>En este correo encontrará adjunto el comprobante de cadena de custodia de las muestras:</p>
                 <p><strong>Cadena de Custodia:</strong> {self.custody_chain_code}</p>
                 <p>Gracias por su confianza.</p>
                 <br/>
                 <p>Atentamente,<br/>El equipo de {self.env.company.name}</p>
-                <div style="margin-top: 20px; background-color: rgb(218,227,243); height: 12px; padding: 3px 2px; text-align: center; vertical-align: middle; margin-bottom: 15px;"></div>
+                <br/>
+                <p style="font-style: italic; font-size: 12px; color: #555555; border-left: 3px solid #cccccc; padding: 6px 12px;">
+                    "Este correo es generado automáticamente. Favor de no responder directamente a este mensaje.
+                    Para dudas o consultas, contáctenos en
+                    <a href="mailto:contacto@proteuslaboratorio.com" style="color: #555555;">contacto@proteuslaboratorio.com</a>
+                    o a través de cualquier medio de contacto autorizado."
+                </p>
             ''',
             'email_from': f'"Lab. Proteus - Cadena de Custodia {self.custody_chain_code}" <no-responder@proteuslaboratorio.com>',
             'email_to': ','.join(email_list),
