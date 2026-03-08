@@ -15,7 +15,6 @@ SERVICES = [
 FEEDBACK_TYPES = [
     ('sugerencia', 'Sugerencia'),
     ('queja', 'Queja o Reclamo'),
-    ('felicitacion', 'Felicitación'),
     ('consulta', 'Consulta General'),
 ]
 

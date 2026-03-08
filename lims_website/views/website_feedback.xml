@@ -49,9 +49,6 @@
                                             <button type="button" class="lims-type-pill lims-type-pill--queja" data-type="queja">
                                                 <i class="fa fa-exclamation-triangle me-1"/>Queja
                                             </button>
-                                            <button type="button" class="lims-type-pill lims-type-pill--felicitacion" data-type="felicitacion">
-                                                <i class="fa fa-thumbs-up me-1"/>Felicitación
-                                            </button>
                                             <button type="button" class="lims-type-pill lims-type-pill--consulta" data-type="consulta">
                                                 <i class="fa fa-question-circle me-1"/>Consulta
                                             </button>
@@ -177,7 +174,7 @@
                                                                        class="form-control"
                                                                        id="fb_reference"
                                                                        name="fb_reference"
-                                                                       placeholder="Ej: MUE-2024-0001"
+                                                                       placeholder="Ej: LMP-001/0001"
                                                                        maxlength="50"/>
                                                                 <div class="form-text">Si tienes un número de folio de tu muestra, inclúyelo aquí.</div>
                                                             </div>
@@ -223,7 +220,7 @@
                                     <!-- Commitment card -->
                                     <div class="lims-form-sidebar">
                                         <h4><i class="fa fa-star me-2"/>Nuestro Compromiso</h4>
-                                        <p>En Proteus Laboratorio nos comprometemos a:</p>
+                                        <p>En Laboratorio Proteus nos comprometemos a:</p>
                                         <ul class="lims-commitment-list">
                                             <li>
                                                 <i class="fa fa-check-circle"/>

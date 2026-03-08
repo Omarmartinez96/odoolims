@@ -2,7 +2,7 @@
 <odoo>
 
     <!-- ===================================================================
-         HOMEPAGE - Página principal del portal de Proteus Laboratorio
+         HOMEPAGE - Página principal del portal de Laboratorio Proteus
     =================================================================== -->
     <record id="lims_homepage_view" model="ir.ui.view">
         <field name="name">Inicio | Laboratorio de Microbiología Proteus</field>
@@ -108,7 +108,7 @@
                     <section class="lims-features-section">
                         <div class="container">
                             <div class="text-center mb-5">
-                                <h2 class="lims-section-title">¿Por qué Proteus Laboratorio?</h2>
+                                <h2 class="lims-section-title">¿Por qué Laboratorio Proteus?</h2>
                                 <p class="lims-section-subtitle">
                                     Más de 15 años brindando soluciones analíticas con los más altos estándares de calidad
                                 </p>

@@ -15,6 +15,20 @@
         <field name="is_homepage">True</field>
     </record>
 
+    <record id="menu_contacto_comercial" model="website.menu">
+        <field name="name">Contacto Comercial</field>
+        <field name="url">/contacto-comercial</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence">10</field>
+    </record>
+
+    <record id="menu_sugerencias_quejas" model="website.menu">
+        <field name="name">Sugerencias y Quejas</field>
+        <field name="url">/sugerencias-quejas</field>
+        <field name="parent_id" ref="website.main_menu"/>
+        <field name="sequence">20</field>
+    </record>
+
     <!-- ===================================================================
          NOTA SOBRE MENÚS:
          Los ítems de menú se gestionan desde el editor del sitio web

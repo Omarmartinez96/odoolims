@@ -14,7 +14,6 @@ class LimsFeedback(models.Model):
     feedback_type = fields.Selection([
         ('sugerencia', 'Sugerencia'),
         ('queja', 'Queja'),
-        ('felicitacion', 'Felicitación'),
         ('consulta', 'Consulta General'),
     ], string='Tipo de Comentario', required=True, default='sugerencia', tracking=True)
     subject = fields.Char('Asunto')
