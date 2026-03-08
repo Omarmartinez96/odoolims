@@ -12,6 +12,7 @@
         <field name="view_id" ref="lims_homepage_view"/>
         <field name="url">/inicio</field>
         <field name="website_published">True</field>
+        <field name="is_homepage">True</field>
     </record>
 
     <!-- ===================================================================

@@ -304,6 +304,30 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
             }
         }
     }
+
+    // Centered single-card variant
+    &--centered {
+        text-align: center;
+
+        .lims-portal-card__icon { margin: 0 auto 24px; }
+
+        .lims-portal-card__features {
+            text-align: left;
+            margin-bottom: 10px;
+        }
+
+        .lims-portal-card__features-grid {
+            margin-bottom: 28px;
+        }
+    }
+
+    // Larger button for centered card
+    &__btn--lg {
+        padding: 15px 44px !important;
+        font-size: 1.05rem !important;
+        margin: 0 auto;
+        display: inline-flex;
+    }
 }
 
 // ============================================================

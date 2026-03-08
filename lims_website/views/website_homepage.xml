@@ -32,13 +32,8 @@
                                     <div class="lims-hero-portals">
                                         <a href="/web/login?redirect=/my"
                                            class="lims-btn-portal lims-btn-portal--client">
-                                            <i class="fa fa-user-circle me-2"/>
-                                            Portal de Clientes
-                                        </a>
-                                        <a href="/web/login"
-                                           class="lims-btn-portal lims-btn-portal--user">
-                                            <i class="fa fa-lock me-2"/>
-                                            Acceso de Usuarios
+                                            <i class="fa fa-sign-in me-2"/>
+                                            Acceder al Portal
                                         </a>
                                     </div>
                                     <p class="lims-hero-hint">
@@ -59,68 +54,49 @@
                     </section>
 
                     <!-- ================================================
-                         PORTAL ACCESS CARDS
+                         PORTAL ACCESS CARD (single, centered)
                     ================================================ -->
                     <section class="lims-portals-section">
                         <div class="container">
                             <div class="text-center mb-5">
-                                <h2 class="lims-section-title">Acceso al Sistema</h2>
+                                <h2 class="lims-section-title">Portal de Clientes</h2>
                                 <p class="lims-section-subtitle">
-                                    Selecciona tu tipo de acceso para ingresar al portal correspondiente
+                                    Accede a tus resultados, reportes y seguimiento de muestras de forma segura
                                 </p>
                             </div>
-                            <div class="row g-4 justify-content-center">
-
-                                <!-- Client Portal -->
-                                <div class="col-lg-5 col-md-6">
-                                    <div class="lims-portal-card lims-portal-card--client">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-7 col-md-9">
+                                    <div class="lims-portal-card lims-portal-card--client lims-portal-card--centered">
                                         <div class="lims-portal-card__icon">
                                             <i class="fa fa-flask fa-2x"/>
                                         </div>
-                                        <h3>Portal de Clientes</h3>
-                                        <p>Consulta el estado de tus análisis, descarga tus reportes y gestiona tu historial de muestras desde cualquier lugar.</p>
-                                        <ul class="lims-portal-card__features">
-                                            <li><i class="fa fa-check-circle"/> Resultados de análisis en línea</li>
-                                            <li><i class="fa fa-check-circle"/> Descarga de reportes e informes</li>
-                                            <li><i class="fa fa-check-circle"/> Seguimiento de muestras en tiempo real</li>
-                                            <li><i class="fa fa-check-circle"/> Historial completo de servicios</li>
-                                            <li><i class="fa fa-check-circle"/> Facturas y documentos fiscales</li>
-                                        </ul>
-                                        <a href="/web/login?redirect=/my" class="lims-portal-card__btn">
+                                        <h3>Acceso al Portal</h3>
+                                        <p>Consulta el estado de tus análisis, descarga tus reportes y gestiona tu historial de muestras desde cualquier lugar y dispositivo.</p>
+                                        <div class="row g-2 lims-portal-card__features-grid">
+                                            <div class="col-sm-6">
+                                                <ul class="lims-portal-card__features">
+                                                    <li><i class="fa fa-check-circle"/> Resultados de análisis en línea</li>
+                                                    <li><i class="fa fa-check-circle"/> Descarga de reportes e informes</li>
+                                                    <li><i class="fa fa-check-circle"/> Seguimiento de muestras en tiempo real</li>
+                                                </ul>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <ul class="lims-portal-card__features">
+                                                    <li><i class="fa fa-check-circle"/> Historial completo de servicios</li>
+                                                    <li><i class="fa fa-check-circle"/> Facturas y documentos fiscales</li>
+                                                    <li><i class="fa fa-check-circle"/> Atención y soporte en línea</li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <a href="/web/login?redirect=/my" class="lims-portal-card__btn lims-portal-card__btn--lg">
                                             <i class="fa fa-sign-in me-2"/>Ingresar al Portal
                                         </a>
                                         <p class="lims-portal-card__hint">
-                                            ¿Sin cuenta?
+                                            ¿Aún no tienes cuenta?
                                             <a href="/contacto-comercial">Solicita tu acceso aquí</a>
                                         </p>
                                     </div>
                                 </div>
-
-                                <!-- User Portal -->
-                                <div class="col-lg-5 col-md-6">
-                                    <div class="lims-portal-card lims-portal-card--user">
-                                        <div class="lims-portal-card__icon">
-                                            <i class="fa fa-cogs fa-2x"/>
-                                        </div>
-                                        <h3>Portal de Usuarios</h3>
-                                        <p>Acceso exclusivo para el personal del laboratorio al sistema de gestión interno de análisis y operaciones.</p>
-                                        <ul class="lims-portal-card__features">
-                                            <li><i class="fa fa-check-circle"/> Gestión de análisis y muestras</li>
-                                            <li><i class="fa fa-check-circle"/> Registro y captura de resultados</li>
-                                            <li><i class="fa fa-check-circle"/> Control de recepción de muestras</li>
-                                            <li><i class="fa fa-check-circle"/> Reportes y estadísticas internas</li>
-                                            <li><i class="fa fa-check-circle"/> Administración del sistema LIMS</li>
-                                        </ul>
-                                        <a href="/web/login" class="lims-portal-card__btn">
-                                            <i class="fa fa-sign-in me-2"/>Acceso de Usuarios
-                                        </a>
-                                        <p class="lims-portal-card__hint">
-                                            Solo personal autorizado
-                                            <i class="fa fa-shield ms-1"/>
-                                        </p>
-                                    </div>
-                                </div>
-
                             </div>
                         </div>
                     </section>
