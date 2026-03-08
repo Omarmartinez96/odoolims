@@ -1,6 +1,6 @@
 {
     'name': 'LIMS Portal Web',
-    'version': '17.0.1.0',
+    'version': '18.0.1.0',
     'author': 'Omar Martinez',
     'category': 'LIMS',
     'summary': 'Portal web para clientes y usuarios de Proteus Laboratorio',
