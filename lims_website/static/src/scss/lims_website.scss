@@ -1,21 +1,24 @@
 // ============================================================
 // LIMS WEBSITE SCSS - Proteus Laboratorio
-// Brand palette matching custom_theme:
-//   Primary:   #2c5aa0  (dark professional blue)
-//   Secondary: #1d3557  (deeper navy blue)
-//   Accent:    #e8f0fe  (very light blue)
-//   Light bg:  #f8f9ff
+// Brand palette centered on signature color #dae3f3
+//   Signature:  #dae3f3  rgb(218,227,243) — azul-gris claro insignia
+//   Primary:    #2c5aa0  azul profesional oscuro
+//   Secondary:  #1d3557  azul marino profundo
+//   Mid-brand:  #5b85c4  azul medio (derivado de insignia)
+//   Light bg:   #edf2f9  tinte claro de insignia
 // ============================================================
 
 // --- Variables ---
-$lims-primary:   #2c5aa0;
-$lims-secondary: #1d3557;
-$lims-accent:    #e8f0fe;
-$lims-light-bg:  #f8f9ff;
+$lims-brand:     #dae3f3;   // ← color insignia de la empresa
+$lims-brand-mid: #5b85c4;   // azul medio (entre insignia y primario)
+$lims-primary:   #2c5aa0;   // azul oscuro profesional
+$lims-secondary: #1d3557;   // azul marino profundo
+$lims-accent:    #dae3f3;   // = brand (usado como fondo de acentos)
+$lims-light-bg:  #edf2f9;   // tinte muy claro del color insignia
 $lims-text-dark: #1a1a2e;
-$lims-text-muted:#666677;
+$lims-text-muted:#5e6e8a;
 $lims-white:     #ffffff;
-$lims-border:    #d0ddf0;
+$lims-border:    #c4d4eb;   // borde derivado de insignia
 $lims-success:   #28a745;
 $lims-danger:    #dc3545;
 
@@ -27,10 +30,15 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
 
 // ============================================================
 // HERO SECTION
+// Degradado: marino profundo → azul primario → azul-brand medio
 // ============================================================
 .lims-hero {
     position: relative;
-    background: linear-gradient(135deg, $lims-secondary 0%, $lims-primary 60%, lighten($lims-primary, 8%) 100%);
+    background: linear-gradient(135deg,
+        $lims-secondary 0%,
+        $lims-primary   50%,
+        $lims-brand-mid 100%
+    );
     padding: 90px 0 60px;
     overflow: hidden;
     color: $lims-white;
@@ -39,8 +47,9 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
         content: '';
         position: absolute;
         inset: 0;
-        background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.07) 0%, transparent 60%),
-                    radial-gradient(circle at 10% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
+        background:
+            radial-gradient(circle at 80% 20%, rgba($lims-brand, 0.15) 0%, transparent 55%),
+            radial-gradient(circle at 10% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
         pointer-events: none;
     }
 }
@@ -69,8 +78,8 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
 
 .lims-hero-badge {
     display: inline-block;
-    background: rgba(255, 255, 255, 0.15);
-    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba($lims-brand, 0.18);
+    border: 1px solid rgba($lims-brand, 0.45);
     color: $lims-white;
     padding: 6px 18px;
     border-radius: 20px;
@@ -122,23 +131,23 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
     }
 
     &--client {
-        background: $lims-white;
-        color: $lims-primary !important;
+        background: $lims-brand;
+        color: $lims-secondary !important;
 
         &:hover {
-            background: $lims-accent;
-            color: $lims-secondary !important;
+            background: $lims-white;
+            color: $lims-primary !important;
         }
     }
 
     &--user {
         background: transparent;
         color: $lims-white !important;
-        border: 2px solid rgba(255, 255, 255, 0.65);
+        border: 2px solid rgba($lims-brand, 0.65);
 
         &:hover {
-            background: rgba(255, 255, 255, 0.12);
-            border-color: $lims-white;
+            background: rgba($lims-brand, 0.15);
+            border-color: $lims-brand;
             color: $lims-white !important;
         }
     }
@@ -151,7 +160,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
 }
 
 .lims-hero-link {
-    color: $lims-white;
+    color: $lims-brand;
     text-decoration: underline;
     opacity: 0.9;
 
@@ -189,10 +198,11 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
 
 // ============================================================
 // PORTAL ACCESS CARDS
+// Fondo: degradado suave usando color insignia
 // ============================================================
 .lims-portals-section {
     padding: 70px 0;
-    background: $lims-light-bg;
+    background: linear-gradient(160deg, $lims-light-bg 0%, $lims-brand 100%);
 }
 
 .lims-portal-card {
@@ -212,7 +222,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
         width: 140px;
         height: 140px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.07);
+        background: rgba($lims-brand, 0.12);
     }
 
     &:hover {
@@ -220,8 +230,9 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
         box-shadow: $lims-shadow-hover;
     }
 
+    // Degradado: primario → brand-mid (azul claro)
     &--client {
-        background: linear-gradient(145deg, $lims-primary, lighten($lims-primary, 12%));
+        background: linear-gradient(145deg, $lims-primary, $lims-brand-mid);
     }
 
     &--user {
@@ -232,7 +243,8 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
         width: 72px;
         height: 72px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba($lims-brand, 0.2);
+        border: 2px solid rgba($lims-brand, 0.35);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -264,7 +276,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
 
             .fa-check-circle {
                 margin-right: 8px;
-                opacity: 0.75;
+                color: $lims-brand;
             }
         }
     }
@@ -272,9 +284,9 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
     &__btn {
         display: inline-flex;
         align-items: center;
-        background: rgba(255, 255, 255, 0.18);
+        background: rgba($lims-brand, 0.18);
         color: $lims-white !important;
-        border: 2px solid rgba(255, 255, 255, 0.5);
+        border: 2px solid rgba($lims-brand, 0.55);
         border-radius: 50px;
         padding: 12px 28px;
         font-weight: 600;
@@ -283,9 +295,9 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
         font-size: 0.95rem;
 
         &:hover {
-            background: $lims-white;
-            color: $lims-primary !important;
-            border-color: $lims-white;
+            background: $lims-brand;
+            color: $lims-secondary !important;
+            border-color: $lims-brand;
         }
     }
 
@@ -296,7 +308,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
         margin-bottom: 0;
 
         a {
-            color: $lims-white;
+            color: $lims-brand;
             text-decoration: underline;
 
             &:hover {
@@ -332,6 +344,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
 
 // ============================================================
 // FEATURES SECTION
+// Fondo blanco con acentos del color insignia
 // ============================================================
 .lims-features-section {
     padding: 70px 0;
@@ -346,16 +359,17 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
     height: 100%;
 
     &:hover {
-        border-color: $lims-accent;
+        border-color: $lims-brand;
         box-shadow: $lims-shadow;
         transform: translateY(-4px);
+        background: linear-gradient(160deg, $lims-white 0%, $lims-light-bg 100%);
     }
 
     &__icon {
         width: 72px;
         height: 72px;
         border-radius: 50%;
-        background: $lims-accent;
+        background: $lims-brand;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -386,15 +400,16 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
 
 // ============================================================
 // SERVICES SECTION
+// Degradado profundo: marino → primario
 // ============================================================
 .lims-services-section {
     padding: 70px 0;
-    background: linear-gradient(160deg, $lims-secondary 0%, $lims-primary 100%);
+    background: linear-gradient(160deg, $lims-secondary 0%, $lims-primary 70%, $lims-brand-mid 100%);
 }
 
 .lims-service-card {
-    background: rgba(255, 255, 255, 0.08);
-    border: 1px solid rgba(255, 255, 255, 0.15);
+    background: rgba($lims-brand, 0.08);
+    border: 1px solid rgba($lims-brand, 0.2);
     border-radius: $lims-radius;
     padding: 22px 20px;
     display: flex;
@@ -404,14 +419,14 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
     height: 100%;
 
     &:hover {
-        background: rgba(255, 255, 255, 0.14);
-        border-color: rgba(255, 255, 255, 0.35);
+        background: rgba($lims-brand, 0.15);
+        border-color: rgba($lims-brand, 0.45);
         transform: translateX(4px);
     }
 
     &__icon {
         font-size: 1.6rem;
-        color: rgba(255, 255, 255, 0.85);
+        color: $lims-brand;
         flex-shrink: 0;
         margin-top: 4px;
     }
@@ -436,8 +451,8 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
 .lims-btn-outline {
     display: inline-flex;
     align-items: center;
-    color: $lims-white !important;
-    border: 2px solid rgba(255, 255, 255, 0.6);
+    color: $lims-brand !important;
+    border: 2px solid rgba($lims-brand, 0.6);
     border-radius: 50px;
     padding: 12px 30px;
     font-weight: 600;
@@ -445,23 +460,34 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
     transition: $lims-transition;
 
     &:hover {
-        background: rgba(255, 255, 255, 0.15);
-        border-color: $lims-white;
+        background: rgba($lims-brand, 0.15);
+        border-color: $lims-brand;
         color: $lims-white !important;
     }
 }
 
 // ============================================================
 // STATS SECTION
+// Degradado con color insignia como acento superior
 // ============================================================
 .lims-stats-section {
     padding: 60px 0;
-    background: $lims-secondary;
+    background: linear-gradient(135deg, $lims-secondary 0%, darken($lims-primary, 6%) 100%);
     color: $lims-white;
+    position: relative;
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(ellipse at 50% 0%, rgba($lims-brand, 0.12) 0%, transparent 65%);
+        pointer-events: none;
+    }
 }
 
 .lims-stat-item {
     padding: 16px;
+    position: relative;
 }
 
 .lims-stat-number {
@@ -469,22 +495,23 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
     font-size: clamp(2rem, 5vw, 3rem);
     font-weight: 700;
     line-height: 1;
-    color: $lims-white;
+    color: $lims-brand;
 }
 
 .lims-stat-label {
     font-size: 0.9rem;
-    opacity: 0.8;
+    color: rgba(255, 255, 255, 0.8);
     margin-top: 8px;
     line-height: 1.4;
 }
 
 // ============================================================
 // CONTACT CTA SECTION
+// Fondo: degradado del color insignia hacia claro
 // ============================================================
 .lims-cta-section {
     padding: 70px 0;
-    background: $lims-light-bg;
+    background: linear-gradient(160deg, $lims-brand 0%, $lims-light-bg 100%);
 }
 
 .lims-cta-card {
@@ -499,6 +526,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
     &:hover {
         box-shadow: $lims-shadow-hover;
         transform: translateY(-6px);
+        border-color: $lims-brand-mid;
     }
 
     &__icon {
@@ -537,7 +565,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
             font-size: 0.92rem;
 
             .fa-check {
-                color: $lims-success;
+                color: $lims-primary;
                 margin-right: 8px;
             }
         }
@@ -565,36 +593,40 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
         }
 
         &--secondary {
-            background: $lims-secondary;
-            color: $lims-white !important;
+            background: $lims-brand;
+            color: $lims-secondary !important;
+            border: 2px solid $lims-border;
 
             &:hover {
-                background: $lims-primary;
+                background: $lims-secondary;
                 color: $lims-white !important;
+                border-color: $lims-secondary;
                 transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(29, 53, 87, 0.35);
+                box-shadow: 0 6px 20px rgba(29, 53, 87, 0.3);
             }
         }
     }
 
-    // Color accents per card type
+    // Color accents por tipo de tarjeta
     &--sales .lims-cta-card__icon {
-        background: $lims-accent;
+        background: $lims-brand;
         color: $lims-primary;
     }
 
     &--feedback .lims-cta-card__icon {
-        background: lighten($lims-secondary, 60%);
+        background: $lims-light-bg;
         color: $lims-secondary;
+        border: 2px solid $lims-border;
     }
 }
 
 // ============================================================
 // INFO BAR (bottom of homepage)
+// Degradado: marino → primario con tinte de insignia
 // ============================================================
 .lims-info-bar {
     padding: 30px 0;
-    background: $lims-secondary;
+    background: linear-gradient(90deg, $lims-secondary 0%, $lims-primary 100%);
     color: rgba(255, 255, 255, 0.85);
 
     &__item {
@@ -605,7 +637,8 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
         font-size: 0.92rem;
 
         .fa {
-            opacity: 0.7;
+            color: $lims-brand;
+            opacity: 0.85;
         }
 
         a {
@@ -613,7 +646,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
             text-decoration: none;
 
             &:hover {
-                color: $lims-white;
+                color: $lims-brand;
                 text-decoration: underline;
             }
         }
@@ -628,7 +661,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
 
     &__header {
         padding: 60px 0 40px;
-        background: linear-gradient(135deg, $lims-secondary, $lims-primary);
+        background: linear-gradient(135deg, $lims-secondary 0%, $lims-primary 60%, $lims-brand-mid 100%);
         color: $lims-white;
         text-align: center;
 
@@ -656,7 +689,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
                 color: rgba(255, 255, 255, 0.75);
 
                 a {
-                    color: rgba(255, 255, 255, 0.85);
+                    color: $lims-brand;
                     text-decoration: none;
 
                     &:hover {
@@ -674,8 +707,8 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
         width: 80px;
         height: 80px;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.15);
-        border: 2px solid rgba(255, 255, 255, 0.3);
+        background: rgba($lims-brand, 0.2);
+        border: 2px solid rgba($lims-brand, 0.4);
         display: flex;
         align-items: center;
         justify-content: center;
@@ -684,13 +717,13 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
         color: $lims-white;
 
         &--feedback {
-            background: rgba(255, 255, 255, 0.12);
+            background: rgba($lims-brand, 0.12);
         }
     }
 
     &__content {
         padding: 48px 0 60px;
-        background: $lims-light-bg;
+        background: linear-gradient(160deg, $lims-light-bg 0%, $lims-brand 100%);
     }
 }
 
@@ -698,7 +731,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
 .lims-feedback-type-bar {
     background: $lims-white;
     padding: 20px 0;
-    border-bottom: 1px solid $lims-border;
+    border-bottom: 2px solid $lims-brand;
     box-shadow: 0 2px 8px rgba(44, 90, 160, 0.08);
 }
 
@@ -725,6 +758,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
     &:hover {
         border-color: $lims-primary;
         color: $lims-primary;
+        background: $lims-light-bg;
     }
 
     &.active,
@@ -751,6 +785,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
     border-radius: $lims-radius-lg;
     padding: 36px;
     box-shadow: $lims-shadow;
+    border-top: 3px solid $lims-brand;
 
     &__title {
         color: $lims-secondary;
@@ -758,7 +793,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
         font-size: 1.1rem;
         margin-bottom: 24px;
         padding-bottom: 16px;
-        border-bottom: 2px solid $lims-accent;
+        border-bottom: 2px solid $lims-brand;
     }
 }
 
@@ -778,8 +813,8 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
     transition: $lims-transition;
 
     &:focus {
-        border-color: $lims-primary !important;
-        box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.15) !important;
+        border-color: $lims-brand-mid !important;
+        box-shadow: 0 0 0 3px rgba($lims-brand, 0.4) !important;
     }
 }
 
@@ -789,10 +824,10 @@ textarea.form-control {
 }
 
 .lims-form-optional-section {
-    background: $lims-accent;
+    background: $lims-brand;
     border-radius: $lims-radius;
     padding: 20px;
-    border: 1px solid darken($lims-accent, 8%);
+    border: 1px solid $lims-border;
 
     h6 {
         color: $lims-primary;
@@ -817,7 +852,7 @@ textarea.form-control {
 
 // Submit button
 .lims-btn-submit {
-    background: $lims-primary;
+    background: linear-gradient(90deg, $lims-primary, $lims-brand-mid);
     color: $lims-white;
     border: none;
     border-radius: 50px;
@@ -829,7 +864,7 @@ textarea.form-control {
     font-family: 'Roboto', sans-serif;
 
     &:hover {
-        background: $lims-secondary;
+        background: linear-gradient(90deg, $lims-secondary, $lims-primary);
         color: $lims-white;
         transform: translateY(-2px);
         box-shadow: 0 8px 24px rgba(44, 90, 160, 0.35);
@@ -855,17 +890,20 @@ textarea.form-control {
     border-radius: $lims-radius-lg;
     padding: 28px;
     color: $lims-white;
+    border-top: 4px solid $lims-brand;
 
     h4 {
         font-weight: 700;
         font-size: 1.05rem;
         margin-bottom: 22px;
+        color: $lims-brand;
     }
 
     h5 {
         font-weight: 700;
         font-size: 0.95rem;
         margin-bottom: 16px;
+        color: $lims-brand;
     }
 
     p {
@@ -893,7 +931,7 @@ textarea.form-control {
         }
 
         a {
-            color: rgba(255, 255, 255, 0.85);
+            color: $lims-brand;
             text-decoration: none;
             font-size: 0.9rem;
 
@@ -906,23 +944,26 @@ textarea.form-control {
         height: 36px;
         flex-shrink: 0;
         border-radius: 50%;
-        background: rgba(255, 255, 255, 0.15);
+        background: rgba($lims-brand, 0.2);
+        border: 1px solid rgba($lims-brand, 0.35);
         display: flex;
         align-items: center;
         justify-content: center;
         font-size: 0.9rem;
+        color: $lims-brand;
     }
 
     &__divider {
-        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        border-top: 1px solid rgba($lims-brand, 0.25);
         margin: 20px 0;
     }
 
     &__response {
-        background: rgba(255, 255, 255, 0.1);
+        background: rgba($lims-brand, 0.12);
         border-radius: 8px;
         padding: 14px;
         font-size: 0.88rem;
+        border: 1px solid rgba($lims-brand, 0.2);
 
         p {
             margin-top: 6px;
@@ -940,13 +981,19 @@ textarea.form-control {
     &--light {
         background: $lims-white;
         border: 1px solid $lims-border;
+        border-top: 4px solid $lims-brand;
         box-shadow: $lims-shadow;
 
         h4, h5 { color: $lims-secondary; }
         p { color: $lims-text-muted; }
+
+        .lims-form-sidebar__icon {
+            background: $lims-brand;
+            color: $lims-primary;
+        }
     }
 
-    // Alt variant (same as default but different color)
+    // Alt variant
     &--alt {
         background: linear-gradient(145deg, darken($lims-secondary, 4%), $lims-secondary);
     }
@@ -961,12 +1008,12 @@ textarea.form-control {
     text-decoration: none !important;
     font-size: 0.92rem;
     font-weight: 500;
-    border-bottom: 1px solid $lims-border;
+    border-bottom: 1px solid $lims-brand;
     transition: $lims-transition;
 
     &:last-child { border-bottom: none; }
 
-    .fa { opacity: 0.7; }
+    .fa { color: $lims-brand-mid; opacity: 0.85; }
 
     &:hover {
         color: $lims-secondary !important;
@@ -987,12 +1034,12 @@ textarea.form-control {
         padding: 8px 0;
         color: rgba(255, 255, 255, 0.88);
         font-size: 0.9rem;
-        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+        border-bottom: 1px solid rgba($lims-brand, 0.18);
 
         &:last-child { border-bottom: none; }
 
         .fa-check-circle {
-            color: rgba(255, 255, 255, 0.75);
+            color: $lims-brand;
             margin-top: 2px;
             flex-shrink: 0;
         }
