@@ -18,27 +18,15 @@
     <record id="menu_contacto_comercial" model="website.menu">
         <field name="name">Contacto Comercial</field>
         <field name="url">/contacto-comercial</field>
-        <field name="parent_id" eval="ref('website.main_menu')"/>
+        <field name="website_id" eval="1"/>
         <field name="sequence">10</field>
-        <field name="website_id" eval="ref('website.default_website')"/>
     </record>
 
     <record id="menu_sugerencias_quejas" model="website.menu">
         <field name="name">Sugerencias y Quejas</field>
         <field name="url">/sugerencias-quejas</field>
-        <field name="parent_id" eval="ref('website.main_menu')"/>
+        <field name="website_id" eval="1"/>
         <field name="sequence">20</field>
-        <field name="website_id" eval="ref('website.default_website')"/>
     </record>
-
-    <!-- ===================================================================
-         NOTA SOBRE MENÚS:
-         Los ítems de menú se gestionan desde el editor del sitio web
-         (Sitio Web > Editor > Menú) para evitar conflictos con el menú
-         existente. Rutas disponibles:
-           /inicio              → Página de inicio del portal
-           /contacto-comercial  → Formulario de contacto comercial
-           /sugerencias-quejas  → Formulario de sugerencias y quejas
-    =================================================================== -->
 
 </odoo>
