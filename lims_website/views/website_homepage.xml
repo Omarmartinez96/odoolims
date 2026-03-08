@@ -25,7 +25,7 @@
                                     <span class="lims-hero-badge">
                                         <i class="fa fa-flask me-2"/>Laboratorio de Análisis Certificado
                                     </span>
-                                    <h1 class="lims-hero-title">Proteus Laboratorio</h1>
+                                    <h1 class="lims-hero-title">Laboratorio de Microbiología Proteus</h1>
                                     <p class="lims-hero-tagline">
                                         Soluciones analíticas precisas y confiables para empresas, industrias y profesionales de la salud
                                     </p>
@@ -119,7 +119,7 @@
                                             <i class="fa fa-certificate fa-2x"/>
                                         </div>
                                         <h4>Acreditación</h4>
-                                        <p>Laboratorio acreditado bajo normas NMX e ISO. Resultados reconocidos por autoridades nacionales e internacionales.</p>
+                                        <p>Laboratorio acreditado bajo la norma ISO/IEC 17025. Resultados reconocidos por autoridades nacionales e internacionales.</p>
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-sm-6">
@@ -194,15 +194,6 @@
                                 </div>
                                 <div class="col-lg-4 col-md-6">
                                     <div class="lims-service-card">
-                                        <i class="fa fa-bug lims-service-card__icon"/>
-                                        <div class="lims-service-card__body">
-                                            <h5>Microbiología</h5>
-                                            <p>Identificación y cuantificación de microorganismos en alimentos, agua y superficies.</p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="col-lg-4 col-md-6">
-                                    <div class="lims-service-card">
                                         <i class="fa fa-cutlery lims-service-card__icon"/>
                                         <div class="lims-service-card__body">
                                             <h5>Análisis de Alimentos</h5>
@@ -224,40 +215,6 @@
                                 <a href="/contacto-comercial" class="lims-btn-outline">
                                     <i class="fa fa-envelope me-2"/>Solicitar Información de Servicios
                                 </a>
-                            </div>
-                        </div>
-                    </section>
-
-                    <!-- ================================================
-                         STATS SECTION
-                    ================================================ -->
-                    <section class="lims-stats-section">
-                        <div class="container">
-                            <div class="row text-center g-4">
-                                <div class="col-6 col-md-3">
-                                    <div class="lims-stat-item">
-                                        <div class="lims-stat-number">+15</div>
-                                        <div class="lims-stat-label">Años de<br/>Experiencia</div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-3">
-                                    <div class="lims-stat-item">
-                                        <div class="lims-stat-number">+50K</div>
-                                        <div class="lims-stat-label">Análisis<br/>Realizados</div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-3">
-                                    <div class="lims-stat-item">
-                                        <div class="lims-stat-number">+500</div>
-                                        <div class="lims-stat-label">Clientes<br/>Satisfechos</div>
-                                    </div>
-                                </div>
-                                <div class="col-6 col-md-3">
-                                    <div class="lims-stat-item">
-                                        <div class="lims-stat-number">99.8%</div>
-                                        <div class="lims-stat-label">Índice de<br/>Precisión</div>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </section>
@@ -319,7 +276,7 @@
                                 <div class="col-lg-3 col-sm-6">
                                     <div class="lims-info-bar__item">
                                         <i class="fa fa-map-marker fa-lg me-2"/>
-                                        <span>Proteus Laboratorio, México</span>
+                                        <span>Defensores de BC 2163 5A, Tijuana, B.C.</span>
                                     </div>
                                 </div>
                                 <div class="col-lg-3 col-sm-6">
@@ -337,7 +294,7 @@
                                 <div class="col-lg-3 col-sm-6">
                                     <div class="lims-info-bar__item">
                                         <i class="fa fa-clock-o fa-lg me-2"/>
-                                        <span>Lun – Vie: 8:00 – 18:00</span>
+                                        <span>Lun – Vie: 9:00 – 18:00</span>
                                     </div>
                                 </div>
                             </div>
