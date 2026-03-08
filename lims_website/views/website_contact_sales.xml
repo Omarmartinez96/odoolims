@@ -130,7 +130,7 @@
                                                            class="form-control"
                                                            id="contact_phone"
                                                            name="contact_phone"
-                                                           placeholder="+52 (33) XXXX-XXXX"
+                                                           placeholder="(664) 973 8185"
                                                            maxlength="30"/>
                                                 </div>
 
@@ -226,7 +226,7 @@
                                             </div>
                                             <div>
                                                 <strong>Teléfono</strong>
-                                                <p><a href="tel:+5233XXXXXXXX">+52 (33) XXXX-XXXX</a></p>
+                                                <p><a href="tel:+526649738185">(664) 973 8185</a></p>
                                             </div>
                                         </div>
 

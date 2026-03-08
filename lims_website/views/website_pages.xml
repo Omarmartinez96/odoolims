@@ -3,48 +3,25 @@
 
     <!-- ===================================================================
          WEBSITE PAGES - Registro de páginas para el website builder
-         Esto permite editar el contenido desde el editor visual de Odoo.
+         La página se publica en /inicio para no conflictuar con el
+         homepage existente. El administrador puede configurar la
+         página de inicio desde Sitio Web > Configuración > Páginas.
     =================================================================== -->
 
-    <!-- Homepage page record -->
     <record id="lims_website_homepage_page" model="website.page">
         <field name="view_id" ref="lims_homepage_view"/>
-        <field name="url">/</field>
+        <field name="url">/inicio</field>
         <field name="website_published">True</field>
-        <field name="is_homepage">True</field>
     </record>
-
-    <!-- Contact Sales page record -->
-    <!-- Note: This page is controller-based (GET + POST forms), so it is not
-         registered as a website.page to avoid conflicts with the controller routing.
-         The page is accessible at /contacto-comercial via the controller. -->
-
-    <!-- Feedback page record -->
-    <!-- Note: Same as above – accessible at /sugerencias-quejas via the controller. -->
 
     <!-- ===================================================================
-         WEBSITE MENU - Navegación del sitio
-         Se crean los ítems del menú principal del website.
-         Estos pueden editarse desde Configuración > Sitio Web > Menú.
+         NOTA SOBRE MENÚS:
+         Los ítems de menú se gestionan desde el editor del sitio web
+         (Sitio Web > Editor > Menú) para evitar conflictos con el menú
+         existente. Rutas disponibles:
+           /inicio              → Página de inicio del portal
+           /contacto-comercial  → Formulario de contacto comercial
+           /sugerencias-quejas  → Formulario de sugerencias y quejas
     =================================================================== -->
-
-    <!-- Main menu items -->
-    <record id="website_menu_contacto_comercial" model="website.menu">
-        <field name="name">Contacto Comercial</field>
-        <field name="url">/contacto-comercial</field>
-        <field name="sequence">20</field>
-    </record>
-
-    <record id="website_menu_sugerencias_quejas" model="website.menu">
-        <field name="name">Sugerencias y Quejas</field>
-        <field name="url">/sugerencias-quejas</field>
-        <field name="sequence">30</field>
-    </record>
-
-    <record id="website_menu_portal_clientes" model="website.menu">
-        <field name="name">Portal de Clientes</field>
-        <field name="url">/web/login?redirect=/my</field>
-        <field name="sequence">40</field>
-    </record>
 
 </odoo>
