@@ -2,21 +2,21 @@
 // LIMS WEBSITE SCSS - Proteus Laboratorio
 // Brand palette centered on signature color #dae3f3
 //   Signature:  #dae3f3  rgb(218,227,243) — azul-gris claro insignia
-//   Primary:    #2c5aa0  azul profesional oscuro
-//   Secondary:  #1d3557  azul marino profundo
-//   Mid-brand:  #5b85c4  azul medio (derivado de insignia)
+//   Primary:    #1a6678  teal-acero (azul laboratorio, ≠ IA-blue)
+//   Secondary:  #0d3347  teal marino profundo
+//   Mid-brand:  #2e95a8  teal medio
 //   Light bg:   #edf2f9  tinte claro de insignia
 // ============================================================
 
 // --- Variables ---
 $lims-brand:     #dae3f3;   // ← color insignia de la empresa
-$lims-brand-mid: #5b85c4;   // azul medio (entre insignia y primario)
-$lims-primary:   #2c5aa0;   // azul oscuro profesional
-$lims-secondary: #1d3557;   // azul marino profundo
+$lims-brand-mid: #2e95a8;   // teal medio (científico, no "IA-blue")
+$lims-primary:   #1a6678;   // teal-acero profesional
+$lims-secondary: #0d3347;   // teal marino profundo
 $lims-accent:    #dae3f3;   // = brand (usado como fondo de acentos)
 $lims-light-bg:  #edf2f9;   // tinte muy claro del color insignia
-$lims-text-dark: #1a1a2e;
-$lims-text-muted:#5e6e8a;
+$lims-text-dark: #0f2030;
+$lims-text-muted:#4e6577;
 $lims-white:     #ffffff;
 $lims-border:    #c4d4eb;   // borde derivado de insignia
 $lims-success:   #28a745;
@@ -25,8 +25,8 @@ $lims-danger:    #dc3545;
 $lims-transition: all 0.3s ease;
 $lims-radius:     12px;
 $lims-radius-lg:  16px;
-$lims-shadow:     0 4px 24px rgba(44, 90, 160, 0.12);
-$lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
+$lims-shadow:     0 4px 24px rgba(26, 102, 120, 0.12);
+$lims-shadow-hover: 0 8px 40px rgba(26, 102, 120, 0.22);
 
 // ============================================================
 // HERO SECTION
@@ -588,7 +588,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
                 background: $lims-secondary;
                 color: $lims-white !important;
                 transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(44, 90, 160, 0.35);
+                box-shadow: 0 6px 20px rgba(26, 102, 120, 0.35);
             }
         }
 
@@ -602,7 +602,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
                 color: $lims-white !important;
                 border-color: $lims-secondary;
                 transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(29, 53, 87, 0.3);
+                box-shadow: 0 6px 20px rgba(13, 51, 71, 0.3);
             }
         }
     }
@@ -732,7 +732,7 @@ $lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
     background: $lims-white;
     padding: 20px 0;
     border-bottom: 2px solid $lims-brand;
-    box-shadow: 0 2px 8px rgba(44, 90, 160, 0.08);
+    box-shadow: 0 2px 8px rgba(26, 102, 120, 0.08);
 }
 
 .lims-type-pills {
@@ -867,7 +867,7 @@ textarea.form-control {
         background: linear-gradient(90deg, $lims-secondary, $lims-primary);
         color: $lims-white;
         transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(44, 90, 160, 0.35);
+        box-shadow: 0 8px 24px rgba(26, 102, 120, 0.35);
     }
 }
 
