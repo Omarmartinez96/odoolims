@@ -1,0 +1,286 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===================================================================
+         CONTACTO COMERCIAL - Formulario de solicitudes de venta
+    =================================================================== -->
+    <record id="lims_contact_sales_view" model="ir.ui.view">
+        <field name="name">lims.website.contact.sales</field>
+        <field name="type">qweb</field>
+        <field name="key">lims_website.contact_sales_page</field>
+        <field name="arch" type="xml">
+            <t t-name="lims_website.contact_sales_page">
+                <t t-call="website.layout">
+                    <t t-set="pageName" t-value="'contact_sales'"/>
+
+                    <div class="lims-form-page">
+
+                        <!-- Page Header -->
+                        <div class="lims-form-page__header">
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-8 text-center">
+                                        <div class="lims-form-page__icon">
+                                            <i class="fa fa-handshake-o"/>
+                                        </div>
+                                        <h1>Contacto Comercial</h1>
+                                        <p>¿Interesado en nuestros servicios de análisis? Completa el formulario y uno de nuestros asesores te contactará a la brevedad.</p>
+                                        <nav aria-label="breadcrumb">
+                                            <ol class="breadcrumb justify-content-center">
+                                                <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                                                <li class="breadcrumb-item active">Contacto Comercial</li>
+                                            </ol>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="container lims-form-page__content">
+                            <div class="row g-4 justify-content-center">
+
+                                <!-- Form Column -->
+                                <div class="col-lg-7">
+
+                                    <!-- Success Alert -->
+                                    <t t-if="success">
+                                        <div class="lims-alert lims-alert--success" role="alert">
+                                            <i class="fa fa-check-circle fa-lg me-2"/>
+                                            <div>
+                                                <strong>¡Solicitud enviada con éxito!</strong>
+                                                <p class="mb-0">Hemos recibido tu mensaje. Un asesor te contactará en un plazo máximo de 24 horas hábiles.</p>
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                    <!-- Error Alert -->
+                                    <t t-if="error">
+                                        <div class="lims-alert lims-alert--danger" role="alert">
+                                            <i class="fa fa-exclamation-circle fa-lg me-2"/>
+                                            <div>
+                                                <t t-if="error == 'campos_requeridos'">
+                                                    <strong>Campos incompletos</strong>
+                                                    <p class="mb-0">Por favor completa todos los campos obligatorios marcados con *</p>
+                                                </t>
+                                                <t t-else="">
+                                                    <strong>Error al enviar</strong>
+                                                    <p class="mb-0">Ocurrió un error inesperado. Intenta nuevamente o contáctanos directamente.</p>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                    <!-- Contact Form -->
+                                    <div class="lims-form-card">
+                                        <h4 class="lims-form-card__title">
+                                            <i class="fa fa-edit me-2"/>Información de Contacto
+                                        </h4>
+                                        <form action="/contacto-comercial/enviar" method="POST" id="lims_sales_form" novalidate="">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                                            <div class="row g-3">
+                                                <!-- Name -->
+                                                <div class="col-sm-6">
+                                                    <label for="contact_name" class="form-label lims-form-label">
+                                                        Nombre completo <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="text"
+                                                           class="form-control"
+                                                           id="contact_name"
+                                                           name="contact_name"
+                                                           placeholder="Tu nombre"
+                                                           required="required"
+                                                           maxlength="120"/>
+                                                </div>
+
+                                                <!-- Company -->
+                                                <div class="col-sm-6">
+                                                    <label for="contact_company" class="form-label lims-form-label">
+                                                        Empresa / Organización
+                                                    </label>
+                                                    <input type="text"
+                                                           class="form-control"
+                                                           id="contact_company"
+                                                           name="contact_company"
+                                                           placeholder="Nombre de tu empresa (opcional)"
+                                                           maxlength="120"/>
+                                                </div>
+
+                                                <!-- Email -->
+                                                <div class="col-sm-6">
+                                                    <label for="contact_email" class="form-label lims-form-label">
+                                                        Correo electrónico <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="email"
+                                                           class="form-control"
+                                                           id="contact_email"
+                                                           name="contact_email"
+                                                           placeholder="tu@correo.com"
+                                                           required="required"
+                                                           maxlength="150"/>
+                                                </div>
+
+                                                <!-- Phone -->
+                                                <div class="col-sm-6">
+                                                    <label for="contact_phone" class="form-label lims-form-label">
+                                                        Teléfono / Celular
+                                                    </label>
+                                                    <input type="tel"
+                                                           class="form-control"
+                                                           id="contact_phone"
+                                                           name="contact_phone"
+                                                           placeholder="+52 (33) XXXX-XXXX"
+                                                           maxlength="30"/>
+                                                </div>
+
+                                                <!-- Service Interest -->
+                                                <div class="col-12">
+                                                    <label for="contact_service" class="form-label lims-form-label">
+                                                        Servicio de interés <span class="text-danger">*</span>
+                                                    </label>
+                                                    <select class="form-select"
+                                                            id="contact_service"
+                                                            name="contact_service"
+                                                            required="required">
+                                                        <option value="">— Selecciona un servicio —</option>
+                                                        <t t-foreach="services" t-as="svc">
+                                                            <option t-att-value="svc[0]">
+                                                                <t t-esc="svc[1]"/>
+                                                            </option>
+                                                        </t>
+                                                    </select>
+                                                </div>
+
+                                                <!-- Subject -->
+                                                <div class="col-12">
+                                                    <label for="contact_subject" class="form-label lims-form-label">
+                                                        Asunto <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="text"
+                                                           class="form-control"
+                                                           id="contact_subject"
+                                                           name="contact_subject"
+                                                           placeholder="¿En qué podemos ayudarte?"
+                                                           required="required"
+                                                           maxlength="200"/>
+                                                </div>
+
+                                                <!-- Message -->
+                                                <div class="col-12">
+                                                    <label for="contact_message" class="form-label lims-form-label">
+                                                        Mensaje <span class="text-danger">*</span>
+                                                    </label>
+                                                    <textarea class="form-control"
+                                                              id="contact_message"
+                                                              name="contact_message"
+                                                              rows="5"
+                                                              placeholder="Describe tus necesidades con el mayor detalle posible..."
+                                                              required="required"
+                                                              maxlength="2000"/>
+                                                    <div class="form-text">Máximo 2000 caracteres.</div>
+                                                </div>
+
+                                                <!-- Privacy notice -->
+                                                <div class="col-12">
+                                                    <div class="lims-form-privacy">
+                                                        <i class="fa fa-lock me-1"/>
+                                                        Tu información es confidencial y será utilizada exclusivamente para atender tu solicitud.
+                                                        No compartimos datos con terceros.
+                                                    </div>
+                                                </div>
+
+                                                <!-- Submit -->
+                                                <div class="col-12 text-center">
+                                                    <button type="submit" class="lims-btn-submit">
+                                                        <i class="fa fa-paper-plane me-2"/>
+                                                        Enviar Solicitud
+                                                    </button>
+                                                    <a href="/" class="lims-btn-cancel ms-3">
+                                                        <i class="fa fa-arrow-left me-1"/>Regresar
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <!-- Sidebar -->
+                                <div class="col-lg-4 col-md-8">
+                                    <div class="lims-form-sidebar">
+                                        <h4><i class="fa fa-info-circle me-2"/>Información de Contacto</h4>
+
+                                        <div class="lims-form-sidebar__item">
+                                            <div class="lims-form-sidebar__icon">
+                                                <i class="fa fa-map-marker"/>
+                                            </div>
+                                            <div>
+                                                <strong>Dirección</strong>
+                                                <p>Guadalajara, Jalisco, México</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="lims-form-sidebar__item">
+                                            <div class="lims-form-sidebar__icon">
+                                                <i class="fa fa-phone"/>
+                                            </div>
+                                            <div>
+                                                <strong>Teléfono</strong>
+                                                <p><a href="tel:+5233XXXXXXXX">+52 (33) XXXX-XXXX</a></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="lims-form-sidebar__item">
+                                            <div class="lims-form-sidebar__icon">
+                                                <i class="fa fa-envelope"/>
+                                            </div>
+                                            <div>
+                                                <strong>Correo Comercial</strong>
+                                                <p><a href="mailto:ventas@proteuslaboratorio.com">ventas@proteuslaboratorio.com</a></p>
+                                            </div>
+                                        </div>
+
+                                        <div class="lims-form-sidebar__item">
+                                            <div class="lims-form-sidebar__icon">
+                                                <i class="fa fa-clock-o"/>
+                                            </div>
+                                            <div>
+                                                <strong>Horario de Atención</strong>
+                                                <p>Lunes a Viernes<br/>8:00 – 18:00 hrs</p>
+                                            </div>
+                                        </div>
+
+                                        <div class="lims-form-sidebar__divider"/>
+
+                                        <div class="lims-form-sidebar__response">
+                                            <i class="fa fa-reply me-2"/>
+                                            <strong>Tiempo de respuesta:</strong>
+                                            <p>Nos comprometemos a responderte en un plazo máximo de <strong>24 horas hábiles</strong>.</p>
+                                        </div>
+                                    </div>
+
+                                    <!-- Quick links -->
+                                    <div class="lims-form-sidebar lims-form-sidebar--light mt-3">
+                                        <h5><i class="fa fa-link me-2"/>Accesos Rápidos</h5>
+                                        <a href="/web/login?redirect=/my" class="lims-quick-link">
+                                            <i class="fa fa-user-circle me-2"/>Portal de Clientes
+                                        </a>
+                                        <a href="/sugerencias-quejas" class="lims-quick-link">
+                                            <i class="fa fa-comments me-2"/>Sugerencias y Quejas
+                                        </a>
+                                        <a href="/" class="lims-quick-link">
+                                            <i class="fa fa-home me-2"/>Página de Inicio
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                </t>
+            </t>
+        </field>
+    </record>
+
+</odoo>

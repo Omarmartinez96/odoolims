@@ -1,0 +1,327 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===================================================================
+         SUGERENCIAS Y QUEJAS - Formulario de feedback
+    =================================================================== -->
+    <record id="lims_feedback_view" model="ir.ui.view">
+        <field name="name">lims.website.feedback</field>
+        <field name="type">qweb</field>
+        <field name="key">lims_website.feedback_page</field>
+        <field name="arch" type="xml">
+            <t t-name="lims_website.feedback_page">
+                <t t-call="website.layout">
+                    <t t-set="pageName" t-value="'feedback'"/>
+
+                    <div class="lims-form-page lims-form-page--feedback">
+
+                        <!-- Page Header -->
+                        <div class="lims-form-page__header lims-form-page__header--feedback">
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <div class="col-lg-8 text-center">
+                                        <div class="lims-form-page__icon lims-form-page__icon--feedback">
+                                            <i class="fa fa-comments"/>
+                                        </div>
+                                        <h1>Sugerencias y Quejas</h1>
+                                        <p>Tu opinión es muy valiosa para nosotros. Comparte tu experiencia con el servicio y ayúdanos a mejorar continuamente.</p>
+                                        <nav aria-label="breadcrumb">
+                                            <ol class="breadcrumb justify-content-center">
+                                                <li class="breadcrumb-item"><a href="/">Inicio</a></li>
+                                                <li class="breadcrumb-item active">Sugerencias y Quejas</li>
+                                            </ol>
+                                        </nav>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Type selector pills -->
+                        <div class="lims-feedback-type-bar">
+                            <div class="container">
+                                <div class="row justify-content-center">
+                                    <div class="col-auto">
+                                        <div class="lims-type-pills">
+                                            <button type="button" class="lims-type-pill lims-type-pill--sugerencia active" data-type="sugerencia">
+                                                <i class="fa fa-lightbulb-o me-1"/>Sugerencia
+                                            </button>
+                                            <button type="button" class="lims-type-pill lims-type-pill--queja" data-type="queja">
+                                                <i class="fa fa-exclamation-triangle me-1"/>Queja
+                                            </button>
+                                            <button type="button" class="lims-type-pill lims-type-pill--felicitacion" data-type="felicitacion">
+                                                <i class="fa fa-thumbs-up me-1"/>Felicitación
+                                            </button>
+                                            <button type="button" class="lims-type-pill lims-type-pill--consulta" data-type="consulta">
+                                                <i class="fa fa-question-circle me-1"/>Consulta
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Content -->
+                        <div class="container lims-form-page__content">
+                            <div class="row g-4 justify-content-center">
+
+                                <!-- Form Column -->
+                                <div class="col-lg-7">
+
+                                    <!-- Success Alert -->
+                                    <t t-if="success">
+                                        <div class="lims-alert lims-alert--success" role="alert">
+                                            <i class="fa fa-check-circle fa-lg me-2"/>
+                                            <div>
+                                                <strong>¡Comentario enviado correctamente!</strong>
+                                                <p class="mb-0">Hemos recibido tu mensaje. Lo revisaremos y, en caso necesario, nos pondremos en contacto contigo.</p>
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                    <!-- Error Alert -->
+                                    <t t-if="error">
+                                        <div class="lims-alert lims-alert--danger" role="alert">
+                                            <i class="fa fa-exclamation-circle fa-lg me-2"/>
+                                            <div>
+                                                <t t-if="error == 'campos_requeridos'">
+                                                    <strong>Campos incompletos</strong>
+                                                    <p class="mb-0">Por favor completa todos los campos obligatorios marcados con *</p>
+                                                </t>
+                                                <t t-else="">
+                                                    <strong>Error al enviar</strong>
+                                                    <p class="mb-0">Ocurrió un error inesperado. Intenta nuevamente o contáctanos directamente.</p>
+                                                </t>
+                                            </div>
+                                        </div>
+                                    </t>
+
+                                    <!-- Feedback Form -->
+                                    <div class="lims-form-card">
+                                        <h4 class="lims-form-card__title">
+                                            <i class="fa fa-edit me-2"/>Tu Comentario
+                                        </h4>
+                                        <form action="/sugerencias-quejas/enviar" method="POST" id="lims_feedback_form" novalidate="">
+                                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                            <!-- Hidden type field updated by JS pills -->
+                                            <input type="hidden" name="fb_type" id="fb_type_input" value="sugerencia"/>
+
+                                            <div class="row g-3">
+                                                <!-- Feedback Type (visible select for no-JS fallback) -->
+                                                <div class="col-12 lims-type-select-fallback" style="display:none">
+                                                    <label for="fb_type_select" class="form-label lims-form-label">
+                                                        Tipo de comentario <span class="text-danger">*</span>
+                                                    </label>
+                                                    <select class="form-select" id="fb_type_select" name="fb_type">
+                                                        <t t-foreach="feedback_types" t-as="ft">
+                                                            <option t-att-value="ft[0]">
+                                                                <t t-esc="ft[1]"/>
+                                                            </option>
+                                                        </t>
+                                                    </select>
+                                                </div>
+
+                                                <!-- Name -->
+                                                <div class="col-sm-6">
+                                                    <label for="fb_name" class="form-label lims-form-label">
+                                                        Nombre completo <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="text"
+                                                           class="form-control"
+                                                           id="fb_name"
+                                                           name="fb_name"
+                                                           placeholder="Tu nombre"
+                                                           required="required"
+                                                           maxlength="120"/>
+                                                </div>
+
+                                                <!-- Email -->
+                                                <div class="col-sm-6">
+                                                    <label for="fb_email" class="form-label lims-form-label">
+                                                        Correo electrónico <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="email"
+                                                           class="form-control"
+                                                           id="fb_email"
+                                                           name="fb_email"
+                                                           placeholder="tu@correo.com"
+                                                           required="required"
+                                                           maxlength="150"/>
+                                                </div>
+
+                                                <!-- Subject -->
+                                                <div class="col-12">
+                                                    <label for="fb_subject" class="form-label lims-form-label">
+                                                        Asunto <span class="text-danger">*</span>
+                                                    </label>
+                                                    <input type="text"
+                                                           class="form-control"
+                                                           id="fb_subject"
+                                                           name="fb_subject"
+                                                           placeholder="Breve descripción del asunto"
+                                                           required="required"
+                                                           maxlength="200"/>
+                                                </div>
+
+                                                <!-- Message -->
+                                                <div class="col-12">
+                                                    <label for="fb_message" class="form-label lims-form-label">
+                                                        Descripción detallada <span class="text-danger">*</span>
+                                                    </label>
+                                                    <textarea class="form-control"
+                                                              id="fb_message"
+                                                              name="fb_message"
+                                                              rows="5"
+                                                              placeholder="Describe con detalle tu experiencia, sugerencia o queja..."
+                                                              required="required"
+                                                              maxlength="3000"/>
+                                                    <div class="form-text">Máximo 3000 caracteres.</div>
+                                                </div>
+
+                                                <!-- Optional: Reference + Date -->
+                                                <div class="col-12">
+                                                    <div class="lims-form-optional-section">
+                                                        <h6><i class="fa fa-info-circle me-1"/>Información adicional (opcional)</h6>
+                                                        <div class="row g-3">
+                                                            <div class="col-sm-6">
+                                                                <label for="fb_reference" class="form-label lims-form-label">
+                                                                    Folio o referencia de muestra
+                                                                </label>
+                                                                <input type="text"
+                                                                       class="form-control"
+                                                                       id="fb_reference"
+                                                                       name="fb_reference"
+                                                                       placeholder="Ej: MUE-2024-0001"
+                                                                       maxlength="50"/>
+                                                                <div class="form-text">Si tienes un número de folio de tu muestra, inclúyelo aquí.</div>
+                                                            </div>
+                                                            <div class="col-sm-6">
+                                                                <label for="fb_service_date" class="form-label lims-form-label">
+                                                                    Fecha del servicio
+                                                                </label>
+                                                                <input type="date"
+                                                                       class="form-control"
+                                                                       id="fb_service_date"
+                                                                       name="fb_service_date"/>
+                                                                <div class="form-text">¿Cuándo recibiste el servicio?</div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <!-- Privacy notice -->
+                                                <div class="col-12">
+                                                    <div class="lims-form-privacy">
+                                                        <i class="fa fa-lock me-1"/>
+                                                        Tu información es confidencial. Solo el personal autorizado del laboratorio tendrá acceso a tu comentario.
+                                                    </div>
+                                                </div>
+
+                                                <!-- Submit -->
+                                                <div class="col-12 text-center">
+                                                    <button type="submit" class="lims-btn-submit">
+                                                        <i class="fa fa-paper-plane me-2"/>
+                                                        Enviar Comentario
+                                                    </button>
+                                                    <a href="/" class="lims-btn-cancel ms-3">
+                                                        <i class="fa fa-arrow-left me-1"/>Regresar
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+
+                                <!-- Sidebar -->
+                                <div class="col-lg-4 col-md-8">
+                                    <!-- Commitment card -->
+                                    <div class="lims-form-sidebar">
+                                        <h4><i class="fa fa-star me-2"/>Nuestro Compromiso</h4>
+                                        <p>En Proteus Laboratorio nos comprometemos a:</p>
+                                        <ul class="lims-commitment-list">
+                                            <li>
+                                                <i class="fa fa-check-circle"/>
+                                                <span>Revisar todos los comentarios recibidos</span>
+                                            </li>
+                                            <li>
+                                                <i class="fa fa-check-circle"/>
+                                                <span>Responder quejas en un máximo de <strong>48 horas hábiles</strong></span>
+                                            </li>
+                                            <li>
+                                                <i class="fa fa-check-circle"/>
+                                                <span>Tomar acciones correctivas cuando corresponda</span>
+                                            </li>
+                                            <li>
+                                                <i class="fa fa-check-circle"/>
+                                                <span>Mantener la confidencialidad de tu información</span>
+                                            </li>
+                                            <li>
+                                                <i class="fa fa-check-circle"/>
+                                                <span>Usar tus sugerencias para mejorar nuestros servicios</span>
+                                            </li>
+                                        </ul>
+                                    </div>
+
+                                    <!-- Contact alternatives -->
+                                    <div class="lims-form-sidebar lims-form-sidebar--alt mt-3">
+                                        <h5><i class="fa fa-phone me-2"/>Contacto Directo</h5>
+                                        <p class="lims-form-sidebar__alt-text">¿Prefieres hablar directamente con nosotros?</p>
+                                        <div class="lims-form-sidebar__item">
+                                            <div class="lims-form-sidebar__icon">
+                                                <i class="fa fa-phone"/>
+                                            </div>
+                                            <div>
+                                                <strong>Teléfono</strong>
+                                                <p><a href="tel:+5233XXXXXXXX">+52 (33) XXXX-XXXX</a></p>
+                                            </div>
+                                        </div>
+                                        <div class="lims-form-sidebar__item">
+                                            <div class="lims-form-sidebar__icon">
+                                                <i class="fa fa-envelope"/>
+                                            </div>
+                                            <div>
+                                                <strong>Correo</strong>
+                                                <p><a href="mailto:calidad@proteuslaboratorio.com">calidad@proteuslaboratorio.com</a></p>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Quick links -->
+                                    <div class="lims-form-sidebar lims-form-sidebar--light mt-3">
+                                        <h5><i class="fa fa-link me-2"/>Accesos Rápidos</h5>
+                                        <a href="/web/login?redirect=/my" class="lims-quick-link">
+                                            <i class="fa fa-user-circle me-2"/>Portal de Clientes
+                                        </a>
+                                        <a href="/contacto-comercial" class="lims-quick-link">
+                                            <i class="fa fa-handshake-o me-2"/>Contacto Comercial
+                                        </a>
+                                        <a href="/" class="lims-quick-link">
+                                            <i class="fa fa-home me-2"/>Página de Inicio
+                                        </a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- JS for type pill selector -->
+                    <script type="text/javascript">
+                        document.addEventListener('DOMContentLoaded', function () {
+                            var pills = document.querySelectorAll('.lims-type-pill');
+                            var hiddenInput = document.getElementById('fb_type_input');
+                            pills.forEach(function (pill) {
+                                pill.addEventListener('click', function () {
+                                    pills.forEach(function (p) { p.classList.remove('active'); });
+                                    pill.classList.add('active');
+                                    hiddenInput.value = pill.getAttribute('data-type');
+                                });
+                            });
+                        });
+                    </script>
+
+                </t>
+            </t>
+        </field>
+    </record>
+
+</odoo>

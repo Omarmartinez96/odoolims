@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===================================================================
+         BACKEND VIEWS - Solicitudes Comerciales (lims.contact.inquiry)
+    =================================================================== -->
+
+    <!-- List View -->
+    <record id="view_lims_contact_inquiry_list" model="ir.ui.view">
+        <field name="name">lims.contact.inquiry.list</field>
+        <field name="model">lims.contact.inquiry</field>
+        <field name="arch" type="xml">
+            <list string="Solicitudes Comerciales"
+                  decoration-info="state == 'nuevo'"
+                  decoration-warning="state == 'en_proceso'"
+                  decoration-success="state == 'atendido'"
+                  decoration-muted="state == 'cerrado'">
+                <field name="date" string="Fecha"/>
+                <field name="name" string="Contacto"/>
+                <field name="company" string="Empresa"/>
+                <field name="email" widget="email"/>
+                <field name="phone" widget="phone"/>
+                <field name="service_interest" string="Servicio"/>
+                <field name="subject" string="Asunto"/>
+                <field name="priority" widget="priority" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'nuevo'"
+                       decoration-warning="state == 'en_proceso'"
+                       decoration-success="state == 'atendido'"
+                       decoration-muted="state == 'cerrado'"/>
+                <field name="assigned_to" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_lims_contact_inquiry_form" model="ir.ui.view">
+        <field name="name">lims.contact.inquiry.form</field>
+        <field name="model">lims.contact.inquiry</field>
+        <field name="arch" type="xml">
+            <form string="Solicitud Comercial">
+                <header>
+                    <button name="action_set_en_proceso"
+                            string="En Proceso"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'nuevo'"/>
+                    <button name="action_set_atendido"
+                            string="Marcar como Atendido"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'en_proceso'"/>
+                    <button name="action_set_cerrado"
+                            string="Cerrar"
+                            type="object"
+                            invisible="state == 'cerrado'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="nuevo,en_proceso,atendido,cerrado"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <div class="oe_title">
+                        <label for="subject" string="Asunto de la Solicitud"/>
+                        <h1>
+                            <field name="subject" placeholder="Asunto..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Información del Contacto">
+                            <field name="name" string="Nombre"/>
+                            <field name="company" string="Empresa"/>
+                            <field name="email" widget="email"/>
+                            <field name="phone" widget="phone"/>
+                        </group>
+                        <group string="Detalles de la Solicitud">
+                            <field name="service_interest"/>
+                            <field name="priority" widget="priority"/>
+                            <field name="date" string="Fecha de Solicitud"/>
+                            <field name="assigned_to" string="Asignado a"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Mensaje del Cliente">
+                            <field name="message" widget="text" nolabel="1"
+                                   placeholder="Mensaje del cliente..."/>
+                        </page>
+                        <page string="Notas Internas">
+                            <field name="notes" widget="text" nolabel="1"
+                                   placeholder="Notas internas del equipo de ventas..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_lims_contact_inquiry_search" model="ir.ui.view">
+        <field name="name">lims.contact.inquiry.search</field>
+        <field name="model">lims.contact.inquiry</field>
+        <field name="arch" type="xml">
+            <search string="Solicitudes Comerciales">
+                <field name="name" string="Nombre o Empresa" filter_domain="['|', ('name', 'ilike', self), ('company', 'ilike', self)]"/>
+                <field name="email"/>
+                <field name="subject"/>
+                <separator/>
+                <filter name="filter_nuevo" string="Nuevas" domain="[('state', '=', 'nuevo')]"/>
+                <filter name="filter_en_proceso" string="En Proceso" domain="[('state', '=', 'en_proceso')]"/>
+                <filter name="filter_atendido" string="Atendidas" domain="[('state', '=', 'atendido')]"/>
+                <separator/>
+                <filter name="filter_sin_asignar" string="Sin Asignar" domain="[('assigned_to', '=', False)]"/>
+                <separator/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_state" string="Estado" context="{'group_by': 'state'}"/>
+                    <filter name="group_service" string="Servicio" context="{'group_by': 'service_interest'}"/>
+                    <filter name="group_assigned" string="Asignado a" context="{'group_by': 'assigned_to'}"/>
+                    <filter name="group_date" string="Fecha" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_lims_contact_inquiry" model="ir.actions.act_window">
+        <field name="name">Solicitudes Comerciales</field>
+        <field name="res_model">lims.contact.inquiry</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_lims_contact_inquiry_search"/>
+        <field name="context">{'default_state': 'nuevo'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay solicitudes comerciales aún
+            </p>
+            <p>Las solicitudes de contacto comercial recibidas desde el sitio web aparecerán aquí automáticamente.</p>
+        </field>
+    </record>
+
+    <!-- ===================================================================
+         BACKEND VIEWS - Sugerencias y Quejas (lims.feedback)
+    =================================================================== -->
+
+    <!-- List View -->
+    <record id="view_lims_feedback_list" model="ir.ui.view">
+        <field name="name">lims.feedback.list</field>
+        <field name="model">lims.feedback</field>
+        <field name="arch" type="xml">
+            <list string="Sugerencias y Quejas"
+                  decoration-danger="feedback_type == 'queja' and state == 'nuevo'"
+                  decoration-success="feedback_type == 'felicitacion'"
+                  decoration-info="state == 'nuevo' and feedback_type != 'queja'"
+                  decoration-muted="state == 'cerrado'">
+                <field name="date" string="Fecha"/>
+                <field name="name" string="Remitente"/>
+                <field name="email" widget="email"/>
+                <field name="feedback_type" string="Tipo" widget="badge"
+                       decoration-danger="feedback_type == 'queja'"
+                       decoration-success="feedback_type == 'felicitacion'"
+                       decoration-warning="feedback_type == 'sugerencia'"
+                       decoration-info="feedback_type == 'consulta'"/>
+                <field name="priority" widget="priority" optional="show"/>
+                <field name="subject" string="Asunto"/>
+                <field name="sample_reference" string="Folio" optional="show"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'nuevo'"
+                       decoration-warning="state == 'en_revision'"
+                       decoration-success="state == 'resuelto'"
+                       decoration-muted="state == 'cerrado'"/>
+                <field name="assigned_to" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_lims_feedback_form" model="ir.ui.view">
+        <field name="name">lims.feedback.form</field>
+        <field name="model">lims.feedback</field>
+        <field name="arch" type="xml">
+            <form string="Sugerencia / Queja / Felicitación">
+                <header>
+                    <button name="action_set_en_revision"
+                            string="En Revisión"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'nuevo'"/>
+                    <button name="action_set_resuelto"
+                            string="Marcar como Resuelto"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'en_revision'"/>
+                    <button name="action_set_cerrado"
+                            string="Cerrar"
+                            type="object"
+                            invisible="state == 'cerrado'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="nuevo,en_revision,resuelto,cerrado"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="subject" string="Asunto"/>
+                        <h1>
+                            <field name="subject" placeholder="Asunto..."/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="Información del Remitente">
+                            <field name="name" string="Nombre"/>
+                            <field name="email" widget="email"/>
+                            <field name="feedback_type" string="Tipo"/>
+                            <field name="priority" widget="priority"/>
+                        </group>
+                        <group string="Detalles del Servicio">
+                            <field name="date" string="Fecha de Envío"/>
+                            <field name="service_date" string="Fecha del Servicio"/>
+                            <field name="sample_reference" string="Folio de Muestra"/>
+                            <field name="assigned_to" string="Responsable"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Mensaje">
+                            <field name="message" widget="text" nolabel="1"
+                                   placeholder="Mensaje del remitente..."/>
+                        </page>
+                        <page string="Resolución / Respuesta">
+                            <field name="resolution" widget="text" nolabel="1"
+                                   placeholder="Escribe aquí la resolución o respuesta interna al comentario..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_lims_feedback_search" model="ir.ui.view">
+        <field name="name">lims.feedback.search</field>
+        <field name="model">lims.feedback</field>
+        <field name="arch" type="xml">
+            <search string="Sugerencias y Quejas">
+                <field name="name" string="Nombre"/>
+                <field name="email"/>
+                <field name="subject"/>
+                <field name="sample_reference" string="Folio"/>
+                <separator/>
+                <filter name="filter_queja" string="Quejas" domain="[('feedback_type', '=', 'queja')]"/>
+                <filter name="filter_sugerencia" string="Sugerencias" domain="[('feedback_type', '=', 'sugerencia')]"/>
+                <filter name="filter_felicitacion" string="Felicitaciones" domain="[('feedback_type', '=', 'felicitacion')]"/>
+                <separator/>
+                <filter name="filter_nuevo" string="Nuevos" domain="[('state', '=', 'nuevo')]"/>
+                <filter name="filter_en_revision" string="En Revisión" domain="[('state', '=', 'en_revision')]"/>
+                <filter name="filter_resuelto" string="Resueltos" domain="[('state', '=', 'resuelto')]"/>
+                <separator/>
+                <filter name="filter_alta_prioridad" string="Alta Prioridad" domain="[('priority', 'in', ['1', '2'])]"/>
+                <group expand="0" string="Agrupar por">
+                    <filter name="group_type" string="Tipo" context="{'group_by': 'feedback_type'}"/>
+                    <filter name="group_state" string="Estado" context="{'group_by': 'state'}"/>
+                    <filter name="group_assigned" string="Responsable" context="{'group_by': 'assigned_to'}"/>
+                    <filter name="group_date" string="Fecha" context="{'group_by': 'date:month'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_lims_feedback" model="ir.actions.act_window">
+        <field name="name">Sugerencias y Quejas</field>
+        <field name="res_model">lims.feedback</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_lims_feedback_search"/>
+        <field name="context">{'default_state': 'nuevo'}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                No hay comentarios aún
+            </p>
+            <p>Las sugerencias, quejas y felicitaciones recibidas desde el sitio web aparecerán aquí.</p>
+        </field>
+    </record>
+
+    <!-- ===================================================================
+         BACKEND MENU - Portal Web
+    =================================================================== -->
+
+    <menuitem id="menu_lims_website_root"
+              name="Portal Web"
+              sequence="98"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_lims_contact_inquiry"
+              name="Solicitudes Comerciales"
+              parent="menu_lims_website_root"
+              action="action_lims_contact_inquiry"
+              sequence="10"
+              groups="base.group_user"/>
+
+    <menuitem id="menu_lims_feedback"
+              name="Sugerencias y Quejas"
+              parent="menu_lims_website_root"
+              action="action_lims_feedback"
+              sequence="20"
+              groups="base.group_user"/>
+
+</odoo>

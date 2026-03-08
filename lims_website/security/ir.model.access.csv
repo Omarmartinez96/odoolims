@@ -1,0 +1,9 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_lims_contact_inquiry_public,lims.contact.inquiry public,model_lims_contact_inquiry,base.group_public,0,0,1,0
+access_lims_contact_inquiry_portal,lims.contact.inquiry portal,model_lims_contact_inquiry,base.group_portal,0,0,1,0
+access_lims_contact_inquiry_user,lims.contact.inquiry user,model_lims_contact_inquiry,base.group_user,1,1,1,0
+access_lims_contact_inquiry_system,lims.contact.inquiry system,model_lims_contact_inquiry,base.group_system,1,1,1,1
+access_lims_feedback_public,lims.feedback public,model_lims_feedback,base.group_public,0,0,1,0
+access_lims_feedback_portal,lims.feedback portal,model_lims_feedback,base.group_portal,0,0,1,0
+access_lims_feedback_user,lims.feedback user,model_lims_feedback,base.group_user,1,1,1,0
+access_lims_feedback_system,lims.feedback system,model_lims_feedback,base.group_system,1,1,1,1

@@ -1,0 +1,1052 @@
+// ============================================================
+// LIMS WEBSITE SCSS - Proteus Laboratorio
+// Brand palette matching custom_theme:
+//   Primary:   #2c5aa0  (dark professional blue)
+//   Secondary: #1d3557  (deeper navy blue)
+//   Accent:    #e8f0fe  (very light blue)
+//   Light bg:  #f8f9ff
+// ============================================================
+
+// --- Variables ---
+$lims-primary:   #2c5aa0;
+$lims-secondary: #1d3557;
+$lims-accent:    #e8f0fe;
+$lims-light-bg:  #f8f9ff;
+$lims-text-dark: #1a1a2e;
+$lims-text-muted:#666677;
+$lims-white:     #ffffff;
+$lims-border:    #d0ddf0;
+$lims-success:   #28a745;
+$lims-danger:    #dc3545;
+
+$lims-transition: all 0.3s ease;
+$lims-radius:     12px;
+$lims-radius-lg:  16px;
+$lims-shadow:     0 4px 24px rgba(44, 90, 160, 0.12);
+$lims-shadow-hover: 0 8px 40px rgba(44, 90, 160, 0.22);
+
+// ============================================================
+// HERO SECTION
+// ============================================================
+.lims-hero {
+    position: relative;
+    background: linear-gradient(135deg, $lims-secondary 0%, $lims-primary 60%, lighten($lims-primary, 8%) 100%);
+    padding: 90px 0 60px;
+    overflow: hidden;
+    color: $lims-white;
+
+    &::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: radial-gradient(circle at 80% 20%, rgba(255,255,255,0.07) 0%, transparent 60%),
+                    radial-gradient(circle at 10% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
+        pointer-events: none;
+    }
+}
+
+.lims-hero-overlay {
+    display: none;
+}
+
+.lims-hero-content {
+    position: relative;
+    z-index: 1;
+}
+
+.lims-hero-wave {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    width: 100%;
+    line-height: 0;
+
+    svg {
+        display: block;
+        width: 100%;
+    }
+}
+
+.lims-hero-badge {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.15);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: $lims-white;
+    padding: 6px 18px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    margin-bottom: 20px;
+}
+
+.lims-hero-title {
+    font-family: 'Roboto', sans-serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    margin-bottom: 16px;
+    color: $lims-white;
+}
+
+.lims-hero-tagline {
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
+    opacity: 0.88;
+    max-width: 600px;
+    margin: 0 auto 36px;
+    line-height: 1.6;
+}
+
+.lims-hero-portals {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    justify-content: center;
+    margin-bottom: 24px;
+}
+
+.lims-btn-portal {
+    display: inline-flex;
+    align-items: center;
+    padding: 14px 32px;
+    border-radius: 50px;
+    font-size: 1rem;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: $lims-transition;
+    font-family: 'Roboto', sans-serif;
+
+    &:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+    }
+
+    &--client {
+        background: $lims-white;
+        color: $lims-primary !important;
+
+        &:hover {
+            background: $lims-accent;
+            color: $lims-secondary !important;
+        }
+    }
+
+    &--user {
+        background: transparent;
+        color: $lims-white !important;
+        border: 2px solid rgba(255, 255, 255, 0.65);
+
+        &:hover {
+            background: rgba(255, 255, 255, 0.12);
+            border-color: $lims-white;
+            color: $lims-white !important;
+        }
+    }
+}
+
+.lims-hero-hint {
+    font-size: 0.88rem;
+    opacity: 0.75;
+    margin-bottom: 0;
+}
+
+.lims-hero-link {
+    color: $lims-white;
+    text-decoration: underline;
+    opacity: 0.9;
+
+    &:hover {
+        opacity: 1;
+        color: $lims-white;
+    }
+}
+
+// ============================================================
+// SHARED SECTION TYPOGRAPHY
+// ============================================================
+.lims-section-title {
+    font-family: 'Roboto', sans-serif;
+    font-size: clamp(1.5rem, 3.5vw, 2rem);
+    font-weight: 700;
+    color: $lims-secondary;
+
+    &--light {
+        color: $lims-white;
+    }
+}
+
+.lims-section-subtitle {
+    font-size: 1.05rem;
+    color: $lims-text-muted;
+    max-width: 560px;
+    margin: 0 auto;
+    line-height: 1.65;
+
+    &--light {
+        color: rgba(255, 255, 255, 0.8);
+    }
+}
+
+// ============================================================
+// PORTAL ACCESS CARDS
+// ============================================================
+.lims-portals-section {
+    padding: 70px 0;
+    background: $lims-light-bg;
+}
+
+.lims-portal-card {
+    border-radius: $lims-radius-lg;
+    padding: 40px 36px;
+    height: 100%;
+    color: $lims-white;
+    position: relative;
+    overflow: hidden;
+    transition: $lims-transition;
+
+    &::after {
+        content: '';
+        position: absolute;
+        bottom: -30px;
+        right: -30px;
+        width: 140px;
+        height: 140px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.07);
+    }
+
+    &:hover {
+        transform: translateY(-6px);
+        box-shadow: $lims-shadow-hover;
+    }
+
+    &--client {
+        background: linear-gradient(145deg, $lims-primary, lighten($lims-primary, 12%));
+    }
+
+    &--user {
+        background: linear-gradient(145deg, $lims-secondary, $lims-primary);
+    }
+
+    &__icon {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 24px;
+        color: $lims-white;
+    }
+
+    h3 {
+        font-size: 1.55rem;
+        font-weight: 700;
+        margin-bottom: 14px;
+    }
+
+    p {
+        opacity: 0.88;
+        line-height: 1.65;
+        margin-bottom: 24px;
+    }
+
+    &__features {
+        list-style: none;
+        padding: 0;
+        margin-bottom: 30px;
+
+        li {
+            padding: 7px 0;
+            opacity: 0.88;
+            font-size: 0.95rem;
+
+            .fa-check-circle {
+                margin-right: 8px;
+                opacity: 0.75;
+            }
+        }
+    }
+
+    &__btn {
+        display: inline-flex;
+        align-items: center;
+        background: rgba(255, 255, 255, 0.18);
+        color: $lims-white !important;
+        border: 2px solid rgba(255, 255, 255, 0.5);
+        border-radius: 50px;
+        padding: 12px 28px;
+        font-weight: 600;
+        text-decoration: none !important;
+        transition: $lims-transition;
+        font-size: 0.95rem;
+
+        &:hover {
+            background: $lims-white;
+            color: $lims-primary !important;
+            border-color: $lims-white;
+        }
+    }
+
+    &__hint {
+        font-size: 0.82rem;
+        opacity: 0.7;
+        margin-top: 14px;
+        margin-bottom: 0;
+
+        a {
+            color: $lims-white;
+            text-decoration: underline;
+
+            &:hover {
+                opacity: 1;
+            }
+        }
+    }
+}
+
+// ============================================================
+// FEATURES SECTION
+// ============================================================
+.lims-features-section {
+    padding: 70px 0;
+    background: $lims-white;
+}
+
+.lims-feature-card {
+    padding: 32px 24px;
+    border-radius: $lims-radius;
+    transition: $lims-transition;
+    border: 1px solid transparent;
+    height: 100%;
+
+    &:hover {
+        border-color: $lims-accent;
+        box-shadow: $lims-shadow;
+        transform: translateY(-4px);
+    }
+
+    &__icon {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: $lims-accent;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        color: $lims-primary;
+        transition: $lims-transition;
+
+        .lims-feature-card:hover & {
+            background: $lims-primary;
+            color: $lims-white;
+        }
+    }
+
+    h4 {
+        color: $lims-secondary;
+        font-weight: 700;
+        font-size: 1.05rem;
+        margin-bottom: 10px;
+    }
+
+    p {
+        color: $lims-text-muted;
+        font-size: 0.93rem;
+        line-height: 1.65;
+        margin-bottom: 0;
+    }
+}
+
+// ============================================================
+// SERVICES SECTION
+// ============================================================
+.lims-services-section {
+    padding: 70px 0;
+    background: linear-gradient(160deg, $lims-secondary 0%, $lims-primary 100%);
+}
+
+.lims-service-card {
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: $lims-radius;
+    padding: 22px 20px;
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    transition: $lims-transition;
+    height: 100%;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.14);
+        border-color: rgba(255, 255, 255, 0.35);
+        transform: translateX(4px);
+    }
+
+    &__icon {
+        font-size: 1.6rem;
+        color: rgba(255, 255, 255, 0.85);
+        flex-shrink: 0;
+        margin-top: 4px;
+    }
+
+    &__body {
+        h5 {
+            color: $lims-white;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 6px;
+        }
+
+        p {
+            color: rgba(255, 255, 255, 0.78);
+            font-size: 0.88rem;
+            line-height: 1.55;
+            margin-bottom: 0;
+        }
+    }
+}
+
+.lims-btn-outline {
+    display: inline-flex;
+    align-items: center;
+    color: $lims-white !important;
+    border: 2px solid rgba(255, 255, 255, 0.6);
+    border-radius: 50px;
+    padding: 12px 30px;
+    font-weight: 600;
+    text-decoration: none !important;
+    transition: $lims-transition;
+
+    &:hover {
+        background: rgba(255, 255, 255, 0.15);
+        border-color: $lims-white;
+        color: $lims-white !important;
+    }
+}
+
+// ============================================================
+// STATS SECTION
+// ============================================================
+.lims-stats-section {
+    padding: 60px 0;
+    background: $lims-secondary;
+    color: $lims-white;
+}
+
+.lims-stat-item {
+    padding: 16px;
+}
+
+.lims-stat-number {
+    font-family: 'Roboto', sans-serif;
+    font-size: clamp(2rem, 5vw, 3rem);
+    font-weight: 700;
+    line-height: 1;
+    color: $lims-white;
+}
+
+.lims-stat-label {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-top: 8px;
+    line-height: 1.4;
+}
+
+// ============================================================
+// CONTACT CTA SECTION
+// ============================================================
+.lims-cta-section {
+    padding: 70px 0;
+    background: $lims-light-bg;
+}
+
+.lims-cta-card {
+    background: $lims-white;
+    border-radius: $lims-radius-lg;
+    padding: 40px 36px;
+    text-align: center;
+    height: 100%;
+    border: 1px solid $lims-border;
+    transition: $lims-transition;
+
+    &:hover {
+        box-shadow: $lims-shadow-hover;
+        transform: translateY(-6px);
+    }
+
+    &__icon {
+        width: 76px;
+        height: 76px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 22px;
+    }
+
+    h3 {
+        color: $lims-secondary;
+        font-weight: 700;
+        font-size: 1.35rem;
+        margin-bottom: 14px;
+    }
+
+    p {
+        color: $lims-text-muted;
+        line-height: 1.65;
+        margin-bottom: 20px;
+    }
+
+    &__list {
+        list-style: none;
+        padding: 0;
+        text-align: left;
+        display: inline-block;
+        margin-bottom: 28px;
+
+        li {
+            padding: 5px 0;
+            color: $lims-text-muted;
+            font-size: 0.92rem;
+
+            .fa-check {
+                color: $lims-success;
+                margin-right: 8px;
+            }
+        }
+    }
+
+    &__btn {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 50px;
+        padding: 13px 30px;
+        font-weight: 600;
+        text-decoration: none !important;
+        transition: $lims-transition;
+
+        &--primary {
+            background: $lims-primary;
+            color: $lims-white !important;
+
+            &:hover {
+                background: $lims-secondary;
+                color: $lims-white !important;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(44, 90, 160, 0.35);
+            }
+        }
+
+        &--secondary {
+            background: $lims-secondary;
+            color: $lims-white !important;
+
+            &:hover {
+                background: $lims-primary;
+                color: $lims-white !important;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(29, 53, 87, 0.35);
+            }
+        }
+    }
+
+    // Color accents per card type
+    &--sales .lims-cta-card__icon {
+        background: $lims-accent;
+        color: $lims-primary;
+    }
+
+    &--feedback .lims-cta-card__icon {
+        background: lighten($lims-secondary, 60%);
+        color: $lims-secondary;
+    }
+}
+
+// ============================================================
+// INFO BAR (bottom of homepage)
+// ============================================================
+.lims-info-bar {
+    padding: 30px 0;
+    background: $lims-secondary;
+    color: rgba(255, 255, 255, 0.85);
+
+    &__item {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        font-size: 0.92rem;
+
+        .fa {
+            opacity: 0.7;
+        }
+
+        a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+
+            &:hover {
+                color: $lims-white;
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
+// ============================================================
+// FORM PAGES (Contact Sales + Feedback)
+// ============================================================
+.lims-form-page {
+    min-height: 70vh;
+
+    &__header {
+        padding: 60px 0 40px;
+        background: linear-gradient(135deg, $lims-secondary, $lims-primary);
+        color: $lims-white;
+        text-align: center;
+
+        h1 {
+            font-size: clamp(1.6rem, 4vw, 2.2rem);
+            font-weight: 700;
+            color: $lims-white;
+            margin-bottom: 12px;
+        }
+
+        p {
+            opacity: 0.88;
+            max-width: 520px;
+            margin: 0 auto 20px;
+            line-height: 1.65;
+        }
+
+        // Breadcrumb white override
+        .breadcrumb {
+            background: transparent;
+            padding: 0;
+            margin: 0;
+
+            .breadcrumb-item {
+                color: rgba(255, 255, 255, 0.75);
+
+                a {
+                    color: rgba(255, 255, 255, 0.85);
+                    text-decoration: none;
+
+                    &:hover {
+                        color: $lims-white;
+                    }
+                }
+
+                &.active { color: rgba(255, 255, 255, 0.95); }
+                &+.breadcrumb-item::before { color: rgba(255, 255, 255, 0.5); }
+            }
+        }
+    }
+
+    &__icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        font-size: 1.8rem;
+        color: $lims-white;
+
+        &--feedback {
+            background: rgba(255, 255, 255, 0.12);
+        }
+    }
+
+    &__content {
+        padding: 48px 0 60px;
+        background: $lims-light-bg;
+    }
+}
+
+// Feedback type bar
+.lims-feedback-type-bar {
+    background: $lims-white;
+    padding: 20px 0;
+    border-bottom: 1px solid $lims-border;
+    box-shadow: 0 2px 8px rgba(44, 90, 160, 0.08);
+}
+
+.lims-type-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    justify-content: center;
+}
+
+.lims-type-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 8px 20px;
+    border-radius: 50px;
+    border: 2px solid $lims-border;
+    background: transparent;
+    color: $lims-text-muted;
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: $lims-transition;
+
+    &:hover {
+        border-color: $lims-primary;
+        color: $lims-primary;
+    }
+
+    &.active,
+    &.active:hover {
+        background: $lims-primary;
+        border-color: $lims-primary;
+        color: $lims-white;
+    }
+
+    &--queja.active {
+        background: $lims-danger;
+        border-color: $lims-danger;
+    }
+
+    &--felicitacion.active {
+        background: $lims-success;
+        border-color: $lims-success;
+    }
+}
+
+// Form Card
+.lims-form-card {
+    background: $lims-white;
+    border-radius: $lims-radius-lg;
+    padding: 36px;
+    box-shadow: $lims-shadow;
+
+    &__title {
+        color: $lims-secondary;
+        font-weight: 700;
+        font-size: 1.1rem;
+        margin-bottom: 24px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid $lims-accent;
+    }
+}
+
+.lims-form-label {
+    font-weight: 600;
+    color: $lims-secondary;
+    font-size: 0.92rem;
+    margin-bottom: 6px;
+}
+
+.form-control,
+.form-select {
+    border-radius: 8px !important;
+    border-color: $lims-border !important;
+    padding: 10px 14px !important;
+    font-size: 0.95rem;
+    transition: $lims-transition;
+
+    &:focus {
+        border-color: $lims-primary !important;
+        box-shadow: 0 0 0 3px rgba(44, 90, 160, 0.15) !important;
+    }
+}
+
+textarea.form-control {
+    min-height: 140px;
+    resize: vertical;
+}
+
+.lims-form-optional-section {
+    background: $lims-accent;
+    border-radius: $lims-radius;
+    padding: 20px;
+    border: 1px solid darken($lims-accent, 8%);
+
+    h6 {
+        color: $lims-primary;
+        font-weight: 700;
+        margin-bottom: 14px;
+        font-size: 0.9rem;
+    }
+}
+
+.lims-form-privacy {
+    background: $lims-light-bg;
+    border: 1px solid $lims-border;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 0.85rem;
+    color: $lims-text-muted;
+
+    .fa-lock {
+        color: $lims-primary;
+    }
+}
+
+// Submit button
+.lims-btn-submit {
+    background: $lims-primary;
+    color: $lims-white;
+    border: none;
+    border-radius: 50px;
+    padding: 13px 36px;
+    font-weight: 600;
+    font-size: 1rem;
+    transition: $lims-transition;
+    cursor: pointer;
+    font-family: 'Roboto', sans-serif;
+
+    &:hover {
+        background: $lims-secondary;
+        color: $lims-white;
+        transform: translateY(-2px);
+        box-shadow: 0 8px 24px rgba(44, 90, 160, 0.35);
+    }
+}
+
+.lims-btn-cancel {
+    color: $lims-text-muted;
+    text-decoration: none;
+    font-size: 0.92rem;
+    transition: $lims-transition;
+
+    &:hover {
+        color: $lims-secondary;
+    }
+}
+
+// ============================================================
+// FORM SIDEBAR
+// ============================================================
+.lims-form-sidebar {
+    background: linear-gradient(145deg, $lims-secondary, $lims-primary);
+    border-radius: $lims-radius-lg;
+    padding: 28px;
+    color: $lims-white;
+
+    h4 {
+        font-weight: 700;
+        font-size: 1.05rem;
+        margin-bottom: 22px;
+    }
+
+    h5 {
+        font-weight: 700;
+        font-size: 0.95rem;
+        margin-bottom: 16px;
+    }
+
+    p {
+        color: rgba(255, 255, 255, 0.82);
+        font-size: 0.9rem;
+        line-height: 1.55;
+        margin-bottom: 0;
+    }
+
+    &__item {
+        display: flex;
+        align-items: flex-start;
+        gap: 14px;
+        margin-bottom: 20px;
+
+        strong {
+            display: block;
+            font-size: 0.88rem;
+            margin-bottom: 3px;
+            color: rgba(255, 255, 255, 0.95);
+        }
+
+        p {
+            margin: 0;
+        }
+
+        a {
+            color: rgba(255, 255, 255, 0.85);
+            text-decoration: none;
+            font-size: 0.9rem;
+
+            &:hover { color: $lims-white; text-decoration: underline; }
+        }
+    }
+
+    &__icon {
+        width: 36px;
+        height: 36px;
+        flex-shrink: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.15);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 0.9rem;
+    }
+
+    &__divider {
+        border-top: 1px solid rgba(255, 255, 255, 0.2);
+        margin: 20px 0;
+    }
+
+    &__response {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 8px;
+        padding: 14px;
+        font-size: 0.88rem;
+
+        p {
+            margin-top: 6px;
+            font-size: 0.88rem;
+        }
+    }
+
+    &__alt-text {
+        color: rgba(255, 255, 255, 0.75);
+        font-size: 0.88rem;
+        margin-bottom: 16px !important;
+    }
+
+    // Light variant
+    &--light {
+        background: $lims-white;
+        border: 1px solid $lims-border;
+        box-shadow: $lims-shadow;
+
+        h4, h5 { color: $lims-secondary; }
+        p { color: $lims-text-muted; }
+    }
+
+    // Alt variant (same as default but different color)
+    &--alt {
+        background: linear-gradient(145deg, darken($lims-secondary, 4%), $lims-secondary);
+    }
+}
+
+// Quick links
+.lims-quick-link {
+    display: flex;
+    align-items: center;
+    padding: 9px 0;
+    color: $lims-primary !important;
+    text-decoration: none !important;
+    font-size: 0.92rem;
+    font-weight: 500;
+    border-bottom: 1px solid $lims-border;
+    transition: $lims-transition;
+
+    &:last-child { border-bottom: none; }
+
+    .fa { opacity: 0.7; }
+
+    &:hover {
+        color: $lims-secondary !important;
+        padding-left: 6px;
+    }
+}
+
+// Commitment list
+.lims-commitment-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+
+    li {
+        display: flex;
+        align-items: flex-start;
+        gap: 10px;
+        padding: 8px 0;
+        color: rgba(255, 255, 255, 0.88);
+        font-size: 0.9rem;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+
+        &:last-child { border-bottom: none; }
+
+        .fa-check-circle {
+            color: rgba(255, 255, 255, 0.75);
+            margin-top: 2px;
+            flex-shrink: 0;
+        }
+    }
+}
+
+// ============================================================
+// ALERT MESSAGES
+// ============================================================
+.lims-alert {
+    border-radius: $lims-radius;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    border: 1px solid transparent;
+
+    .fa { margin-top: 2px; flex-shrink: 0; }
+
+    strong { display: block; margin-bottom: 4px; }
+    p { margin: 0; font-size: 0.92rem; }
+
+    &--success {
+        background: #d4edda;
+        border-color: #b8dfc5;
+        color: #155724;
+    }
+
+    &--danger {
+        background: #f8d7da;
+        border-color: #f1b0b7;
+        color: #721c24;
+    }
+}
+
+// ============================================================
+// RESPONSIVE ADJUSTMENTS
+// ============================================================
+@media (max-width: 767.98px) {
+    .lims-hero {
+        padding: 60px 0 50px;
+    }
+
+    .lims-portal-card,
+    .lims-cta-card,
+    .lims-form-card {
+        padding: 26px 20px;
+    }
+
+    .lims-portals-section,
+    .lims-features-section,
+    .lims-cta-section {
+        padding: 50px 0;
+    }
+
+    .lims-services-section {
+        padding: 50px 0;
+    }
+
+    .lims-stats-section {
+        padding: 40px 0;
+    }
+
+    .lims-info-bar__item {
+        font-size: 0.85rem;
+    }
+
+    .lims-form-page__header {
+        padding: 40px 0 30px;
+    }
+
+    .lims-form-page__content {
+        padding: 30px 0 40px;
+    }
+
+    .lims-type-pill {
+        padding: 7px 14px;
+        font-size: 0.82rem;
+    }
+}

@@ -1,0 +1,376 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ===================================================================
+         HOMEPAGE - Página principal del portal de Proteus Laboratorio
+    =================================================================== -->
+    <record id="lims_homepage_view" model="ir.ui.view">
+        <field name="name">lims.website.homepage</field>
+        <field name="type">qweb</field>
+        <field name="key">lims_website.homepage</field>
+        <field name="arch" type="xml">
+            <t t-name="lims_website.homepage">
+                <t t-call="website.layout">
+                    <t t-set="pageName" t-value="'homepage'"/>
+                    <t t-set="no_header_seotitle" t-value="True"/>
+
+                    <!-- ================================================
+                         HERO SECTION
+                    ================================================ -->
+                    <section class="lims-hero">
+                        <div class="lims-hero-overlay"/>
+                        <div class="container lims-hero-content">
+                            <div class="row justify-content-center">
+                                <div class="col-lg-9 col-md-11 text-center">
+                                    <span class="lims-hero-badge">
+                                        <i class="fa fa-flask me-2"/>Laboratorio de Análisis Certificado
+                                    </span>
+                                    <h1 class="lims-hero-title">Proteus Laboratorio</h1>
+                                    <p class="lims-hero-tagline">
+                                        Soluciones analíticas precisas y confiables para empresas, industrias y profesionales de la salud
+                                    </p>
+                                    <div class="lims-hero-portals">
+                                        <a href="/web/login?redirect=/my"
+                                           class="lims-btn-portal lims-btn-portal--client">
+                                            <i class="fa fa-user-circle me-2"/>
+                                            Portal de Clientes
+                                        </a>
+                                        <a href="/web/login"
+                                           class="lims-btn-portal lims-btn-portal--user">
+                                            <i class="fa fa-lock me-2"/>
+                                            Acceso de Usuarios
+                                        </a>
+                                    </div>
+                                    <p class="lims-hero-hint">
+                                        <i class="fa fa-info-circle me-1"/>
+                                        ¿Primera vez? Solicita tu acceso escribiéndonos a
+                                        <a href="mailto:contacto@proteuslaboratorio.com" class="lims-hero-link">
+                                            contacto@proteuslaboratorio.com
+                                        </a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="lims-hero-wave">
+                            <svg viewBox="0 0 1440 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M0,40 C360,80 1080,0 1440,40 L1440,80 L0,80 Z" fill="#f8f9ff"/>
+                            </svg>
+                        </div>
+                    </section>
+
+                    <!-- ================================================
+                         PORTAL ACCESS CARDS
+                    ================================================ -->
+                    <section class="lims-portals-section">
+                        <div class="container">
+                            <div class="text-center mb-5">
+                                <h2 class="lims-section-title">Acceso al Sistema</h2>
+                                <p class="lims-section-subtitle">
+                                    Selecciona tu tipo de acceso para ingresar al portal correspondiente
+                                </p>
+                            </div>
+                            <div class="row g-4 justify-content-center">
+
+                                <!-- Client Portal -->
+                                <div class="col-lg-5 col-md-6">
+                                    <div class="lims-portal-card lims-portal-card--client">
+                                        <div class="lims-portal-card__icon">
+                                            <i class="fa fa-flask fa-2x"/>
+                                        </div>
+                                        <h3>Portal de Clientes</h3>
+                                        <p>Consulta el estado de tus análisis, descarga tus reportes y gestiona tu historial de muestras desde cualquier lugar.</p>
+                                        <ul class="lims-portal-card__features">
+                                            <li><i class="fa fa-check-circle"/> Resultados de análisis en línea</li>
+                                            <li><i class="fa fa-check-circle"/> Descarga de reportes e informes</li>
+                                            <li><i class="fa fa-check-circle"/> Seguimiento de muestras en tiempo real</li>
+                                            <li><i class="fa fa-check-circle"/> Historial completo de servicios</li>
+                                            <li><i class="fa fa-check-circle"/> Facturas y documentos fiscales</li>
+                                        </ul>
+                                        <a href="/web/login?redirect=/my" class="lims-portal-card__btn">
+                                            <i class="fa fa-sign-in me-2"/>Ingresar al Portal
+                                        </a>
+                                        <p class="lims-portal-card__hint">
+                                            ¿Sin cuenta?
+                                            <a href="/contacto-comercial">Solicita tu acceso aquí</a>
+                                        </p>
+                                    </div>
+                                </div>
+
+                                <!-- User Portal -->
+                                <div class="col-lg-5 col-md-6">
+                                    <div class="lims-portal-card lims-portal-card--user">
+                                        <div class="lims-portal-card__icon">
+                                            <i class="fa fa-cogs fa-2x"/>
+                                        </div>
+                                        <h3>Portal de Usuarios</h3>
+                                        <p>Acceso exclusivo para el personal del laboratorio al sistema de gestión interno de análisis y operaciones.</p>
+                                        <ul class="lims-portal-card__features">
+                                            <li><i class="fa fa-check-circle"/> Gestión de análisis y muestras</li>
+                                            <li><i class="fa fa-check-circle"/> Registro y captura de resultados</li>
+                                            <li><i class="fa fa-check-circle"/> Control de recepción de muestras</li>
+                                            <li><i class="fa fa-check-circle"/> Reportes y estadísticas internas</li>
+                                            <li><i class="fa fa-check-circle"/> Administración del sistema LIMS</li>
+                                        </ul>
+                                        <a href="/web/login" class="lims-portal-card__btn">
+                                            <i class="fa fa-sign-in me-2"/>Acceso de Usuarios
+                                        </a>
+                                        <p class="lims-portal-card__hint">
+                                            Solo personal autorizado
+                                            <i class="fa fa-shield ms-1"/>
+                                        </p>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ================================================
+                         FEATURES SECTION
+                    ================================================ -->
+                    <section class="lims-features-section">
+                        <div class="container">
+                            <div class="text-center mb-5">
+                                <h2 class="lims-section-title">¿Por qué Proteus Laboratorio?</h2>
+                                <p class="lims-section-subtitle">
+                                    Más de 15 años brindando soluciones analíticas con los más altos estándares de calidad
+                                </p>
+                            </div>
+                            <div class="row g-4">
+                                <div class="col-lg-3 col-sm-6">
+                                    <div class="lims-feature-card text-center">
+                                        <div class="lims-feature-card__icon">
+                                            <i class="fa fa-certificate fa-2x"/>
+                                        </div>
+                                        <h4>Acreditación</h4>
+                                        <p>Laboratorio acreditado bajo normas NMX e ISO. Resultados reconocidos por autoridades nacionales e internacionales.</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6">
+                                    <div class="lims-feature-card text-center">
+                                        <div class="lims-feature-card__icon">
+                                            <i class="fa fa-bolt fa-2x"/>
+                                        </div>
+                                        <h4>Resultados Rápidos</h4>
+                                        <p>Tiempos de entrega optimizados sin comprometer la precisión. Consulta tus resultados en línea al instante.</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6">
+                                    <div class="lims-feature-card text-center">
+                                        <div class="lims-feature-card__icon">
+                                            <i class="fa fa-shield fa-2x"/>
+                                        </div>
+                                        <h4>Confidencialidad</h4>
+                                        <p>Tus datos y resultados están protegidos con acceso seguro y cifrado. Solo tú ves tu información.</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6">
+                                    <div class="lims-feature-card text-center">
+                                        <div class="lims-feature-card__icon">
+                                            <i class="fa fa-headphones fa-2x"/>
+                                        </div>
+                                        <h4>Soporte Especializado</h4>
+                                        <p>Equipo de especialistas disponible para orientarte en la interpretación de resultados y elección de análisis.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ================================================
+                         SERVICES SECTION
+                    ================================================ -->
+                    <section class="lims-services-section">
+                        <div class="container">
+                            <div class="text-center mb-5">
+                                <h2 class="lims-section-title lims-section-title--light">Nuestros Servicios</h2>
+                                <p class="lims-section-subtitle lims-section-subtitle--light">
+                                    Amplia gama de análisis para todos los sectores
+                                </p>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="lims-service-card">
+                                        <i class="fa fa-stethoscope lims-service-card__icon"/>
+                                        <div class="lims-service-card__body">
+                                            <h5>Análisis Clínicos</h5>
+                                            <p>Biometría hemática, química sanguínea, urianálisis, perfil hormonal y más.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="lims-service-card">
+                                        <i class="fa fa-leaf lims-service-card__icon"/>
+                                        <div class="lims-service-card__body">
+                                            <h5>Análisis Ambientales</h5>
+                                            <p>Calidad del agua, aire, suelo y residuos. Cumplimiento de normativas ambientales.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="lims-service-card">
+                                        <i class="fa fa-industry lims-service-card__icon"/>
+                                        <div class="lims-service-card__body">
+                                            <h5>Análisis Industriales</h5>
+                                            <p>Control de calidad de materias primas, productos terminados y procesos de manufactura.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="lims-service-card">
+                                        <i class="fa fa-bug lims-service-card__icon"/>
+                                        <div class="lims-service-card__body">
+                                            <h5>Microbiología</h5>
+                                            <p>Identificación y cuantificación de microorganismos en alimentos, agua y superficies.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="lims-service-card">
+                                        <i class="fa fa-cutlery lims-service-card__icon"/>
+                                        <div class="lims-service-card__body">
+                                            <h5>Análisis de Alimentos</h5>
+                                            <p>Evaluación nutricional, microbiológica y química para inocuidad alimentaria.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6">
+                                    <div class="lims-service-card">
+                                        <i class="fa fa-tint lims-service-card__icon"/>
+                                        <div class="lims-service-card__body">
+                                            <h5>Análisis Fisicoquímicos</h5>
+                                            <p>Determinación de propiedades físicas y químicas de materiales, productos y efluentes.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="text-center mt-4">
+                                <a href="/contacto-comercial" class="lims-btn-outline">
+                                    <i class="fa fa-envelope me-2"/>Solicitar Información de Servicios
+                                </a>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ================================================
+                         STATS SECTION
+                    ================================================ -->
+                    <section class="lims-stats-section">
+                        <div class="container">
+                            <div class="row text-center g-4">
+                                <div class="col-6 col-md-3">
+                                    <div class="lims-stat-item">
+                                        <div class="lims-stat-number">+15</div>
+                                        <div class="lims-stat-label">Años de<br/>Experiencia</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="lims-stat-item">
+                                        <div class="lims-stat-number">+50K</div>
+                                        <div class="lims-stat-label">Análisis<br/>Realizados</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="lims-stat-item">
+                                        <div class="lims-stat-number">+500</div>
+                                        <div class="lims-stat-label">Clientes<br/>Satisfechos</div>
+                                    </div>
+                                </div>
+                                <div class="col-6 col-md-3">
+                                    <div class="lims-stat-item">
+                                        <div class="lims-stat-number">99.8%</div>
+                                        <div class="lims-stat-label">Índice de<br/>Precisión</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ================================================
+                         CONTACT CTA SECTION
+                    ================================================ -->
+                    <section class="lims-cta-section">
+                        <div class="container">
+                            <div class="text-center mb-5">
+                                <h2 class="lims-section-title">¿Cómo podemos ayudarte?</h2>
+                                <p class="lims-section-subtitle">Estamos aquí para atender tus necesidades</p>
+                            </div>
+                            <div class="row g-4 justify-content-center">
+                                <div class="col-lg-5 col-md-6">
+                                    <div class="lims-cta-card lims-cta-card--sales">
+                                        <div class="lims-cta-card__icon">
+                                            <i class="fa fa-handshake-o fa-2x"/>
+                                        </div>
+                                        <h3>Contacto Comercial</h3>
+                                        <p>¿Interesado en contratar nuestros servicios? Déjanos tus datos y un asesor especializado te contactará a la brevedad.</p>
+                                        <ul class="lims-cta-card__list">
+                                            <li><i class="fa fa-check"/> Cotizaciones personalizadas</li>
+                                            <li><i class="fa fa-check"/> Información de servicios</li>
+                                            <li><i class="fa fa-check"/> Convenios empresariales</li>
+                                        </ul>
+                                        <a href="/contacto-comercial" class="lims-cta-card__btn lims-cta-card__btn--primary">
+                                            <i class="fa fa-envelope me-2"/>Contactar Ventas
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-5 col-md-6">
+                                    <div class="lims-cta-card lims-cta-card--feedback">
+                                        <div class="lims-cta-card__icon">
+                                            <i class="fa fa-comments-o fa-2x"/>
+                                        </div>
+                                        <h3>Sugerencias y Quejas</h3>
+                                        <p>Tu opinión es fundamental para mejorar nuestros servicios. Comparte tu experiencia y trabajaremos para superarla.</p>
+                                        <ul class="lims-cta-card__list">
+                                            <li><i class="fa fa-check"/> Reportar inconvenientes</li>
+                                            <li><i class="fa fa-check"/> Enviar sugerencias</li>
+                                            <li><i class="fa fa-check"/> Compartir felicitaciones</li>
+                                        </ul>
+                                        <a href="/sugerencias-quejas" class="lims-cta-card__btn lims-cta-card__btn--secondary">
+                                            <i class="fa fa-paper-plane me-2"/>Enviar Comentarios
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ================================================
+                         CONTACT INFO FOOTER BAR
+                    ================================================ -->
+                    <section class="lims-info-bar">
+                        <div class="container">
+                            <div class="row g-3 justify-content-center text-center">
+                                <div class="col-lg-3 col-sm-6">
+                                    <div class="lims-info-bar__item">
+                                        <i class="fa fa-map-marker fa-lg me-2"/>
+                                        <span>Guadalajara, Jalisco, México</span>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6">
+                                    <div class="lims-info-bar__item">
+                                        <i class="fa fa-phone fa-lg me-2"/>
+                                        <a href="tel:+5233XXXXXXXX">+52 (33) XXXX-XXXX</a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6">
+                                    <div class="lims-info-bar__item">
+                                        <i class="fa fa-envelope fa-lg me-2"/>
+                                        <a href="mailto:contacto@proteuslaboratorio.com">contacto@proteuslaboratorio.com</a>
+                                    </div>
+                                </div>
+                                <div class="col-lg-3 col-sm-6">
+                                    <div class="lims-info-bar__item">
+                                        <i class="fa fa-clock-o fa-lg me-2"/>
+                                        <span>Lun – Vie: 8:00 – 18:00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                </t>
+            </t>
+        </field>
+    </record>
+
+</odoo>
