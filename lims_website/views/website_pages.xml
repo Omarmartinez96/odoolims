@@ -20,6 +20,7 @@
         <field name="url">/contacto-comercial</field>
         <field name="parent_id" ref="website.main_menu"/>
         <field name="sequence">10</field>
+        <field name="website_id" ref="website.default_website"/>
     </record>
 
     <record id="menu_sugerencias_quejas" model="website.menu">
@@ -27,6 +28,7 @@
         <field name="url">/sugerencias-quejas</field>
         <field name="parent_id" ref="website.main_menu"/>
         <field name="sequence">20</field>
+        <field name="website_id" ref="website.default_website"/>
     </record>
 
     <!-- ===================================================================
