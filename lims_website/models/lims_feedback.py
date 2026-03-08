@@ -17,7 +17,7 @@ class LimsFeedback(models.Model):
         ('felicitacion', 'Felicitación'),
         ('consulta', 'Consulta General'),
     ], string='Tipo de Comentario', required=True, default='sugerencia', tracking=True)
-    subject = fields.Char('Asunto', required=True)
+    subject = fields.Char('Asunto')
     message = fields.Text('Descripción / Mensaje', required=True)
     sample_reference = fields.Char('Folio / Referencia de Muestra')
     service_date = fields.Date('Fecha del Servicio Recibido')

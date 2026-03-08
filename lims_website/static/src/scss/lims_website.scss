@@ -10,13 +10,13 @@
 
 // --- Variables ---
 $lims-brand:     #dae3f3;   // ← color insignia de la empresa
-$lims-brand-mid: #3355c0;   // azul rey medio (hue ~225°)
-$lims-primary:   #1c3a8f;   // azul rey profundo
-$lims-secondary: #0c1e5e;   // azul rey muy oscuro
+$lims-brand-mid: #1e5799;   // azul marino medio
+$lims-primary:   #0f3460;   // azul marino clásico
+$lims-secondary: #071833;   // azul marino muy oscuro
 $lims-accent:    #dae3f3;   // = brand (usado como fondo de acentos)
 $lims-light-bg:  #edf2f9;   // tinte muy claro del color insignia
-$lims-text-dark: #080f30;
-$lims-text-muted:#4e5e80;
+$lims-text-dark: #06111f;
+$lims-text-muted:#4a5e75;
 $lims-white:     #ffffff;
 $lims-border:    #c4d4eb;   // borde derivado de insignia
 $lims-success:   #28a745;
@@ -25,8 +25,8 @@ $lims-danger:    #dc3545;
 $lims-transition: all 0.3s ease;
 $lims-radius:     12px;
 $lims-radius-lg:  16px;
-$lims-shadow:     0 4px 24px rgba(28, 58, 143, 0.12);
-$lims-shadow-hover: 0 8px 40px rgba(28, 58, 143, 0.22);
+$lims-shadow:     0 4px 24px rgba(15, 52, 96, 0.12);
+$lims-shadow-hover: 0 8px 40px rgba(15, 52, 96, 0.22);
 
 // ============================================================
 // HERO SECTION
@@ -588,7 +588,7 @@ $lims-shadow-hover: 0 8px 40px rgba(28, 58, 143, 0.22);
                 background: $lims-secondary;
                 color: $lims-white !important;
                 transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(28, 58, 143, 0.35);
+                box-shadow: 0 6px 20px rgba(15, 52, 96, 0.35);
             }
         }
 
@@ -602,7 +602,7 @@ $lims-shadow-hover: 0 8px 40px rgba(28, 58, 143, 0.22);
                 color: $lims-white !important;
                 border-color: $lims-secondary;
                 transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(12, 30, 94, 0.3);
+                box-shadow: 0 6px 20px rgba(7, 24, 51, 0.3);
             }
         }
     }
@@ -732,7 +732,7 @@ $lims-shadow-hover: 0 8px 40px rgba(28, 58, 143, 0.22);
     background: $lims-white;
     padding: 20px 0;
     border-bottom: 2px solid $lims-brand;
-    box-shadow: 0 2px 8px rgba(28, 58, 143, 0.08);
+    box-shadow: 0 2px 8px rgba(15, 52, 96, 0.08);
 }
 
 .lims-type-pills {
@@ -867,7 +867,7 @@ textarea.form-control {
         background: linear-gradient(90deg, $lims-secondary, $lims-primary);
         color: $lims-white;
         transform: translateY(-2px);
-        box-shadow: 0 8px 24px rgba(28, 58, 143, 0.35);
+        box-shadow: 0 8px 24px rgba(15, 52, 96, 0.35);
     }
 }
 

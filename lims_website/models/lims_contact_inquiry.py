@@ -14,12 +14,10 @@ class LimsContactInquiry(models.Model):
     email = fields.Char('Correo Electrónico', required=True, tracking=True)
     phone = fields.Char('Teléfono / Celular')
     service_interest = fields.Selection([
-        ('clinicos', 'Análisis Clínicos'),
-        ('ambientales', 'Análisis Ambientales'),
-        ('industriales', 'Análisis Industriales'),
-        ('microbiologia', 'Microbiología'),
-        ('fisicoquimicos', 'Análisis Fisicoquímicos'),
-        ('alimentos', 'Análisis de Alimentos'),
+        ('agua', 'Agua'),
+        ('alimentos', 'Alimentos'),
+        ('dispositivos_medicos', 'Dispositivos Médicos'),
+        ('microbiologia', 'Microbiología General'),
         ('otro', 'Otro / No especificado'),
     ], string='Servicio de Interés', default='otro', required=True, tracking=True)
     subject = fields.Char('Asunto', required=True)

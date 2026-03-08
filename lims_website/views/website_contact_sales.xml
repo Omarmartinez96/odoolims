@@ -5,13 +5,14 @@
          CONTACTO COMERCIAL - Formulario de solicitudes de venta
     =================================================================== -->
     <record id="lims_contact_sales_view" model="ir.ui.view">
-        <field name="name">lims.website.contact.sales</field>
+        <field name="name">Contacto Comercial | Laboratorio de Microbiología Proteus</field>
         <field name="type">qweb</field>
         <field name="key">lims_website.contact_sales_page</field>
         <field name="arch" type="xml">
             <t t-name="lims_website.contact_sales_page">
                 <t t-call="website.layout">
                     <t t-set="pageName" t-value="'contact_sales'"/>
+                    <t t-set="website_title" t-value="'Contacto Comercial | Laboratorio de Microbiología Proteus'"/>
 
                     <div class="lims-form-page">
 
@@ -150,20 +151,6 @@
                                                             </option>
                                                         </t>
                                                     </select>
-                                                </div>
-
-                                                <!-- Subject -->
-                                                <div class="col-12">
-                                                    <label for="contact_subject" class="form-label lims-form-label">
-                                                        Asunto <span class="text-danger">*</span>
-                                                    </label>
-                                                    <input type="text"
-                                                           class="form-control"
-                                                           id="contact_subject"
-                                                           name="contact_subject"
-                                                           placeholder="¿En qué podemos ayudarte?"
-                                                           required="required"
-                                                           maxlength="200"/>
                                                 </div>
 
                                                 <!-- Message -->

@@ -5,13 +5,14 @@
          SUGERENCIAS Y QUEJAS - Formulario de feedback
     =================================================================== -->
     <record id="lims_feedback_view" model="ir.ui.view">
-        <field name="name">lims.website.feedback</field>
+        <field name="name">Sugerencias y Quejas | Laboratorio de Microbiología Proteus</field>
         <field name="type">qweb</field>
         <field name="key">lims_website.feedback_page</field>
         <field name="arch" type="xml">
             <t t-name="lims_website.feedback_page">
                 <t t-call="website.layout">
                     <t t-set="pageName" t-value="'feedback'"/>
+                    <t t-set="website_title" t-value="'Sugerencias y Quejas | Laboratorio de Microbiología Proteus'"/>
 
                     <div class="lims-form-page lims-form-page--feedback">
 
@@ -146,20 +147,6 @@
                                                            placeholder="tu@correo.com"
                                                            required="required"
                                                            maxlength="150"/>
-                                                </div>
-
-                                                <!-- Subject -->
-                                                <div class="col-12">
-                                                    <label for="fb_subject" class="form-label lims-form-label">
-                                                        Asunto <span class="text-danger">*</span>
-                                                    </label>
-                                                    <input type="text"
-                                                           class="form-control"
-                                                           id="fb_subject"
-                                                           name="fb_subject"
-                                                           placeholder="Breve descripción del asunto"
-                                                           required="required"
-                                                           maxlength="200"/>
                                                 </div>
 
                                                 <!-- Message -->

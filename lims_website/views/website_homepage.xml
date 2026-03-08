@@ -5,7 +5,7 @@
          HOMEPAGE - Página principal del portal de Proteus Laboratorio
     =================================================================== -->
     <record id="lims_homepage_view" model="ir.ui.view">
-        <field name="name">lims.website.homepage</field>
+        <field name="name">Inicio | Laboratorio de Microbiología Proteus</field>
         <field name="type">qweb</field>
         <field name="key">lims_website.homepage</field>
         <field name="arch" type="xml">
@@ -13,6 +13,7 @@
                 <t t-call="website.layout">
                     <t t-set="pageName" t-value="'homepage'"/>
                     <t t-set="no_header_seotitle" t-value="True"/>
+                    <t t-set="website_title" t-value="'Inicio | Laboratorio de Microbiología Proteus'"/>
 
                     <!-- ================================================
                          HERO SECTION
